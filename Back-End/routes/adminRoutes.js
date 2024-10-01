@@ -1,6 +1,7 @@
 const express = require('express')
 const {
     getAllAdmins,
+    deleteAccount,
     addAdmin
 } = require("../controllers/AdminController")
 
@@ -10,6 +11,7 @@ const router = express.Router()
 router.get("/", getAllAdmins)
 
 // Delete account off system
+router.delete("/delete/:id", deleteAccount)
 
 // Add another admin
 router.post("/", addAdmin)
