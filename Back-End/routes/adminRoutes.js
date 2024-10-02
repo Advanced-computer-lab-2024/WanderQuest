@@ -3,7 +3,7 @@ const {
     getAllAdmins,
     deleteAccount,
     addAdmin
-} = require("../controllers/AdminController")
+} = require("../controllers/adminController")
 
 const router = express.Router()
 
