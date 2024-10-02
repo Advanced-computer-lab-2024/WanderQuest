@@ -1,0 +1,58 @@
+
+.tag-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 400px;
+    margin: 16px auto;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+  
+  .tag-card-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .tag-card-fields {
+    margin-bottom: 12px;
+  }
+  
+  .tag-card-label {
+    margin-bottom: 4px;
+    display: block;
+    font-weight: bold;
+  }
+  
+  .tag-card-input {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .tag-card-button {
+    padding: 10px 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: #ffffff;
+    color: #2eb00a;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .tag-card-button:hover {
+    background-color: #11c443;
+  }
+  
+  .tag-card-details {
+    line-height: 1.6;
+  }
+  
+  .tag-card-details p {
+    margin: 8px 0;
+  }
+  
