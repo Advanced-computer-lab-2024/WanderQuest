@@ -5,6 +5,8 @@ const {
     addAdmin,
     addPlace,
     getAllPlaces,
+    updatePlace,
+    deletePlace,
     createTag,
     getAllTags
 } = require("../controllers/adminController")
@@ -29,6 +31,10 @@ router.post("/", addAdmin)
 router.get("/tourismGovernor/places",getAllPlaces)
 //Tourism Governor create Place
 router.post("/tourismGovernor/addPlace",addPlace)
+//Tourism Governor update Place
+router.patch("/tourismGovernor/updatePlace/:id",updatePlace)
+//Tourism Governor delete Place
+router.delete("/tourismGovernor/deletePlace/:id",deletePlace)
 //Tourism Governor create Tag
 router.post("/tourismGovernor/addTag",createTag)
 //Tourism Governor get Tags

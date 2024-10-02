@@ -68,7 +68,7 @@ const addAdmin = async (req, res) => {
 
 //Add tourism governer
 //tourism Governor getAllPlaces
-// Get all Places
+
 const getAllPlaces = async (req, res) => {
     try {
         const places = await PlaceModel.find({});
@@ -78,7 +78,7 @@ const getAllPlaces = async (req, res) => {
     }
 };
 
-// Add Place
+// tourism Governor add Place
 const addPlace = async (req, res) => {
     const { description, pictures, location, openingHours, ticketPrices, tags } = req.body;
 
@@ -98,8 +98,41 @@ const addPlace = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+//tourism Governor update Place
 
-// Get all Tags
+const updatePlace = async (req, res)=> {
+    const {id} = req.params;
+    let updatedPlace = await PlaceModel.findById(id)
+    if(!updatedPlace){
+        res.status(400).json({error:'Place not found'})
+    }else{
+        try {
+            updatedPlace = await PlaceModel.findByIdAndUpdate(id,req.body)
+            res.status(200).json(updatedPlace);
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+};
+//tourism Governor deletePlace
+
+const deletePlace = async (req,res)=>{
+    const{id} = req.params;
+    let deletedPlace = await PlaceModel.findById(id);
+    if(!deletedPlace){
+        res.status(400).json({error:'Place not found.'});
+    }else{
+        try {
+            deletedPlace = await PlaceModel.findByIdAndDelete(id)
+            res.status(200).json({message:'Place was deleted',deletedPlace});
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+
+}
+// tourism Governor getAllTags
+
 const getAllTags = async (req, res) => {
     try {
         const tags = await TagModel.find({});
@@ -109,7 +142,7 @@ const getAllTags = async (req, res) => {
     }
 };
 
-// Create Tag
+// tourism Governor createTag
 const createTag = async (req, res) => {
     const { type, historicalPeriod } = req.body;
 
@@ -136,6 +169,8 @@ module.exports = {
     addAdmin,
     addPlace,
     getAllPlaces,
+    updatePlace,
+    deletePlace,
     createTag,
     getAllTags
 }
