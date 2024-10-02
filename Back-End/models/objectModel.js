@@ -26,5 +26,13 @@ const placeSchema = new Schema({
     {type:tagSchema,required:false,default:null} // tags are optional
 });
 const Places = mongoose.model('Places',placeSchema);
-
-module.exports = {Places, Tags }
+const productSchema = new Schema({
+    details:
+    {type:String,required:true},
+    price:
+    {type:Number,required:true},
+    availableAmount:
+    {type:Number,required:true}
+});
+const Product = mongoose.model('Product',productSchema);
+module.exports = {Places, Tags,Product }
