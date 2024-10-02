@@ -124,6 +124,7 @@ const SellerSchema = new Schema({
 const Seller = User.discriminator('seller', SellerSchema);
 
 module.exports = {
+    User,
     Tourist,
     TourGuide,
     Advertiser,

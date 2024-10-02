@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const adminRoutes = require('./routes/adminRoutes')
 const registerationRoutes = require('./routes/registerationRoutes')
+const advertiserRoutes = require('./routes/advertiserRoutes')
 
 
 const app = express()
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 //Routes
 app.use('/admin', adminRoutes)
 app.use('/register', registerationRoutes)
+app.use('/advertiser', advertiserRoutes)
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
