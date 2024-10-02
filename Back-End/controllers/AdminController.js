@@ -1,5 +1,7 @@
-const AdminModel = require('../models/adminModel')
-const mongoose = require('mongoose')
+const AdminModel = require('../models/adminModel');
+const TagModel = require('../models/objectModel').Tags; 
+const PlaceModel = require('../models/objectModel').Places; 
+const mongoose = require('mongoose');
 
 // Get all admins
 const getAllAdmins = async (req, res) => {
@@ -65,9 +67,75 @@ const addAdmin = async (req, res) => {
 }
 
 //Add tourism governer
+//tourism Governor getAllPlaces
+// Get all Places
+const getAllPlaces = async (req, res) => {
+    try {
+        const places = await PlaceModel.find({});
+        res.status(200).json(places);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Add Place
+const addPlace = async (req, res) => {
+    const { description, pictures, location, openingHours, ticketPrices, tags } = req.body;
+
+    if (!description || !pictures || !location || !openingHours || !ticketPrices) {
+        return res.status(400).json({ error: 'Field is required' });
+    }
+
+    try {
+        const existingPlace = await PlaceModel.findOne({ description, location }); // Adjusted to check for unique fields
+        if (existingPlace) {
+            return res.status(400).json({ error: 'Place already exists' });
+        }
+
+        const newPlace = await PlaceModel.create({ description, pictures, location, openingHours, ticketPrices, tags });
+        res.status(200).json(newPlace);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Get all Tags
+const getAllTags = async (req, res) => {
+    try {
+        const tags = await TagModel.find({});
+        res.status(200).json(tags);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Create Tag
+const createTag = async (req, res) => {
+    const { type, historicalPeriod } = req.body;
+
+    if (!type || !historicalPeriod) {
+        return res.status(400).json({ error: 'Field is required' });
+    }
+
+    try {
+        const existingTag = await TagModel.findOne({ type, historicalPeriod }); // Correct model usage
+        if (existingTag) {
+            return res.status(400).json({ error: 'Tag already exists' });
+        }
+
+        const newTag = await TagModel.create({ type, historicalPeriod });
+        res.status(200).json(newTag);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
 module.exports = {
     getAllAdmins,
     deleteAccount,
-    addAdmin
+    addAdmin,
+    addPlace,
+    getAllPlaces,
+    createTag,
+    getAllTags
 }
