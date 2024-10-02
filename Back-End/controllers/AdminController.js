@@ -1,4 +1,4 @@
-const AdminModel = require('../models/Admin')
+const AdminModel = require('../models/adminModel')
 const mongoose = require('mongoose')
 
 // Get all admins
@@ -6,34 +6,34 @@ const getAllAdmins = async (req, res) => {
     try {
         const admins = await AdminModel.find({})
         res.status(200).json(admins)
-    } catch(error){
-        res.status(400).json({error:error.message})
+    } catch (error) {
+        res.status(400).json({ error: error.message })
     }
 }
 
 // Delete account off system
 // WARNING: ONLY TESTED ON ADMIN ACCOUNTS
 const deleteAccount = async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
     // Validate input
     let account = await AdminModel.findById(id)
 
-    if(!account){
-        return res.status(400).json({error: 'Account not found'})
+    if (!account) {
+        return res.status(400).json({ error: 'Account not found' })
     }
 
     try {
         account = await AdminModel.findByIdAndDelete(id)
-        res.status(200).json({message: 'Account deleted', account})
-    } catch(error){
-        res.status(400).json({error:error.message})
+        res.status(200).json({ message: 'Account deleted', account })
+    } catch (error) {
+        res.status(400).json({ error: error.message })
     }
 }
 
 // Add another admin
 const addAdmin = async (req, res) => {
-    const {username, password} = req.body;
+    const { username, password } = req.body;
 
     // Validate input
     if (!username || !password) {
@@ -56,11 +56,11 @@ const addAdmin = async (req, res) => {
             return res.status(400).json({ error: 'Username already exists' });
         }
 
-        const admin = await AdminModel.create({username, password})
+        const admin = await AdminModel.create({ username, password })
         res.status(200).json(admin)
 
-    } catch(error){
-        res.status(400).json({error:error.message})
+    } catch (error) {
+        res.status(400).json({ error: error.message })
     }
 }
 
