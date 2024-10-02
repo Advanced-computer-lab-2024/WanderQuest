@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const tagSchema = new Schema
 ({// for the tags to be created independantly from the places
-    type:{type:String,required:true},
+    type:[{type:String,required:true}],
     historicalPeriod:{type:String,required:true}
 });
 const Tags = mongoose.model('Tags',tagSchema);
