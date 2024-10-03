@@ -6,6 +6,7 @@ const adminRoutes = require('./routes/adminRoutes')
 const tourGovernerRoutes = require('./routes/tourGovernerRoutes')
 const registerationRoutes = require('./routes/registerationRoutes')
 const advertiserRoutes = require('./routes/advertiserRoutes')
+const sellerRoutes = require('./routes/sellerRoutes')
 
 
 const app = express()
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes)
 app.use('/register', registerationRoutes)
 app.use('/advertiser', advertiserRoutes)
+app.use('/seller', advertiserRoutes)
 app.use('/tourismGovernor', tourGovernerRoutes)
 
 // MongoDB connection
