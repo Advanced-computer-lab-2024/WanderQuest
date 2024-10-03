@@ -61,7 +61,7 @@ const activitySchema = new Schema({
     priceRange: { type: String ,required:false},
     category: { type:String , required: true },
     tags: { type: [String], default: [] },
-    specialDiscount: { type: String },
+    specialDiscounts: { type: String },
     //??????????????default true???????????
     bookingIsOpen: { type: Boolean, default: true },
     createdBy: {
