@@ -1,8 +1,6 @@
 const AdminModel = require('../models/adminModel');
 const { User } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
-const TagModel = require('../models/objectModel').Tags; 
-const PlaceModel = require('../models/objectModel').Places;
 const ProdModel = require('../models/objectModel').Product; 
 const mongoose = require('mongoose');
 
@@ -87,21 +85,21 @@ const getProducts = async (req,res)=>{
 //Admin addProduct
 
 const addProduct = async (req,res)=>{
-    const { details, price, availableAmount } = req.body;
+    const {name,picture,price,description,seller,ratings,reviews,availableAmount} = req.body;
 
     // Validate input
-    if (!details || !price || !availableAmount) {
+    if (!name || !picture || !description  || !price || !availableAmount) {
         return res.status(400).json({ error: 'Details and prices and available amount fields are required' });
     }
     try {
         // Checking if the username already exists
-        const existingProduct = await ProdModel.findOne({ details,price});
+        const existingProduct = await ProdModel.findOne({ name,price});
 
         if (existingProduct) {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ details, price,availableAmount })
+        const product = await ProdModel.create({name,picture,price,description,seller,ratings,reviews,availableAmount})
         res.status(200).json(product)
 
     } catch (error) {
