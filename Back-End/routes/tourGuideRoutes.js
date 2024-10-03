@@ -1,7 +1,7 @@
 const express = require('express');
 
 // controller functions
-const { } = require('../controllers/tourGuideController');
+const { getProfile, updateProfile } = require('../controllers/tourGuideController');
 const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
@@ -10,5 +10,7 @@ const router = express.Router();
 router.use(requireAuth);
 
 // routes
+router.get('/profile', getProfile);
+router.put('/profile', updateProfile);
 
 module.exports = router;

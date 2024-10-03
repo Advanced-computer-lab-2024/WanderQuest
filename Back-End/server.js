@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const adminRoutes = require('./routes/adminRoutes')
 const registerationRoutes = require('./routes/registerationRoutes')
 const advertiserRoutes = require('./routes/advertiserRoutes')
+const touristRoutes = require('./routes/touristRoutes')
+const tourGuideRoutes = require('./routes/tourGuideRoutes')
 
 
 const app = express()
@@ -20,6 +22,8 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes)
 app.use('/register', registerationRoutes)
 app.use('/advertiser', advertiserRoutes)
+app.use('/tourist', touristRoutes)
+app.use('/tourGuide', tourGuideRoutes)
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
