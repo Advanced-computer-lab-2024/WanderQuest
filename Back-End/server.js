@@ -1,7 +1,9 @@
 require('dotenv').config()
+
 const express = require('express')
 const mongoose = require('mongoose')
 const adminRoutes = require('./routes/adminRoutes')
+const tourGovernerRoutes = require('./routes/tourGovernerRoutes')
 const registerationRoutes = require('./routes/registerationRoutes')
 const advertiserRoutes = require('./routes/advertiserRoutes')
 const touristRoutes = require('./routes/touristRoutes')
@@ -24,6 +26,7 @@ app.use('/register', registerationRoutes)
 app.use('/advertiser', advertiserRoutes)
 app.use('/tourist', touristRoutes)
 app.use('/tourGuide', tourGuideRoutes)
+app.use('/tourismGovernor', tourGovernerRoutes)
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
@@ -34,4 +37,3 @@ mongoose.connect(process.env.MONGO_URI)
         console.log('MongoDB connected!')
     })
     .catch(err => console.log(err))
-
