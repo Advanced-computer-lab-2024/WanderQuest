@@ -13,4 +13,5 @@ router.use(requireAuth);
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 
+
 module.exports = router;
