@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+const SellerModel = require('../models/userModel').Seller;
 
 
 const tagSchema = new Schema
 ({// for the tags to be created independantly from the places
     type:[{type:String,required:true}],
-    historicalPeriod:{type:String,required:true}
+    historicalPeriod:{type:String,required:false,default:null}
 });
 const Tags = mongoose.model('Tags',tagSchema);
 
@@ -28,10 +28,20 @@ const placeSchema = new Schema({
 const Places = mongoose.model('Places',placeSchema);
 
 const productSchema = new Schema({
-    details:
+    name:
     {type:String,required:true},
+    picture:
+    [{data:Buffer,type:String,required:true}],
     price:
     {type:Number,required:true},
+    description:
+    {type:String,required:true},
+    seller:
+    {type:String,ref:SellerModel,required:false,default:null},
+    ratings:
+    [{type:Number,required:false,default:null}],
+    reviews:
+    [{type:String,required:false,default:null}],
     availableAmount:
     {type:Number,required:true}
 });
