@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const SellerModel = require('../models/userModel').Seller;
+const AdvertiserModel = require('../models/userModel').Advertiser;
 
 
 const tagSchema = new Schema
@@ -47,4 +48,50 @@ const productSchema = new Schema({
 });
 const Product = mongoose.model('Product',productSchema);
 
-module.exports = {Places, Tags,Product }
+
+//activity schema
+const activitySchema = new Schema({
+    title: { type: String , required: true },
+    date: { type: Date, required: true },
+    time: { type: String , required: true },
+    //????????????google maps? --> front end
+    location: { type: String, required: true },
+    price: { type: Number, required: true },
+    //?????????????????????????????//
+    priceRange: { type: String ,required:false},
+    category: { type:String , required: true },
+    tags: { type: [String], default: [] },
+    specialDiscount: { type: String },
+    //??????????????default true???????????
+    bookingIsOpen: { type: Boolean, default: true },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,  //???color?
+        ref: AdvertiserModel ,
+        required: false,
+    },
+    
+},{timestamps: true});
+
+const Activity = mongoose.model('Activity' ,activitySchema);
+
+//itinerary Schema
+const itinerarySchema = new mongoose.Schema({
+  activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
+  locations: [{ type: String,required:true}],
+  timeline: {type: String,required:true},
+  duration: {type: String , required: true},
+  language: {type: String, required:true},
+  price: {type:Number, required:true},
+  availableDates: [{type: Date, required:true}],
+  time: [{type: String, required:true}],
+  accessibility: {type: Boolean, required:true},
+  pickUpLocation: {type: String, required: true},
+  dropOffLocation: {type: String, required: true},
+  ///??????????????default
+  BookingAlreadyMade: {type: Boolean,default:false},
+ 
+}, {timestamps:true}) ;
+
+const itinerary = mongoose.model('itinerary',itinerarySchema);
+
+module.exports = {Places, Tags, Product, Activity ,itinerary}
