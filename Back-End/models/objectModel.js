@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const SellerModel = require('../models/userModel').Seller;const AdvertiserModel = require('../models/userModel').Advertiser
+const SellerModel = require('../models/userModel').Seller;
+const AdvertiserModel = require('../models/userModel').Advertiser;
 
 
 const tagSchema = new Schema
