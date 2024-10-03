@@ -2,7 +2,8 @@ const AdminModel = require('../models/adminModel');
 const { User } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const TagModel = require('../models/objectModel').Tags; 
-const PlaceModel = require('../models/objectModel').Places; 
+const PlaceModel = require('../models/objectModel').Places;
+const ProdModel = require('../models/objectModel').Product; 
 const mongoose = require('mongoose');
 
 // Get all admins
@@ -74,6 +75,54 @@ const addAdmin = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 }
+//Admin getProducts
+const getProducts = async (req,res)=>{
+    try {
+        const products = await ProdModel.find({})
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+//Admin addProduct
+
+const addProduct = async (req,res)=>{
+    const { details, price, availableAmount } = req.body;
+
+    // Validate input
+    if (!details || !price || !availableAmount) {
+        return res.status(400).json({ error: 'Details and prices and available amount fields are required' });
+    }
+    try {
+        // Checking if the username already exists
+        const existingProduct = await ProdModel.findOne({ details,price});
+
+        if (existingProduct) {
+            return res.status(400).json({ error: 'Product already exists' });
+        }
+
+        const product = await ProdModel.create({ details, price,availableAmount })
+        res.status(200).json(product)
+
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+
+};
+const editProduct = async (req,res)=>{
+    const {id} = req.params;
+    let updatedProd = await ProdModel.findById(id)
+    if(!updatedProd){
+        res.status(400).json({error:'Product not found'})
+    }else{
+        try {
+            updatedProd = await ProdModel.findByIdAndUpdate(id,req.body)
+            res.status(200).json(updatedProd);
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+}
 
 // Add a Tourism Governer
 const addTourGov = async (req, res) => {
@@ -108,5 +157,8 @@ module.exports = {
     getAllAdmins,
     deleteAccount,
     addAdmin,
-    addTourGov
+    addTourGov,
+    getProducts,
+    addProduct,
+    editProduct,
 }

@@ -3,7 +3,10 @@ const {
     getAllAdmins,
     deleteAccount,
     addAdmin,
-    addTourGov
+    addTourGov,
+    addProduct,
+    editProduct,
+    getProducts
 } = require("../controllers/adminController")
 
 const router = express.Router()
@@ -19,5 +22,14 @@ router.post("/", addAdmin)
 
 // Add Tourism Governer
 router.post("/governer", addTourGov)
+
+//Admin getProducts
+router.get("/products",getProducts)
+
+//Admin addProduct
+router.post("/addProduct",addProduct)
+
+//Admin editProduct
+router.patch("/editProduct/:id",editProduct)
 
 module.exports = router
