@@ -1,0 +1,57 @@
+/* styles/Itineraries.module.css */
+
+.container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .itinerary {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .activity {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .activity h3 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .activity a {
+    color: #0070f3;
+    text-decoration: none;
+  }
+  
+  .activity a:hover {
+    text-decoration: underline;
+  }
+  
+  .loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .no-itineraries {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #f00;
+  }
+  
