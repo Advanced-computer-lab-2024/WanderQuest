@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const adminSchema = new Schema({
+const tourGovernorSchema = new Schema({
     username: {
         type: String,
         required: true,
@@ -15,6 +15,7 @@ const adminSchema = new Schema({
     }
 }, { timestamps: true});
 
-const Admin = mongoose.model('Admin', adminSchema);
+const tourGovernor = mongoose.model('TourGovernor',tourGovernorSchema);
 
-module.exports = Admin
+
+module.exports = tourGovernor
