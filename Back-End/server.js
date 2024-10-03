@@ -1,4 +1,5 @@
 require('dotenv').config()
+const cors = require('cors')
 
 const express = require('express')
 const mongoose = require('mongoose')
@@ -17,6 +18,7 @@ const app = express()
 
 // Middleware
 app.use(express.json())
+app.use(cors())
 
 app.use((req, res, next) => {
     console.log(req.method, req.path)
@@ -31,7 +33,7 @@ app.use('/seller', advertiserRoutes)
 app.use('/tourist', touristRoutes)
 app.use('/tourGuide', tourGuideRoutes)
 app.use('/tourismGovernor', tourGovernerRoutes)
-app.use('/activityRoutes',activityRoutes )
+app.use('/activityRoutes', activityRoutes)
 app.use('/itinerary', itineraryRoutes);  // This sets the base path for itinerary routes
 
 // MongoDB connection
