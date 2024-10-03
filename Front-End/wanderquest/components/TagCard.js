@@ -1,5 +1,7 @@
+'use client'
 import { Html } from "next/document";
 import React, { useState, useRef } from "react";
+import styles from "/Styles/TagCard.module.css";
 const generateID = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const TagCard= () => {
@@ -13,31 +15,30 @@ const TagCard= () => {
         setIsSubmitted(true);
     }
     return (
-        <div className="tag-card">
+        <div className={styles["tag-card"]}>
       {!isSubmitted ? (
-        <form className="tag-card-form" onSubmit={handleSubmit}>
+        <form className={styles["tag-card-form"]}onSubmit={handleSubmit}>
           <div className="tag-card-fields">
-            <label htmlFor={`title-${id}`} className="tag-card-label">Title:</label>
             <input
               type="text"
               id={`title-${id}`}
               name="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter tag title"
-              className="tag-card-input"
+              placeholder="Title"
+              className={styles["tag-card-input"]}
               required
             />
             
-            <button id={`btnSubmit-${id}`} type="submit" className="tag-card-button">
+            <button id={`btnSubmit-${id}`} className={styles["tag-card-button"]}>
               Create Tag 
             </button>
           </div>
         </form>
       ) : (
-        <div className="tag-card-details">
-          <p><strong>Title:</strong> {title}</p>
-          <p><strong>ID:</strong> {id}</p>
+        <div className={styles["tag-card-details"]}>
+          <p>{title}</p>
+          {/* <p>{id}</p> */}
         </div>
       )}
     </div>
