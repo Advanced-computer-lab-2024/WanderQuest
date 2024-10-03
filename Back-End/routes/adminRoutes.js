@@ -3,12 +3,7 @@ const {
     getAllAdmins,
     deleteAccount,
     addAdmin,
-    addPlace,
-    getAllPlaces,
-    updatePlace,
-    deletePlace,
-    createTag,
-    getAllTags
+    addTourGov
 } = require("../controllers/adminController")
 
 const router = express.Router()
@@ -22,21 +17,7 @@ router.delete("/delete/:id", deleteAccount)
 // Add another admin
 router.post("/", addAdmin)
 
-//Add tourism governer
+// Add Tourism Governer
+router.post("/governer", addTourGov)
 
-
-
-
-//Get Places
-router.get("/tourismGovernor/places",getAllPlaces)
-//Tourism Governor create Place
-router.post("/tourismGovernor/addPlace",addPlace)
-//Tourism Governor update Place
-router.patch("/tourismGovernor/updatePlace/:id",updatePlace)
-//Tourism Governor delete Place
-router.delete("/tourismGovernor/deletePlace/:id",deletePlace)
-//Tourism Governor create Tag
-router.post("/tourismGovernor/addTag",createTag)
-//Tourism Governor get Tags
-router.get("/tourismGovernor/tags",getAllTags)
 module.exports = router

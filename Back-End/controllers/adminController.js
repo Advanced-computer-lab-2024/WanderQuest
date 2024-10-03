@@ -1,4 +1,6 @@
 const AdminModel = require('../models/adminModel');
+const { User } = require('../models/userModel');
+const tourGovModel = require('../models/tourGovernerModel');
 const TagModel = require('../models/objectModel').Tags; 
 const PlaceModel = require('../models/objectModel').Places; 
 const mongoose = require('mongoose');
@@ -14,22 +16,29 @@ const getAllAdmins = async (req, res) => {
 }
 
 // Delete account off system
-// WARNING: ONLY TESTED ON ADMIN ACCOUNTS
 const deleteAccount = async (req, res) => {
     const { id } = req.params;
 
     // Validate input
-    let account = await AdminModel.findById(id)
+    let userAccount = await User.findOne({ _id: id });
+    let tourGovAccount = await tourGovModel.findOne({ _id: id });
 
-    if (!account) {
-        return res.status(400).json({ error: 'Account not found' })
+    if (!userAccount && !tourGovAccount) {
+        return res.status(400).json({ error: 'Account not found' });
     }
 
     try {
-        account = await AdminModel.findByIdAndDelete(id)
-        res.status(200).json({ message: 'Account deleted', account })
+        if(userAccount){
+            userAccount = await User.findByIdAndDelete(id);
+            res.status(200).json({ message: 'Account deleted', userAccount });
+        }
+        else {
+            tourGovAccount = await tourGovModel.findByIdAndDelete(id);
+            res.status(200).json({ message: 'Account deleted', tourGovAccount });
+        }
+        
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message });
     }
 }
 
@@ -66,111 +75,38 @@ const addAdmin = async (req, res) => {
     }
 }
 
-//Add tourism governer
-//tourism Governor getAllPlaces
+// Add a Tourism Governer
+const addTourGov = async (req, res) => {
+    const {username, password} = req.body;
+    if(!username || !password){
+        return res.status(400).json({error: 'Username and password are required'});
+    }
+    if (username.length < 3) {
+        return res.status(400).json({ error: 'Username must be at least 3 characters long' });
+    }
 
-const getAllPlaces = async (req, res) => {
+    if (password.length < 5) {
+        return res.status(400).json({ error: 'Password must be at least 5 characters long' });
+    }
     try {
-        const places = await PlaceModel.find({});
-        res.status(200).json(places);
+        // Checking if the username already exists
+        let tourGov = await tourGovModel.findOne({ username });
+
+        if (tourGov) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        tourGov = await tourGovModel.create({ username, password })
+        res.status(200).json(tourGov)
+
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message })
     }
-};
-
-// tourism Governor add Place
-const addPlace = async (req, res) => {
-    const { description, pictures, location, openingHours, ticketPrices, tags } = req.body;
-
-    if (!description || !pictures || !location || !openingHours || !ticketPrices) {
-        return res.status(400).json({ error: 'Field is required' });
-    }
-
-    try {
-        const existingPlace = await PlaceModel.findOne({ description, location }); // Adjusted to check for unique fields
-        if (existingPlace) {
-            return res.status(400).json({ error: 'Place already exists' });
-        }
-
-        const newPlace = await PlaceModel.create({ description, pictures, location, openingHours, ticketPrices, tags });
-        res.status(200).json(newPlace);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-//tourism Governor update Place
-
-const updatePlace = async (req, res)=> {
-    const {id} = req.params;
-    let updatedPlace = await PlaceModel.findById(id)
-    if(!updatedPlace){
-        res.status(400).json({error:'Place not found'})
-    }else{
-        try {
-            updatedPlace = await PlaceModel.findByIdAndUpdate(id,req.body)
-            res.status(200).json(updatedPlace);
-        } catch (error) {
-            res.status(400).json({error:error.message});
-        }
-    }
-};
-//tourism Governor deletePlace
-
-const deletePlace = async (req,res)=>{
-    const{id} = req.params;
-    let deletedPlace = await PlaceModel.findById(id);
-    if(!deletedPlace){
-        res.status(400).json({error:'Place not found.'});
-    }else{
-        try {
-            deletedPlace = await PlaceModel.findByIdAndDelete(id)
-            res.status(200).json({message:'Place was deleted',deletedPlace});
-        } catch (error) {
-            res.status(400).json({error:error.message});
-        }
-    }
-
 }
-// tourism Governor getAllTags
-
-const getAllTags = async (req, res) => {
-    try {
-        const tags = await TagModel.find({});
-        res.status(200).json(tags);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-// tourism Governor createTag
-const createTag = async (req, res) => {
-    const { type, historicalPeriod } = req.body;
-
-    if (!type || !historicalPeriod) {
-        return res.status(400).json({ error: 'Field is required' });
-    }
-
-    try {
-        const existingTag = await TagModel.findOne({ type, historicalPeriod }); // Correct model usage
-        if (existingTag) {
-            return res.status(400).json({ error: 'Tag already exists' });
-        }
-
-        const newTag = await TagModel.create({ type, historicalPeriod });
-        res.status(200).json(newTag);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
 
 module.exports = {
     getAllAdmins,
     deleteAccount,
     addAdmin,
-    addPlace,
-    getAllPlaces,
-    updatePlace,
-    deletePlace,
-    createTag,
-    getAllTags
+    addTourGov
 }
