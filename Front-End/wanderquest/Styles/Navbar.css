@@ -60,3 +60,21 @@ button:hover {
     background-color: #031A29;
     color: #ffffff; 
 }
+.navbar-link {
+    text-decoration: none; /* Remove underline */
+    color: white; /* Set initial color */
+    border-radius: 30px;
+    background-color: #042335;
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.navbar-link:hover {
+    background-color: #031A29; /* Change background on hover */
+    color: #ffffff; /* Keep text white on hover */
+}
+
+.navbar-link:active {
+    color: #ffffff; /* Prevent the link from turning blue when clicked */
+}

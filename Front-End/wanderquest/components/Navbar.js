@@ -13,7 +13,9 @@ const Navbar = () => {
                 <img className="navbar-logo" src="/logo.png" alt="Logo" />
             </div>
             <div className='navbar-middleside'>
-                <button>Products</button>
+                
+                <Link href="/activities" className="navbar-link">Products</Link>
+
                 <button>Activities</button>
                 <button>Itinerary</button>
                 <button>Historical Places</button>

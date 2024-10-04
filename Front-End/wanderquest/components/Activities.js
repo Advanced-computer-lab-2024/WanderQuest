@@ -51,10 +51,9 @@ const Activities = () => {
             <a href={activity.location.google_maps_link} target="_blank" rel="noopener noreferrer">
               {activity.location.name}
             </a><br />
-            <strong>Price:</strong> 
-            {typeof activity.price === 'object' 
-              ? `${activity.price.min} - ${activity.price.max}` // Display the range
-              : activity.price}<br />
+            <strong>Price: {activity.price.min} - {activity.price.max} </strong> 
+            
+            <br />
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.special_discounts}<br />

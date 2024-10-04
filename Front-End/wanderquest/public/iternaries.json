@@ -2,40 +2,7 @@
     "itineraries": [
       {
         "title": "Paris City Tour",
-        "activities": [
-          {
-            "name": "Visit the Eiffel Tower",
-            "location": {
-              "name": "Eiffel Tower",
-              "google_maps_link": "https://maps.google.com/?q=Eiffel+Tower"
-            },
-            "timeline": "10:00 AM - 12:00 PM",
-            "duration": "2 hours",
-            "language": "English",
-            "price": {
-              "fixed": 50
-            },
-            "available_dates": ["2024-10-05", "2024-10-06", "2024-10-07"],
-            "accessibility": "Wheelchair accessible",
-            "pickup_dropoff": "Pick up from your hotel"
-          },
-          {
-            "name": "Seine River Cruise",
-            "location": {
-              "name": "Seine River",
-              "google_maps_link": "https://maps.google.com/?q=Seine+River"
-            },
-            "timeline": "1:00 PM - 2:00 PM",
-            "duration": "1 hour",
-            "language": "English, French",
-            "price": {
-              "fixed": 30
-            },
-            "available_dates": ["2024-10-05", "2024-10-06"],
-            "accessibility": "Limited accessibility",
-            "pickup_dropoff": "Drop off at central location"
-          }
-        ]
+        "activities": "Visit the Eiffel Tower"
       },
       {
         "title": "Cultural Day in Paris",
