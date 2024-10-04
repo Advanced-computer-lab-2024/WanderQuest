@@ -11,7 +11,11 @@ const {
     getCategories,
     editCategory,
     addCategory,
-    deleteCategory
+    deleteCategory,
+    createTag,
+    getAllTags,
+    updateTag,
+    deleteTag
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -52,4 +56,15 @@ router.patch('/editCategory/:id',editCategory)
 //Admin deleteCategory
 router.delete('/deleteCategory/:id',deleteCategory)
 
+//Admin getTags
+router.get('/tags',getAllTags)
+
+//Admin createTag
+router.post('/addTag',createTag)
+
+//Admin updateTag
+router.patch('/editTag/:id',updateTag)
+
+//Admin deleteTag
+router.delete('/deleteTag/:id',deleteTag)
 module.exports = router
