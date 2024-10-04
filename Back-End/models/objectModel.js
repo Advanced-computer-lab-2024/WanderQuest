@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const SellerModel = require('../models/userModel').Seller;
 const AdvertiserModel = require('../models/userModel').Advertiser;
-
+const TourGuideModel = require('../models/userModel').TourGuide;
 
 const tagSchema = new Schema
 ({// for the tags to be created independantly from the places
@@ -40,7 +40,8 @@ const productSchema = new Schema({
     description:
     {type:String,required:true},
     seller:
-    {type:String,ref:SellerModel,required:false,default:null},
+    {type: mongoose.Schema.Types.ObjectId,  //???color?
+        ref: SellerModel ,},
     ratings:
     [{type:Number,required:false,default:null}],
     reviews:
@@ -107,7 +108,11 @@ const itinerarySchema = new mongoose.Schema({
   {type:tagSchema,required:false,default:null},
   ///??????????????default
   BookingAlreadyMade: {type: Boolean,default:false},
- 
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,  //???color?
+    ref: TourGuideModel ,
+    required: false,
+    }
 }, {timestamps:true}) ;
 
 const itinerary = mongoose.model('itinerary',itinerarySchema);
