@@ -66,7 +66,7 @@ const activitySchema = new Schema({
     priceRange: { type: String ,required:false},
     category: { type:String ,ref:ActivityCategory, required: true },
     tags: { type: [String], default: [] },
-    specialDiscount: { type: String },
+    specialDiscounts: { type: String },
     //??????????????default true???????????
     bookingIsOpen: { type: Boolean, default: true },
     createdBy: {
@@ -76,6 +76,15 @@ const activitySchema = new Schema({
     },
     
 },{timestamps: true});
+
+// Virtual property to format the date without the time zone
+activitySchema.virtual('formattedDate').get(function() {
+    return this.date.toISOString().split('T')[0];
+});
+
+// Ensure virtual fields are serialized
+activitySchema.set('toJSON', { virtuals: true });
+activitySchema.set('toObject', { virtuals: true });
 
 const Activity = mongoose.model('Activity' ,activitySchema);
 
