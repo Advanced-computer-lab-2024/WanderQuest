@@ -13,6 +13,8 @@ const Tags = mongoose.model('Tags',tagSchema);
 
 
 const placeSchema = new Schema({
+    title:
+    {type:String,required:true},
     description:
     {type:String,required: true},
     pictures:
@@ -48,7 +50,12 @@ const productSchema = new Schema({
 });
 const Product = mongoose.model('Product',productSchema);
 
-
+//category Schema
+const activityCategorySchema = new Schema({
+    category:{type:String,required:true}
+    
+})
+const ActivityCategory = mongoose.model('Category',activityCategorySchema);
 //activity schema
 const activitySchema = new Schema({
     title: { type: String , required: true },
@@ -59,7 +66,7 @@ const activitySchema = new Schema({
     price: { type: Number, required: true },
     //?????????????????????????????//
     priceRange: { type: String ,required:false},
-    category: { type:String , required: true },
+    category: { type:String ,ref:ActivityCategory, required: true },
     tags: { type: [String], default: [] },
     specialDiscounts: { type: String },
     //??????????????default true???????????
@@ -103,4 +110,4 @@ const itinerarySchema = new mongoose.Schema({
 
 const itinerary = mongoose.model('itinerary',itinerarySchema);
 
-module.exports = {Places, Tags, Product, Activity ,itinerary}
+module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory}
