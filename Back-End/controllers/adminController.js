@@ -82,14 +82,23 @@ const getProducts = async (req,res)=>{
         res.status(400).json({ error: error.message })
     }
 };
+//Admin getAvailableProducts
+const getAvailableProducts = async (req, res) => {
+    try {
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 //Admin addProduct
 
 const addProduct = async (req,res)=>{
     const {name,picture,price,description,seller,ratings,reviews,availableAmount} = req.body;
 
     // Validate input
-    if (!name || !picture || !description  || !price || !availableAmount) {
-        return res.status(400).json({ error: 'Details and prices and available amount fields are required' });
+    if (!name || !picture || !description  || !price ) {
+        return res.status(400).json({ error: 'Details and prices fields are required' });
     }
     try {
         // Checking if the username already exists
@@ -159,4 +168,5 @@ module.exports = {
     getProducts,
     addProduct,
     editProduct,
+    getAvailableProducts
 }

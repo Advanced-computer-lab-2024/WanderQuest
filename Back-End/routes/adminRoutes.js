@@ -6,7 +6,8 @@ const {
     addTourGov,
     addProduct,
     editProduct,
-    getProducts
+    getProducts,
+    getAvailableProducts
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -25,6 +26,9 @@ router.post("/governer", addTourGov)
 
 //Admin getProducts
 router.get("/products",getProducts)
+
+//Admin getAvailableProducts
+router.get('/availableProducts',getAvailableProducts)
 
 //Admin addProduct
 router.post("/addProduct",addProduct)
