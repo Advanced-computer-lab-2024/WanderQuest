@@ -19,7 +19,7 @@ const updateProfile = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-//Admin getProducts
+//seller getProducts
 const getProducts = async (req,res)=>{
     try {
         const products = await ProdModel.find({})
@@ -28,14 +28,23 @@ const getProducts = async (req,res)=>{
         res.status(400).json({ error: error.message })
     }
 };
+//seller getAvailableProducts
+const getAvailableProducts = async (req, res) => {
+    try {
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 //seller addProduct
 
 const addProduct = async (req,res)=>{
     const {name,picture,price,description,seller,ratings,reviews,availableAmount} = req.body;
 
     // Validate input
-    if (!name || !picture || !description  || !price || !availableAmount) {
-        return res.status(400).json({ error: 'Details and prices and available amount fields are required' });
+    if (!name || !picture || !description  || !price) {
+        return res.status(400).json({ error: 'Details and prices fields are required' });
     }
     try {
         // Checking if the username already exists
@@ -68,4 +77,4 @@ const editProduct = async (req,res)=>{
     }
 }
 
-module.exports = { getProfile, updateProfile,getProducts,addProduct,editProduct };
+module.exports = { getProfile, updateProfile,getProducts,addProduct,editProduct,getAvailableProducts };
