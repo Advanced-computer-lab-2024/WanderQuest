@@ -43,7 +43,7 @@ const readActivities = async (req,res) => {
 
     const allActivities = await ActivityModel.find({}).sort({createdAt:-1});
     if (!allActivities.length) {
-        console.log("No activities found for user:", req.user.id); // Debugging statement
+        // console.log("No activities found for user:", req.user.id); // Debugging statement
 
         // Respond with an empty array if no activities are found
         return res.status(200).json([]);
@@ -85,13 +85,23 @@ const updateActivity = async (req,res) => {
 const deleteActivity = async (req,res) => {
   const{ id } = req.params
   if(!mongoose.Types.ObjectId.isValid(id)){
-    return res.status(404).json({error: 'No such workout'})
+    return res.status(404).json({error: 'No such ID'})
 }
 
   try{
-    const deleteAnActivity = await ActivityModel.findByIdAndDelete(id);
-    res.status(200).json({message: 'Activity Deleted',deleteAnActivity});
 
+    const deleteAnActivityD = await ActivityModel.findById(id);
+    if(!deleteAnActivityD){
+        return res.status(200).json({message: 'This activity is not found to be deleted'});
+
+    }
+    const deleteAnActivity = await ActivityModel.findByIdAndDelete(id);
+    if(!deleteActivity){
+        res.status(200).json({message: 'This activity is not found to be deleted'});
+
+    }
+    res.status(200).json({message: 'Successfully Deleted',deleteAnActivity});
+    
   }catch(error){
     res.status(404).json({error: error.message});
   }
