@@ -23,11 +23,11 @@ const updateProfile = async (req, res) => {
 
 //create activity
 const createActivity = async (req,res) => {
-    const {title , date, time, location, price, priceRange, category, tags, specialDiscounts, bookingIsOpen} = req.body;
+    const {title , date, time, location, price, priceRange, category, tags, specialDiscounts, bookingIsOpen,createdBy} = req.body;
     console.log(req.user); // Check if req.user is set
 
     try{
-        const newActivity = await ActivityModel.create({title,date,time,location,price,priceRange,category,tags,specialDiscounts,bookingIsOpen,
+        const newActivity = await ActivityModel.create({title,date,time,location,price,priceRange,category,tags,specialDiscounts,bookingIsOpen,createdBy
             
             });
             res.status(200).json(newActivity);
@@ -96,6 +96,17 @@ const readActivities = async (req,res) => {
     res.status(404).json({error: error.message});
    }
 }
+//get myCreatedActivities
+const myCreatedActivities = async (req,res)=>{
+    const myID = req.query.myID;
+    if(myID){
+        const myActivities = await ActivityModel.find({createdBy: myID});
+        res.status(200).json(myActivities);
+    }else{
+        res.status(400).json({error:'UserID is required'})
+    }
+
+};
 
 
 //Update An Activity
@@ -156,5 +167,5 @@ const getAllAdvertisers = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers,readOneActivity,readOneActivityByName };
+module.exports = { getProfile, updateProfile, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers,readOneActivity,readOneActivityByName,myCreatedActivities };
 

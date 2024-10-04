@@ -6,7 +6,8 @@ const {
      readActivities,
      updateActivity,
      deleteActivity,
-     readOneActivity } 
+     readOneActivity,
+    myCreatedActivities } 
 = require('../controllers/advertiserController');
 
 const router = express.Router()
@@ -16,5 +17,5 @@ router.post('/activity',createActivity);
 router.get('/activities',readActivities);
 router.put('/activity/:id',updateActivity);
 router.delete('/activity/:id',deleteActivity);
-router.get('/activity/:id',readOneActivity)
+
 module.exports = router
