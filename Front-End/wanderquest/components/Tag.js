@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import styles from "/Styles/TagCard.module.css";
 const generateID = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-const TagCard= () => {
+const Tag= () => {
     const [title, setTitle] = useState("");
 
     const idRef = useRef(generateID());
@@ -45,4 +45,4 @@ const TagCard= () => {
   );
 };
 
-export default TagCard;
+export default Tag;
