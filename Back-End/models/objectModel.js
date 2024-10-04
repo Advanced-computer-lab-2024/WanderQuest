@@ -13,6 +13,8 @@ const Tags = mongoose.model('Tags',tagSchema);
 
 
 const placeSchema = new Schema({
+    title:
+    {type:String,required:true},
     description:
     {type:String,required: true},
     pictures:
