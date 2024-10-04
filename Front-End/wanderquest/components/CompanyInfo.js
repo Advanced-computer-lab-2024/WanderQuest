@@ -1,5 +1,6 @@
 "use client"
 import { useState , useEffect } from "react";
+import styles from "../Styles/Profiles.module.css"
 
 const CompanyInfo = ({initialData, OnSubmit}) => {
     const [username,setUsername] = useState('');
@@ -25,8 +26,8 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
 
 
     return(
-        <form className="CompanyProfile">
-            <h3>My profile</h3>
+        <form className={styles.Profile}>
+            <h3 className={styles.h1}>My profile</h3>
             <label>Username: </label>
             <input
                 type="text"
