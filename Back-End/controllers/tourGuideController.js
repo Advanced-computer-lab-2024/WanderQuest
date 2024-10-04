@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'); 
+const { Activity } = require('../models/objectModel');
 const TourGuide = require('../models/userModel').TourGuide;
 const Itinerary =require('../models/objectModel').itinerary;
 
@@ -36,9 +37,18 @@ const createItinerary = async (req,res) => {
         accessibility,
         pickUpLocation,
         dropOffLocation,
+        tags,
         BookingAlreadyMade} = req.body;
     
         try{
+
+            for (const activityId of activities) {
+                const activityFound = await Activity.findById(activityId);
+                if (!activityFound) {
+                    return res.status(404).json({ message: `Activity with ID ${activityId} not found.` });
+                }
+            }
+    
            const newItinerary = await Itinerary.create({
             activities,
             locations,
@@ -51,6 +61,7 @@ const createItinerary = async (req,res) => {
             accessibility,
             pickUpLocation,
             dropOffLocation,
+            tags,
             BookingAlreadyMade
            });
            res.status(200).json(newItinerary);
@@ -63,7 +74,12 @@ const createItinerary = async (req,res) => {
 //Read an itinerary
 const readItinerary = async (req,res) =>{
     try{
-        const itineraries = await Itinerary.find({}).sort({createdAt: -1})
+        const itineraries = await Itinerary.find({})
+                              .populate({
+                                path: 'activities',
+                                model: 'Activity',
+                                select: 'title date time location price priceRange category tags specialDiscounts bookingIsOpen -_id',
+                               }).sort({createdAt: -1});
         res.status(200).json(itineraries);
 
     }catch(error){
@@ -80,7 +96,7 @@ const updateItinerary = async (req,res) => {
     }
 
     try{
-        const updatedItinerary = await Itinerary.findByIdAndUpdate(id,req.body,{new: true});
+        const updatedItinerary = await Itinerary.findByIdAndUpdate(id,req.body,{new: true}).populate('activities');
         if(!updatedItinerary){
             return res.status(404).json({error: 'No such itinerary'});
         }
