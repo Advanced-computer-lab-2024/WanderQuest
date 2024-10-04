@@ -5,7 +5,7 @@ import styles from "/Styles/TagCard.module.css";
 const generateID = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const Tag= () => {
-    const [title, setTitle] = useState("");
+    const [type, setType] = useState(""); 
 
     const idRef = useRef(generateID());
     const id = idRef.current;
@@ -21,11 +21,11 @@ const Tag= () => {
           <div className="tag-card-fields">
             <input
               type="text"
-              id={`title-${id}`}
+              id={`type-${id}`}
               name="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              placeholder="Type"
               className={styles["tag-card-input"]}
               required
             />
@@ -37,7 +37,7 @@ const Tag= () => {
         </form>
       ) : (
         <div className={styles["tag-card-details"]}>
-          <p>{title}</p>
+          <p>{type}</p>
           {/* <p>{id}</p> */}
         </div>
       )}

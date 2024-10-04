@@ -1,61 +1,66 @@
 .tag-card{
-    border: 0.3px solid #ffffff;
-    border-radius: 80px;
-    padding: 16px;
-    max-width: 300px;
-    width: 12%;
-    margin: 16px auto;
-    /* box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1); */
-    background-color: rgba(100,100,100,0.3);
-    
+  border: 0.3px solid #ffffff;
+  border-radius: 20px;
+  padding: 16px;
+  max-width: 240px;
+  width: 100%; 
+  margin: 14px auto;
+  background-color: rgba(100,100,100,0.3);
+  
   }
 .tag-card-form{
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    place-items:inherit;
   }
   
 .tag-card-fields {
     margin-bottom: 8px;
+    width: 100%;
+
   }
   
 .tag-card-label {
-    margin-bottom: 4px;
-    display: block;
-    font-weight: bold;
-    color : #f9f9f9;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  width: 100%; 
+  box-sizing: border-box;
   }
   
 .tag-card-input {
-    padding: 8px;
-    margin-bottom: 8px;
-    border-radius: 4px;
-    /* border: 10px solid #17455c; */
-    width: 60%;
-    box-sizing: border-box;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  width: 100%; /* Take full width within the form */
+  box-sizing: border-box;
+  
   }
   
 .tag-card-button {
-    padding: 10px 16px;
-    border-radius: 4px;
-    border: none;
-    background-color: #11c443;
-    color: #ffffff;
-    font-weight: bold;
-    cursor:auto;
-    transition: background-color 0.1s ease;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: none;
+  background-color: #11c443;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  text-align: center;
+  margin:auto;
   }
 .tag-card-button:hover {
-    background-color: #2eb00a;
+    background-color: #269109;
+    color:#ffffff;
   }
   
 .tag-card-details {
-    line-height: 1.6;
-    color:#ffffff;
-    width: 50%;
+  line-height: 1.6;
+  color: #ffffff;
+  text-align: center; 
+  width: 100%;
   }
   
 .tag-card-details p {
-    margin: 8px 0;
-    display:initial;
+    margin: auto;
   }
   
