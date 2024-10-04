@@ -1,5 +1,6 @@
 "use client"
 import { useState , useEffect } from "react";
+import styles from "../Styles//Profiles.module.css"
 
 const TouristInfo = ({initialData, OnSubmit}) => {
     const [username,setUsername] = useState('');
@@ -8,6 +9,7 @@ const TouristInfo = ({initialData, OnSubmit}) => {
     const [nationality, setNationality] = useState('');
     const [dob, setDob] = useState('');
     const [occupation, setOccupation] = useState('');
+    const [wallet,setWallet] = useState('');
 
     useEffect(() => {
         if (initialData) {
@@ -17,6 +19,7 @@ const TouristInfo = ({initialData, OnSubmit}) => {
             setNationality(initialData.nationality || '');
             setDob(initialData.dob || '');
             setOccupation(initialData.occupation || '');
+            setWallet(initialData.wallet || '');
         }
     }, [initialData]);
 
@@ -65,6 +68,13 @@ const TouristInfo = ({initialData, OnSubmit}) => {
             <input
                 type="text"
                 value={occupation}
+                required           
+            />
+
+            <label>Wallet: </label>
+            <input
+                type="number"
+                value={wallet}
                 required           
             />
             
