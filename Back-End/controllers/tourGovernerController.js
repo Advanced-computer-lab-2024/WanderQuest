@@ -65,7 +65,7 @@ const deletePlace = async (req,res)=>{
         }
     }
 
-}
+};
 
 // tourism Governor getAllTags
 const getAllTags = async (req, res) => {
