@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
-import styles from '/Styles/PreferenceTags.module.css';
-const PrefTag = () => {
+import styles from '/Styles/ActivityCategory.module.css';
+const ActivityCategory = () => {
   const [tags, setTags] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isEditing, setIsEditing] = useState(false); // To track whether a tag is being edited
@@ -38,27 +38,27 @@ const PrefTag = () => {
   };
 
   return (
-    <div className={styles["pref-card"]}>
-      <form onSubmit={addOrUpdateTag} className={styles["perf-card-form"]}>
+    <div className={styles["cat-card"]}>
+      <form onSubmit={addOrUpdateTag} className={styles["cat-card-form"]}>
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className={styles["tag-card-input"]}
-          placeholder="Add or edit a preference"
+          className={styles["cat-card-input"]}
+          placeholder="Add or edit a category"
         />
-        <button type="submit" className={styles["pref-card-button"]}>
+        <button type="submit" className={styles["cat-card-button"]}>
           {isEditing ? 'Update Tag' : 'Add Tag'}
         </button>
       </form>
       
-      <div className={styles["pref-display"]}>
+      <div className={styles["cat-display"]}>
         {tags.map((tag, index) => (
-          <div key={index} className={styles["pref"]}>
+          <div key={index} className={styles["cat"]}>
             <p>{tag}</p>
-            <div className={styles["pref-buttons"]}>
-              <button onClick={() => editTag(index)} className={styles["edit-pref"]}>✎</button>
-              <button onClick={() => removeTag(tag)} className={styles["remove-pref"]}>×</button>
+            <div className={styles["cat-buttons"]}>
+              <button onClick={() => editTag(index)} className={styles["edit-cat"]}>✎</button>
+              <button onClick={() => removeTag(tag)} className={styles["remove-cat"]}>×</button>
             </div>
           </div>
         ))}
@@ -67,4 +67,4 @@ const PrefTag = () => {
   );
 };
 
-export default PrefTag;
+export default ActivityCategory;

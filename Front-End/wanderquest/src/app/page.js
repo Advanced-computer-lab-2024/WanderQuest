@@ -3,10 +3,11 @@ import styles from "./page.module.css";
 import Navbar from "../../components/Navbar";
 import Activities from "../../components/Activities";
 import Itineraries from "../../components/Itineraries";
+import ActivityCategory from "../../components/ActivityCategory";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-
+<ActivityCategory/>
     <div className={styles.container}>
       <div className={styles.content}>
         <Activities></Activities>
