@@ -84,6 +84,33 @@ const createItinerary = async (req,res) => {
             res.status(404).json({error: error.message});
         }
 }
+//read one itinerary
+const readItineraryById = async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid itinerary ID format' });
+    }
+
+    try {
+        const itinerary = await Itinerary.findById(id).populate({
+            path: 'activities',
+            model: 'Activity',
+            select: 'title date time location price priceRange category tags specialDiscounts bookingIsOpen -_id',
+        });
+
+        // If itinerary is not found, return an error
+        if (!itinerary) {
+            return res.status(404).json({ error: 'Itinerary not found' });
+        }
+
+        res.status(200).json(itinerary);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+//read itinerary by name
 
 //Read an itinerary
 const readItinerary = async (req,res) =>{
@@ -94,6 +121,12 @@ const readItinerary = async (req,res) =>{
                                 model: 'Activity',
                                 select: 'title date time location price priceRange category tags specialDiscounts bookingIsOpen -_id',
                                }).sort({createdAt: -1});
+        if (!itineraries.length) {
+        // Debugging statement
+
+        // Respond with an empty array if no activities are found
+        return res.status(200).json({message: 'No itineraries found'});
+        }
         res.status(200).json(itineraries);
 
     }catch(error){
@@ -145,4 +178,4 @@ const deleteItinerary = async (req,res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile,createItinerary,readItinerary,updateItinerary,deleteItinerary,myCreatedItineraries };
+module.exports = { getProfile, updateProfile,createItinerary,readItinerary,updateItinerary,deleteItinerary,readItineraryById,myCreatedItineraries };

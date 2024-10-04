@@ -1,0 +1,86 @@
+/* General Form Styling */
+.Registration {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto; 
+    margin-top: 100px;
+    padding: 30px;
+    background-color: #f9f9f9; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: Arial, sans-serif;
+}
+.Registration input[type="text"],
+.Registration input[type="password"],  /* Ensure password inputs are styled the same */
+.Registration input[type="date"],
+.Registration select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    box-sizing: border-box; /* Ensures padding doesn't affect the element's width */
+}
+
+/* Style for form labels */
+.Registration label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #122c34; 
+}
+
+
+
+
+
+.Registration button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #042335; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.Registration button[type="submit"]:hover {
+    background-color: #1a6187; 
+}
+
+
+.Registration select {
+    margin-bottom: 25px; 
+}
+
+.Registration input[type="date"] {
+    margin-bottom: 15px; 
+}
+
+
+.h1 {
+    text-align: center;
+    color: #17455c;
+    margin-bottom: 40px;
+}
+
+.error {
+    color: red; 
+    margin-top: 10px; 
+    font-size: 14px; 
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 600px) {
+    .Registration {
+        padding: 15px;
+    }
+
+    .Registration button[type="submit"] {
+        font-size: 14px;
+    }
+}

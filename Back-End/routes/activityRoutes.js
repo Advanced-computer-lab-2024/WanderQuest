@@ -6,6 +6,7 @@ const {
      readActivities,
      updateActivity,
      deleteActivity,
+     readOneActivity,
     myCreatedActivities } 
 = require('../controllers/advertiserController');
 
@@ -16,5 +17,5 @@ router.post('/activity',createActivity);
 router.get('/activities',readActivities);
 router.put('/activity/:id',updateActivity);
 router.delete('/activity/:id',deleteActivity);
-router.get('/myActivities',myCreatedActivities);
+
 module.exports = router

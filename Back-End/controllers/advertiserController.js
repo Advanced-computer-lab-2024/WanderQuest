@@ -35,7 +35,45 @@ const createActivity = async (req,res) => {
         res.status(400).json({error: error.message});
     }
 }
+//Read one activity by id/name
+// Read a single activity by ID
+const readOneActivity = async (req, res) => {
+    const { id } = req.params;
 
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid activity ID' });
+    }
+
+    try {
+        
+        const activity = await ActivityModel.findById(id);
+        
+        if (!activity) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+
+        res.status(200).json(activity);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+//read one activity by name
+
+const readOneActivityByName = async (req, res) => {
+    const { name } = req.params;
+
+    try {
+        const activity = await ActivityModel.findOne({ title: name });
+        if (!activity) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+        res.status(200).json(activity);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 //Read the activity    ????sure without body?????????????????????
 const readActivities = async (req,res) => {
@@ -43,12 +81,12 @@ const readActivities = async (req,res) => {
 
     const allActivities = await ActivityModel.find({}).sort({createdAt:-1});
     if (!allActivities.length) {
-        // console.log("No activities found for user:", req.user.id); // Debugging statement
+        // Debugging statement
 
         // Respond with an empty array if no activities are found
-        return res.status(200).json([]);
+        return res.status(200).json({message: 'No activities found'});
     }
-    
+
     console.log("Activities found:", allActivities); // Debugging statement
 
     res.status(200).json(allActivities);
@@ -129,5 +167,5 @@ const getAllAdvertisers = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers,myCreatedActivities };
+module.exports = { getProfile, updateProfile, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers,readOneActivity,readOneActivityByName,myCreatedActivities };
 
