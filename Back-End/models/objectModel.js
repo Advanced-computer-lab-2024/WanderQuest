@@ -72,6 +72,15 @@ const activitySchema = new Schema({
     
 },{timestamps: true});
 
+// Virtual property to format the date without the time zone
+activitySchema.virtual('formattedDate').get(function() {
+    return this.date.toISOString().split('T')[0];
+});
+
+// Ensure virtual fields are serialized
+activitySchema.set('toJSON', { virtuals: true });
+activitySchema.set('toObject', { virtuals: true });
+
 const Activity = mongoose.model('Activity' ,activitySchema);
 
 //itinerary Schema
