@@ -13,6 +13,18 @@ const getProfile = async (req, res) => {
     }
 };
 
+//myCreatedItineraries
+const myCreatedItineraries = async (req,res)=>{
+    const myID = req.query.myID;
+    if(myID){
+        const myItineraries = await Itinerary.find({createdBy: myID});
+        res.status(200).json(myItineraries);
+    }else{
+        res.status(400).json({error:'UserID is required'})
+    }
+
+};
+
 const updateProfile = async (req, res) => {
     try {
         const updatedTourGuide = await TourGuide.findByIdAndUpdate(req.user.id, req.body, { new: true });
@@ -38,7 +50,8 @@ const createItinerary = async (req,res) => {
         pickUpLocation,
         dropOffLocation,
         tags,
-        BookingAlreadyMade} = req.body;
+        BookingAlreadyMade,
+        createdBy} = req.body;
     
         try{
 
@@ -62,7 +75,8 @@ const createItinerary = async (req,res) => {
             pickUpLocation,
             dropOffLocation,
             tags,
-            BookingAlreadyMade
+            BookingAlreadyMade,
+            createdBy
            });
            res.status(200).json(newItinerary);
         }catch(error){
@@ -131,4 +145,4 @@ const deleteItinerary = async (req,res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile,createItinerary,readItinerary,updateItinerary,deleteItinerary };
+module.exports = { getProfile, updateProfile,createItinerary,readItinerary,updateItinerary,deleteItinerary,myCreatedItineraries };

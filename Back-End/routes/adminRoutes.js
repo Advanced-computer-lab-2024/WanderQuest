@@ -26,7 +26,7 @@ router.delete("/delete/:id", deleteAccount)
 router.post("/", addAdmin)
 
 // Add Tourism Governer
-router.post("/governer", addTourGov)
+router.post("/governor", addTourGov)
 
 //Admin getProducts
 router.get("/products",getProducts)
