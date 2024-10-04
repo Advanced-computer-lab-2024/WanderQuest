@@ -3,6 +3,7 @@ const { User } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const ProdModel = require('../models/objectModel').Product; 
 const CategoryModel = require('../models/objectModel').ActivityCategory; 
+const TagModel = require('../models/objectModel').PrefTag;
 const mongoose = require('mongoose');
 
 // Get all admins
@@ -216,7 +217,67 @@ const addTourGov = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 };
+//admin getAllTags
+const getAllTags = async (req, res) => {
+    try {
+        const tags = await TagModel.find({});
+        res.status(200).json(tags);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
+// admin createTag
+const createTag = async (req, res) => {
+    const { type } = req.body;
+
+    if (!type) {
+        return res.status(400).json({ error: 'Type is required' });
+    }
+    if (!(type.toLowerCase() === "historic areas"|| "beaches"|| "family-friendly"|| "shopping"|| "budget-friendly")){
+        return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["historic areas", "beaches", "family-friendly", "shopping", "budget-friendly"]});
+    }else{
+
+    try {
+        const existingTag = await TagModel.findOne({ type}); // Correct model usage
+        if (existingTag) {
+            return res.status(400).json({ error: 'Tag already exists' });
+        }
+
+        const newTag = await TagModel.create({ type });
+        res.status(200).json(newTag);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }}
+};
+const updateTag = async (req,res)=>{
+    const { id} = req.params;
+    let updatedTag = await TagModel.findById(id);
+    if(!updatedTag){
+        res.status(400).json({error:'Place not found'})
+    }else{
+        try {
+            updatedTag = await TagModel.findByIdAndUpdate(id,req.body)
+            res.status(200).json(updatedTag);
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+};
+const deleteTag = async (req,res)=>{
+    const { id} = req.params;
+    let deletedTag = await TagModel.findById(id);
+    if(!deletedTag){
+        res.status(400).json({error:'Place not found'})
+    }else{
+        try {
+            deletedTag = await TagModel.findByIdAndDelete(id,req.body)
+            res.status(200).json({message:'Tag was Deleted',deletedTag});
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+};
 
 module.exports = {
     getAllAdmins,
@@ -230,5 +291,9 @@ module.exports = {
     addCategory,
     editCategory,
     getCategories,
-    deleteCategory
+    deleteCategory,
+    getAllTags,
+    createTag,
+    updateTag,
+    deleteTag
 }

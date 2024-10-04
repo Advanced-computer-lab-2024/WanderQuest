@@ -10,7 +10,11 @@ const tagSchema = new Schema
     type:{type:String,required:true}
 });
 const Tags = mongoose.model('Tags',tagSchema);
-
+const PreferencedTagSchema = new Schema
+({// for the tags to be created independantly from the places
+    type:{type:String,required:true}
+});
+const PrefTag = mongoose.model('Preference Tags',PreferencedTagSchema);
 
 const placeSchema = new Schema({
     title:
@@ -122,4 +126,4 @@ const itinerarySchema = new mongoose.Schema({
 
 const itinerary = mongoose.model('itinerary',itinerarySchema);
 
-module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory}
+module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag}
