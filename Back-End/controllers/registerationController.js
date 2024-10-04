@@ -11,7 +11,7 @@ const createToken = (_id) => {
     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '3d' });
 }
 
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
     const { username, email, password, role } = req.body;
 
     try {
@@ -42,3 +42,5 @@ exports.registerUser = async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 }
+
+module.exports = { registerUser };

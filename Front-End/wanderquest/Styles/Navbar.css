@@ -1,4 +1,62 @@
-h1{
-    text-align: center;
-    color: blue;
+body {
+    font-size: 20px;
+    margin: 0; /* Remove default margin */
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between; /* Space out items to left, center, and right */
+    align-items: center;
+    height: 60px;
+    background-color: white;
+    padding: 0 20px; /* Add padding to the sides */
+}
+
+.navbar-middleside {
+    display: flex;
+    justify-content: center; /* Center the middle buttons */
+    flex-grow: 1; /* Allow this section to grow and take available space */
+}
+
+.navbar-leftside {
+    display: flex; /* Use flex to position logo */
+    align-items: center; /* Center logo vertically */
+}
+
+.navbar-rightside {
+    display: flex; /* Use flex for right side */
+    align-items: center; /* Center the signup button vertically */
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    min-width: 120px;
+    cursor: pointer; /* Change cursor to pointer */
+    margin: 0 10px; /* Add some horizontal margin for spacing */
+}
+
+button:hover {
+    color: #1a6187; /* Hover effect */
+}
+
+.navbar-logo {
+    width: 80px; /* Adjust width as needed for larger size */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover;
+}
+
+.navbar-signup {
+    border-radius: 30px;
+    background-color: #042335;
+    color: white;
+    padding: 10px 20px; /* Add padding to the button */
+    font-size: 20px;
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.navbar-signup:hover {
+    background-color: #031A29;
+    color: #ffffff; 
 }

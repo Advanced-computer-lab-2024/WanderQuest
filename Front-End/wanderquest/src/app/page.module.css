@@ -1,0 +1,17 @@
+.container {
+    position: relative;
+    height: 100vh; /* Make the container full height of the viewport */
+    overflow: hidden; /* Prevent content overflow */
+    background-image: url('/wallpaper.jpg'); /* Set your background image */
+    background-size: cover; /* Make the image cover the entire container */
+    background-position: center; /* Center the image to focus on the middle part */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    z-index: -1; /* Send the image behind other content */
+}
+
+.content {
+    position: relative; /* Keep the content on top of the background */
+    z-index: 1; /* Ensure content is above the background */
+    text-align: center; /* Center the text */
+    color: white; /* Change text color for visibility */
+}

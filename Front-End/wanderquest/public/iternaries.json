@@ -1,0 +1,79 @@
+{
+    "itineraries": [
+      {
+        "title": "Paris City Tour",
+        "activities": [
+          {
+            "name": "Visit the Eiffel Tower",
+            "location": {
+              "name": "Eiffel Tower",
+              "google_maps_link": "https://maps.google.com/?q=Eiffel+Tower"
+            },
+            "timeline": "10:00 AM - 12:00 PM",
+            "duration": "2 hours",
+            "language": "English",
+            "price": {
+              "fixed": 50
+            },
+            "available_dates": ["2024-10-05", "2024-10-06", "2024-10-07"],
+            "accessibility": "Wheelchair accessible",
+            "pickup_dropoff": "Pick up from your hotel"
+          },
+          {
+            "name": "Seine River Cruise",
+            "location": {
+              "name": "Seine River",
+              "google_maps_link": "https://maps.google.com/?q=Seine+River"
+            },
+            "timeline": "1:00 PM - 2:00 PM",
+            "duration": "1 hour",
+            "language": "English, French",
+            "price": {
+              "fixed": 30
+            },
+            "available_dates": ["2024-10-05", "2024-10-06"],
+            "accessibility": "Limited accessibility",
+            "pickup_dropoff": "Drop off at central location"
+          }
+        ]
+      },
+      {
+        "title": "Cultural Day in Paris",
+        "activities": [
+          {
+            "name": "Visit the Louvre Museum",
+            "location": {
+              "name": "Louvre Museum",
+              "google_maps_link": "https://maps.google.com/?q=Louvre+Museum"
+            },
+            "timeline": "9:00 AM - 11:30 AM",
+            "duration": "2.5 hours",
+            "language": "English, Spanish",
+            "price": {
+              "fixed": 25
+            },
+            "available_dates": ["2024-10-08", "2024-10-09"],
+            "accessibility": "Fully accessible",
+            "pickup_dropoff": "Pick up from designated points"
+          },
+          {
+            "name": "Montmartre Walking Tour",
+            "location": {
+              "name": "Montmartre",
+              "google_maps_link": "https://maps.google.com/?q=Montmartre"
+            },
+            "timeline": "2:00 PM - 4:00 PM",
+            "duration": "2 hours",
+            "language": "English",
+            "price": {
+              "fixed": 20
+            },
+            "available_dates": ["2024-10-08", "2024-10-09"],
+            "accessibility": "Not wheelchair accessible",
+            "pickup_dropoff": "Meet at the Moulin Rouge"
+          }
+        ]
+      }
+    ]
+  }
+  

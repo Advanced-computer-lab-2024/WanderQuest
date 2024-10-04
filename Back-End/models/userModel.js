@@ -60,6 +60,7 @@ const TouristSchema = new Schema({
     mobileNumber: { type: String, required: true },
     dob: { type: Date, required: true },
     job: { type: String, required: true },
+    wallet: { type: Number, default: 0 },
 });
 
 // override the signup method
@@ -124,6 +125,7 @@ const SellerSchema = new Schema({
 const Seller = User.discriminator('seller', SellerSchema);
 
 module.exports = {
+    User,
     Tourist,
     TourGuide,
     Advertiser,
