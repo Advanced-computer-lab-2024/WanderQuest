@@ -9,7 +9,9 @@ const {
      readActivities,
      updateActivity,
      deleteActivity,
-    myCreatedActivities } 
+    myCreatedActivities,
+    readOneActivity,
+    readOneActivityByName } 
 = require('../controllers/advertiserController');
 const router = express.Router();
 
@@ -17,6 +19,7 @@ const router = express.Router();
 router.use(requireAuth);
 
 // routes
+router.get('/activity/:id',readOneActivity);
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.get('/allAdvertisers', getAllAdvertisers);
