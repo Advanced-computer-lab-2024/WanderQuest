@@ -1,0 +1,72 @@
+"use client"
+import { useState , useEffect } from "react";
+
+const TourGuideInfo = ({initialData, OnSubmit}) => {
+    const [email, setEmail] = useState('mariam ');
+    const [username, setUsername] = useState('mariam');
+    const [mobileNo, setMobileNo] = useState('');
+    const [yearsOfExperience, setYearsOfExperience] = useState('');
+    const [previousWork, setPreviousWork] = useState('');
+
+
+    useEffect(() => {
+        if (initialData) {
+            setUsername(initialData.username || '');
+            setEmail(initialData.email || '');
+            setMobileNo(initialData.mobileNo || '');
+            setYearsOfExperience(initialData.yearsOfExperience || '');
+            setPreviousWork(initialData.previousWork || '');
+        }
+    }, [initialData]);
+
+
+
+    return(
+        <form className="TourGuideProfile">
+            <h3>My profile</h3>
+            <label>Username: </label>
+            <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+            />
+
+            <label>Email: </label>
+            <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+            />
+
+            <label>Mobile Number: </label>
+            <input
+                type="text"
+                value={mobileNo}
+                onChange={(e) => setMobileNo(e.target.value)}
+                required
+            />
+
+            <label>Years of Experience:</label>
+            <input
+                type="number"
+                value={yearsOfExperience}
+                onChange={(e) => setYearsOfExperience(e.target.value)}
+                required
+            />
+
+            <label>Previous Work:</label>
+            <input
+                type="text"
+                value={previousWork}
+                onChange={(e) => setPreviousWork(e.target.value)}
+            />
+
+            <button>Save Changes</button>
+
+        </form>
+
+    )
+}
+export default TourGuideInfo

@@ -19,7 +19,9 @@ const Navbar = () => {
                 <button>Historical Places</button>
             </div>
             <div className='navbar-rightside'>
-                <button className='navbar-signup'>Signup</button>
+            <Link href="/register">
+               <button className='navbar-signup'>Signup</button>
+            </Link>
             </div>
         </div>
     );
