@@ -2,8 +2,8 @@
 import { useState , useEffect } from "react";
 
 const TourGuideInfo = ({initialData, OnSubmit}) => {
-    const [email, setEmail] = useState('mariam ');
-    const [username, setUsername] = useState('mariam');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [mobileNo, setMobileNo] = useState('');
     const [yearsOfExperience, setYearsOfExperience] = useState('');
     const [previousWork, setPreviousWork] = useState('');
@@ -28,7 +28,6 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
             <input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
                 required
             />
 
@@ -36,7 +35,6 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
             <input
                 type="text"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
             />
 
@@ -44,8 +42,7 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
             <input
                 type="text"
                 value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
-                required
+                onChange={(e) => setMobileNo(e.target.value)}            
             />
 
             <label>Years of Experience:</label>
@@ -53,7 +50,6 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
                 type="number"
                 value={yearsOfExperience}
                 onChange={(e) => setYearsOfExperience(e.target.value)}
-                required
             />
 
             <label>Previous Work:</label>
