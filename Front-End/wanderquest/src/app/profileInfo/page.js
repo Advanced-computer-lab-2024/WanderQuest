@@ -6,35 +6,37 @@ import SellerInfo from "../../../components/SellerInfo";
 import TouristInfo from "../../../components/TouristInfo";
 import Navbar from "../../../components/Navbar";
 
+
 const ProfileInfo = () => {
   const [userType, setUserType] = useState('');
 
-  useEffect(() => {
-    // Function to fetch user profile information from the backend
-    const fetchUserProfile = async () => {
-        try {
-            const response = await fetch('/api/user/profile'); // Adjust the endpoint as needed
-            const data = await response.json();
+  // useEffect(() => {
+  //   // Function to fetch user profile information from the backend
+  //   const fetchUserProfile = async () => {
+  //       try {
+  //           const response = await fetch('/api/user/profile'); // Adjust the endpoint as needed
+  //           const data = await response.json();
             
-            // Assuming your backend returns an object with a userType field
-            setUserType(data.userType);
-        } catch (error) {
-            console.error('Error fetching user profile:', error);
-        }
-    };
+  //           // Assuming your backend returns an object with a userType field
+  //           setUserType(data.userType);
+  //       } catch (error) {
+  //           console.error('Error fetching user profile:', error);
+  //       }
+  //   };
 
-    fetchUserProfile();
-  }, []);
+  //   fetchUserProfile();
+  // }, []);
   return (
     <div>
         <Navbar />
         <div>
-            {/* Conditionally render components based on userType */}
-            {userType === 'TourGuide' && <TourGuideInfo />}
+            
+            {/* {userType === 'TourGuide' && <TourGuideInfo />}
             {userType === 'Company' && <CompanyInfo />}
             {userType === 'Seller' && <SellerInfo />}
             {userType === 'Tourist' && <TouristInfo />}
-            {userType === '' && <p>Loading profile...</p>}
+            {userType === '' && <p>Loading profile...</p>} */}
+            <CompanyInfo/>
         </div>
     </div>
   );

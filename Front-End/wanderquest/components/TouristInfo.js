@@ -1,6 +1,6 @@
 "use client"
 import { useState , useEffect } from "react";
-import styles from "../Styles//Profiles.module.css"
+import styles from "../Styles/Profiles.module.css"
 
 const TouristInfo = ({initialData, OnSubmit}) => {
     const [username,setUsername] = useState('');
@@ -24,25 +24,16 @@ const TouristInfo = ({initialData, OnSubmit}) => {
     }, [initialData]);
 
     return(
-        <form className="TouristProfile">
-            <h3>My profile</h3>
+        <form className={styles.Profile}>
+            <h3 className={styles.h1}>My profile</h3>
             <label>Username: </label>
-            <input
-                type="text"
-                value={username}
-                required
-            />
+            <input type="text" value={username} required readOnly/>
 
             <label>Email: </label>
-            <input
-                type="text"
-                value={email}
-                required
-            />
+            <input type="text" value={email} required readOnly/>
 
             <label>Mobile Number:</label>
-            <input
-                type="text"
+            <input type="text"
                 value={mobileNo}
                 onChange={(e) => setMobileNo(e.target.value)}
                 required
@@ -57,26 +48,19 @@ const TouristInfo = ({initialData, OnSubmit}) => {
             />
 
             <label>Date of Birth:</label>
-            <input
-                type="date"
-                value={dob}
-                required
-            />
+            <input type="date" value={dob} required readOnly/>
 
 
             <label>Occupation: </label>
             <input
                 type="text"
                 value={occupation}
-                required           
+                required
+                onChange={(e) => setOccupation(e.target.value)}           
             />
 
             <label>Wallet: </label>
-            <input
-                type="number"
-                value={wallet}
-                required           
-            />
+            <input type="number" value={wallet} required readOnly/>
             
             <button>Save Changes</button>
 
