@@ -8,7 +8,7 @@ import Tag from "../../components/Tag";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-<Tag/>
+<ActivityCategory/>
     <div className={styles.container}>
       <div className={styles.content}>
         <Activities></Activities>
