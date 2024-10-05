@@ -1,6 +1,8 @@
 const mongoose = require('mongoose'); // Add this line at the top of your file
 const Advertiser = require('../models/userModel').Advertiser;
 const ActivityModel = require('../models/objectModel').Activity;
+const TagModel = require('../models/objectModel').PrefTag;
+const CategoryModel = require('../models/objectModel').ActivityCategory;
 
 // functions
 const getProfile = async (req, res) => {
@@ -22,18 +24,39 @@ const updateProfile = async (req, res) => {
 };
 
 //create activity
-const createActivity = async (req, res) => {
-    const { title, date, time, location, price, priceRange, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
+const createActivity = async (req,res) => {
+    const {title , date, time, location, price, priceRange,ratings, category, tags, specialDiscounts, bookingIsOpen,createdBy} = req.body;
     console.log(req.user); // Check if req.user is set
+    // If tags are provided, check if all tags exist in the TagModel
+    // If tags are provided, check if all tags exist in the TagModel
+    if (tags && tags.length > 0) {
+        // Extract the types of the tags from the request
+        const tagTypes = tags.map(tag => tag.type);
 
-    try {
-        const newActivity = await ActivityModel.create({
-            title, date, time, location, price, priceRange, category, tags, specialDiscounts, bookingIsOpen, createdBy
+        // Fetch existing tags from the database
+        const existingTags = await TagModel.find({ type: { $in: tagTypes } });
 
-        });
-        res.status(200).json(newActivity);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+        // Create an array of existing tag types for comparison
+        const existingTagTypes = existingTags.map(tag => tag.type.toLowerCase);
+
+        // Check if every tag in the request exists in the existing tags
+        const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type.toLowerCase));
+
+        if (!allTagsExist) {
+            return res.status(400).json({ error: 'Some tags do not exist' });
+        }
+    }
+    const existingCategory = await CategoryModel.findOne({ category: category }); // Adjust the field name as necessary
+    if (!existingCategory) {
+        return res.status(400).json({ error: 'Category does not exist' });
+    }
+    try{
+        const newActivity = await ActivityModel.create({title,date,time,location,price,priceRange,ratings,category,tags,specialDiscounts,bookingIsOpen,createdBy
+            
+            });
+            res.status(200).json(newActivity);
+    }catch(error){
+        res.status(400).json({error: error.message});
     }
 }
 //Read one activity by id/name

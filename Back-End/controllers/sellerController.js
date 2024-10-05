@@ -37,10 +37,10 @@ const getAvailableProducts = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-//seller addProduct
 
+//seller addProduct
 const addProduct = async (req,res)=>{
-    const {name,picture,price,description,seller,ratings,reviews,availableAmount} = req.body;
+    const {name,picture,price,description,seller,ratings,rating,reviews,availableAmount} = req.body;
 
     // Validate input
     if (!name || !picture || !description  || !price) {
@@ -54,7 +54,7 @@ const addProduct = async (req,res)=>{
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({name,picture,price,description,seller,ratings,reviews,availableAmount})
+        const product = await ProdModel.create({name,picture,price,description,seller,ratings,rating,reviews,availableAmount})
         res.status(200).json(product)
 
     } catch (error) {
