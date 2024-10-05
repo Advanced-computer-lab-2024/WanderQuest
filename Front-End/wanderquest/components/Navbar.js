@@ -26,6 +26,10 @@ const Navbar = () => {
                <button className='navbar-profile'>Profile</button>
             </Link>
 
+            <Link href="/admin">
+               <button className='admin'>Admin</button>
+            </Link>
+
             </div>
         </div>
     );
