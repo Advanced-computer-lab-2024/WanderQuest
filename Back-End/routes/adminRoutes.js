@@ -71,4 +71,5 @@ router.patch('/editTag/:id',updateTag)
 
 //Admin deleteTag
 router.delete('/deleteTag/:id',deleteTag)
+
 module.exports = router

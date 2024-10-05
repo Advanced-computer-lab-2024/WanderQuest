@@ -7,7 +7,8 @@ const CategoryModel = require('../models/objectModel').ActivityCategory;
 // functions
 const getProfile = async (req, res) => {
     try {
-        const advertiser = await Advertiser.findById(req.user.id);
+        
+        const advertiser = await Advertiser.findById(id);
         res.json(advertiser);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -16,7 +17,8 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const updatedAdvertiser = await Advertiser.findByIdAndUpdate(req.user.id, req.body, { new: true });
+        const { id } = req.params;
+        const updatedAdvertiser = await Advertiser.findByIdAndUpdate(id, req.body, { new: true });
         res.json(updatedAdvertiser);
     } catch (err) {
         res.status(500).json({ error: err.message });
