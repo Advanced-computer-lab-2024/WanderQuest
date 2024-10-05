@@ -42,22 +42,26 @@
 .cat-display {
     margin-top: 16px;
 }
-
 .cat {
-    display: inline-flex; /* Make the tag display inline with the buttons */
-    align-items: center;  /* Align items vertically */
+    display: flex;
+    align-items: center;
     background-color: #ffffff;
     border-radius: 16px;
     padding: 4px 10px;
     margin: 4px;
     font-size: 14px;
     color: #333;
+    max-width: 100%; /* Ensure the tag doesn't overflow */
+    word-wrap: break-word; /* Wrap long words */
 }
 
 .cat p {
     margin: 0;
     padding: 0 8px;
+    word-break: break-word; /* Break long words */
+    max-width: 100%; /* Constrain to the card */
 }
+
 
 .cat-buttons {
     display: grid; /* Align buttons in a row */

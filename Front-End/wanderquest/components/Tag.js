@@ -1,11 +1,12 @@
 'use client'
-import { Html } from "next/document";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "/Styles/TagCard.module.css";
 const generateID = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const Tag= () => {
     const [type, setType] = useState(""); 
+
+    //const useEffect
 
     const idRef = useRef(generateID());
     const id = idRef.current;
