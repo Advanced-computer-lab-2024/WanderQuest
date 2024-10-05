@@ -50,6 +50,7 @@ const ActivityCategory = () => {
         <button type="submit" className={styles["cat-card-button"]}>
           {isEditing ? 'Update Tag' : 'Add Tag'}
         </button>
+        <button>view all</button>
       </form>
       
       <div className={styles["cat-display"]}>
