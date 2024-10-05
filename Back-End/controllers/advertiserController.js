@@ -8,7 +8,7 @@ const CategoryModel = require('../models/objectModel').ActivityCategory;
 const getProfile = async (req, res) => {
     try {
         const advertiser = await Advertiser.findById(req.params.id);
-        res.json({ advertiser, role: req.user.role });
+        res.json({ advertiser });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -24,8 +24,8 @@ const updateProfile = async (req, res) => {
 };
 
 //create activity
-const createActivity = async (req,res) => {
-    const {title , date, time, location, price, priceRange,ratings, category, tags, specialDiscounts, bookingIsOpen,createdBy} = req.body;
+const createActivity = async (req, res) => {
+    const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
     console.log(req.user); // Check if req.user is set
     // If tags are provided, check if all tags exist in the TagModel
     // If tags are provided, check if all tags exist in the TagModel
@@ -50,13 +50,14 @@ const createActivity = async (req,res) => {
     if (!existingCategory) {
         return res.status(400).json({ error: 'Category does not exist' });
     }
-    try{
-        const newActivity = await ActivityModel.create({title,date,time,location,price,priceRange,ratings,category,tags,specialDiscounts,bookingIsOpen,createdBy
-            
-            });
-            res.status(200).json(newActivity);
-    }catch(error){
-        res.status(400).json({error: error.message});
+    try {
+        const newActivity = await ActivityModel.create({
+            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy
+
+        });
+        res.status(200).json(newActivity);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 }
 //Read one activity by id/name
