@@ -12,6 +12,26 @@ const getAllPlaces = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+//tourism Governor getPlaceById
+const getPlaceById = async(req,res)=>{
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid Place ID' });
+    }
+
+    try {
+        
+        const place = await PlaceModel.findById(id);
+        
+        if (!place) {
+            return res.status(404).json({ message: 'Place not found' });
+        }
+
+        res.status(200).json(place);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 // tourism Governor add Place
 const addPlace = async (req, res) => {
@@ -20,7 +40,24 @@ const addPlace = async (req, res) => {
     if (!title||!description || !pictures || !location || !openingHours || !ticketPrices) {
         return res.status(400).json({ error: 'Field is required' });
     }
+    // If tags are provided, check if all tags exist in the TagModel
+    // If tags are provided, check if all tags exist in the TagModel
+    if (tags && tags.length > 0) {
+        // Extract the types of the tags from the request
+        const tagTypes = tags.map(tag => tag.type);
 
+        // Fetch existing tags from the database
+        const existingTags = await TagModel.find({ type: { $in: tagTypes } });
+
+        // Create an array of existing tag types for comparison
+        const existingTagTypes = existingTags.map(tag => tag.type);
+
+        // Check if every tag in the request exists in the existing tags
+        const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type));
+
+        if (!allTagsExist) {
+            return res.status(400).json({ error: 'Some tags do not exist' });
+        }}
     try {
         const existingPlace = await PlaceModel.findOne({ description, location }); // Adjusted to check for unique fields
         if (existingPlace) {
@@ -115,6 +152,7 @@ const createTag = async (req, res) => {
 module.exports = {
     addPlace,
     getAllPlaces,
+    getPlaceById,
     myCreatedPlaces,
     updatePlace,
     deletePlace,

@@ -2,6 +2,7 @@ const express = require('express')
 const {
     addPlace,
     getAllPlaces,
+    getPlaceById,
     updatePlace,
     deletePlace,
     createTag,
@@ -13,7 +14,8 @@ const router = express.Router()
 
 //Get Places
 router.get("/places",getAllPlaces)
-
+//Get Place by ID
+router.get("/places/:id",getPlaceById)
 //Get my Places
 router.get("/myPlaces",myCreatedPlaces)
 

@@ -84,6 +84,26 @@ const getProducts = async (req,res)=>{
         res.status(400).json({ error: error.message })
     }
 };
+//Admin getProdById
+const getProdById = async(req,res)=>{
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid product ID' });
+    }
+
+    try {
+        
+        const product = await ProdModel.findById(id);
+        
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.status(200).json(product);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
@@ -285,6 +305,7 @@ module.exports = {
     addAdmin,
     addTourGov,
     getProducts,
+    getProdById,
     addProduct,
     editProduct,
     getAvailableProducts,
