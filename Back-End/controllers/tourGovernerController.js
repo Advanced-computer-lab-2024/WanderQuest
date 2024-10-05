@@ -1,6 +1,6 @@
 const TagModel = require('../models/objectModel').Tags; 
 const PlaceModel = require('../models/objectModel').Places; 
-const mongoose = require('mongoose');
+const {default:mongoose} = require('mongoose');
 
 
 //tourism Governor getAllPlaces
@@ -15,9 +15,9 @@ const getAllPlaces = async (req, res) => {
 
 // tourism Governor add Place
 const addPlace = async (req, res) => {
-    const { description, pictures, location, openingHours, ticketPrices, tags } = req.body;
+    const { title,description, pictures, location, openingHours, ticketPrices, tags,createdBy } = req.body;
 
-    if (!description || !pictures || !location || !openingHours || !ticketPrices) {
+    if (!title||!description || !pictures || !location || !openingHours || !ticketPrices) {
         return res.status(400).json({ error: 'Field is required' });
     }
 
@@ -27,7 +27,7 @@ const addPlace = async (req, res) => {
             return res.status(400).json({ error: 'Place already exists' });
         }
 
-        const newPlace = await PlaceModel.create({ description, pictures, location, openingHours, ticketPrices, tags });
+        const newPlace = await PlaceModel.create({title, description, pictures, location, openingHours, ticketPrices, tags,createdBy });
         res.status(200).json(newPlace);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -66,7 +66,17 @@ const deletePlace = async (req,res)=>{
     }
 
 };
+//tourism Gorevrnor myCreated
+const myCreatedPlaces = async (req,res)=>{
+    const myID = req.query.myID;
+    if(myID){
+        const myPlaces = await PlaceModel.find({createdBy: myID});
+        res.status(200).json(myPlaces);
+    }else{
+        res.status(400).json({error:'UserID is required'})
+    }
 
+};
 // tourism Governor getAllTags
 const getAllTags = async (req, res) => {
     try {
@@ -79,31 +89,33 @@ const getAllTags = async (req, res) => {
 
 // tourism Governor createTag
 const createTag = async (req, res) => {
-    const { type, historicalPeriod } = req.body;
+    const { type } = req.body;
 
-    if (!type || !historicalPeriod) {
-        return res.status(400).json({ error: 'Type and Historical Periods are required' });
+    if (!type) {
+        return res.status(400).json({ error: 'Type is required' });
     }
     if (!(type.toLowerCase() === "monument" || "museum" || "religious site" || "palace" || "castle")){
         return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["Monument", "Museum", "Religious Site", "Palace", "Castle"]});
-    }
+    }else{
 
     try {
-        const existingTag = await TagModel.findOne({ type, historicalPeriod }); // Correct model usage
+        const existingTag = await TagModel.findOne({ type}); // Correct model usage
         if (existingTag) {
             return res.status(400).json({ error: 'Tag already exists' });
         }
 
-        const newTag = await TagModel.create({ type, historicalPeriod });
+        const newTag = await TagModel.create({ type });
         res.status(200).json(newTag);
     } catch (error) {
         res.status(400).json({ error: error.message });
-    }
+    }}
 };
+
 
 module.exports = {
     addPlace,
     getAllPlaces,
+    myCreatedPlaces,
     updatePlace,
     deletePlace,
     createTag,
