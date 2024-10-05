@@ -5,6 +5,14 @@ import styles from '../styles/products.module.css';
 const Products = () => {
     const [products, setProduct] = useState([]);
     const role = "user";
+    const [search, setSearch] = useState('');
+
+    const handlesearch = () => {
+        const newprod = products.filter((prod) => {
+            return search.toLowerCase() === '' || prod.name.toLowerCase().includes(search.toLowerCase());
+        });
+        setProduct(newprod);
+    };
 
     useEffect(() => {
         fetch('http://localhost:9000/products')
@@ -21,44 +29,52 @@ const Products = () => {
                 console.error('Error fetching data:', error);
                 setProduct([]); 
             });
-    }, []);
+    }, [search]);
+  
+    console.log(search);
 
     return (
-        <div className={styles.container}><div className={styles.searchcom}>
-            <input className={styles.productsearch}type="text"placeholder='Enter your text' />
-            <button className={styles.searchbtn}>Search</button>
+        <div className={styles.container}>
+            <div className={styles.searchcom}>
+                <input 
+                    className={styles.productsearch} 
+                    onChange={(e) => setSearch(e.target.value)} 
+                    type="text" 
+                    placeholder='Enter your text' 
+                />
+                <button className={styles.searchbtn} onClick={handlesearch}>Search</button>
             </div>
-        {Array.isArray(products) && products.length > 0 ? (
-            products.map((product) => (
-                <div className={styles.productCard} key={product.id}>
-                    <img src={product.image} alt={product.name} className={styles.productImage} />
-                    <div className={styles.productInfo}>
-                        <h2>{product.name}</h2>
-                        <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
-                        <p>{product.description}</p>
-                        <div className={styles.productRating}>
-                            <strong>Rating: </strong>{product.ratings} / 5
-                        </div>
-                        <div className={styles.reviews}>
-                            {product.reviews.map((review, index) => (
-                                <div className={styles.review} key={index}>
-                                    <strong>{review.user}:</strong> {review.comment} (Rating: {review.rating})
-                                </div>
-                            ))}
-                            {role === "Admin" && (
-                                <div className={styles.buttonContainer}>
-                                    <button className={styles.productUpdate}>Update</button>
-                                </div>
-                            )}
+            {Array.isArray(products) && products.length > 0 ? (
+                products.map((product) => (
+                    <div className={styles.productCard} key={product.id}>
+                        <img src={product.image} alt={product.name} className={styles.productImage} />
+                        <div className={styles.productInfo}>
+                            <h2>{product.name}</h2>
+                            <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
+                            <p>{product.description}</p>
+                            <div className={styles.productRating}>
+                                <strong>Rating: </strong>{product.ratings} / 5
+                            </div>
+                            <div className={styles.reviews}>
+                                {product.reviews.map((review, index) => (
+                                    <div className={styles.review} key={index}>
+                                        <strong>{review.user}:</strong> {review.comment} (Rating: {review.rating})
+                                    </div>
+                                ))}
+                                {role === "Admin" && (
+                                    <div className={styles.buttonContainer}>
+                                        <button className={styles.productUpdate}>Update</button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            ))
-        ) : (
-            <p>No products available.</p>
-        )}
-    </div>
+                ))
+            ) : (
+                <p>No products available.</p>
+            )}
+        </div>
     );
-}
+};
 
 export default Products;

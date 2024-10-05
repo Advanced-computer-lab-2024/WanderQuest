@@ -10,18 +10,18 @@ import Creatprod from "../../components/Creatprod";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-    
+    {/* <Itineraries></Itineraries> */}
     {/* <Products></Products> */}
-    <Museums></Museums>
-    <Creatprod></Creatprod>
+    {/* <Museums></Museums> */}
+    {/* <Creatprod></Creatprod> */}
     <div className={styles.container}>
-    {/* <Activity></Activity> */}
+    <Activity></Activity>
       <div className={styles.content}>
         
-        <Activities></Activities>
+        {/* <Activities></Activities> */}
       {/* <Itineraries/> */}
-        <h1>Welcome to WanderQuest</h1>
-        <p>Where your dreams come true.</p>
+        {/* <h1>Welcome to WanderQuest</h1>
+        <p>Where your dreams come true.</p> */}
       </div>
     </div>
     </>

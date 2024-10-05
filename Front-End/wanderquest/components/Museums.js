@@ -4,6 +4,13 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles/museum.css';
 const Museums = () => {
     const [museums, setMuseums] = useState([]);
+    const [search, setSearch] = useState('');
+    const handlesearch = () => {
+        const newprod = museums.filter((prod) => {
+            return search.toLowerCase() === '' || prod.name.toLowerCase().includes(search.toLowerCase())||prod.cat.toLowerCase().includes(search.toLowerCase()) ;
+        });
+        setMuseums(newprod);
+    };
 
     useEffect(() => {
         fetch('http://localhost:7000/museum')
@@ -13,12 +20,14 @@ const Museums = () => {
                 console.error('Error fetching data:', error);
                 setMuseums([]);
             });
-    }, []);
+    }, [search]);
 
     return (
         <div className='container'>
-            <div className={styles.museumsearchcom}>
-            <input className={styles.museumsearch}type="text"placeholder='Enter your text' />
+            <div className={styles.museumsearchcom} onClick={handlesearch}>
+            <input className={styles.museumsearch} onChange={(e) => setSearch(e.target.value)} 
+                    type="text" 
+                    placeholder='Enter your text' />
             <button className={styles.museumsearchbtn}>Search</button>
             </div>
             {museums.map((museum) => (
