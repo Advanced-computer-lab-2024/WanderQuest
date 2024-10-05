@@ -37,8 +37,8 @@ const getAvailableProducts = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-//seller addProduct
 
+//seller addProduct
 const addProduct = async (req,res)=>{
     const {name,picture,price,description,seller,ratings,reviews,availableAmount} = req.body;
 
