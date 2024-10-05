@@ -53,10 +53,21 @@ const productSchema = new Schema({
         ref: SellerModel },
     ratings:
     [{type:Number,required:false,default:null}],
+    rating:
+    {type:Number, required:false,default:null},
     reviews:
     [{type:String,required:false,default:null}],
     availableAmount:
     {type:Number,required:true}
+});
+productSchema.pre('save', function(next) {
+    if (this.ratings && this.ratings.length > 0) {
+        const total = this.ratings.reduce((acc, val) => acc + val, 0);
+        this.rating = total / this.ratings.length; // Calculate average
+    } else {
+        this.rating = null; // Set to null if no ratings
+    }
+    next(); // Proceed with the save operation
 });
 const Product = mongoose.model('Product',productSchema);
 
@@ -76,6 +87,8 @@ const activitySchema = new Schema({
     price: { type: Number, required: true },
     //?????????????????????????????//
     priceRange: { type: String ,required:false},
+    ratings:[{type:Number,required:false,default:null}],
+    rating:{type:Number,required:false,default:null},
     category: { type:String ,ref:ActivityCategory, required: true },
     tags: { type: [PreferencedTagSchema], default: [] },
     specialDiscounts: { type: String },
@@ -97,7 +110,15 @@ activitySchema.virtual('formattedDate').get(function() {
 // Ensure virtual fields are serialized
 activitySchema.set('toJSON', { virtuals: true });
 activitySchema.set('toObject', { virtuals: true });
-
+activitySchema.pre('save', function(next) {
+    if (this.ratings && this.ratings.length > 0) {
+        const total = this.ratings.reduce((acc, val) => acc + val, 0);
+        this.rating = total / this.ratings.length; // Calculate average
+    } else {
+        this.rating = null; // Set to null if no ratings
+    }
+    next(); // Proceed with the save operation
+});
 const Activity = mongoose.model('Activity' ,activitySchema);
 
 //itinerary Schema
@@ -108,6 +129,8 @@ const itinerarySchema = new mongoose.Schema({
   duration: {type: String , required: true},
   language: {type: String, required:true},
   price: {type:Number, required:true},
+  ratings:[{type:Number,required:false,default:null}],
+  rating:{type:Number,required:false,default:null},
   availableDates: [{type: Date, required:true}],
   time: [{type: String, required:true}],
   accessibility: {type: Boolean, required:true},
@@ -124,6 +147,15 @@ const itinerarySchema = new mongoose.Schema({
     }
 }, {timestamps:true}) ;
 
+itinerarySchema.pre('save', function(next) {
+    if (this.ratings && this.ratings.length > 0) {
+        const total = this.ratings.reduce((acc, val) => acc + val, 0);
+        this.rating = total / this.ratings.length; // Calculate average
+    } else {
+        this.rating = null; // Set to null if no ratings
+    }
+    next(); // Proceed with the save operation
+});
 const itinerary = mongoose.model('itinerary',itinerarySchema);
 
 module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag}
