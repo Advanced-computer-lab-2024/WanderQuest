@@ -1,5 +1,4 @@
 import RegistrationForm from "../../../components/RegisterationForm";
-import styles from "../../../Styles/RegistrationForm.module.css"
 import Navbar from "../../../components/Navbar";
 const RegisterPage = () => {
     return (
