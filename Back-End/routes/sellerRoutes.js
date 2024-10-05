@@ -1,16 +1,20 @@
 const express = require('express');
 const { getProfile, updateProfile } = require('../controllers/advertiserController');
-const {getProducts, addProduct, editProduct,getAvailableProducts} = require('../controllers/adminController');
+const {getProducts, addProduct, editProduct,getAvailableProducts,getProdById} = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
 
 // require auth for all advertiser routes
-router.use(requireAuth);
+// router.use(requireAuth);
 
 // routes
-router.get('/profile', getProfile);
-router.put('/profile', updateProfile);
+//Change these routes when we apply the authentication
+router.get('/profile/:id', getProfile);
+router.put('/profile/:id', updateProfile);
+
 router.get('/products',getProducts);
+
+router.get("/products/:id",getProdById);
 router.post('/addProduct',addProduct);
 router.patch('/editProduct/:id',editProduct);
 router.get('/availableProducts',getAvailableProducts)

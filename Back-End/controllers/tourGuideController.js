@@ -6,7 +6,7 @@ const Itinerary =require('../models/objectModel').itinerary;
 // functions
 const getProfile = async (req, res) => {
     try {
-        const tourGuide = await TourGuide.findById(req.user.id);
+        const tourGuide = await TourGuide.findById(req.params.id);
         res.json(tourGuide);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -27,7 +27,7 @@ const myCreatedItineraries = async (req,res)=>{
 
 const updateProfile = async (req, res) => {
     try {
-        const updatedTourGuide = await TourGuide.findByIdAndUpdate(req.user.id, req.body, { new: true });
+        const updatedTourGuide = await TourGuide.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedTourGuide);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -44,6 +44,7 @@ const createItinerary = async (req,res) => {
         duration,
         language,
         price,
+        ratings,
         availableDates,
         time,
         accessibility,
@@ -69,6 +70,7 @@ const createItinerary = async (req,res) => {
             duration,
             language,
             price,
+            ratings,
             availableDates,
             time,
             accessibility,

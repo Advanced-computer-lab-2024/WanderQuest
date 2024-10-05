@@ -7,6 +7,7 @@ const {
     addProduct,
     editProduct,
     getProducts,
+    getProdById,
     getAvailableProducts,
     getCategories,
     editCategory,
@@ -34,6 +35,9 @@ router.post("/governor", addTourGov)
 
 //Admin getProducts
 router.get("/products",getProducts)
+
+//Admin getProductByID
+router.get("/products/:id",getProdById)
 
 //Admin getAvailableProducts
 router.get('/availableProducts',getAvailableProducts)
@@ -67,4 +71,5 @@ router.patch('/editTag/:id',updateTag)
 
 //Admin deleteTag
 router.delete('/deleteTag/:id',deleteTag)
+
 module.exports = router
