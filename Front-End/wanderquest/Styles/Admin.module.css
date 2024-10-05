@@ -1,0 +1,231 @@
+/* General Container for the Admin Dashboard */
+.container {
+    padding: 20px;
+    background-color: #f5f5f5; /* Light grey background */
+}
+
+/* Title of the Admin Dashboard */
+.adminTitle {
+    text-align: center;
+    color: #1a6187; /* Blumine color */
+}
+
+/* Navigation Button Styles */
+.nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.nav button {
+    background-color: #17455c; /* Elephant color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+}
+
+
+.nav button:hover {
+    background-color: #1a6187; /* Blumine color on hover */
+    color: white; /* Ensure text color stays white on hover */
+}
+
+/* User Accounts Card */
+.userAccounts {
+    border: 1px solid #122c34; /* Big Stone color */
+    background-color: white; /* White background for cards */
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Title within User Accounts */
+.userAccounts h2 {
+    color: #042335; /* Tangaroa color */
+}
+
+/* Style for user account summary text */
+.userAccounts p {
+    margin: 5px 0;
+}
+
+/* Button Styles for User Accounts */
+.userAccounts button {
+    background-color: #1a6187; /* Blumine color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+}
+
+.userAccounts button:hover {
+    background-color: #17455c; /* Elephant color on hover */
+    color: white; /* Ensure text color stays white on hover */
+}
+
+.userAccounts .deleteButton {
+    background-color: #ff4d4d; /* Light Red color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.userAccounts .deleteButton:hover {
+    background-color: #cc0000; /* Darker Red color on hover */
+    color: white; /* Ensure text color stays white on hover */
+}
+
+
+/* Add Tourism Governor Card */
+.tourismGovernor {
+    border: 1px solid #122c34; /* Big Stone color */
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Styles for Input Fields and Labels in the Governor Card */
+.tourismGovernor .label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.tourismGovernor input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #17455c; /* Elephant color */
+    border-radius: 4px;
+}
+
+.tourismGovernor input[type="text"]:focus {
+    border-color: #1a6187; /* Blumine color */
+}
+
+/* Button for Creating Governor */
+.tourismGovernor button {
+    background-color: #1a6187; /* Blumine color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+}
+
+.tourismGovernor button:hover {
+    background-color: #17455c; /* Elephant color on hover */
+    color: white; /* Ensure text color stays white on hover */
+}
+
+/* Add New Admin Card */
+.newAdmin {
+    border: 1px solid #122c34; /* Big Stone color */
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Styles for Input Fields and Labels in the Admin Card */
+.newAdmin .label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.newAdmin input[type="text"],
+.newAdmin input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #17455c; /* Elephant color */
+    border-radius: 4px;
+}
+
+.newAdmin input[type="text"]:focus,
+.newAdmin input[type="password"]:focus {
+    border-color: #1a6187; /* Blumine color */
+}
+
+/* Button for Adding Admin */
+.newAdmin button {
+    background-color: #1a6187; /* Blumine color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+}
+
+.newAdmin button:hover {
+    background-color: #17455c; /* Elephant color on hover */
+    color: white; /* Ensure text color stays white on hover */
+}
+
+/* Delete Account Section */
+.deleteAccount {
+    border: 1px solid #122c34; /* Big Stone color */
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+/* Search Input in Delete Account */
+.deleteAccount input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #17455c; /* Elephant color */
+    border-radius: 4px;
+}
+
+.deleteAccount input[type="text"]:focus {
+    border-color: #1a6187; /* Blumine color */
+}
+
+/* Table Styles in Delete Account Section */
+.deleteAccount .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.deleteAccount .table th,
+.deleteAccount .table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.deleteAccount .table th {
+    background-color: #17455c; /* Elephant color */
+    color: white;
+}
+
+.deleteAccount .table td {
+    border: 1px solid #122c34; /* Big Stone color */
+}
+
+/* Delete Button in Table */
+.deleteButton {
+    background-color: #ff4d4d; /* Light Red color */
+    color: white; /* Text color */
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.deleteButton:hover {
+    background-color: #cc0000; /* Darker Red color on hover */
+    color: white; /* Ensure text color stays white on hover */
+}

@@ -1,0 +1,69 @@
+/* General Form Styling */
+.Profile { 
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto; 
+    margin-top: 100px;
+    padding: 30px;
+    background-color: #f9f9f9; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: Arial, sans-serif;
+}
+
+
+.Profile input[type="text"],
+.Profile input[type="date"],
+.Profile input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    box-sizing: border-box; /* Ensures padding doesn't affect the element's width */
+}
+
+/* Style for form labels */
+.Profile label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #122c34; 
+}
+
+
+.h1 {
+    text-align: center;
+    color: #17455c;
+    margin-bottom: 20px; /* Adjust as needed */
+}
+
+/* Button styling */
+.Profile button { /* Changed from .Registration button to .Profile button */
+    width: 100%;
+    padding: 12px;
+    background-color: #042335; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.Profile button:hover { /* Changed from .Registration button:hover to .Profile button:hover */
+    background-color: #1a6187; 
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 600px) {
+    .Profile {
+        padding: 15px;
+    }
+
+    .Profile button { /* Changed from .Registration button to .Profile button */
+        font-size: 14px;
+    }
+}

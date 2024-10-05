@@ -2,6 +2,8 @@ const AdminModel = require('../models/adminModel');
 const { User } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const ProdModel = require('../models/objectModel').Product; 
+const CategoryModel = require('../models/objectModel').ActivityCategory; 
+const TagModel = require('../models/objectModel').PrefTag;
 const mongoose = require('mongoose');
 
 // Get all admins
@@ -12,7 +14,7 @@ const getAllAdmins = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-}
+};
 
 // Delete account off system
 const deleteAccount = async (req, res) => {
@@ -39,7 +41,7 @@ const deleteAccount = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
-}
+};
 
 // Add another admin
 const addAdmin = async (req, res) => {
@@ -72,7 +74,7 @@ const addAdmin = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-}
+};
 //Admin getProducts
 const getProducts = async (req,res)=>{
     try {
@@ -129,7 +131,63 @@ const editProduct = async (req,res)=>{
             res.status(400).json({error:error.message});
         }
     }
-}
+};
+
+//add Category
+const addCategory = async (req,res)=>{
+  const { category} = req.body;
+  if(!category){
+    return res.status(400).json({error: 'Category must be entererd'});
+  }
+  try {
+    let createdCategory = await CategoryModel.findOne({category});
+    if(createdCategory){
+        return res.status(400).json({error:'Category Already Exists'})
+    }
+    createdCategory = await CategoryModel.create({category});
+    res.status(200).json(createdCategory)
+  } catch (error) {
+    res.status(400).json({error:error.message});
+  }
+};
+const editCategory = async (req,res)=>{
+    const {id} = req.params;
+    let updatedCategory = await CategoryModel.findById(id)
+    if(!updatedCategory){
+        res.status(400).json({error:'Category not found'})
+    }else{
+        try {
+            updatedCategory = await CategoryModel.findByIdAndUpdate(id,req.body)
+            res.status(200).json(updatedCategory);
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+};
+const getCategories = async (req,res)=>{
+    try {
+        const categories = await CategoryModel.find({})
+        res.status(200).json(categories);
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+const deleteCategory = async (req,res)=>{
+    const{id} = req.params;
+    let deletedCategory = await CategoryModel.findById(id);
+    if(!deletedCategory){
+        res.status(400).json({error:'Category not found.'});
+    }else{
+        try {
+            deletedCategory = await CategoryModel.findByIdAndDelete(id)
+            res.status(200).json({message:'Category was deleted',deletedCategory});
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+};
+
+
 
 // Add a Tourism Governer
 const addTourGov = async (req, res) => {
@@ -158,7 +216,68 @@ const addTourGov = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-}
+};
+//admin getAllTags
+const getAllTags = async (req, res) => {
+    try {
+        const tags = await TagModel.find({});
+        res.status(200).json(tags);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// admin createTag
+const createTag = async (req, res) => {
+    const { type } = req.body;
+
+    if (!type) {
+        return res.status(400).json({ error: 'Type is required' });
+    }
+    if (!(type.toLowerCase() === "historic areas"|| "beaches"|| "family-friendly"|| "shopping"|| "budget-friendly")){
+        return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["historic areas", "beaches", "family-friendly", "shopping", "budget-friendly"]});
+    }else{
+
+    try {
+        const existingTag = await TagModel.findOne({ type}); // Correct model usage
+        if (existingTag) {
+            return res.status(400).json({ error: 'Tag already exists' });
+        }
+
+        const newTag = await TagModel.create({ type });
+        res.status(200).json(newTag);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }}
+};
+const updateTag = async (req,res)=>{
+    const { id} = req.params;
+    let updatedTag = await TagModel.findById(id);
+    if(!updatedTag){
+        res.status(400).json({error:'Place not found'})
+    }else{
+        try {
+            updatedTag = await TagModel.findByIdAndUpdate(id,req.body)
+            res.status(200).json(updatedTag);
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+};
+const deleteTag = async (req,res)=>{
+    const { id} = req.params;
+    let deletedTag = await TagModel.findById(id);
+    if(!deletedTag){
+        res.status(400).json({error:'Place not found'})
+    }else{
+        try {
+            deletedTag = await TagModel.findByIdAndDelete(id,req.body)
+            res.status(200).json({message:'Tag was Deleted',deletedTag});
+        } catch (error) {
+            res.status(400).json({error:error.message});
+        }
+    }
+};
 
 module.exports = {
     getAllAdmins,
@@ -168,5 +287,13 @@ module.exports = {
     getProducts,
     addProduct,
     editProduct,
-    getAvailableProducts
+    getAvailableProducts,
+    addCategory,
+    editCategory,
+    getCategories,
+    deleteCategory,
+    getAllTags,
+    createTag,
+    updateTag,
+    deleteTag
 }
