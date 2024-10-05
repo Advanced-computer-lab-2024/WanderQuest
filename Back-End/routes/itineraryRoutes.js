@@ -3,6 +3,7 @@ const express = require('express');
 const { createItinerary ,readItinerary,updateItinerary,deleteItinerary,readItineraryById,myCreatedItineraries} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
+
 //routes
 router.post('/create', createItinerary);
 router.get('/itineraries', readItinerary);

@@ -15,4 +15,5 @@ router.get("/products/:id",getProdById);
 router.post('/addProduct',addProduct);
 router.patch('/editProduct/:id',editProduct);
 router.get('/availableProducts',getAvailableProducts)
+
 module.exports = router;
