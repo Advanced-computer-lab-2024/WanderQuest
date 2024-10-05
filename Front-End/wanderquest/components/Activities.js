@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import styles from '../styles/Activities.module.css';
 
 const Activities = () => {
-  const [activities, setActivities] = useState([]); // Initialize as an empty array
+  const [activities, setActivities] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/activities') // Adjust the URL as needed
+    fetch('http://localhost:5000/activities')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -15,7 +15,7 @@ const Activities = () => {
         return response.json();
       })
       .then((data) => {
-        console.log(data); // Log the fetched data for debugging
+        console.log(data); 
         setActivities(data);
         setLoading(false);
       })
@@ -51,8 +51,12 @@ const Activities = () => {
             <a href={activity.location.google_maps_link} target="_blank" rel="noopener noreferrer">
               {activity.location.name}
             </a><br />
-            <strong>Price: {activity.price.min} - {activity.price.max} </strong> 
-            
+            <strong>
+        Price:{' '}
+        {activity.price.range
+          ? `${activity.price.range.min} - ${activity.price.range.max}`
+          : `${activity.price.fixed}`}
+      </strong>
             <br />
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />

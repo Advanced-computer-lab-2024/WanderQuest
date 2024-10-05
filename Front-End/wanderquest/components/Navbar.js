@@ -15,10 +15,9 @@ const Navbar = () => {
             <div className='navbar-middleside'>
                 
                 <Link href="/activities" className="navbar-link">Products</Link>
-
-                <button>Activities</button>
-                <button>Itinerary</button>
-                <button>Historical Places</button>
+                <button className="navbar-button">Activities</button>
+                <button className="navbar-button">Itinerary</button>
+                <button className="navbar-button">Historical Places</button>
             </div>
             <div className='navbar-rightside'>
                 <button className='navbar-signup'>Signup</button>
