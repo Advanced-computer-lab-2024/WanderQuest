@@ -6,7 +6,7 @@ const ItineraryModel = require('../models/objectModel').itinerary;
 // functions
 const getProfile = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.user.id);
+        const tourist = await Tourist.findById(req.params.id);
         res.json(tourist);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -15,7 +15,7 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const updatedTourist = await Tourist.findByIdAndUpdate(req.user.id, req.body, { new: true });
+        const updatedTourist = await Tourist.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedTourist);
     } catch (err) {
         res.status(500).json({ error: err.message });

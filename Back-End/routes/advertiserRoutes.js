@@ -2,31 +2,32 @@ const express = require('express');
 
 // controller functions
 const { getProfile, updateProfile } = require('../controllers/advertiserController');
-const requireAuth = require('../middleware/requireAuth');
-const { 
+// const requireAuth = require('../middleware/requireAuth');
+const {
     getAllAdvertisers,
-     createActivity,
-     readActivities,
-     updateActivity,
-     deleteActivity,
+    createActivity,
+    readActivities,
+    updateActivity,
+    deleteActivity,
     myCreatedActivities,
     readOneActivity,
-    readOneActivityByName } 
-= require('../controllers/advertiserController');
+    readOneActivityByName }
+    = require('../controllers/advertiserController');
 const router = express.Router();
 
-// require auth for all advertiser routes
-router.use(requireAuth);
+// // require auth for all advertiser routes
+// router.use(requireAuth({ role: 'advertiser' }));
 
+// get and update profile will use query param for now untill we have a proper auth
 // routes
-router.get('/activity/:id',readOneActivity);
-router.get('/profile', getProfile);
-router.put('/profile', updateProfile);
+router.get('/activity/:id', readOneActivity);
+router.get('/profile/:id', getProfile);
+router.put('/profile/:id', updateProfile);
 router.get('/allAdvertisers', getAllAdvertisers);
-router.post('/activity',createActivity);
-router.get('/activities',readActivities);
-router.put('/activity/:id',updateActivity);
-router.delete('/activity/:id',deleteActivity);
-router.get('/myActivities',myCreatedActivities);
+router.post('/activity', createActivity);
+router.get('/activities', readActivities);
+router.put('/activity/:id', updateActivity);
+router.delete('/activity/:id', deleteActivity);
+router.get('/myActivities', myCreatedActivities);
 
 module.exports = router;

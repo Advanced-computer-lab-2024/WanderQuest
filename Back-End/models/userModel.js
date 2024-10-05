@@ -63,6 +63,17 @@ const TouristSchema = new Schema({
     wallet: { type: Number, default: 0 },
 });
 
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
 // override the signup method
 TouristSchema.statics.signup = async function (username, email, password, role, nationality, mobileNumber, dob, job) {
     // validation
@@ -74,6 +85,9 @@ TouristSchema.statics.signup = async function (username, email, password, role, 
     }
     if (!validator.isStrongPassword(password)) {
         throw new Error('Password must be strong, must contain uppercase, number, and special character');
+    }
+    if (getAge(dob) < 18) {
+        throw new Error('Tourist must be at least 18 years old');
     }
 
     // check if email already exists
