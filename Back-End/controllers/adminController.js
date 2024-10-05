@@ -250,25 +250,27 @@ const getAllTags = async (req, res) => {
 // admin createTag
 const createTag = async (req, res) => {
     const { type } = req.body;
+    const validTypes = ["historic areas", "beaches", "family-friendly", "shopping", "budget-friendly"];
 
     if (!type) {
         return res.status(400).json({ error: 'Type is required' });
     }
-    if (!(type.toLowerCase() === "historic areas"|| "beaches"|| "family-friendly"|| "shopping"|| "budget-friendly")){
-        return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["historic areas", "beaches", "family-friendly", "shopping", "budget-friendly"]});
-    }else{
+    if (!validTypes.includes(type.toLowerCase())) {
+        return res.status(400).json({ error: 'Type is not valid', "Valid Types": validTypes });
+    }
+    else{
+        try {
+            const existingTag = await TagModel.findOne({ type}); // Correct model usage
+            if (existingTag) {
+                return res.status(400).json({ error: 'Tag already exists' });
+            }
 
-    try {
-        const existingTag = await TagModel.findOne({ type}); // Correct model usage
-        if (existingTag) {
-            return res.status(400).json({ error: 'Tag already exists' });
+            const newTag = await TagModel.create({ type });
+            res.status(200).json(newTag);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
         }
-
-        const newTag = await TagModel.create({ type });
-        res.status(200).json(newTag);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }}
+    }
 };
 const updateTag = async (req,res)=>{
     const { id} = req.params;
