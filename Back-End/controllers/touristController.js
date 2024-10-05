@@ -21,19 +21,28 @@ const updateProfile = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-const getUpcoming = async (req,res)=>{
+const getUpcomingActivities = async (req,res)=>{
     try {
         const currentDate = new Date();
-        const places = await PlaceModel.find({});
         const activities = await ActivityModel.find({date:{$gt:currentDate}});
-        const itineraries = await ItineraryModel.find({
-            availableDates: { $elemMatch: { $gt: currentDate } }
-        });
-        res.status(200).json({places,activities,itineraries});
+        res.status(200).json(activities);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
+const getUpcomingItineraries = async (req,res)=>{
+    try {
+        const currentDate = new Date();
+        const itineraries = await ItineraryModel.find({
+            availableDates: { $elemMatch: { $gt: currentDate } }
+        });
+        res.status(200).json(itineraries);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const getAvailableProducts = async (req, res) => {
     try {
         const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
@@ -42,4 +51,4 @@ const getAvailableProducts = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile,getAvailableProducts,getUpcoming };
+module.exports = { getProfile, updateProfile,getAvailableProducts,getUpcomingActivities,getUpcomingItineraries };
