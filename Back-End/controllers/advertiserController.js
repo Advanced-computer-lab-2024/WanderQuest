@@ -25,7 +25,7 @@ const updateProfile = async (req, res) => {
 
 //create activity
 const createActivity = async (req,res) => {
-    const {title , date, time, location, price, priceRange, category, tags, specialDiscounts, bookingIsOpen,createdBy} = req.body;
+    const {title , date, time, location, price, priceRange,ratings, category, tags, specialDiscounts, bookingIsOpen,createdBy} = req.body;
     console.log(req.user); // Check if req.user is set
     // If tags are provided, check if all tags exist in the TagModel
     // If tags are provided, check if all tags exist in the TagModel
@@ -51,7 +51,7 @@ const createActivity = async (req,res) => {
         return res.status(400).json({ error: 'Category does not exist' });
     }
     try{
-        const newActivity = await ActivityModel.create({title,date,time,location,price,priceRange,category,tags,specialDiscounts,bookingIsOpen,createdBy
+        const newActivity = await ActivityModel.create({title,date,time,location,price,priceRange,ratings,category,tags,specialDiscounts,bookingIsOpen,createdBy
             
             });
             res.status(200).json(newActivity);
