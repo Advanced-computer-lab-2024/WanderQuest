@@ -8,8 +8,8 @@ const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
 
-// // require auth for all tourist routes
-// router.use(requireAuth({ role: 'tourist' }));
+// require auth for all tourist routes
+router.use(requireAuth);
 
 // routes
 router.get('/profile', getProfile);
