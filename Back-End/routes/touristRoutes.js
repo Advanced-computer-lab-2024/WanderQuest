@@ -17,8 +17,8 @@ router.put('/profile', updateProfile);
 router.get('/availableProducts',getAvailableProducts);
 router.get('/upcomingActivities',getUpcomingActivities);
 router.get('/upcomingItineraries',getUpcomingItineraries);
-router.get('/places',getAllPlaces);
-router.get('/places/:id',getPlaceById);
+router.get('/upcomingPlaces',getAllPlaces);
+router.get('/upcomingPlaces/:id',getPlaceById);
 
 
 module.exports = router;
