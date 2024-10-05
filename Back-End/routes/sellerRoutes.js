@@ -5,7 +5,7 @@ const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
 
 // require auth for all advertiser routes
-router.use(requireAuth);
+router.use(requireAuth({ role: 'seller' }));
 
 // routes
 router.get('/profile', getProfile);
