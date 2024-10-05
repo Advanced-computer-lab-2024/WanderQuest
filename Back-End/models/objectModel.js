@@ -2,17 +2,23 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const SellerModel = require('../models/userModel').Seller;
 const AdvertiserModel = require('../models/userModel').Advertiser;
-
+const TourGuideModel = require('../models/userModel').TourGuide;
+const TourismGovernorModel = require('../models/tourGovernerModel');
 
 const tagSchema = new Schema
 ({// for the tags to be created independantly from the places
-    type:[{type:String,required:true}],
-    historicalPeriod:{type:String,required:false,default:null}
+    type:{type:String,required:true}
 });
 const Tags = mongoose.model('Tags',tagSchema);
-
+const PreferencedTagSchema = new Schema
+({// for the tags to be created independantly from the places
+    type:{type:String,required:true}
+});
+const PrefTag = mongoose.model('Preference Tags',PreferencedTagSchema);
 
 const placeSchema = new Schema({
+    title:
+    {type:String,required:true},
     description:
     {type:String,required: true},
     pictures:
@@ -22,9 +28,14 @@ const placeSchema = new Schema({
     openingHours:
     [{type:String,required:true}], // array of String to make it easier to specify a range
     ticketPrices:
-    [{type:Number, required:true}], // array of Numbers as it differs from Foreigners,Students and Natives and can store Floating Numbers
+    [{type:Number, required:true}], // array of Numbers as it differs from [Foreigners,Students and Natives] and can store Floating Numbers
     tags:
-    {type:tagSchema,required:false,default:null} // tags are optional
+    [{type:tagSchema,required:false,default:null}] ,// tags are optional
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,  //???color?
+        ref: TourismGovernorModel ,
+        required: false,
+    },
 });
 const Places = mongoose.model('Places',placeSchema);
 
@@ -38,7 +49,8 @@ const productSchema = new Schema({
     description:
     {type:String,required:true},
     seller:
-    {type:String,ref:SellerModel,required:false,default:null},
+    {type: mongoose.Schema.Types.ObjectId,  //???color?
+        ref: SellerModel },
     ratings:
     [{type:Number,required:false,default:null}],
     reviews:
@@ -48,7 +60,12 @@ const productSchema = new Schema({
 });
 const Product = mongoose.model('Product',productSchema);
 
-
+//category Schema
+const activityCategorySchema = new Schema({
+    category:{type:String,required:true}
+    
+})
+const ActivityCategory = mongoose.model('Category',activityCategorySchema);
 //activity schema
 const activitySchema = new Schema({
     title: { type: String , required: true },
@@ -59,7 +76,7 @@ const activitySchema = new Schema({
     price: { type: Number, required: true },
     //?????????????????????????????//
     priceRange: { type: String ,required:false},
-    category: { type:String , required: true },
+    category: { type:String ,ref:ActivityCategory, required: true },
     tags: { type: [String], default: [] },
     specialDiscounts: { type: String },
     //??????????????default true???????????
@@ -96,11 +113,17 @@ const itinerarySchema = new mongoose.Schema({
   accessibility: {type: Boolean, required:true},
   pickUpLocation: {type: String, required: true},
   dropOffLocation: {type: String, required: true},
+  tags:
+  [{type:tagSchema,required:false,default:null}],
   ///??????????????default
   BookingAlreadyMade: {type: Boolean,default:false},
- 
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,  //???color?
+    ref: TourGuideModel ,
+    required: false,
+    }
 }, {timestamps:true}) ;
 
 const itinerary = mongoose.model('itinerary',itinerarySchema);
 
-module.exports = {Places, Tags, Product, Activity ,itinerary}
+module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag}

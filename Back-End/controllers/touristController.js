@@ -18,5 +18,12 @@ const updateProfile = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-
-module.exports = { getProfile, updateProfile };
+const getAvailableProducts = async (req, res) => {
+    try {
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+module.exports = { getProfile, updateProfile,getAvailableProducts };

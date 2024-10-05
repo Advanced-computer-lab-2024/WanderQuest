@@ -5,13 +5,17 @@ const {
     updatePlace,
     deletePlace,
     createTag,
-    getAllTags
+    getAllTags,
+    myCreatedPlaces
 } = require("../controllers/tourGovernerController")
 
 const router = express.Router()
 
 //Get Places
 router.get("/places",getAllPlaces)
+
+//Get my Places
+router.get("/myPlaces",myCreatedPlaces)
 
 //Tourism Governor create Place
 router.post("/addPlace",addPlace)

@@ -20,7 +20,17 @@ const Navbar = () => {
                 <button className="navbar-button">Historical Places</button>
             </div>
             <div className='navbar-rightside'>
-                <button className='navbar-signup'>Signup</button>
+            <Link href="/register">
+               <button className='navbar-signup'>Signup</button>
+            </Link>
+            <Link href="/profileInfo">
+               <button className='navbar-profile'>Profile</button>
+            </Link>
+
+            <Link href="/admin">
+               <button className='admin'>Admin</button>
+            </Link>
+
             </div>
         </div>
     );
