@@ -1,66 +1,99 @@
-.tag-card{
-  border: 0.3px solid #ffffff;
-  border-radius: 20px;
-  padding: 16px;
-  max-width: 240px;
-  width: 100%; 
-  margin: 14px auto;
-  background-color: rgba(100,100,100,0.3);
-  
-  }
-.tag-card-form{
-    display: grid;
-    place-items:inherit;
-  }
-  
-.tag-card-fields {
-    margin-bottom: 8px;
-    width: 100%;
+.tag-card {
+  border: 1px solid #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 300px;
+  width: 100%;
+  margin: 20px auto;
+  background-color: rgba(38, 213, 217, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-  }
-  
-.tag-card-label {
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 4px;
-  width: 100%; 
-  box-sizing: border-box;
-  }
-  
+.tag-card-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.tag-card-fields {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
 .tag-card-input {
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 4px;
-  width: 100%; /* Take full width within the form */
-  box-sizing: border-box;
-  
-  }
-  
-.tag-card-button {
-  padding: 6px 10px;
-  border-radius: 4px;
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+.tag-card-button, .tag-close {
+  padding: 10px;
+  border-radius: 8px;
   border: none;
-  background-color: #11c443;
   color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
   width: 100%;
   text-align: center;
-  margin:auto;
-  }
+  margin-top: 8px;
+}
+
+.tag-card-button {
+  background-color: #11c443;
+}
+
 .tag-card-button:hover {
-    background-color: #269109;
-    color:#ffffff;
-  }
-  
+  background-color: #269109;
+  transform: scale(1.05);
+}
+
+.tag-close {
+  background-color: #ff4d4d;
+}
+
+.tag-close:hover {
+  background-color: #e60000;
+  transform: scale(1.05);
+}
+
 .tag-card-details {
-  line-height: 1.6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.tag-item {
+  display: inline-block;
+  background-color: #11c443;
   color: #ffffff;
-  text-align: center; 
-  width: 100%;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+}
+
+@media (max-width: 480px) {
+  .tag-card {
+    max-width: 90%;
+    padding: 16px;
   }
-  
-.tag-card-details p {
-    margin: auto;
+
+  .tag-item {
+    font-size: 0.8em;
+    padding: 3px 6px;
   }
-  
+
+  .tag-card-button, .tag-close {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+}
+
+.tag-card-button:focus, .tag-close:focus, .tag-card-input:focus {
+  outline: 2px solid #11c443;
+  outline-offset: 2px;
+}
