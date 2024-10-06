@@ -1,29 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import styles from '/Styles/TagManager.module.css';
 
 const TagManager = () => {
   const [tagInput, setTagInput] = useState('');
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(["Testing", "it", "out"]);
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [isEditing, setIsEditing] = useState({ id: null, value: '' });
   const [showTags, setShowTags] = useState(false); // State to control visibility of the tags list
-
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await axios.get('/api/tags'); // Adjust URL as needed
-        setTags(response.data);
-      } catch (error) {
-        console.error('Error fetching tags:', error);
-      }
-    };
-
-    fetchTags();
-  }, []);
-
 
   // Handle input change for adding a new tag
   const handleInputChange = (e) => {
@@ -31,36 +15,26 @@ const TagManager = () => {
   };
 
   // Handle form submission to add a new tag
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!tagInput.trim()) {
       setMessage({ type: 'error', text: 'Tag cannot be empty.' });
       return;
     }
 
-    try {
-      const response = await axios.post('/api/tags', { tag: tagInput }); // Adjust URL as needed
-      setTags([...tags, response.data]);
-      setMessage({ type: 'success', text: 'Tag added successfully!' });
-      setTagInput('');
-      setIsInputVisible(false);
-    } catch (error) {
-      console.error('Error adding tag:', error);
-      setMessage({ type: 'error', text: 'Error adding tag.' });
-    }
+    // Add the new tag to the existing array of tags
+    setTags([...tags, tagInput]);
+    setMessage({ type: 'success', text: 'Tag added successfully!' });
+    setTagInput('');
+    setIsInputVisible(false);
   };
 
   // Handle deleting a tag
-  const handleDelete = async (tagToDelete) => {
-    try {
-      await axios.delete(`/api/tags/${tagToDelete}`); // Adjust URL as needed
-      setTags(tags.filter(tag => tag !== tagToDelete));
-      setMessage({ type: 'success', text: 'Tag deleted successfully.' });
-    } catch (error) {
-      console.error('Error deleting tag:', error);
-      setMessage({ type: 'error', text: 'Error deleting tag.' });
-    }
+  const handleDelete = (tagToDelete) => {
+    setTags(tags.filter(tag => tag !== tagToDelete));
+    setMessage({ type: 'success', text: 'Tag deleted successfully.' });
   };
+
   // Handle initiating edit mode for a tag
   const handleEdit = (tag) => {
     setIsEditing({ id: tag, value: tag });
@@ -72,22 +46,16 @@ const TagManager = () => {
   };
 
   // Handle submitting the edited tag
-  const handleEditSubmit = async (tag) => {
+  const handleEditSubmit = (tag) => {
     if (!isEditing.value.trim()) {
       setMessage({ type: 'error', text: 'Tag cannot be empty.' });
       return;
     }
 
-    try {
-      const response = await axios.put(`/api/tags/${tag}`, { tag: isEditing.value }); // Adjust URL as needed
-      const updatedTags = tags.map((t) => (t === tag ? response.data : t));
-      setTags(updatedTags);
-      setMessage({ type: 'success', text: 'Tag updated successfully.' });
-      setIsEditing({ id: null, value: '' });
-    } catch (error) {
-      console.error('Error updating tag:', error);
-      setMessage({ type: 'error', text: 'Error updating tag.' });
-    }
+    const updatedTags = tags.map((t) => (t === tag ? isEditing.value : t));
+    setTags(updatedTags);
+    setMessage({ type: 'success', text: 'Tag updated successfully.' });
+    setIsEditing({ id: null, value: '' });
   };
 
   // Handle cancelling the edit mode
