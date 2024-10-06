@@ -15,18 +15,29 @@ export default function useDeleteUser(users, setUsers) {
     setSelectedUser(null);
   };
 
-  const deleteUser = (username) => {
-    // Simulate backend call
-    setTimeout(() => {
-      // Update the users array to remove the deleted user
-      setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
-      hideDeleteConfirmation();
-    }, 1000); // Simulate a delay, adjust as necessary
+  const deleteUserFromBackend = async (username) => {
+    try {
+      const response = await fetch(`http://localhost:4001/users/${username}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Update the users array to remove the deleted user
+        setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
+        hideDeleteConfirmation();
+        alert(`User ${username} deleted successfully.`);
+      } else {
+        alert('Failed to delete user. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('An error occurred while deleting the user.');
+    }
   };
 
   const confirmDelete = () => {
     if (selectedUser) {
-      deleteUser(selectedUser);
+      deleteUserFromBackend(selectedUser);
     }
   };
 
