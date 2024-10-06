@@ -31,18 +31,18 @@ const RegistrationForm = () => {
             email,
             username,
             password,
-            mobileNo,
-            userType,
+            mobileNumber: mobileNo,
+            role: userType,
             nationality,
-            dateOfBirth,
-            occupation
+            dob: dateOfBirth,
+            job:occupation
         };
         
         // Clear error messages before making the request
         setError(""); 
     
         // Make the API call to the backend
-        fetch('http://localhost:4001/users/', { 
+        fetch('http://localhost:4000/register/', { 
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
