@@ -16,7 +16,7 @@ const UserSchema = new Schema({
         enum: ['tourist', 'tourGuide', 'advertiser', 'seller'],
         required: true,
     },
-    accepted: { type: Boolean, default: false },
+    accepted: { type: Boolean, default: true }, // is accepted for now until functionality is added
 }, options);
 
 UserSchema.statics.signup = async function (username, email, password, role) {
