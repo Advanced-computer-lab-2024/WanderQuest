@@ -1,6 +1,7 @@
 const express = require('express')
 const {
     getAllAdmins,
+    getUsers,
     deleteAccount,
     addAdmin,
     addTourGov,
@@ -23,6 +24,8 @@ const router = express.Router()
 
 // Get all admins
 router.get("/", getAllAdmins)
+// Get all users
+router.get("/users",getUsers)
 
 // Delete account off system
 router.delete("/delete/:id", deleteAccount)

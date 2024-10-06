@@ -1,10 +1,10 @@
 // pages/admin.js
 'use client';
 import { useState, useEffect } from 'react';
-import styles from '../styles/Admin.module.css'; // Adjust path if needed
+import styles from '../styles/Admin.module.css';
+import useDeleteUser from '../hooks/useDeleteUser'; // Import custom hook
 
 export default function AdminPage() {
-  // State for the search input (for deleting users)
   const [search, setSearch] = useState('');
   const [totalUsers, setTotalUsers] = useState(null); // Replace with backend value
   const [activeUsers, setActiveUsers] = useState(null); // Replace with backend value
@@ -18,13 +18,12 @@ export default function AdminPage() {
 
   // Placeholder function to fetch user data from backend
   const fetchUserData = async () => {
-    // Simulate a fetch call to your backend
-    const data = await fetch('/api/users'); // Adjust the API endpoint as necessary
+    const data = await fetch('/api/users'); // Adjust the API endpoint
     const json = await data.json();
     setTotalUsers(json.totalUsers);
     setActiveUsers(json.activeUsers);
     setInactiveUsers(json.inactiveUsers);
-    setUsers(json.users); // Assuming your API returns an array of users
+    setUsers(json.users); 
   };
 
   useEffect(() => {
@@ -136,18 +135,34 @@ export default function AdminPage() {
         {/* User Accounts Section */}
         <div className={styles.userAccounts}>
           <h2>User Accounts</h2>
-          <p>Total Users: {totalUsers !== null ? totalUsers : 'Loading...'}</p>
-          <p>Active: {activeUsers !== null ? activeUsers : 'Loading...'}</p>
-          <p>Inactive: {inactiveUsers !== null ? inactiveUsers : 'Loading...'}</p>
+          <p>Total Users: {totalUsers !== null ? totalUsers : 'Loading Users...'}</p>
+          <p>Active: {activeUsers !== null ? activeUsers : 'Loading Active Users...'}</p>
+          <p>Inactive: {inactiveUsers !== null ? inactiveUsers : 'Loading Inactive Users...'}</p>
           <div>
-            <button>View</button>
-            <button>Edit</button>
-            <button className={styles.deleteButton}>Delete</button>
+            <button>View Details</button>
           </div>
         </div>
 
         <div className={styles.tourismGovernor}>
           <h2>Add Tourism Governor</h2>
+          <form onSubmit={handleCreateGovernor}>
+            <label>Username:</label>
+            <input
+              type="text"
+              placeholder="Unique Username"
+              value={govUsername}
+              onChange={(e) => setGovUsername(e.target.value)}
+              required
+            /><br />
+            <label>Password:</label>
+            <input
+              type="text" // Display generated password as plain text
+              value={govPassword} // You can also choose to hide this if you want
+              placeholder='Auto-Generated Password'
+              disabled
+            /><br />
+            <button type="submit">Create Governor</button>
+          </form>
           <form onSubmit={handleCreateGovernor}>
             <label>Username:</label>
             <input
@@ -172,6 +187,25 @@ export default function AdminPage() {
         {/* Add New Admin Section */}
         <div className={styles.newAdmin}>
           <h2>Add New Admin</h2>
+          <form onSubmit={handleAddAdmin}>
+            <label>Username:</label>
+            <input
+              type="text"
+              placeholder="Unique Username"
+              value={adminUsername}
+              onChange={(e) => setAdminUsername(e.target.value)}
+              required
+            /><br />
+            <label>Password:</label>
+            <input
+              type="password"
+              placeholder="Strong Password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              required
+            /><br />
+            <button type="submit">Add Admin</button>
+          </form>
           <form onSubmit={handleAddAdmin}>
             <label>Username:</label>
             <input
@@ -219,13 +253,24 @@ export default function AdminPage() {
                 <td>{user.role}</td>
                 <td>{user.status}</td>
                 <td>
-                  <button onClick={() => handleDelete(user.username)}>Delete</button>
+                  <button onClick={() => showDeleteConfirmation(user.username)}>Delete</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Confirmation Popup */}
+      {isPopupVisible && (
+        <div className={styles.popup}>
+          <div className={styles.popupContent}>
+            <h3>Are you sure you want to delete this user?</h3>
+            <button onClick={confirmDelete}>Yes, Delete</button>
+            <button onClick={hideDeleteConfirmation}>Cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
