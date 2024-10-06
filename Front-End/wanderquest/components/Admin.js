@@ -200,12 +200,17 @@ export default function AdminPage() {
           </thead>
           <tbody>
             {users.filter(user => user.username.includes(search)).map((user) => (
-              <tr key={user.username}>
+              <tr key={user._id}> {/* Change key to user._id */}
                 <td>{user.username}</td>
                 <td>{user.role}</td>
                 <td>{user.email}</td>
                 <td>
-                  <button className={styles.deleteButton} onClick={() => showDeleteConfirmation(user.username)}>Delete</button>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => showDeleteConfirmation(user)} // Pass the full user object
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
