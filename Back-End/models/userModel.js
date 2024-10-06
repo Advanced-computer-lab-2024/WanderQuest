@@ -33,7 +33,7 @@ UserSchema.statics.signup = async function (username, email, password, role) {
     }
 
     // check if email already exists
-    const exists = await this.findOne({ email });
+    const exists = await User.findOne({ email });
 
     if (exists) {
         throw new Error('Email already exists');
@@ -91,7 +91,7 @@ TouristSchema.statics.signup = async function (username, email, password, role, 
     }
 
     // check if email already exists
-    const exists = await this.findOne({ email });
+    const exists = await User.findOne({ email });
 
     if (exists) {
         throw new Error('Email already exists');
