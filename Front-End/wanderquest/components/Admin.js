@@ -11,6 +11,11 @@ export default function AdminPage() {
   const [inactiveUsers, setInactiveUsers] = useState(null); // Replace with backend value
   const [users, setUsers] = useState([]); // To hold the user data for deletion
 
+  const [govUsername, setGovUsername] = useState('');
+  const [govPassword, setGovPassword] = useState('');
+  const [adminUsername, setAdminUsername] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+
   // Placeholder function to fetch user data from backend
   const fetchUserData = async () => {
     // Simulate a fetch call to your backend
@@ -25,6 +30,94 @@ export default function AdminPage() {
   useEffect(() => {
     fetchUserData();
   }, []); // Fetch user data when the component mounts
+
+  const checkUsernameExists = async (username) => {
+    const response = await fetch('http://localhost:4001/admins'); // Adjust endpoint for other user types
+    const data = await response.json();
+    return data.some(user => user.username === username);
+  };
+
+  const generatePassword = (length = 10) => {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+    }
+    return password;
+  };
+
+
+  const handleCreateGovernor = async (e) => {
+    e.preventDefault();
+    const usernameExists = await checkUsernameExists(govUsername);
+        if (usernameExists) {
+            alert('Username already exists. Please choose a different one.');
+            return;
+        }
+    
+    const generatedPassword = generatePassword();
+    setGovPassword(generatedPassword); // Update state with generated password
+
+
+    const newGovernorData = {
+      username: govUsername,
+      password: generatedPassword,
+    };
+
+    try {
+      const response = await fetch('http://localhost:4001/tourismGovernors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newGovernorData),
+      });
+
+      if (response.ok) {
+        alert('Governor created successfully!');
+        fetchUserData(); // Refresh the user data
+      } else {
+        alert('Failed to create governor.');
+      }
+    } catch (error) {
+      console.error('Error creating governor:', error);
+    }
+  };
+
+  const handleAddAdmin = async (e) => {
+    e.preventDefault(); 
+
+    const usernameExists = await checkUsernameExists(adminUsername);
+        if (usernameExists) {
+            alert('Username already exists. Please choose a different one.');
+            return;
+        }
+
+    const newAdminData = {
+      username: adminUsername,
+      password: adminPassword,
+    };
+
+    try {
+      const response = await fetch('http://localhost:4001/admins', { // Adjust endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newAdminData),
+      });
+
+      if (response.ok) {
+        alert('Admin added successfully!');
+        fetchUserData(); // Refresh the user data
+      } else {
+        alert('Failed to add admin.');
+      }
+    } catch (error) {
+      console.error('Error adding admin:', error);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -53,28 +146,51 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Add Tourism Governor Section */}
         <div className={styles.tourismGovernor}>
           <h2>Add Tourism Governor</h2>
-          <label>Name:</label>
-          <input type="text" placeholder="Governor's Name" /><br />
-          <label>Username:</label>
-          <input type="text" placeholder="Unique Username" /><br />
-          <label>Password:</label>
-          <input type="text" placeholder="Auto-generated Password" disabled /><br />
-          <button>Create Governor</button>
+          <form onSubmit={handleCreateGovernor}>
+            <label>Username:</label>
+            <input
+              type="text"
+              placeholder="Unique Username"
+              value={govUsername}
+              onChange={(e) => setGovUsername(e.target.value)}
+              required
+            /><br />
+            <label>Password:</label>
+            <input
+              type="text" // Display generated password as plain text
+              value={govPassword} // You can also choose to hide this if you want
+              placeholder='Auto-Generated Password'
+              disabled
+            /><br />
+            <button type="submit">Create Governor</button>
+          </form>
         </div>
+
 
         {/* Add New Admin Section */}
         <div className={styles.newAdmin}>
           <h2>Add New Admin</h2>
-          <label>Name:</label>
-          <input type="text" placeholder="Admin Name" /><br />
-          <label>Username:</label>
-          <input type="text" placeholder="Unique Username" /><br />
-          <label>Password:</label>
-          <input type="password" placeholder="Strong Password" /><br />
-          <button>Add Admin</button>
+          <form onSubmit={handleAddAdmin}>
+            <label>Username:</label>
+            <input
+              type="text"
+              placeholder="Unique Username"
+              value={adminUsername}
+              onChange={(e) => setAdminUsername(e.target.value)}
+              required
+            /><br />
+            <label>Password:</label>
+            <input
+              type="password"
+              placeholder="Strong Password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              required
+            /><br />
+            <button type="submit">Add Admin</button>
+          </form>
         </div>
       </div>
 
