@@ -12,7 +12,7 @@ const useUserList = () => {
     try {
       setLoading(true);
       // Simulating an API call
-      const response = await fetch('http://localhost:4001/users'); // Replace with your API endpoint
+      const response = await fetch('http://localhost:4000/admin/users'); // Replace with your API endpoint
       const data = await response.json();
       setUsers(data); // Set fetched users to state
     } catch (err) {
