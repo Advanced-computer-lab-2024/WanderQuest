@@ -8,6 +8,12 @@ const CategoryModel = require('../models/objectModel').ActivityCategory;
 const getProfile = async (req, res) => {
     try {
         const advertiser = await Advertiser.findById(req.params.id);
+        if (!advertiser) {
+            return res.status(404).json({ error: 'Advertiser not found' });
+        }
+        if (!advertiser.accepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
         res.json({ advertiser });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -16,6 +22,13 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
+        const advertiser = await Advertiser.findById(req.params.id);
+        if (!advertiser) {
+            return res.status(404).json({ error: 'Advertiser not found' });
+        }
+        if (!advertiser.accepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
         const updatedAdvertiser = await Advertiser.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedAdvertiser);
     } catch (err) {
