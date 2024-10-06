@@ -2,14 +2,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import styles from '../styles/Admin.module.css';
-import useDeleteUser from '../hooks/useDeleteUser'; // Import custom hook
+import useDeleteUser from '../hooks/useDeleteUser'; // Import delete custom hook
+import useUserList from '../hooks/useUserList'; // Import list custom hook
 
 export default function AdminPage() {
   const [search, setSearch] = useState('');
-  const [totalUsers, setTotalUsers] = useState(null);
-  const [activeUsers, setActiveUsers] = useState(null);
-  const [inactiveUsers, setInactiveUsers] = useState(null);
-  const [users, setUsers] = useState([]); 
+  const { users, setUsers, loading, error } = useUserList(); // Get setUsers from the hook
   const [govUsername, setGovUsername] = useState('');
   const [govPassword, setGovPassword] = useState('');
   const [adminUsername, setAdminUsername] = useState('');
@@ -20,7 +18,12 @@ export default function AdminPage() {
     showDeleteConfirmation,
     hideDeleteConfirmation,
     confirmDelete
-  } = useDeleteUser(users, setUsers);
+  } = useDeleteUser(users, setUsers); // Pass setUsers here
+
+  const totalUsers = users.length; // Display total users from the fetched array
+
+  if (loading) return <p>Loading users...</p>; // Show loading state
+  if (error) return <p>{error}</p>; // Show error state if any
 
   const fetchUserData = async () => {
     const data = await fetch('/api/users'); // Adjust the API endpoint
@@ -29,11 +32,7 @@ export default function AdminPage() {
     setActiveUsers(json.activeUsers);
     setInactiveUsers(json.inactiveUsers);
     setUsers(json.users); 
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, []); 
+  }; 
 
   const checkUsernameExists = async (username) => {
     const response = await fetch('http://localhost:4001/admins'); // Adjust endpoint for other user types
@@ -140,8 +139,8 @@ export default function AdminPage() {
         <div className={styles.userAccounts}>
           <h2>User Accounts</h2>
           <p>Total Users: {totalUsers !== null ? totalUsers : 'Loading Users...'}</p>
-          <p>Active: {activeUsers !== null ? activeUsers : 'Loading Active Users...'}</p>
-          <p>Inactive: {inactiveUsers !== null ? inactiveUsers : 'Loading Inactive Users...'}</p>
+          {/* <p>Active: {activeUsers == null ? activeUsers : 'Loading Active Users...'}</p>
+          <p>Inactive: {inactiveUsers == null ? inactiveUsers : 'Loading Inactive Users...'}</p> */}
           <div>
             <button>View Details</button>
           </div>
@@ -204,12 +203,12 @@ export default function AdminPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <table border="1" style={{ width: '100%', marginTop: '10px' }}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>Username</th>
               <th>Role</th>
-              <th>Status</th>
+              <th>Email</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -218,9 +217,9 @@ export default function AdminPage() {
               <tr key={user.username}>
                 <td>{user.username}</td>
                 <td>{user.role}</td>
-                <td>{user.status}</td>
+                <td>{user.email}</td>
                 <td>
-                  <button onClick={() => showDeleteConfirmation(user.username)}>Delete</button>
+                  <button className={styles.deleteButton} onClick={() => showDeleteConfirmation(user.username)}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -233,11 +232,12 @@ export default function AdminPage() {
         <div className={styles.popup}>
           <div className={styles.popupContent}>
             <h3>Are you sure you want to delete this user?</h3>
-            <button onClick={confirmDelete}>Yes, Delete</button>
-            <button onClick={hideDeleteConfirmation}>Cancel</button>
+            <button className={styles.yesButton} onClick={confirmDelete}>Yes, Delete</button>
+            <button className={styles.cancelButton} onClick={hideDeleteConfirmation}>Cancel</button>
           </div>
         </div>
       )}
+
     </div>
   );
 }

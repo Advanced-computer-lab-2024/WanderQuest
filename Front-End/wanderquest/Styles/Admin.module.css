@@ -205,27 +205,34 @@
 
 .deleteAccount .table th,
 .deleteAccount .table td {
-    padding: 10px;
+    padding: 12px 15px; /* Increase padding for better spacing */
     text-align: left;
+    border: 1px solid #122c34; /* Big Stone color */
 }
 
 .deleteAccount .table th {
     background-color: #17455c; /* Elephant color */
     color: white;
+    font-weight: bold;
 }
 
 .deleteAccount .table td {
-    border: 1px solid #122c34; /* Big Stone color */
+    background-color: #f5f5f5; /* Light Grey for even rows */
+}
+
+.deleteAccount .table tr:nth-child(even) td {
+    background-color: #eaeaea; /* Slightly darker for alternate rows */
 }
 
 /* Delete Button in Table */
 .deleteButton {
     background-color: #ff4d4d; /* Light Red color */
-    color: white; /* Text color */
+    color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 8px 12px;
     cursor: pointer;
-    transition: background-color 0.3s; /* Smooth transition for background color */
+    transition: background-color 0.3s ease-in-out; /* Smooth transition for background color */
+    border-radius: 4px;
 }
 
 .deleteButton:hover {
@@ -233,17 +240,20 @@
     color: white; /* Ensure text color stays white on hover */
 }
 
+/* User Account, Tourism Governor, New Admin Sections */
 .userAccounts, 
 .tourismGovernor, 
 .newAdmin {
-    flex: 1; /* Ensures equal width for each section */
-    min-height: 300px; /* Ensure all have the same height (you can adjust this as needed) */
+    flex: 1;
+    min-height: 300px;
     display: flex;
-    flex-direction: column; /* Ensures content stays inside the section */
-    justify-content: space-between; /* Evenly distributes content within each section */
-    margin-bottom: 5px; /* Remove bottom margin */
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 5px;
     padding: 20px;
     margin: 5px;
+    border: 1px solid #122c34; /* Big Stone color */
+    border-radius: 5px;
 }
 
 /* Add a bit of spacing to the section headers */
@@ -260,6 +270,7 @@
     margin-top: auto; /* Pushes the button to the bottom of the box */
 }
 
+/* Popup Overlay */
 .popup {
     position: fixed;
     top: 0;
@@ -270,19 +281,44 @@
     display: flex;
     align-items: center;
     justify-content: center;
-  }
+}
   
-  .popupContent {
+.popupContent {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-  }
+}
   
-  .popupContent button {
+/* Popup Buttons */
+.popupContent button {
     margin: 10px;
     padding: 10px 20px;
     cursor: pointer;
-  }
-  
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out; /* Smooth transition */
+}
+
+/* Yes Button Styled Like Delete Button */
+.popupContent .yesButton {
+    background-color: #ff4d4d; /* Light Red color */
+    color: white;
+    border: none;
+}
+
+.popupContent .yesButton:hover {
+    background-color: #cc0000; /* Darker Red color on hover */
+    color: white;
+}
+
+/* Cancel Button Styled Like Other Buttons */
+.popupContent .cancelButton {
+    background-color: #17455c; /* Elephant color */
+    color: white;
+    border: none;
+}
+
+.popupContent .cancelButton:hover {
+    background-color: #1a6187; /* Blumine color */
+}
