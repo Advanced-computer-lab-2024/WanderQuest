@@ -1,7 +1,7 @@
 "use client"
 import { useState , useEffect } from "react";
 import styles from "../Styles/Profiles.module.css"
-import jwt_decode from "jwt-decode";
+
 
 const CompanyInfo = ({initialData, OnSubmit}) => {
     const [username,setUsername] = useState('');
@@ -12,23 +12,20 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
     const [companyDescription, setCompanyDescription] = useState('');
     const [companyAddress, setCompanyAddress] = useState('');
 
-    // Get the JWT token from localStorage
-    const token = localStorage.getItem('authToken'); // Store this when user logs in
-    let userId = '';
-
-    if (token) {
-        const decoded = jwt_decode(token);
-        userId = decoded.id; // Assuming the user ID is in the token
-    } else {
-        setError('User not authenticated');
-    }
-
-    // Fetch the profile data (GET request)
     useEffect(() => {
-        if (!userId) return; // Skip fetch if no user ID
+        // Fetch user profile using the provided userId
+        if (!userId) {
+            setError("User ID is not available.");
+            return; // Exit if userId is not provided
+        }
 
-        fetch(`http://localhost:4000/advertiser/profile/${userId}`)
-            .then((response) => response.json())
+        fetch(`http://localhost:4000/advertiser/profile/:id`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+                return response.json();
+            })
             .then((data) => {
                 setUsername(data.username || "");
                 setEmail(data.email || "");
@@ -60,12 +57,11 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/advertiser/profile/${userId}`,
+                `http://localhost:4000/advertiser/profile/:id`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`, // Include the token for authentication
                     },
                     body: JSON.stringify(updatedData),
                 }
