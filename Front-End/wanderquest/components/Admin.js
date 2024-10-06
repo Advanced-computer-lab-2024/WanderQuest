@@ -59,7 +59,7 @@ export default function AdminPage() {
     console.log(generatePassword);
 
     try {
-      const response = await fetch('http://localhost:4000/admin/governer', {
+      const response = await fetch('http://localhost:4000/admin/governor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
