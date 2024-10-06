@@ -11,6 +11,7 @@ const {
 = require('../controllers/advertiserController');
 const {getUpcomingActivities,getUpcomingItineraries} = require('../controllers/touristController');
 const router = express.Router()
+
 router.get('/activity/:id',readOneActivity);
 router.get('/myActivities',myCreatedActivities);
 router.get('/allAdvertisers', getAllAdvertisers);
