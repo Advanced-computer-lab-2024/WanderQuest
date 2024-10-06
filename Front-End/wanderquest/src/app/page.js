@@ -18,7 +18,8 @@ export default function Home() {
     {/* <Activity></Activity> */}
       <div className={styles.content}>
         
-        <Activities></Activities>
+        {/* <Activities></Activities> */}
+        <Creatprod></Creatprod>
       {/* <Itineraries/> */}
         {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
