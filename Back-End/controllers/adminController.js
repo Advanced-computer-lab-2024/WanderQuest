@@ -15,7 +15,15 @@ const getAllAdmins = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 };
-
+//getAllUsers
+const getUsers = async(req,res)=>{
+    try {
+        const users = await User.find({})
+        res.status(200).json(users)
+    } catch (error) {
+        res.status(400).json({error:error.message})
+    }
+}
 // Delete account off system
 const deleteAccount = async (req, res) => {
     const { id } = req.params;
@@ -84,6 +92,26 @@ const getProducts = async (req,res)=>{
         res.status(400).json({ error: error.message })
     }
 };
+//Admin getProdById
+const getProdById = async(req,res)=>{
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid product ID' });
+    }
+
+    try {
+        
+        const product = await ProdModel.findById(id);
+        
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.status(200).json(product);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
@@ -96,7 +124,7 @@ const getAvailableProducts = async (req, res) => {
 //Admin addProduct
 
 const addProduct = async (req,res)=>{
-    const {name,picture,price,description,seller,ratings,reviews,availableAmount} = req.body;
+    const {name,picture,price,description,seller,ratings,rating,reviews,availableAmount} = req.body;
 
     // Validate input
     if (!name || !picture || !description  || !price ) {
@@ -110,7 +138,7 @@ const addProduct = async (req,res)=>{
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({name,picture,price,description,seller,ratings,reviews,availableAmount})
+        const product = await ProdModel.create({name,picture,price,description,seller,ratings,rating,reviews,availableAmount})
         res.status(200).json(product)
 
     } catch (error) {
@@ -230,25 +258,27 @@ const getAllTags = async (req, res) => {
 // admin createTag
 const createTag = async (req, res) => {
     const { type } = req.body;
+    const validTypes = ["historic areas", "beaches", "family-friendly", "shopping", "budget-friendly"];
 
     if (!type) {
         return res.status(400).json({ error: 'Type is required' });
     }
-    if (!(type.toLowerCase() === "historic areas"|| "beaches"|| "family-friendly"|| "shopping"|| "budget-friendly")){
-        return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["historic areas", "beaches", "family-friendly", "shopping", "budget-friendly"]});
-    }else{
+    if (!validTypes.includes(type.toLowerCase())) {
+        return res.status(400).json({ error: 'Type is not valid', "Valid Types": validTypes });
+    }
+    else{
+        try {
+            const existingTag = await TagModel.findOne({ type}); // Correct model usage
+            if (existingTag) {
+                return res.status(400).json({ error: 'Tag already exists' });
+            }
 
-    try {
-        const existingTag = await TagModel.findOne({ type}); // Correct model usage
-        if (existingTag) {
-            return res.status(400).json({ error: 'Tag already exists' });
+            const newTag = await TagModel.create({ type });
+            res.status(200).json(newTag);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
         }
-
-        const newTag = await TagModel.create({ type });
-        res.status(200).json(newTag);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }}
+    }
 };
 const updateTag = async (req,res)=>{
     const { id} = req.params;
@@ -281,10 +311,12 @@ const deleteTag = async (req,res)=>{
 
 module.exports = {
     getAllAdmins,
+    getUsers,
     deleteAccount,
     addAdmin,
     addTourGov,
     getProducts,
+    getProdById,
     addProduct,
     editProduct,
     getAvailableProducts,

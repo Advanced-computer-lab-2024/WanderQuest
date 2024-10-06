@@ -1,30 +1,125 @@
 // pages/admin.js
 'use client';
 import { useState, useEffect } from 'react';
-import styles from '../styles/Admin.module.css'; // Adjust path if needed
+import styles from '../styles/Admin.module.css';
+import useDeleteUser from '../hooks/useDeleteUser'; // Import delete custom hook
+import useUserList from '../hooks/useUserList'; // Import list custom hook
 
 export default function AdminPage() {
-  // State for the search input (for deleting users)
   const [search, setSearch] = useState('');
-  const [totalUsers, setTotalUsers] = useState(null); // Replace with backend value
-  const [activeUsers, setActiveUsers] = useState(null); // Replace with backend value
-  const [inactiveUsers, setInactiveUsers] = useState(null); // Replace with backend value
-  const [users, setUsers] = useState([]); // To hold the user data for deletion
+  const { users, setUsers, loading, error } = useUserList(); // Get setUsers from the hook
+  const [govUsername, setGovUsername] = useState('');
+  const [govPassword, setGovPassword] = useState('');
+  const [adminUsername, setAdminUsername] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
 
-  // Placeholder function to fetch user data from backend
+  const {
+    isPopupVisible,
+    showDeleteConfirmation,
+    hideDeleteConfirmation,
+    confirmDelete
+  } = useDeleteUser(users, setUsers); // Pass setUsers here
+
+  const totalUsers = users.length; // Display total users from the fetched array
+
+  if (loading) return <p>Loading users...</p>; // Show loading state
+  if (error) return <p>{error}</p>; // Show error state if any
+
   const fetchUserData = async () => {
-    // Simulate a fetch call to your backend
-    const data = await fetch('/api/users'); // Adjust the API endpoint as necessary
+    const data = await fetch('/api/users'); // Adjust the API endpoint
     const json = await data.json();
     setTotalUsers(json.totalUsers);
     setActiveUsers(json.activeUsers);
     setInactiveUsers(json.inactiveUsers);
-    setUsers(json.users); // Assuming your API returns an array of users
+    setUsers(json.users); 
+  }; 
+
+  const checkUsernameExists = async (username) => {
+    const response = await fetch('http://localhost:4001/admins'); // Adjust endpoint for other user types
+    const data = await response.json();
+    return data.some(user => user.username === username);
   };
 
-  useEffect(() => {
-    fetchUserData();
-  }, []); // Fetch user data when the component mounts
+  const generatePassword = (length = 10) => {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&()";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+    }
+    return password;
+  };
+
+  const handleCreateGovernor = async (e) => {
+    e.preventDefault();
+    const usernameExists = await checkUsernameExists(govUsername);
+        if (usernameExists) {
+            alert('Username already exists. Please choose a different one.');
+            return;
+        }
+
+    const generatedPassword = generatePassword();
+    setGovPassword(generatedPassword); // Update state with generated password
+
+
+    const newGovernorData = {
+      username: govUsername,
+      password: generatedPassword,
+    };
+
+    try {
+      const response = await fetch('http://localhost:4001/tourismGovernors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newGovernorData),
+      });
+
+      if (response.ok) {
+        alert('Governor created successfully!');
+        fetchUserData(); // Refresh the user data
+      } else {
+        alert('Failed to create governor.');
+      }
+    } catch (error) {
+      console.error('Error creating governor:', error);
+    }
+  };
+
+  const handleAddAdmin = async (e) => {
+    e.preventDefault(); 
+
+    const usernameExists = await checkUsernameExists(adminUsername);
+        if (usernameExists) {
+            alert('Username already exists. Please choose a different one.');
+            return;
+        }
+
+    const newAdminData = {
+      username: adminUsername,
+      password: adminPassword,
+    };
+
+    try {
+      const response = await fetch('http://localhost:4001/admins', { // Adjust endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newAdminData),
+      });
+
+      if (response.ok) {
+        alert('Admin added successfully!');
+        fetchUserData(); // Refresh the user data
+      } else {
+        alert('Failed to add admin.');
+      }
+    } catch (error) {
+      console.error('Error adding admin:', error);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -43,38 +138,59 @@ export default function AdminPage() {
         {/* User Accounts Section */}
         <div className={styles.userAccounts}>
           <h2>User Accounts</h2>
-          <p>Total Users: {totalUsers !== null ? totalUsers : 'Loading...'}</p>
-          <p>Active: {activeUsers !== null ? activeUsers : 'Loading...'}</p>
-          <p>Inactive: {inactiveUsers !== null ? inactiveUsers : 'Loading...'}</p>
+          <p>Total Users: {totalUsers !== null ? totalUsers : 'Loading Users...'}</p>
+          {/* <p>Active: {activeUsers == null ? activeUsers : 'Loading Active Users...'}</p>
+          <p>Inactive: {inactiveUsers == null ? inactiveUsers : 'Loading Inactive Users...'}</p> */}
           <div>
-            <button>View</button>
-            <button>Edit</button>
-            <button className={styles.deleteButton}>Delete</button>
+            <button>View Details</button>
           </div>
         </div>
 
         {/* Add Tourism Governor Section */}
         <div className={styles.tourismGovernor}>
           <h2>Add Tourism Governor</h2>
-          <label>Name:</label>
-          <input type="text" placeholder="Governor's Name" /><br />
-          <label>Username:</label>
-          <input type="text" placeholder="Unique Username" /><br />
-          <label>Password:</label>
-          <input type="text" placeholder="Auto-generated Password" disabled /><br />
-          <button>Create Governor</button>
+          <form onSubmit={handleCreateGovernor}>
+            <label>Username:</label>
+            <input
+              type="text"
+              placeholder="Unique Username"
+              value={govUsername}
+              onChange={(e) => setGovUsername(e.target.value)}
+              required
+            /><br />
+            <label>Password:</label>
+            <input
+              type="text" // Display generated password as plain text
+              value={govPassword} // You can also choose to hide this if you want
+              placeholder='Auto-Generated Password'
+              disabled
+            /><br />
+            <button type="submit">Create Governor</button>
+          </form>
         </div>
 
         {/* Add New Admin Section */}
         <div className={styles.newAdmin}>
           <h2>Add New Admin</h2>
-          <label>Name:</label>
-          <input type="text" placeholder="Admin Name" /><br />
-          <label>Username:</label>
-          <input type="text" placeholder="Unique Username" /><br />
-          <label>Password:</label>
-          <input type="password" placeholder="Strong Password" /><br />
-          <button>Add Admin</button>
+          <form onSubmit={handleAddAdmin}>
+            <label>Username:</label>
+            <input
+              type="text"
+              placeholder="Unique Username"
+              value={adminUsername}
+              onChange={(e) => setAdminUsername(e.target.value)}
+              required
+            /><br />
+            <label>Password:</label>
+            <input
+              type="password"
+              placeholder="Strong Password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              required
+            /><br />
+            <button type="submit">Add Admin</button>
+          </form>
         </div>
       </div>
 
@@ -87,12 +203,12 @@ export default function AdminPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <table border="1" style={{ width: '100%', marginTop: '10px' }}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>Username</th>
               <th>Role</th>
-              <th>Status</th>
+              <th>Email</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -101,15 +217,27 @@ export default function AdminPage() {
               <tr key={user.username}>
                 <td>{user.username}</td>
                 <td>{user.role}</td>
-                <td>{user.status}</td>
+                <td>{user.email}</td>
                 <td>
-                  <button onClick={() => handleDelete(user.username)}>Delete</button>
+                  <button className={styles.deleteButton} onClick={() => showDeleteConfirmation(user.username)}>Delete</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Confirmation Popup */}
+      {isPopupVisible && (
+        <div className={styles.popup}>
+          <div className={styles.popupContent}>
+            <h3>Are you sure you want to delete this user?</h3>
+            <button className={styles.yesButton} onClick={confirmDelete}>Yes, Delete</button>
+            <button className={styles.cancelButton} onClick={hideDeleteConfirmation}>Cancel</button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

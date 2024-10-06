@@ -1,12 +1,14 @@
 const express = require('express')
 const {
     getAllAdmins,
+    getUsers,
     deleteAccount,
     addAdmin,
     addTourGov,
     addProduct,
     editProduct,
     getProducts,
+    getProdById,
     getAvailableProducts,
     getCategories,
     editCategory,
@@ -22,6 +24,8 @@ const router = express.Router()
 
 // Get all admins
 router.get("/", getAllAdmins)
+// Get all users
+router.get("/users",getUsers)
 
 // Delete account off system
 router.delete("/delete/:id", deleteAccount)
@@ -34,6 +38,9 @@ router.post("/governor", addTourGov)
 
 //Admin getProducts
 router.get("/products",getProducts)
+
+//Admin getProductByID
+router.get("/products/:id",getProdById)
 
 //Admin getAvailableProducts
 router.get('/availableProducts',getAvailableProducts)
@@ -67,4 +74,5 @@ router.patch('/editTag/:id',updateTag)
 
 //Admin deleteTag
 router.delete('/deleteTag/:id',deleteTag)
+
 module.exports = router

@@ -16,7 +16,7 @@ const UserSchema = new Schema({
         enum: ['tourist', 'tourGuide', 'advertiser', 'seller'],
         required: true,
     },
-    accepted: { type: Boolean, default: false },
+    accepted: { type: Boolean, default: true }, // is accepted for now until functionality is added
 }, options);
 
 UserSchema.statics.signup = async function (username, email, password, role) {
@@ -32,11 +32,16 @@ UserSchema.statics.signup = async function (username, email, password, role) {
         throw new Error('Password must be strong, must contain uppercase, number, and special character');
     }
 
-    // check if email already exists
-    const exists = await this.findOne({ email });
+    // Check if email or username already exists
+    const exists = await User.findOne({
+        $or: [
+            { email: email },
+            { username: username }
+        ]
+    });
 
     if (exists) {
-        throw new Error('Email already exists');
+        throw new Error('Email or username already exists');
     }
 
     // hash the password
@@ -63,6 +68,17 @@ const TouristSchema = new Schema({
     wallet: { type: Number, default: 0 },
 });
 
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
 // override the signup method
 TouristSchema.statics.signup = async function (username, email, password, role, nationality, mobileNumber, dob, job) {
     // validation
@@ -75,12 +91,20 @@ TouristSchema.statics.signup = async function (username, email, password, role, 
     if (!validator.isStrongPassword(password)) {
         throw new Error('Password must be strong, must contain uppercase, number, and special character');
     }
+    if (getAge(dob) < 18) {
+        throw new Error('Tourist must be at least 18 years old');
+    }
 
-    // check if email already exists
-    const exists = await this.findOne({ email });
+    // Check if email or username already exists
+    const exists = await User.findOne({
+        $or: [
+            { email: email },
+            { username: username }
+        ]
+    });
 
     if (exists) {
-        throw new Error('Email already exists');
+        throw new Error('Email or username already exists');
     }
 
     // hash the password
