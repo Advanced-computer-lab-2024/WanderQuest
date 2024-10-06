@@ -6,17 +6,22 @@ import useDeleteUser from '../hooks/useDeleteUser'; // Import custom hook
 
 export default function AdminPage() {
   const [search, setSearch] = useState('');
-  const [totalUsers, setTotalUsers] = useState(null); // Replace with backend value
-  const [activeUsers, setActiveUsers] = useState(null); // Replace with backend value
-  const [inactiveUsers, setInactiveUsers] = useState(null); // Replace with backend value
-  const [users, setUsers] = useState([]); // To hold the user data for deletion
-
+  const [totalUsers, setTotalUsers] = useState(null);
+  const [activeUsers, setActiveUsers] = useState(null);
+  const [inactiveUsers, setInactiveUsers] = useState(null);
+  const [users, setUsers] = useState([]); 
   const [govUsername, setGovUsername] = useState('');
   const [govPassword, setGovPassword] = useState('');
   const [adminUsername, setAdminUsername] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
 
-  // Placeholder function to fetch user data from backend
+  const {
+    isPopupVisible,
+    showDeleteConfirmation,
+    hideDeleteConfirmation,
+    confirmDelete
+  } = useDeleteUser(users, setUsers);
+
   const fetchUserData = async () => {
     const data = await fetch('/api/users'); // Adjust the API endpoint
     const json = await data.json();
@@ -28,7 +33,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchUserData();
-  }, []); // Fetch user data when the component mounts
+  }, []); 
 
   const checkUsernameExists = async (username) => {
     const response = await fetch('http://localhost:4001/admins'); // Adjust endpoint for other user types
@@ -37,7 +42,7 @@ export default function AdminPage() {
   };
 
   const generatePassword = (length = 10) => {
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&()";
     let password = "";
     for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * charset.length);
@@ -46,7 +51,6 @@ export default function AdminPage() {
     return password;
   };
 
-
   const handleCreateGovernor = async (e) => {
     e.preventDefault();
     const usernameExists = await checkUsernameExists(govUsername);
@@ -54,7 +58,7 @@ export default function AdminPage() {
             alert('Username already exists. Please choose a different one.');
             return;
         }
-    
+
     const generatedPassword = generatePassword();
     setGovPassword(generatedPassword); // Update state with generated password
 
@@ -143,6 +147,7 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {/* Add Tourism Governor Section */}
         <div className={styles.tourismGovernor}>
           <h2>Add Tourism Governor</h2>
           <form onSubmit={handleCreateGovernor}>
@@ -163,49 +168,11 @@ export default function AdminPage() {
             /><br />
             <button type="submit">Create Governor</button>
           </form>
-          <form onSubmit={handleCreateGovernor}>
-            <label>Username:</label>
-            <input
-              type="text"
-              placeholder="Unique Username"
-              value={govUsername}
-              onChange={(e) => setGovUsername(e.target.value)}
-              required
-            /><br />
-            <label>Password:</label>
-            <input
-              type="text" // Display generated password as plain text
-              value={govPassword} // You can also choose to hide this if you want
-              placeholder='Auto-Generated Password'
-              disabled
-            /><br />
-            <button type="submit">Create Governor</button>
-          </form>
         </div>
-
 
         {/* Add New Admin Section */}
         <div className={styles.newAdmin}>
           <h2>Add New Admin</h2>
-          <form onSubmit={handleAddAdmin}>
-            <label>Username:</label>
-            <input
-              type="text"
-              placeholder="Unique Username"
-              value={adminUsername}
-              onChange={(e) => setAdminUsername(e.target.value)}
-              required
-            /><br />
-            <label>Password:</label>
-            <input
-              type="password"
-              placeholder="Strong Password"
-              value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
-              required
-            /><br />
-            <button type="submit">Add Admin</button>
-          </form>
           <form onSubmit={handleAddAdmin}>
             <label>Username:</label>
             <input
