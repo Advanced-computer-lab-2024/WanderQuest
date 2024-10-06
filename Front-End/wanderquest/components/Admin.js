@@ -56,9 +56,10 @@ export default function AdminPage() {
       username: govUsername,
       password: generatedPassword,
     };
+    console.log(generatePassword);
 
     try {
-      const response = await fetch('http://localhost:4001/tourismGovernors', {
+      const response = await fetch('http://localhost:4000/admin/governer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ export default function AdminPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:4001/admins', { // Adjust endpoint
+      const response = await fetch('http://localhost:4000/admin/', { // Adjust endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

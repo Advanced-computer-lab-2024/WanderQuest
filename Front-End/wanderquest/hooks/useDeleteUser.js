@@ -17,7 +17,7 @@ export default function useDeleteUser(users, setUsers) {
 
   const deleteUserFromBackend = async (username) => {
     try {
-      const response = await fetch(`http://localhost:4001/users/${username}`, {
+      const response = await fetch(`http://localhost:4000/admin/delete/:id`, {
         method: 'DELETE',
       });
 
