@@ -34,11 +34,6 @@ export default function AdminPage() {
     setUsers(json.users); 
   }; 
 
-  const checkUsernameExists = async (username) => {
-    const response = await fetch('http://localhost:4001/admins'); // Adjust endpoint for other user types
-    const data = await response.json();
-    return data.some(user => user.username === username);
-  };
 
   const generatePassword = (length = 10) => {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&()";
@@ -52,11 +47,6 @@ export default function AdminPage() {
 
   const handleCreateGovernor = async (e) => {
     e.preventDefault();
-    const usernameExists = await checkUsernameExists(govUsername);
-        if (usernameExists) {
-            alert('Username already exists. Please choose a different one.');
-            return;
-        }
 
     const generatedPassword = generatePassword();
     setGovPassword(generatedPassword); // Update state with generated password
@@ -90,11 +80,6 @@ export default function AdminPage() {
   const handleAddAdmin = async (e) => {
     e.preventDefault(); 
 
-    const usernameExists = await checkUsernameExists(adminUsername);
-        if (usernameExists) {
-            alert('Username already exists. Please choose a different one.');
-            return;
-        }
 
     const newAdminData = {
       username: adminUsername,
