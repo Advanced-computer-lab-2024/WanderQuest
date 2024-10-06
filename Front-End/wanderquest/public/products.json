@@ -7,17 +7,17 @@
       "price": 99.99,
       "description": "High-quality wireless headphones with noise cancellation and 20-hour battery life.",
       "seller": "TechStore",
-      "ratings": 4.5,
+      "rating": 4.5,
       "reviews": [
         {
           "user": "John Doe",
           "comment": "Great sound quality and comfortable fit!",
-          "rating": 5
+          "ratings": 5
         },
         {
           "user": "Jane Smith",
           "comment": "Battery life is good, but could be better.",
-          "rating": 4
+          "ratings": 4
         }
       ]
     },
@@ -28,17 +28,17 @@
       "price": 149.99,
       "description": "Stylish smartwatch with heart rate monitoring, GPS, and fitness tracking features.",
       "seller": "GadgetWorld",
-      "ratings": 4.2,
+      "rating": 4.2,
       "reviews": [
         {
           "user": "Alice Brown",
           "comment": "I love the design and the fitness tracking is spot on.",
-          "rating": 5
+          "ratings": 5
         },
         {
           "user": "Bob Davis",
           "comment": "Works well, but GPS accuracy could be improved.",
-          "rating": 3
+          "ratings": 3
         }
       ]
     },
@@ -49,17 +49,17 @@
       "price": 799.99,
       "description": "Experience stunning visuals with this 55-inch 4K Ultra HD TV with HDR support.",
       "seller": "HomeTech",
-      "ratings": 4.8,
+      "rating": 4.8,
       "reviews": [
         {
           "user": "Chris Evans",
           "comment": "Amazing picture quality, worth every penny!",
-          "rating": 5
+          "ratings": 5
         },
         {
           "user": "David Miller",
           "comment": "Great TV, but the remote control feels a bit cheap.",
-          "rating": 4
+          "ratings": 4
         }
       ]
     }

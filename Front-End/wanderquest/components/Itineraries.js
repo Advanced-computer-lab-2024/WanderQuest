@@ -5,6 +5,29 @@ const ItineraryList = () => {
   const [itineraries, setItineraries] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const[search,setSearch]=useState('');
+  const handlesearch = () => {
+    const newprod = itineraries.filter((prod) => {
+        return search.toLowerCase() === '' || prod.title.toLowerCase().includes(search.toLowerCase())|| prod.title.toLowerCase().includes(search.toLowerCase())||prod.category.toLowerCase().includes(search.toLowerCase())||(Array.isArray(prod.tags) && prod.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase())));
+      });
+    setItineraries(newprod);
+};
+  const handlesortasc=()=>{
+    const iti=[...itineraries].sort((a,b)=>a.price-b.price)
+    setItineraries(iti)
+  }
+  const handlesortdsc=()=>{
+    const iti=[...itineraries].sort((a,b)=>b.price-a.price)
+    setItineraries(iti)
+  }
+  const handlesortratingasc=()=>{
+    const editedprod=[...itineraries].sort((a,b)=>a.rating-b.rating)
+    setItineraries(editedprod)
+  }
+  const handlesortratingdsc=()=>{
+    const editedprod=[...itineraries].sort((a,b)=>b.rating-a.rating)
+    setItineraries(editedprod)
+  }
 
   useEffect(() => {
     fetch('http://localhost:8000/itineraries')
@@ -17,7 +40,7 @@ const ItineraryList = () => {
         setError(error.message);
         setLoading(false); 
       });
-  }, []);
+  }, [search]);
 
   if (loading) {
     return <div className={styles.loading}>Loading...</div>;
@@ -30,6 +53,19 @@ const ItineraryList = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Itinerary List</h1>
+      <div className={styles.searchcom}>
+                <input 
+                    className={styles.productsearch} 
+                    onChange={(e) => setSearch(e.target.value)} 
+                    type="text" 
+                    placeholder='Enter your text' 
+                />
+                <button className={styles.searchbtn} onClick={handlesearch}>Search</button>
+            </div>
+      <button onClick={handlesortasc}>sort on price asc </button>
+      <button onClick={handlesortdsc}>sort on price dsc </button>
+      <button onClick={handlesortratingasc}>sort on Rating asc </button>
+      <button onClick={handlesortratingdsc}>sort on Rating dsc </button>
       {itineraries.map((itinerary, index) => (
         <div key={index} className={styles.itinerary}>
           <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>

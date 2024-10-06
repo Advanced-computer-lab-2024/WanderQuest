@@ -38,7 +38,9 @@
       "pickUpLocation": "Hotel in Paris",
       "dropOffLocation": "Hotel in Paris",
       "tags": [],
-      "BookingAlreadyMade": false
+      "category": "Art",
+      "BookingAlreadyMade": false,
+      "rating":5
     },
     {
       "title": "Cultural Day in Paris",
@@ -66,6 +68,8 @@
       "pickUpLocation": "Central Paris",
       "dropOffLocation": "Central Paris",
       "tags": [],
+      "rating":4,
+      "category": "far",
       "BookingAlreadyMade": false
     }
   ]

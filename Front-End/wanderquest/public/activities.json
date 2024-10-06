@@ -8,10 +8,11 @@
           "location": "Mountain Trail",
           "price": 150,
           "priceRange": "$100 - $200",
-          "category": "Outdoor",
+          "category": "Cultural",
           "tags": ["hiking", "adventure", "nature"],
           "specialDiscounts": "10% off for groups",
-          "bookingIsOpen": true
+          "bookingIsOpen": true,
+          "rating":0.5
         
       },
       {
@@ -22,10 +23,11 @@
           "location": "Downtown City",
           "price": 100,
           "priceRange": "$50 - $150",
-          "category": "City Tour",
+          "category": "Nature",
           "tags": ["culture", "city", "museum"],
           "specialDiscounts": "20% off for children",
-          "bookingIsOpen": true
+          "bookingIsOpen": true,
+          "rating":5
         
       },
       {
@@ -39,7 +41,8 @@
           "category": "Beach Activity",
           "tags": ["snorkeling", "beach", "water sports"],
           "specialDiscounts": "15% off for early bookings",
-          "bookingIsOpen": true
+          "bookingIsOpen": true,
+          "rating":3
         
       }
     

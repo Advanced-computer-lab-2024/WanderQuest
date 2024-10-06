@@ -1,90 +1,112 @@
 {
-
-    "museum":[{
-        "id": 1,
-        "name": "The Louvre Museum",
-        "description": "The world's largest art museum and a historic monument in Paris, France.",
-        "pictures": [
-            "https://example.com/louvre1.jpg",
-            "https://example.com/louvre2.jpg"
-        ],
-        "location": {
-            "address": "Rue de Rivoli, 75001 Paris, France",
-            "latitude": 48.8606,
-            "longitude": 2.3376
+    "museum": [
+        {
+            "id": 1,
+            "name": "The Louvre Museum",
+            "description": "The world's largest art museum and a historic monument in Paris, France.",
+            "pictures": [
+                "https://example.com/louvre1.jpg",
+                "https://example.com/louvre2.jpg"
+            ],
+            "location": {
+                "address": "Rue de Rivoli, 75001 Paris, France",
+                "latitude": 48.8606,
+                "longitude": 2.3376
+            },
+            "opening_hours": {
+                "Monday": "Closed",
+                "Tuesday": "9:00 AM - 6:00 PM",
+                "Wednesday": "9:00 AM - 6:00 PM",
+                "Thursday": "9:00 AM - 9:45 PM",
+                "Friday": "9:00 AM - 9:45 PM",
+                "Saturday": "9:00 AM - 6:00 PM",
+                "Sunday": "9:00 AM - 6:00 PM"
+            },
+            "ticket_prices": {
+                "adult": 17,
+                "children": 0,
+                "student": 15,
+                "senior": 15
+            },
+            "tags": [
+                "Art",
+                "Renaissance",
+                "History",
+                "Sculpture",
+                "Painting"
+            ]
         },
-        "opening_hours": {
-            "Monday": "Closed",
-            "Tuesday": "9:00 AM - 6:00 PM",
-            "Wednesday": "9:00 AM - 6:00 PM",
-            "Thursday": "9:00 AM - 9:45 PM",
-            "Friday": "9:00 AM - 9:45 PM",
-            "Saturday": "9:00 AM - 6:00 PM",
-            "Sunday": "9:00 AM - 6:00 PM"
+        {
+            "id": 2,
+            "name": "The British Museum",
+            "description": "A museum dedicated to human history, art, and culture located in London.",
+            "pictures": [
+                "https://example.com/britishmuseum1.jpg",
+                "https://example.com/britishmuseum2.jpg"
+            ],
+            "location": {
+                "address": "Great Russell St, Bloomsbury, London WC1B 3DG, UK",
+                "latitude": 51.5194,
+                "longitude": -0.1270
+            },
+            "opening_hours": {
+                "Monday": "10:00 AM - 5:30 PM",
+                "Tuesday": "10:00 AM - 5:30 PM",
+                "Wednesday": "10:00 AM - 5:30 PM",
+                "Thursday": "10:00 AM - 5:30 PM",
+                "Friday": "10:00 AM - 5:30 PM",
+                "Saturday": "10:00 AM - 5:30 PM",
+                "Sunday": "10:00 AM - 5:30 PM"
+            },
+            "ticket_prices": {
+                "adult": 0,
+                "children": 0,
+                "student": 0,
+                "senior": 0
+            },
+            "tags": [
+                "Anthropology",
+                "Ancient Civilizations",
+                "Artifacts",
+                "Cultural Heritage",
+                "Egyptology"
+            ]
         },
-        "ticket_prices": {
-            "adult": 17,
-            "children": 0,
-            "student": 15,
-            "senior": 15
+        {
+            "id": 3,
+            "name": "The Colosseum",
+            "description": "An ancient amphitheater in Rome, Italy, known for gladiatorial contests.",
+            "pictures": [
+                "https://example.com/colosseum1.jpg",
+                "https://example.com/colosseum2.jpg"
+            ],
+            "location": {
+                "address": "Piazza del Colosseo, 1, 00184 Roma RM, Italy",
+                "latitude": 41.8902,
+                "longitude": 12.4922
+            },
+            "opening_hours": {
+                "Monday": "9:00 AM - 7:00 PM",
+                "Tuesday": "9:00 AM - 7:00 PM",
+                "Wednesday": "9:00 AM - 7:00 PM",
+                "Thursday": "9:00 AM - 7:00 PM",
+                "Friday": "9:00 AM - 7:00 PM",
+                "Saturday": "9:00 AM - 7:00 PM",
+                "Sunday": "9:00 AM - 7:00 PM"
+            },
+            "ticket_prices": {
+                "adult": 16,
+                "children": 2,
+                "student": 2,
+                "senior": 2
+            },
+            "tags": [
+                "Ancient Rome",
+                "Architecture",
+                "History",
+                "Engineering",
+                "Tourist Attraction"
+            ]
         }
-    },
-    {
-        "id": 2,
-        "name": "The British Museum",
-        "description": "A museum dedicated to human history, art, and culture located in London.",
-        "pictures": [
-            "https://example.com/britishmuseum1.jpg",
-            "https://example.com/britishmuseum2.jpg"
-        ],
-        "location": {
-            "address": "Great Russell St, Bloomsbury, London WC1B 3DG, UK",
-            "latitude": 51.5194,
-            "longitude": -0.1270
-        },
-        "opening_hours": {
-            "Monday": "10:00 AM - 5:30 PM",
-            "Tuesday": "10:00 AM - 5:30 PM",
-            "Wednesday": "10:00 AM - 5:30 PM",
-            "Thursday": "10:00 AM - 5:30 PM",
-            "Friday": "10:00 AM - 5:30 PM",
-            "Saturday": "10:00 AM - 5:30 PM",
-            "Sunday": "10:00 AM - 5:30 PM"
-        },
-        "ticket_prices": {
-            "adult": 0,
-            "children": 0,
-            "student": 0,
-            "senior": 0
-        }
-    },
-    {
-        "id": 3,
-        "name": "The Colosseum",
-        "description": "An ancient amphitheater in Rome, Italy, known for gladiatorial contests.",
-        "pictures": [
-            "https://example.com/colosseum1.jpg",
-            "https://example.com/colosseum2.jpg"
-        ],
-        "location": {
-            "address": "Piazza del Colosseo, 1, 00184 Roma RM, Italy",
-            "latitude": 41.8902,
-            "longitude": 12.4922
-        },
-        "opening_hours": {
-            "Monday": "9:00 AM - 7:00 PM",
-            "Tuesday": "9:00 AM - 7:00 PM",
-            "Wednesday": "9:00 AM - 7:00 PM",
-            "Thursday": "9:00 AM - 7:00 PM",
-            "Friday": "9:00 AM - 7:00 PM",
-            "Saturday": "9:00 AM - 7:00 PM",
-            "Sunday": "9:00 AM - 7:00 PM"
-        },
-        "ticket_prices": {
-            "adult": 16,
-            "children": 2,
-            "student": 2,
-            "senior": 2
-        }
-    }]
-    }
+    ]
+}
