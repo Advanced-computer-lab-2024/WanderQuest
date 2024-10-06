@@ -10,6 +10,7 @@ const tagSchema = new Schema
     type:{type:String,required:true}
 });
 const Tags = mongoose.model('Tags',tagSchema);
+
 const PreferencedTagSchema = new Schema
 ({// for the tags to be created independantly from the places
     type:{type:String,required:true}
@@ -26,7 +27,7 @@ const placeSchema = new Schema({
     location:
     {type:String,required:true},
     openingHours:
-    [{type:String,required:true}], // array of String to make it easier to specify a range
+    {type:String,required:true},
     ticketPrices:
     [{type:Number, required:true}], // array of Numbers as it differs from [Foreigners,Students and Natives] and can store Floating Numbers
     tags:
@@ -77,6 +78,7 @@ const activityCategorySchema = new Schema({
     
 })
 const ActivityCategory = mongoose.model('Category',activityCategorySchema);
+
 //activity schema
 const activitySchema = new Schema({
     title: { type: String , required: true },
