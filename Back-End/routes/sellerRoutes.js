@@ -1,6 +1,6 @@
 const express = require('express');
-const { getProfile, updateProfile } = require('../controllers/advertiserController');
-const {getProducts, addProduct, editProduct,getAvailableProducts,getProdById} = require('../controllers/adminController');
+const { getProfile, updateProfile } = require('../controllers/sellerController');
+const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
 
@@ -12,11 +12,11 @@ const router = express.Router();
 router.get('/profile/:id', getProfile);
 router.put('/profile/:id', updateProfile);
 
-router.get('/products',getProducts);
+router.get('/products', getProducts);
 
-router.get("/products/:id",getProdById);
-router.post('/addProduct',addProduct);
-router.patch('/editProduct/:id',editProduct);
-router.get('/availableProducts',getAvailableProducts)
+router.get("/products/:id", getProdById);
+router.post('/addProduct', addProduct);
+router.patch('/editProduct/:id', editProduct);
+router.get('/availableProducts', getAvailableProducts)
 
 module.exports = router;
