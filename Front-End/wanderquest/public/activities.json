@@ -1,104 +1,52 @@
 {
     "activities": [
       {
-        "date": "2024-10-05",
-        "time": "10:00 AM",
-        "location": {
-          "name": "Eiffel Tower",
-          "google_maps_link": "https://maps.google.com/?q=Eiffel+Tower"
-        },
-        "price": {
-          "range": {
-            "min": 50,
-            "max": 100
-          }
-        },
-        "category": "Sightseeing",
-        "tags": ["landmark", "history", "architecture"],
-        "special_discounts": "10% off for students",
-        "booking_open": true
+        
+          "title": "Hiking Adventure",
+          "date": "2024-10-15T09:00:00Z",
+          "time": "09:00 AM",
+          "location": "Mountain Trail",
+          "price": 150,
+          "priceRange": "$100 - $200",
+          "category": "Cultural",
+          "tags": ["hiking", "adventure", "nature"],
+          "specialDiscounts": "10% off for groups",
+          "bookingIsOpen": true,
+          "rating":0.5
+        
       },
       {
-        "date": "2024-10-06",
-        "time": "2:00 PM",
-        "location": {
-          "name": "Louvre Museum",
-          "google_maps_link": "https://maps.google.com/?q=Louvre+Museum"
-        },
-        "price": {
-          "fixed": 20
-        },
-        "category": "Museum",
-        "tags": ["art", "culture", "history"],
-        "special_discounts": "Free for children under 12",
-        "booking_open": false
+
+          "title": "Cultural City Tour",
+          "date": "2024-11-01T10:00:00Z",
+          "time": "10:00 AM",
+          "location": "Downtown City",
+          "price": 100,
+          "priceRange": "$50 - $150",
+          "category": "Nature",
+          "tags": ["culture", "city", "museum"],
+          "specialDiscounts": "20% off for children",
+          "bookingIsOpen": true,
+          "rating":5
+        
       },
       {
-        "date": "2024-10-07",
-        "time": "6:00 PM",
-        "location": {
-          "name": "Seine River Cruise",
-          "google_maps_link": "https://maps.google.com/?q=Seine+River+Cruise"
-        },
-        "price": {
-          "fixed": 75
-        },
-        "category": "Boat Tour",
-        "tags": ["river", "night view", "romantic"],
-        "special_discounts": "15% off for groups of 5 or more",
-        "booking_open": true
-      },
-      {
-        "date": "2024-10-08",
-        "time": "9:00 AM",
-        "location": {
-          "name": "Montmartre Walking Tour",
-          "google_maps_link": "https://maps.google.com/?q=Montmartre+Walking+Tour"
-        },
-        "price": {
-          "range": {
-            "min": 30,
-            "max": 60
-          }
-        },
-        "category": "Walking Tour",
-        "tags": ["art", "walking", "history"],
-        "special_discounts": "20% off for seniors",
-        "booking_open": true
-      },
-      {
-        "date": "2024-10-09",
-        "time": "1:00 PM",
-        "location": {
-          "name": "Versailles Palace Day Trip",
-          "google_maps_link": "https://maps.google.com/?q=Versailles+Palace"
-        },
-        "price": {
-          "range": {
-            "min": 100,
-            "max": 150
-          }
-        },
-        "category": "Day Trip",
-        "tags": ["history", "royalty", "garden"],
-        "special_discounts": "Buy 1 get 1 free for children",
-        "booking_open": false
-      },
-      {
-        "date": "2024-10-10",
-        "time": "11:00 AM",
-        "location": {
-          "name": "Notre-Dame Cathedral Visit",
-          "google_maps_link": "https://maps.google.com/?q=Notre-Dame+Cathedral"
-        },
-        "price": {
-          "fixed": 15
-        },
-        "category": "Historical Site",
-        "tags": ["gothic", "religion", "architecture"],
-        "special_discounts": "Free for locals",
-        "booking_open": true
+
+          "title": "Snorkeling Adventure",
+          "date": "2024-12-05T08:00:00Z",
+          "time": "08:00 AM",
+          "location": "Coral Beach",
+          "price": 200,
+          "priceRange": "$150 - $250",
+          "category": "Beach Activity",
+          "tags": ["snorkeling", "beach", "water sports"],
+          "specialDiscounts": "15% off for early bookings",
+          "bookingIsOpen": true,
+          "rating":3
+        
       }
+    
+    
     ]
   }
   
