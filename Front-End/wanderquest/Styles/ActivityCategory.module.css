@@ -1,135 +1,156 @@
+/* General Container for the Admin Dashboard */
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .form {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .tagsList {
-    margin-top: 20px;
-  }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5; /* Light grey background */
+  justify-content: space-between; /* Space between the sections */
+  gap: 20px; /* Adjusts the spacing between boxes */
+  border: 1px solid #ccc; /* Add border for visual separation */
+  border-radius: 10px;
+}
 
-  .addTag{
-    background-color: #1A6187;
-    color: white;
-    border-radius: 4px;
-  }
-  .addTag:hover{
-    background-color: #17455C;
-    color: white;
-  }
+/* Title of the Admin Dashboard */
+.adminTitle {
+  text-align: center;
+  color: #1a6187; /* Blumine color */
+}
 
-  .showTags{
-    background-color: #038b1c;
-    color: white;
-    border-radius: 4px;
-  }
-  
-  .showTags:hover{
-    background-color: #036b14;
-    color: white;
-  }
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
-  
-  .tagScroll {
-    max-height: 200px; /* Set a max height for scrolling */
-    overflow-y: auto;  /* Enable vertical scrolling */
-  }
-  
-  .ul {
-    padding: 0;
-    list-style-type: none;
-  }
-  
-  .tagGrid {
-    padding: 0;
-    list-style-type: none;
-  }
-  
-  .tagItem {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    position: relative;
-  }
-  
-  .editInput {
-    width: 100%;
-    transition: width 0.3s ease;
-  }
-  
-  .tagButtons {
-    display: flex;
-    gap: 5px;
-    margin-top: 5px;
-  }
-  
-  .button {
-    padding: 5px 10px;
-    font-size: 12px;
-    background-color: #1A6187;
-  }
-  
-  .editButton {
-    background-color: #1A6187;
-    color: white;
-    border-radius: 4px;
-  }
+/* Form Styles */
+.form {
+  display: flex;
+  gap: 10px;
+}
 
-  .editButton:hover {
-    background-color: #17455C;
-    color: white;
-  }
-  
-  .cancelButton {
-    background-color: #f44336;
-    color: white;
-    border-radius: 4px;
-  }
+/* Tags List */
+.tagsList {
+  margin-top: 20px;
+}
 
-  .cancelButton:hover {
-    background-color: #ff0000;
-    color: white;
-  }
-  
-  .deleteButton {
-    background-color: #f44336;
-    color: white;
-    border-radius: 4px;
-  }
+/* Add Tag Button Styles */
+.addTag {
+  background-color: #1A6187; /* Blumine color */
+  color: white;
+  border-radius: 4px;
+  padding: 10px 15px; /* Added padding for button */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor for button */
+  transition: background-color 0.3s; /* Smooth transition */
+}
 
-  .deleteButton:hover {
-    background-color: #ff0000;
-    color: white;
-  }
-  
-  .success {
-    color: green;
-    margin-top: 10px;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-  
-  .editing .editInput {
-    width: 40%;
-  }
-  
+.addTag:hover {
+  background-color: #17455C; /* Elephant color on hover */
+}
+
+/* Show Tags Button Styles */
+.showTags {
+  background-color: #038b1c; /* Green color */
+  color: white;
+  border-radius: 4px;
+  padding: 10px 15px; /* Added padding for button */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor for button */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.showTags:hover {
+  background-color: #036b14; /* Darker green color on hover */
+}
+
+/* Tag Scroll Styles */
+.tagScroll {
+  max-height: 200px; /* Set a max height for scrolling */
+  overflow-y: auto;  /* Enable vertical scrolling */
+}
+
+/* List Styles */
+.ul, .tagGrid {
+  padding: 0;
+  list-style-type: none;
+}
+
+/* Tag Item Styles */
+.tagItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc; /* Light border for tag items */
+  border-radius: 5px;
+  position: relative;
+}
+
+/* Edit Input Styles */
+.editInput {
+  width: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Tag Buttons Styles */
+.tagButtons {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+/* Button Styles */
+.button {
+  padding: 5px 10px;
+  font-size: 12px;
+  background-color: #1A6187; /* Blumine color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor for button */
+  transition: background-color 0.3s; /* Smooth transition */
+  border-radius: 4px; /* Rounded corners */
+}
+
+/* Edit Button Styles */
+.editButton {
+  background-color: #1A6187; /* Blumine color */
+  color: white;
+  border-radius: 4px;
+}
+
+.editButton:hover {
+  background-color: #17455C; /* Elephant color on hover */
+}
+
+/* Cancel Button Styles */
+.cancelButton, .deleteButton {
+  background-color: #f44336; /* Light Red color */
+  color: white;
+  border: none; /* Remove border */
+  padding: 10px; /* Adjust padding */
+  cursor: pointer; /* Pointer cursor for button */
+  transition: background-color 0.3s; /* Smooth transition */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.cancelButton:hover, .deleteButton:hover {
+  background-color: #ff0000; /* Darker red color on hover */
+}
+
+/* Success and Error Messages */
+.success {
+  color: green;
+  margin-top: 10px;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Editing Input Styles */
+.editing .editInput {
+  width: 40%;
+}
