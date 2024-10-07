@@ -11,19 +11,20 @@ export default function Home() {
   return (<>
     <Navbar></Navbar>
     {/* <Itineraries></Itineraries> */}
-    <Products></Products>
+    {/* <Products></Products> */}
     {/* <Museums></Museums> */}
+    <Activities></Activities>
     {/* <Creatprod></Creatprod> */}
     <div className={styles.container}>
-    {/* <Activity></Activity> */}
+      {/* <Activity></Activity> */}
       <div className={styles.content}>
         
-        {/* <Activities></Activities> */}
+ 
       {/* <Itineraries/> */}
         {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
       </div>
     </div>
-    </>
+  </>
   );
 }

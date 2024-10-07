@@ -1,31 +1,33 @@
-// hooks/useDeleteUser.js
 import { useState } from 'react';
 
 export default function useDeleteUser(users, setUsers) {
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null); // Store the full user object
 
-  const showDeleteConfirmation = (username) => {
-    setSelectedUser(username);
+  // Show confirmation popup for delete
+  const showDeleteConfirmation = (user) => {
+    setSelectedUser(user);  // Store the user object, including _id
     setPopupVisible(true);
   };
 
+  // Hide confirmation popup
   const hideDeleteConfirmation = () => {
     setPopupVisible(false);
     setSelectedUser(null);
   };
 
-  const deleteUserFromBackend = async (username) => {
+  // Delete user from backend by ID
+  const deleteUserFromBackend = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:4001/users/${username}`, {
+      const response = await fetch(`http://localhost:4000/admin/delete/${userId}`, {  // Replace :id with actual userId
         method: 'DELETE',
       });
 
       if (response.ok) {
-        // Update the users array to remove the deleted user
-        setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
+        // Remove the deleted user from the state
+        setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
         hideDeleteConfirmation();
-        alert(`User ${username} deleted successfully.`);
+        alert('User deleted successfully.');
       } else {
         alert('Failed to delete user. Please try again.');
       }
@@ -35,9 +37,10 @@ export default function useDeleteUser(users, setUsers) {
     }
   };
 
+  // Confirm delete action
   const confirmDelete = () => {
     if (selectedUser) {
-      deleteUserFromBackend(selectedUser);
+      deleteUserFromBackend(selectedUser._id);  // Pass _id for deletion
     }
   };
 

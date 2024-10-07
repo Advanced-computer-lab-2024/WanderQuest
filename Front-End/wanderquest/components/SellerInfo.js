@@ -1,33 +1,29 @@
-"use client"
-import { useState , useEffect } from "react";
-import styles from "../Styles/Profiles.module.css"
-import jwt_decode from "jwt-decode";
+"use client";
+import { useState, useEffect } from "react";
+import styles from "../Styles/Profiles.module.css";
 
-const SellerInfo = ({initialData, OnSubmit}) => {
-    const [username,setUsername] = useState('');
+const SellerInfo = ({ userId }) => {
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [name,setName] = useState('');
+    const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-
-    
-
-    // Get the JWT token from localStorage
-    const token = localStorage.getItem('authToken'); // This should be stored during login
-    let userId = '';
-
-    if (token) {
-        const decoded = jwt_decode(token);
-        userId = decoded.id; // Assuming the user ID is stored in the token
-    } else {
-        setError('User not authenticated');
-    }
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     // Fetch the seller profile data (GET request)
     useEffect(() => {
-        if (!userId) return; // If no userId, do nothing
+        if (!userId) {
+            setError("User ID is not available.");
+            return; // Exit if userId is not provided
+        }
 
-        fetch(`http://localhost:4000/seller/profile/${userId}`)
-            .then((response) => response.json())
+        fetch(`http://localhost:4000/seller/profile/:id`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+                return response.json();
+            })
             .then((data) => {
                 setUsername(data.username || '');
                 setEmail(data.email || '');
@@ -53,12 +49,11 @@ const SellerInfo = ({initialData, OnSubmit}) => {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/seller/profile/${userId}`,
+                `http://localhost:4000/seller/profile/:id`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`, // Add the token for authentication
                     },
                     body: JSON.stringify(updatedData),
                 }
@@ -77,13 +72,17 @@ const SellerInfo = ({initialData, OnSubmit}) => {
             setError("An error occurred while updating the profile");
         }
     };
-    return(
+
+    return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
-            <h3 className={styles.h1}>My profile</h3>
+            <h3 className={styles.h1}>My Profile</h3>
+            {error && <p className={styles.error}>{error}</p>}
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
             <label>Username: </label>
             <input
                 type="text"
                 value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
             />
 
@@ -91,6 +90,7 @@ const SellerInfo = ({initialData, OnSubmit}) => {
             <input
                 type="text"
                 value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
             />
 
@@ -108,13 +108,9 @@ const SellerInfo = ({initialData, OnSubmit}) => {
                 onChange={(e) => setDescription(e.target.value)}
             />
 
-            <button>Save Changes</button>
-
+            <button type="submit">Save Changes</button>
         </form>
+    );
+};
 
-    )
-
-
-
-}
-export default SellerInfo
+export default SellerInfo;

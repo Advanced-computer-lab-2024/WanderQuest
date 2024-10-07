@@ -38,6 +38,16 @@ const updateProfile = async (req, res) => {
     }
 };
 
+// get the first tourist id
+const getTouristId = async (req, res) => {
+    try {
+        const tourist = await Tourist.findOne({});
+        res.json(tourist._id);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 const getUpcomingActivities = async (req, res) => {
     try {
         const currentDate = new Date();
@@ -68,4 +78,4 @@ const getAvailableProducts = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, getAvailableProducts, getUpcomingActivities, getUpcomingItineraries };
+module.exports = { getProfile, updateProfile, getTouristId, getAvailableProducts, getUpcomingActivities, getUpcomingItineraries };
