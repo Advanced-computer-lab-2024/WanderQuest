@@ -36,6 +36,16 @@ const updateProfile = async (req, res) => {
     }
 };
 
+//get the id of the first advertiser
+const getAdvertiserId = async (req, res) => {
+    try {
+        const advertiser = await Advertiser.findOne({});
+        res.json(advertiser._id);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //create activity
 const createActivity = async (req, res) => {
     const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
@@ -205,5 +215,5 @@ const getAllAdvertisers = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
+module.exports = { getProfile, updateProfile, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
 

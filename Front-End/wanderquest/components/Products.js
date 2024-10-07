@@ -1,15 +1,24 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
 
 const Products = () => {
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const role = "user";
+    const role = "Admin";
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     // const [filteredProducts]
+
+    const router = useRouter();
+
+    const onUpdateClick = (id) => {
+        router.push(`/editProduct/${id}`); // Programmatically navigate to the edit page
+        console.log('Update product with id:', id);
+    };
 
     const handlesearch = () => {
         const newprod = products.filter((prod) => {
@@ -40,7 +49,7 @@ const Products = () => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:9000/products')
+        fetch('http://localhost:4000/admin/products')
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('Network response was not ok');
@@ -99,7 +108,7 @@ const Products = () => {
             </div>
             {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
-                    <div className={styles.productCard} key={product.id}>
+                    <div className={styles.productCard} key={product._id}>
                         <img src={product.image} alt={product.name} className={styles.productImage} />
                         <div className={styles.productInfo}>
                             <h2>{product.name}</h2>
@@ -116,10 +125,11 @@ const Products = () => {
                                     </div>
                                 ))}
                                 {role === "Admin" && (
-                                    <div className={styles.buttonContainer}>
-                                        <button className={styles.productUpdate}>Update</button>
-                                    </div>
+                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productUpdate}>
+                                        Update
+                                    </button>
                                 )}
+
                             </div>
                         </div>
                     </div>

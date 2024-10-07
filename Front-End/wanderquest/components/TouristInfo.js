@@ -1,51 +1,68 @@
-"use client"
-import { useState , useEffect } from "react";
-import styles from "../Styles/Profiles.module.css"
-import jwt_decode from "jwt-decode";
+"use client";
+import { useState, useEffect } from "react";
+import styles from "../Styles/Profiles.module.css";
 
-const TouristInfo = ({initialData, OnSubmit}) => {
-    const [username,setUsername] = useState('');
+const TouristInfo = () => {
+    const [userId, setUserId] = useState(''); // State for storing the tourist ID
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [mobileNo, setMobileNo] = useState('');
+    const [mobileNumber, setMobileNo] = useState('');
     const [nationality, setNationality] = useState('');
     const [dob, setDob] = useState('');
-    const [occupation, setOccupation] = useState('');
-    const [wallet,setWallet] = useState('');
+    const [job, setOccupation] = useState('');
+    const [wallet, setWallet] = useState('');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
-    // Get the JWT token from localStorage
-    const token = localStorage.getItem('authToken'); // This should be stored after login
-    let userId = '';
+    // Fetch the tourist ID first
+    useEffect(() => {
+        const fetchTouristId = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/tourist/touristId`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tourist ID');
+                }
+                const touristId = await response.json(); // Assuming the backend sends the ID directly
+                console.log("Fetched tourist ID:", touristId); // Debugging line
+                setUserId(touristId); // Set the fetched ID
+            } catch (error) {
+                console.error("Error fetching tourist ID:", error);
+                setError("Error fetching tourist ID");
+            }
+        };
 
-    if (token) {
-        const decoded = jwt_decode(token);
-        userId = decoded.id; // Assuming the user ID is stored in the token
-    } else {
-        setError('User not authenticated');
-    }
+        fetchTouristId();
+    }, []);
 
     // Fetch the tourist profile data (GET request)
     useEffect(() => {
-        if (!userId) return; // If no userId, do nothing
-
-        fetch(`http://localhost:4000/tourist/profile`, {
-            headers: {
-                Authorization: `Bearer ${token}` // Send the token for authentication
+        const fetchProfile = async () => {
+            if (!userId) {
+                console.log("User ID is not available."); // Debugging line
+                return; // Exit if userId is not provided
             }
-        })
-            .then((response) => response.json())
-            .then((data) => {
+
+            try {
+                const response = await fetch(`http://localhost:4000/tourist/profile/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+                const data = await response.json();
+                console.log("Fetched tourist profile data:", data); // Debugging line
                 setUsername(data.username || '');
                 setEmail(data.email || '');
-                setMobileNo(data.mobileNo || '');
+                setMobileNo(data.mobileNumber || '');
                 setNationality(data.nationality || '');
-                setDob(data.dob || '');
-                setOccupation(data.occupation || '');
+                setDob(data.dob.split("T")[0] || '');
+                setOccupation(data.job || '');
                 setWallet(data.wallet || '');
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
-            });
+            }
+        };
+
+        fetchProfile();
     }, [userId]);
 
     // Handle form submission (PUT request)
@@ -55,21 +72,20 @@ const TouristInfo = ({initialData, OnSubmit}) => {
         const updatedData = {
             username,
             email,
-            mobileNo,
+            mobileNumber,
             nationality,
             dob,
-            occupation,
+            job,
             wallet,
         };
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tourist/profile`,
+                `http://localhost:4000/tourist/profile/${userId}`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`, // Add the token for authentication
                     },
                     body: JSON.stringify(updatedData),
                 }
@@ -78,7 +94,7 @@ const TouristInfo = ({initialData, OnSubmit}) => {
             if (response.ok) {
                 const data = await response.json();
                 setSuccessMessage("Profile updated successfully!");
-                setError(""); // Clear any error message
+                setError(''); // Clear any error message
             } else {
                 const errorData = await response.json();
                 setError(errorData.error || "Failed to update profile");
@@ -89,18 +105,21 @@ const TouristInfo = ({initialData, OnSubmit}) => {
         }
     };
 
-    return(
+    return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
-            <h3 className={styles.h1}>My profile</h3>
+            <h3 className={styles.h1}>My Profile</h3>
+            {error && <p className={styles.error}>{error}</p>}
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
             <label>Username: </label>
-            <input type="text" value={username} required readOnly/>
+            <input type="text" value={username} required readOnly />
 
             <label>Email: </label>
-            <input type="text" value={email} required readOnly/>
+            <input type="text" value={email} required readOnly />
 
             <label>Mobile Number:</label>
-            <input type="text"
-                value={mobileNo}
+            <input
+                type="text"
+                value={mobileNumber}
                 onChange={(e) => setMobileNo(e.target.value)}
                 required
             />
@@ -114,23 +133,30 @@ const TouristInfo = ({initialData, OnSubmit}) => {
             />
 
             <label>Date of Birth:</label>
-            <input type="date" value={dob} required readOnly/>
-
+            <input
+                type="date"
+                value={dob}
+                required readOnly
+            />
 
             <label>Occupation: </label>
             <input
                 type="text"
-                value={occupation}
+                value={job}
+                onChange={(e) => setOccupation(e.target.value)}
                 required
-                onChange={(e) => setOccupation(e.target.value)}           
             />
 
             <label>Wallet: </label>
-            <input type="number" value={wallet} required readOnly/>
-            
-            <button>Save Changes</button>
+            <input
+                type="number"
+                value={wallet}
+                required readOnly
+            />
 
+            <button type="submit">Save Changes</button>
         </form>
-    )
-}
-export default TouristInfo
+    );
+};
+
+export default TouristInfo;

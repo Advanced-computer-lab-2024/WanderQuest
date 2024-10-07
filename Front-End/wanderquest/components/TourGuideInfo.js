@@ -1,49 +1,68 @@
-"use client"
-import { useState , useEffect } from "react";
-import styles from "../Styles/Profiles.module.css"
-import jwt_decode from "jwt-decode";
+"use client";
+import { useState, useEffect } from "react";
+import styles from "../Styles/Profiles.module.css";
 
-const TourGuideInfo = ({initialData, OnSubmit}) => {
+const TourGuideInfo = () => {
+    const [userId, setUserId] = useState(''); // State for storing the tour guide ID
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
-    const [mobileNo, setMobileNo] = useState('');
+    const [mobileNumber, setMobileNo] = useState('');
     const [yearsOfExperience, setYearsOfExperience] = useState('');
     const [previousWork, setPreviousWork] = useState('');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
-
-    // Get the JWT token from localStorage
-    const token = localStorage.getItem('authToken'); // Assume the token is stored after login
-    let userId = '';
-
-    if (token) {
-        const decoded = jwt_decode(token);
-        userId = decoded.id; // Assuming the user ID is stored in the token
-    } else {
-        setError('User not authenticated');
-    }
-
-    // Fetch the tour guide's profile data (GET request)
+    // Fetch the tour guide ID first
     useEffect(() => {
-        if (!userId) return; // If no userId, do nothing
+        const fetchTourGuideId = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/tourGuide/tourGuideId`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tour guide ID');
+                }
+                const tourGuideId = await response.json(); // Adjust based on response structure
+                console.log("Fetched tour guide ID:", tourGuideId); // Debugging line
 
-        fetch(`http://localhost:4000/tourGuide/profile/${userId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`, // Send the token for authentication
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
+                // If the response is an object with an ID property
+                // If the response is just the ID (string), this will set it correctly.
+                setUserId(tourGuideId); 
+            } catch (error) {
+                console.error("Error fetching tour guide ID:", error);
+                setError("Error fetching tour guide ID");
+            }
+        };
+
+        fetchTourGuideId();
+    }, []);
+
+    // Fetch the tour guide profile data (GET request)
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!userId) {
+                console.log("User ID is not available."); // Debugging line
+                return; // Exit if userId is not provided
+            }
+
+            try {
+                const response = await fetch(`http://localhost:4000/tourGuide/profile/${userId}`); // Correct URL
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+                const data = await response.json();
+                console.log("Fetched tour guide profile data:", data); // Debugging line
                 setUsername(data.username || '');
                 setEmail(data.email || '');
-                setMobileNo(data.mobileNo || '');
+                setMobileNo(data.mobileNumber || '');
                 setYearsOfExperience(data.yearsOfExperience || '');
                 setPreviousWork(data.previousWork || '');
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
-            });
-    }, [userId]);
+            }
+        };
+
+        fetchProfile();
+    }, [userId]); // This useEffect depends on userId
 
     // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
@@ -52,19 +71,18 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
         const updatedData = {
             username,
             email,
-            mobileNo,
+            mobileNumber,
             yearsOfExperience,
             previousWork,
         };
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tourGuide/profile/${userId}`,
+                `http://localhost:4000/tourGuide/profile/${userId}`, // Correct URL
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`, // Add the token for authentication
                     },
                     body: JSON.stringify(updatedData),
                 }
@@ -73,7 +91,7 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
             if (response.ok) {
                 const data = await response.json();
                 setSuccessMessage("Profile updated successfully!");
-                setError(''); // Clear any error message
+                setError(""); // Clear any error message
             } else {
                 const errorData = await response.json();
                 setError(errorData.error || "Failed to update profile");
@@ -84,15 +102,16 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
         }
     };
 
-
-
-    return(
+    return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
-            <h3 className={styles.h1}>My profile</h3>
+            <h3 className={styles.h1}>My Profile</h3>
+            {error && <p className={styles.error}>{error}</p>}
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
             <label>Username: </label>
             <input
                 type="text"
                 value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
             />
 
@@ -100,14 +119,15 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
             <input
                 type="text"
                 value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
             />
 
             <label>Mobile Number: </label>
             <input
                 type="text"
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}            
+                value={mobileNumber}
+                onChange={(e) => setMobileNo(e.target.value)}
             />
 
             <label>Years of Experience:</label>
@@ -124,10 +144,9 @@ const TourGuideInfo = ({initialData, OnSubmit}) => {
                 onChange={(e) => setPreviousWork(e.target.value)}
             />
 
-            <button>Save Changes</button>
-
+            <button type="submit">Save Changes</button>
         </form>
+    );
+};
 
-    )
-}
-export default TourGuideInfo
+export default TourGuideInfo;

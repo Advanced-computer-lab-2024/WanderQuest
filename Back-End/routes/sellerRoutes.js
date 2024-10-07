@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile } = require('../controllers/sellerController');
+const { getProfile, updateProfile, getSellerId } = require('../controllers/sellerController');
 const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
@@ -11,6 +11,7 @@ const router = express.Router();
 //Change these routes when we apply the authentication
 router.get('/profile/:id', getProfile);
 router.put('/profile/:id', updateProfile);
+router.get('/sellerId', getSellerId);
 
 router.get('/products', getProducts);
 

@@ -135,7 +135,7 @@ const Activities = () => {
    * Fetches activities data from the backend API.
    */
   const fetchData = () => {
-    fetch('http://localhost:5000/activities') // Make a GET request to the API
+    fetch('http://localhost:4000/activityRoutes/activities') // Make a GET request to the API
       .then((response) => {
         if (!response.ok) {
           // If response is not OK, throw an error
@@ -203,11 +203,11 @@ const Activities = () => {
 
       {/* Search input and button */}
       <div className={styles.searchcom}>
-        <input 
-          className={styles.productsearch} 
+        <input
+          className={styles.productsearch}
           onChange={(e) => setSearch(e.target.value)} // Update search state on input change
-          type="text" 
-          placeholder="Search activities..." 
+          type="text"
+          placeholder="Search activities..."
         />
         <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
       </div>
@@ -223,29 +223,29 @@ const Activities = () => {
       {/* Rating filter checkboxes */}
       <div className={styles.ratingFilters}>
         <label>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             onChange={() => handleRatingChange(1)} // Toggle rating filter for 1+
             checked={ratingFilter === 1} // Check if current filter is 1
           /> 1 or higher
         </label>
         <label>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             onChange={() => handleRatingChange(2)} // Toggle rating filter for 2+
             checked={ratingFilter === 2} // Check if current filter is 2
           /> 2 or higher
         </label>
         <label>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             onChange={() => handleRatingChange(3)} // Toggle rating filter for 3+
             checked={ratingFilter === 3} // Check if current filter is 3
           /> 3 or higher
         </label>
         <label>
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             onChange={() => handleRatingChange(4)} // Toggle rating filter for 4+
             checked={ratingFilter === 4} // Check if current filter is 4
           /> 4 or higher

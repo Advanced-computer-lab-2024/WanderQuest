@@ -33,6 +33,16 @@ const updateProfile = async (req, res) => {
     }
 };
 
+// get the first seller id
+const getSellerId = async (req, res) => {
+    try {
+        const seller = await Seller.findOne({});
+        res.json(seller._id);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //seller getProducts
 const getProducts = async (req, res) => {
     try {
@@ -91,4 +101,4 @@ const editProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, getProducts, addProduct, editProduct, getAvailableProducts };
+module.exports = { getProfile, updateProfile, getSellerId,getProducts, addProduct, editProduct, getAvailableProducts };
