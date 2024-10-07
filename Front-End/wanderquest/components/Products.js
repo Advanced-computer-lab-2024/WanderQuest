@@ -6,9 +6,10 @@ import styles from '../styles/products.module.css';
 
 
 const Products = () => {
+    
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const role = "Admin";
+    const role = "user";
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
@@ -27,7 +28,12 @@ const Products = () => {
         });
         setFilteredProducts(newprod);
     };
-
+    const clearsearch=()=>{
+        setFilteredProducts(products);
+    }
+    const ClearFilters=()=>{
+        setFilteredProducts(products);
+    }
     const handlesortasc = () => {
         const editedprod = [...filteredProducts].sort((a, b) => a.price - b.price);
         setFilteredProducts(editedprod);
@@ -98,6 +104,9 @@ const Products = () => {
                 <button onClick={handlePriceFilter}>Apply Filter</button>
             </div>
             <button onClick={handlesortasc}>Sort by Price Asc</button>
+            <button onClick={clearsearch}>clearsearch</button>
+            <button onClick={ClearFilters}>ClearFilters</button>
+            
             <button onClick={handlesortdsc}>Sort by Price Desc</button>
             <div className={styles.searchcom}>
                 <input 
@@ -111,14 +120,14 @@ const Products = () => {
             {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
                     <div className={styles.productCard} key={product._id}>
-                        <img src={product.image} alt={product.name} className={styles.productImage} />
+                        <img src={product.picture} alt={product.name} className={styles.productImage} />
                         <div className={styles.productInfo}>
                             <h2>{product.name}</h2>
                             <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
                             <p>{product.description}</p>
                             <p>Seller: {product.seller}</p>
                             <div className={styles.productRating}>
-                                <strong>Rating: </strong>{product.ratings} / 5
+                                <strong>Rating: </strong>{product.rating} / 5
                             </div>
                             <div className={styles.reviews}>
                                 {product.reviews.map((review, index) => (

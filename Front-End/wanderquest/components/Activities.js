@@ -3,7 +3,7 @@ import styles from '../styles/Activities.module.css';
 
 const Activities = () => {
   const cc = [
-    "Adventure",
+    "Historical",
     "Cultural",
     "Nature",
     "Food & Drink",
@@ -28,11 +28,13 @@ const Activities = () => {
       return search.toLowerCase() === '' ||
         prod.title.toLowerCase().includes(search.toLowerCase()) ||
         prod.category.toLowerCase().includes(search.toLowerCase()) ||
-        (Array.isArray(prod.tags) && prod.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase())));
+        (prod.tags && prod.tags.some(tag => tag.type.toLowerCase() === search.toLowerCase()));
     });
     setActivities(filteredActivities);
   };
-
+  const clearsearch=()=>{
+    setActivities(allActivities);
+}
   const handleRatingChange = (rating) => {
     setRatingFilter(ratingFilter === rating ? null : rating);
   };
@@ -95,6 +97,14 @@ const Activities = () => {
       setSelectedfilers([...selecttedfilters, catg]);
     }
   };
+//   const handlefilter = (tag) => {
+//     if (filteredtags.includes(tag)) {
+//         const temp = filteredtags.filter(t => t !== tag);
+//         setFilteredtags(temp);
+//     } else {
+//         setFilteredtags([...filteredtags, tag]);
+//     }
+// };
 
   const filteritemscat = () => {
     if (selecttedfilters.length > 0) {
@@ -108,12 +118,25 @@ const Activities = () => {
     }
   };
 
+  
+  useEffect(() => {
+    fetch('http://localhost:4000/admin/categories')
+      .then(res => res.json())
+      .then(data => {
+        setCategory(data); // Set the categories fetched from the API
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setCategory([]); // Set to an empty array on error
+      });
+  }, []);
+
   useEffect(() => {
     filteritemscat();
   }, [selecttedfilters]);
 
   const fetchData = () => {
-    fetch('http://localhost:5000/activities')
+    fetch('http://localhost:4000/tourist/upcomingActivities')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -162,11 +185,13 @@ const Activities = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Activities</h1>
 
-      {cc.map((cat, index3) => (
-        <div key={index3}>
-          <input type="checkbox" onClick={() => handlefiltercat(cat)}></input><label htmlFor="">{cat}</label>
-        </div>
-      ))}
+      {Array.isArray(category) && category.map((cat, index3) => (
+  <div key={index3}>
+    <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
+    <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
+  </div>
+))}
+
 
       <div className={styles.searchcom}>
         <input
@@ -176,6 +201,7 @@ const Activities = () => {
           placeholder="Search activities..."
         />
         <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
+        <button onClick={clearsearch}>clearsearch</button>
       </div>
 
       <div className={styles.sortButtons}>

@@ -53,7 +53,7 @@ export default function Home() {
     {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}
 
-    <Cruditinerary></Cruditinerary>
+    {/* <Cruditinerary></Cruditinerary> */}
     <div className={styles.container}>
       {/* <Activity></Activity> */}
       <div className={styles.content}>
