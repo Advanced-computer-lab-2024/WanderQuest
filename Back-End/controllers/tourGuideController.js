@@ -52,6 +52,7 @@ const myCreatedItineraries = async (req, res) => {
 //create an itinerary 
 const createItinerary = async (req, res) => {
     const {
+        title,
         activities,
         locations,
         timeline,
@@ -78,6 +79,7 @@ const createItinerary = async (req, res) => {
         }
 
         const newItinerary = await Itinerary.create({
+            title,
             activities,
             locations,
             timeline,
