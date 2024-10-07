@@ -2,14 +2,14 @@
 import ItineraryList from '../../../../components/Itineraries'; // Adjust the import path as needed
 import Navbar from '../../../../components/Navbar'; // Assuming you have a Navbar component
 
-const ItineraryPage = () => {
+const ItineraryguestPage = () => {
     return (
         <div>
             <Navbar />
             <h1>Itinerary Page</h1>
-            <ItineraryList role={"Tourist"} />
+            <ItineraryList />
         </div>
     );
 };
 
-export default ItineraryPage;
+export default ItineraryguestPage;
