@@ -2,38 +2,61 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
 
-const SellerInfo = ({ userId }) => {
+const SellerInfo = () => {
+    const [userId, setUserId] = useState(''); // State for storing the seller ID
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+    const [sellerName, setName] = useState('');
+    const [sellerDescription, setDescription] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
+    // Fetch the seller ID first
+    useEffect(() => {
+        const fetchSellerId = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/seller/sellerId`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch seller ID');
+                }
+                const sellerId = await response.json(); // Ensure we get the ID correctly
+                console.log("Fetched seller ID:", sellerId); // Debugging line
+                setUserId(sellerId); // Assuming sellerId is returned as a string
+            } catch (error) {
+                console.error("Error fetching seller ID:", error);
+                setError("Error fetching seller ID");
+            }
+        };
+
+        fetchSellerId();
+    }, []);
+
     // Fetch the seller profile data (GET request)
     useEffect(() => {
-        if (!userId) {
-            setError("User ID is not available.");
-            return; // Exit if userId is not provided
-        }
+        const fetchProfile = async () => {
+            if (!userId) {
+                console.log("User ID is not available."); // Debugging line
+                return; // Exit if userId is not provided
+            }
 
-        fetch(`http://localhost:4000/seller/profile/:id`)
-            .then((response) => {
+            try {
+                const response = await fetch(`http://localhost:4000/seller/profile/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
-                return response.json();
-            })
-            .then((data) => {
+                const data = await response.json();
+                console.log("Fetched seller profile data:", data); // Debugging line
                 setUsername(data.username || '');
                 setEmail(data.email || '');
-                setName(data.name || '');
-                setDescription(data.description || '');
-            })
-            .catch((error) => {
+                setName(data.sellerName || '');
+                setDescription(data.sellerDescription || '');
+            } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
-            });
+            }
+        };
+
+        fetchProfile();
     }, [userId]);
 
     // Handle form submission (PUT request)
@@ -43,13 +66,13 @@ const SellerInfo = ({ userId }) => {
         const updatedData = {
             username,
             email,
-            name,
-            description,
+            sellerName,
+            sellerDescription,
         };
 
         try {
             const response = await fetch(
-                `http://localhost:4000/seller/profile/:id`,
+                `http://localhost:4000/seller/profile/${userId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -97,14 +120,14 @@ const SellerInfo = ({ userId }) => {
             <label>Name:</label>
             <input
                 type="text"
-                value={name}
+                value={sellerName}
                 onChange={(e) => setName(e.target.value)}
             />
 
             <label>Description:</label>
             <input
                 type="text"
-                value={description}
+                value={sellerDescription}
                 onChange={(e) => setDescription(e.target.value)}
             />
 

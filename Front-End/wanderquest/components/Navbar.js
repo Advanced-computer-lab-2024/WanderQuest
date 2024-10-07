@@ -10,7 +10,12 @@ const Navbar = () => {
     return (
         <div className="navbar-container">
             <div className='navbar-leftside'> 
-                <img className="navbar-logo" src="/logo.png" alt="Logo" />
+                
+<Link href="/">
+    
+        <img className="navbar-logo" src="/logo.png" alt="Logo" />
+    
+</Link>
             </div>
             <div className='navbar-middleside'>
                 
@@ -23,14 +28,7 @@ const Navbar = () => {
             <Link href="/register">
                <button className='navbar-signup'>Signup</button>
             </Link>
-            <Link href="/profileInfo">
-               <button className='navbar-profile'>Profile</button>
-            </Link>
-
-            <Link href="/admin">
-               <button className='admin'>Admin</button>
-            </Link>
-
+            
             </div>
         </div>
     );

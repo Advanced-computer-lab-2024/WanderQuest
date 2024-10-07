@@ -9,7 +9,7 @@ const ProfileInfo = () => {
     <div>
         <Navbar />
         <div>
-        <TouristInfo userId="your-user-id-here"/>
+        <TouristInfo/>
         </div>
     </div>
   );

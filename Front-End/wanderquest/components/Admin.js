@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import styles from '../styles/Admin.module.css';
 import useDeleteUser from '../hooks/useDeleteUser'; // Import delete custom hook
 import useUserList from '../hooks/useUserList'; // Import list custom hook
+import Link from 'next/link';
+import PrefTag from './PrefTag';
+import ActivityCategory from './ActivityCategory';
 
 export default function AdminPage() {
   const [search, setSearch] = useState('');
@@ -217,7 +220,10 @@ export default function AdminPage() {
           </tbody>
         </table>
       </div>
-
+      <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+      <PrefTag/>
+      <ActivityCategory/>
+      </div>
       {/* Confirmation Popup */}
       {isPopupVisible && (
         <div className={styles.popup}>
