@@ -1,25 +1,43 @@
-"use client"
-import { useState , useEffect } from "react";
-import styles from "../Styles/Profiles.module.css"
+"use client";
+import { useState, useEffect } from "react";
+import styles from "../Styles/Profiles.module.css";
 
-
-const CompanyInfo = ({initialData, OnSubmit}) => {
-    const [username,setUsername] = useState('');
+const CompanyInfo = () => {
+    const [userId, setUserId] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [websiteLink, setWebsiteLink] = useState('');
     const [hotline, setHotline] = useState('');
     const [companyName, setCompanyName] = useState('');
     const [companyDescription, setCompanyDescription] = useState('');
     const [companyAddress, setCompanyAddress] = useState('');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
+    // Fetch the advertiser ID first
     useEffect(() => {
-        // Fetch user profile using the provided userId
-        if (!userId) {
-            setError("User ID is not available.");
-            return; // Exit if userId is not provided
-        }
+        fetch(`http://localhost:4000/advertiser/advertiserId`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch advertiser ID');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const advertiserId = data; // Assuming the backend sends the ID directly
+                setUserId(advertiserId);  // Store the fetched ID
+            })
+            .catch((error) => {
+                console.error("Error fetching advertiser ID:", error);
+                setError("Error fetching advertiser ID");
+            });
+    }, []);
 
-        fetch(`http://localhost:4000/advertiser/profile/:id`)
+    // Fetch the full profile using the advertiser's userId
+    useEffect(() => {
+        if (!userId) return; // Don't fetch profile if userId is not available
+
+        fetch(`http://localhost:4000/advertiser/profile/${userId}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
@@ -27,20 +45,19 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
                 return response.json();
             })
             .then((data) => {
-                setUsername(data.username || "");
-                setEmail(data.email || "");
-                setWebsiteLink(data.websiteLink || "");
-                setHotline(data.hotline || "");
-                setCompanyName(data.companyName || "");
-                setCompanyAddress(data.companyAddress || "");
-                setCompanyDescription(data.companyDescription || "");
+                setUsername(data.advertiser.username || "");
+                setEmail(data.advertiser.email || "");
+                setWebsiteLink(data.advertiser.websiteLink || "");
+                setHotline(data.advertiser.hotline || "");
+                setCompanyName(data.advertiser.companyName || "");
+                setCompanyAddress(data.advertiser.companyAddress || "");
+                setCompanyDescription(data.advertiser.companyDescription || "");
             })
             .catch((error) => {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
             });
     }, [userId]);
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,7 +74,7 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/advertiser/profile/:id`,
+                `http://localhost:4000/advertiser/profile/${userId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -80,25 +97,16 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
             setError("An error occurred while updating the profile");
         }
     };
-    
 
-
-    return(
+    return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
             <h3 className={styles.h1}>My profile</h3>
+            {error && <p className={styles.error}>{error}</p>}
             <label>Username: </label>
-            <input
-                type="text"
-                value={username}
-                required
-            />
+            <input type="text" value={username} required readOnly/>
 
             <label>Email: </label>
-            <input
-                type="text"
-                value={email}
-                required
-            />
+            <input type="text" value={email} required readOnly/>
 
             <label>Company Name:</label>
             <input
@@ -121,12 +129,11 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
                 onChange={(e) => setCompanyDescription(e.target.value)}
             />
 
-
             <label>Link to Website: </label>
             <input
                 type="text"
                 value={websiteLink}
-                onChange={(e) => setWebsiteLink(e.target.value)}            
+                onChange={(e) => setWebsiteLink(e.target.value)}
             />
 
             <label>Hotline:</label>
@@ -136,13 +143,10 @@ const CompanyInfo = ({initialData, OnSubmit}) => {
                 onChange={(e) => setHotline(e.target.value)}
             />
 
-            
-
             <button type="submit">Save Changes</button>
-
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
         </form>
+    );
+};
 
-    )
-
-}
-export default CompanyInfo
+export default CompanyInfo;

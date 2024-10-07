@@ -2,46 +2,67 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
 
-const TouristInfo = ({ userId }) => {
+const TouristInfo = () => {
+    const [userId, setUserId] = useState(''); // State for storing the tourist ID
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [mobileNo, setMobileNo] = useState('');
+    const [mobileNumber, setMobileNo] = useState('');
     const [nationality, setNationality] = useState('');
     const [dob, setDob] = useState('');
-    const [occupation, setOccupation] = useState('');
+    const [job, setOccupation] = useState('');
     const [wallet, setWallet] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
+    // Fetch the tourist ID first
+    useEffect(() => {
+        const fetchTouristId = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/tourist/touristId`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tourist ID');
+                }
+                const touristId = await response.json(); // Assuming the backend sends the ID directly
+                console.log("Fetched tourist ID:", touristId); // Debugging line
+                setUserId(touristId); // Set the fetched ID
+            } catch (error) {
+                console.error("Error fetching tourist ID:", error);
+                setError("Error fetching tourist ID");
+            }
+        };
+
+        fetchTouristId();
+    }, []);
+
     // Fetch the tourist profile data (GET request)
     useEffect(() => {
-        if (!userId) {
-            setError("User ID is not available.");
-            return; // Exit if userId is not provided
-        }
+        const fetchProfile = async () => {
+            if (!userId) {
+                console.log("User ID is not available."); // Debugging line
+                return; // Exit if userId is not provided
+            }
 
-        fetch(`http://localhost:4000/tourist/profile`, {
-            // No token required for this version
-        })
-            .then((response) => {
+            try {
+                const response = await fetch(`http://localhost:4000/tourist/profile/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
-                return response.json();
-            })
-            .then((data) => {
+                const data = await response.json();
+                console.log("Fetched tourist profile data:", data); // Debugging line
                 setUsername(data.username || '');
                 setEmail(data.email || '');
-                setMobileNo(data.mobileNo || '');
+                setMobileNo(data.mobileNumber || '');
                 setNationality(data.nationality || '');
-                setDob(data.dob || '');
-                setOccupation(data.occupation || '');
+                setDob(data.dob.split("T")[0] || '');
+                setOccupation(data.job || '');
                 setWallet(data.wallet || '');
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
-            });
+            }
+        };
+
+        fetchProfile();
     }, [userId]);
 
     // Handle form submission (PUT request)
@@ -51,16 +72,16 @@ const TouristInfo = ({ userId }) => {
         const updatedData = {
             username,
             email,
-            mobileNo,
+            mobileNumber,
             nationality,
             dob,
-            occupation,
+            job,
             wallet,
         };
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tourist/profile`,
+                `http://localhost:4000/tourist/profile/${userId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -98,7 +119,7 @@ const TouristInfo = ({ userId }) => {
             <label>Mobile Number:</label>
             <input
                 type="text"
-                value={mobileNo}
+                value={mobileNumber}
                 onChange={(e) => setMobileNo(e.target.value)}
                 required
             />
@@ -112,18 +133,26 @@ const TouristInfo = ({ userId }) => {
             />
 
             <label>Date of Birth:</label>
-            <input type="date" value={dob} required readOnly />
+            <input
+                type="date"
+                value={dob}
+                required readOnly
+            />
 
             <label>Occupation: </label>
             <input
                 type="text"
-                value={occupation}
-                required
+                value={job}
                 onChange={(e) => setOccupation(e.target.value)}
+                required
             />
 
             <label>Wallet: </label>
-            <input type="number" value={wallet} required readOnly />
+            <input
+                type="number"
+                value={wallet}
+                required readOnly
+            />
 
             <button type="submit">Save Changes</button>
         </form>

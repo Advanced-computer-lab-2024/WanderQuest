@@ -2,41 +2,67 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
 
-const TourGuideInfo = ({ userId }) => {
+const TourGuideInfo = () => {
+    const [userId, setUserId] = useState(''); // State for storing the tour guide ID
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
-    const [mobileNo, setMobileNo] = useState('');
+    const [mobileNumber, setMobileNo] = useState('');
     const [yearsOfExperience, setYearsOfExperience] = useState('');
     const [previousWork, setPreviousWork] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    // Fetch the tour guide's profile data (GET request)
+    // Fetch the tour guide ID first
     useEffect(() => {
-        if (!userId) {
-            setError("User ID is not available.");
-            return; // Exit if userId is not provided
-        }
+        const fetchTourGuideId = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/tourGuide/tourGuideId`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tour guide ID');
+                }
+                const tourGuideId = await response.json(); // Adjust based on response structure
+                console.log("Fetched tour guide ID:", tourGuideId); // Debugging line
 
-        fetch(`http://localhost:4000/tourGuide/profile/:id`)
-            .then((response) => {
+                // If the response is an object with an ID property
+                // If the response is just the ID (string), this will set it correctly.
+                setUserId(tourGuideId); 
+            } catch (error) {
+                console.error("Error fetching tour guide ID:", error);
+                setError("Error fetching tour guide ID");
+            }
+        };
+
+        fetchTourGuideId();
+    }, []);
+
+    // Fetch the tour guide profile data (GET request)
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!userId) {
+                console.log("User ID is not available."); // Debugging line
+                return; // Exit if userId is not provided
+            }
+
+            try {
+                const response = await fetch(`http://localhost:4000/tourGuide/profile/${userId}`); // Correct URL
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
-                return response.json();
-            })
-            .then((data) => {
+                const data = await response.json();
+                console.log("Fetched tour guide profile data:", data); // Debugging line
                 setUsername(data.username || '');
                 setEmail(data.email || '');
-                setMobileNo(data.mobileNo || '');
+                setMobileNo(data.mobileNumber || '');
                 setYearsOfExperience(data.yearsOfExperience || '');
                 setPreviousWork(data.previousWork || '');
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
-            });
-    }, [userId]);
+            }
+        };
+
+        fetchProfile();
+    }, [userId]); // This useEffect depends on userId
 
     // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
@@ -45,14 +71,14 @@ const TourGuideInfo = ({ userId }) => {
         const updatedData = {
             username,
             email,
-            mobileNo,
+            mobileNumber,
             yearsOfExperience,
             previousWork,
         };
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tourGuide/profile/:id`,
+                `http://localhost:4000/tourGuide/profile/${userId}`, // Correct URL
                 {
                     method: "PUT",
                     headers: {
@@ -65,7 +91,7 @@ const TourGuideInfo = ({ userId }) => {
             if (response.ok) {
                 const data = await response.json();
                 setSuccessMessage("Profile updated successfully!");
-                setError(''); // Clear any error message
+                setError(""); // Clear any error message
             } else {
                 const errorData = await response.json();
                 setError(errorData.error || "Failed to update profile");
@@ -100,7 +126,7 @@ const TourGuideInfo = ({ userId }) => {
             <label>Mobile Number: </label>
             <input
                 type="text"
-                value={mobileNo}
+                value={mobileNumber}
                 onChange={(e) => setMobileNo(e.target.value)}
             />
 
