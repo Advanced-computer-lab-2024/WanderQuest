@@ -1,0 +1,66 @@
+/* Museums.css */
+
+.container {
+    max-width: 800px; /* Limit the width for better readability */
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Stack cards vertically */
+    gap: 20px; /* Add space between cards */
+}
+
+.museum-card {
+    background-color: #fff; /* White background for cards */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+    transition: transform 0.3s, box-shadow 0.3s; /* Add transition for hover effect */
+}
+
+.museum-card:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+.museum-name {
+    font-size: 1.8rem; /* Slightly larger font size */
+    margin: 0 0 10px;
+    color: #333; /* Dark color for better contrast */
+}
+
+.museum-description {
+    font-size: 1rem;
+    color: #666; /* Lighter color for description */
+    margin-bottom: 10px; /* Add space below description */
+}
+
+.museum-pictures {
+    display: flex;
+    flex-wrap: wrap; /* Wrap images if they exceed width */
+    gap: 5px; /* Space between images */
+    margin: 10px 0; /* Space above and below */
+}
+
+.museum-image {
+    width: 100%; /* Full width for responsiveness */
+    height: auto;
+    border-radius: 4px; /* Rounded corners */
+    max-width: 100%; /* Prevent overflow */
+}
+
+.museum-location {
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333; /* Dark color for better contrast */
+}
+
+.opening-hours,
+.ticket-prices {
+    margin-top: 15px;
+}
+
+h3 {
+    margin: 10px 0 5px;
+    color: #333; /* Dark color for section headers */
+}

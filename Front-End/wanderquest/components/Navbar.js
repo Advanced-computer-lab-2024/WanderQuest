@@ -13,10 +13,11 @@ const Navbar = () => {
                 <img className="navbar-logo" src="/logo.png" alt="Logo" />
             </div>
             <div className='navbar-middleside'>
-                <button>Products</button>
-                <button>Activities</button>
-                <button>Itinerary</button>
-                <button>Historical Places</button>
+                
+                <Link href="/activities" className="navbar-link">Products</Link>
+                <button className="navbar-button">Activities</button>
+                <button className="navbar-button">Itinerary</button>
+                <button className="navbar-button">Historical Places</button>
             </div>
             <div className='navbar-rightside'>
             <Link href="/register">

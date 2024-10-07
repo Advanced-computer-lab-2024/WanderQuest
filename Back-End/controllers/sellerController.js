@@ -4,6 +4,12 @@ const { Seller } = require('../models/userModel');
 const getProfile = async (req, res) => {
     try {
         const seller = await Seller.findById(req.params.id);
+        if (!seller) {
+            return res.status(404).json({ error: 'Seller not found' });
+        }
+        if (!seller.accepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
         res.json(seller);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -13,12 +19,20 @@ const getProfile = async (req, res) => {
 // Update Seller profile
 const updateProfile = async (req, res) => {
     try {
+        const seller = await Seller.findById(req.params.id);
+        if (!seller) {
+            return res.status(404).json({ error: 'Seller not found' });
+        }
+        if (!seller.accepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
         const updatedSeller = await Seller.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedSeller);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 //seller getProducts
 const getProducts = async (req, res) => {
     try {

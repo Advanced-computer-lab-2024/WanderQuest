@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes)
 app.use('/register', registerationRoutes)
 app.use('/advertiser', advertiserRoutes)
-app.use('/seller', advertiserRoutes)
+app.use('/seller', sellerRoutes)
 app.use('/tourist', touristRoutes)
 app.use('/tourGuide', tourGuideRoutes)
 app.use('/tourismGovernor', tourGovernerRoutes)

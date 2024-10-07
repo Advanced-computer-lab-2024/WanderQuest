@@ -1,62 +1,103 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Itineraries.module.css';
-import React from 'react';
-
-// components/ItineraryList.js
-// components/ItineraryList.js
-import axios from 'axios';
-
 
 const ItineraryList = () => {
-  const [itineraries, setItineraries] = React.useState([]);
-  const [error, setError] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
+  const [itineraries, setItineraries] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const[search,setSearch]=useState('');
+  const handlesearch = () => {
+    const newprod = itineraries.filter((prod) => {
+        return search.toLowerCase() === '' || prod.title.toLowerCase().includes(search.toLowerCase())|| prod.title.toLowerCase().includes(search.toLowerCase())||prod.category.toLowerCase().includes(search.toLowerCase())||(Array.isArray(prod.tags) && prod.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase())));
+      });
+    setItineraries(newprod);
+};
+  const handlesortasc=()=>{
+    const iti=[...itineraries].sort((a,b)=>a.price-b.price)
+    setItineraries(iti)
+  }
+  const handlesortdsc=()=>{
+    const iti=[...itineraries].sort((a,b)=>b.price-a.price)
+    setItineraries(iti)
+  }
+  const handlesortratingasc=()=>{
+    const editedprod=[...itineraries].sort((a,b)=>a.rating-b.rating)
+    setItineraries(editedprod)
+  }
+  const handlesortratingdsc=()=>{
+    const editedprod=[...itineraries].sort((a,b)=>b.rating-a.rating)
+    setItineraries(editedprod)
+  }
 
-  React.useEffect(() => {
-    const fetchItineraries = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/itineraries');
-        setItineraries(response.data.itineraries);
-      } catch (error) {
+  useEffect(() => {
+    fetch('http://localhost:8000/itineraries')
+      .then(res => res.json())
+      .then(data => {
+        setItineraries(data);
+        setLoading(false); 
+      })
+      .catch(error => {
         setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchItineraries();
-  }, []);
+        setLoading(false); 
+      });
+  }, [search]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className={styles.loading}>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className={styles.error}>Error: {error}</div>;
   }
 
   return (
-    <div>
-      <h1>Itinerary List</h1>
-      {itineraries && itineraries.map((itinerary, index) => (
-        <div key={index}>
-          <h2>{itinerary.title}</h2>
-          <ul>
-            {itinerary.activities.map((activity, activityIndex) => (
-              <li key={activityIndex}>
-                <h3>{activity.name}</h3>
-                <p>
-                  Location: {activity.location.name} ({activity.location.google_maps_link})
-                </p>
-                <p>Timeline: {activity.timeline}</p>
-                <p>Duration: {activity.duration}</p>
-                <p>Language: {activity.language}</p>
-                <p>Price: ${activity.price.fixed}</p>
-                <p>Available Dates: {activity.available_dates.join(', ')}</p>
-                <p>Accessibility: {activity.accessibility}</p>
-                <p>Pickup/Dropoff: {activity.pickup_dropoff}</p>
-              </li>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Itinerary List</h1>
+      <div className={styles.searchcom}>
+                <input 
+                    className={styles.productsearch} 
+                    onChange={(e) => setSearch(e.target.value)} 
+                    type="text" 
+                    placeholder='Enter your text' 
+                />
+                <button className={styles.searchbtn} onClick={handlesearch}>Search</button>
+            </div>
+      <button onClick={handlesortasc}>sort on price asc </button>
+      <button onClick={handlesortdsc}>sort on price dsc </button>
+      <button onClick={handlesortratingasc}>sort on Rating asc </button>
+      <button onClick={handlesortratingdsc}>sort on Rating dsc </button>
+      {itineraries.map((itinerary, index) => (
+        <div key={index} className={styles.itinerary}>
+          <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
+          <div className={styles.activities}>
+            {itinerary.activities.map((activity, index1) => (
+              <div key={index1} className={styles.activity}>
+                <h3>Activity{index1+1}</h3>
+                <p><strong>Title:</strong> {activity.title}</p>
+                <p><strong>Date:</strong> {activity.date}</p>
+                <p><strong>Time:</strong> {activity.time}</p>
+                <p><strong>Location:</strong> {activity.location}</p>
+              </div>
             ))}
-          </ul>
+          </div>
+          <div className={styles.locations}>
+            {itinerary.locations.map((location1, index2) => (
+              <p key={index2}><strong>Location:</strong> {location1}</p>
+            ))}
+          </div>
+          <p><strong>Timeline:</strong> {itinerary.timeline}</p>
+          <p><strong>Duration:</strong> {itinerary.duration}</p>
+          <p><strong>Language:</strong> {itinerary.language}</p>
+          <p><strong>Price:</strong> ${itinerary.price}</p>
+          <div className={styles.dates}>
+            {itinerary.availableDates.map((date, index3) => (
+              <p key={index3} ><strong>Date:</strong> {date}</p>
+            ))}
+          </div>
+          <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
+          <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
+          <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
+          <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
         </div>
       ))}
     </div>

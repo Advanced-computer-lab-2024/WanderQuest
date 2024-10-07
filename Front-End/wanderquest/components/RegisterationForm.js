@@ -3,6 +3,7 @@ import styles from '../Styles/RegistrationForm.module.css';
 import { useState } from "react";
 import { getNames } from 'country-list';
 
+
 const RegistrationForm = () => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
@@ -19,19 +20,52 @@ const RegistrationForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
-
+    
         if (password !== confirmPassword) {
-            setError("Passwords do not match!"); // Set error message
-            return; // Stop form submission
+            setError("Passwords do not match!");
+            return;
         }
-
-        // Proceed with form submission logic (e.g., send data to the server)
-        setError(""); // Clear any previous error messages
-        console.log("Form submitted successfully!");
-        // Add your submission logic here (e.g., API call)
-
-        // Example submission code can be added here
+        
+        // User data that will be sent to the server
+        const userData = {
+            email,
+            username,
+            password,
+            mobileNumber: mobileNo,
+            role: userType,
+            nationality,
+            dob: dateOfBirth,
+            job:occupation
+        };
+        
+        // Clear error messages before making the request
+        setError(""); 
+    
+        // Make the API call to the backend
+        fetch('http://localhost:4000/register/', { 
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)  // Send userData as the request body
+        })
+        .then(response => response.json())  // Parse the response
+        .then(data => {
+            if (data.error) {
+                // Handle server errors (e.g., validation issues)
+                setError(data.error);
+            } else {
+                // Handle success (e.g., redirect to login or another page)
+                console.log("Registration successful:", data);
+            }
+        })
+        .catch(err => {
+            // Handle fetch errors
+            setError("Something went wrong. Please try again.");
+            console.error("Error:", err);
+        });
     };
+    
 
 
 

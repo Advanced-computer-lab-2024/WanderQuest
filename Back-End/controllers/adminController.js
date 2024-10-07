@@ -1,8 +1,8 @@
 const AdminModel = require('../models/adminModel');
 const { User } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
-const ProdModel = require('../models/objectModel').Product; 
-const CategoryModel = require('../models/objectModel').ActivityCategory; 
+const ProdModel = require('../models/objectModel').Product;
+const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const mongoose = require('mongoose');
 
@@ -15,7 +15,15 @@ const getAllAdmins = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 };
-
+//getAllUsers
+const getUsers = async (req, res) => {
+    try {
+        const users = await User.find({})
+        res.status(200).json(users)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
 // Delete account off system
 const deleteAccount = async (req, res) => {
     const { id } = req.params;
@@ -29,7 +37,7 @@ const deleteAccount = async (req, res) => {
     }
 
     try {
-        if(userAccount){
+        if (userAccount) {
             userAccount = await User.findByIdAndDelete(id);
             res.status(200).json({ message: 'Account deleted', userAccount });
         }
@@ -37,7 +45,7 @@ const deleteAccount = async (req, res) => {
             tourGovAccount = await tourGovModel.findByIdAndDelete(id);
             res.status(200).json({ message: 'Account deleted', tourGovAccount });
         }
-        
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -76,7 +84,7 @@ const addAdmin = async (req, res) => {
     }
 };
 //Admin getProducts
-const getProducts = async (req,res)=>{
+const getProducts = async (req, res) => {
     try {
         const products = await ProdModel.find({})
         res.status(200).json(products)
@@ -85,16 +93,16 @@ const getProducts = async (req,res)=>{
     }
 };
 //Admin getProdById
-const getProdById = async(req,res)=>{
+const getProdById = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ error: 'Invalid product ID' });
     }
 
     try {
-        
+
         const product = await ProdModel.findById(id);
-        
+
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
@@ -115,22 +123,36 @@ const getAvailableProducts = async (req, res) => {
 };
 //Admin addProduct
 
-const addProduct = async (req,res)=>{
-    const {name,picture,price,description,seller,ratings,rating,reviews,availableAmount} = req.body;
+const addProduct = async (req, res) => {
+    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const picture = req.file;
 
     // Validate input
-    if (!name || !picture || !description  || !price ) {
+    if (!name || !picture || !description || !price) {
         return res.status(400).json({ error: 'Details and prices fields are required' });
     }
     try {
         // Checking if the username already exists
-        const existingProduct = await ProdModel.findOne({ name,price});
+        const existingProduct = await ProdModel.findOne({ name, price });
 
         if (existingProduct) {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({name,picture,price,description,seller,ratings,rating,reviews,availableAmount})
+        const product = await ProdModel.create({
+            name,
+            price,
+            description,
+            seller,
+            ratings,
+            rating,
+            reviews,
+            availableAmount,
+            picture: {
+                data: picture.buffer,
+                type: picture.mimetype
+            }
+        });
         res.status(200).json(product)
 
     } catch (error) {
@@ -138,53 +160,74 @@ const addProduct = async (req,res)=>{
     }
 
 };
-const editProduct = async (req,res)=>{
-    const {id} = req.params;
-    let updatedProd = await ProdModel.findById(id)
-    if(!updatedProd){
-        res.status(400).json({error:'Product not found'})
-    }else{
-        try {
-            updatedProd = await ProdModel.findByIdAndUpdate(id,req.body)
-            res.status(200).json(updatedProd);
-        } catch (error) {
-            res.status(400).json({error:error.message});
+
+// Admin editProduct
+const editProduct = async (req, res) => {
+    const { id } = req.params;
+    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const picture = req.file;
+
+    try {
+        let updatedProd = await ProdModel.findById(id);
+        if (!updatedProd) {
+            return res.status(400).json({ error: 'Product not found' });
         }
+
+        // Update fields if they are provided
+        if (name) updatedProd.name = name;
+        if (price) updatedProd.price = price;
+        if (description) updatedProd.description = description;
+        if (seller) updatedProd.seller = seller;
+        if (ratings) updatedProd.ratings = ratings;
+        if (rating) updatedProd.rating = rating;
+        if (reviews) updatedProd.reviews = reviews;
+        if (availableAmount) updatedProd.availableAmount = availableAmount;
+        if (picture) {
+            updatedProd.picture = {
+                data: picture.buffer,
+                type: picture.mimetype
+            };
+        }
+
+        await updatedProd.save();
+        res.status(200).json(updatedProd);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 };
 
 //add Category
-const addCategory = async (req,res)=>{
-  const { category} = req.body;
-  if(!category){
-    return res.status(400).json({error: 'Category must be entererd'});
-  }
-  try {
-    let createdCategory = await CategoryModel.findOne({category});
-    if(createdCategory){
-        return res.status(400).json({error:'Category Already Exists'})
+const addCategory = async (req, res) => {
+    const { category } = req.body;
+    if (!category) {
+        return res.status(400).json({ error: 'Category must be entererd' });
     }
-    createdCategory = await CategoryModel.create({category});
-    res.status(200).json(createdCategory)
-  } catch (error) {
-    res.status(400).json({error:error.message});
-  }
+    try {
+        let createdCategory = await CategoryModel.findOne({ category });
+        if (createdCategory) {
+            return res.status(400).json({ error: 'Category Already Exists' })
+        }
+        createdCategory = await CategoryModel.create({ category });
+        res.status(200).json(createdCategory)
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };
-const editCategory = async (req,res)=>{
-    const {id} = req.params;
+const editCategory = async (req, res) => {
+    const { id } = req.params;
     let updatedCategory = await CategoryModel.findById(id)
-    if(!updatedCategory){
-        res.status(400).json({error:'Category not found'})
-    }else{
+    if (!updatedCategory) {
+        res.status(400).json({ error: 'Category not found' })
+    } else {
         try {
-            updatedCategory = await CategoryModel.findByIdAndUpdate(id,req.body)
+            updatedCategory = await CategoryModel.findByIdAndUpdate(id, req.body)
             res.status(200).json(updatedCategory);
         } catch (error) {
-            res.status(400).json({error:error.message});
+            res.status(400).json({ error: error.message });
         }
     }
 };
-const getCategories = async (req,res)=>{
+const getCategories = async (req, res) => {
     try {
         const categories = await CategoryModel.find({})
         res.status(200).json(categories);
@@ -192,17 +235,17 @@ const getCategories = async (req,res)=>{
         res.status(400).json({ error: error.message })
     }
 };
-const deleteCategory = async (req,res)=>{
-    const{id} = req.params;
+const deleteCategory = async (req, res) => {
+    const { id } = req.params;
     let deletedCategory = await CategoryModel.findById(id);
-    if(!deletedCategory){
-        res.status(400).json({error:'Category not found.'});
-    }else{
+    if (!deletedCategory) {
+        res.status(400).json({ error: 'Category not found.' });
+    } else {
         try {
             deletedCategory = await CategoryModel.findByIdAndDelete(id)
-            res.status(200).json({message:'Category was deleted',deletedCategory});
+            res.status(200).json({ message: 'Category was deleted', deletedCategory });
         } catch (error) {
-            res.status(400).json({error:error.message});
+            res.status(400).json({ error: error.message });
         }
     }
 };
@@ -211,9 +254,9 @@ const deleteCategory = async (req,res)=>{
 
 // Add a Tourism Governer
 const addTourGov = async (req, res) => {
-    const {username, password} = req.body;
-    if(!username || !password){
-        return res.status(400).json({error: 'Username and password are required'});
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
     }
     if (username.length < 3) {
         return res.status(400).json({ error: 'Username must be at least 3 characters long' });
@@ -258,9 +301,9 @@ const createTag = async (req, res) => {
     if (!validTypes.includes(type.toLowerCase())) {
         return res.status(400).json({ error: 'Type is not valid', "Valid Types": validTypes });
     }
-    else{
+    else {
         try {
-            const existingTag = await TagModel.findOne({ type}); // Correct model usage
+            const existingTag = await TagModel.findOne({ type }); // Correct model usage
             if (existingTag) {
                 return res.status(400).json({ error: 'Tag already exists' });
             }
@@ -272,37 +315,38 @@ const createTag = async (req, res) => {
         }
     }
 };
-const updateTag = async (req,res)=>{
-    const { id} = req.params;
+const updateTag = async (req, res) => {
+    const { id } = req.params;
     let updatedTag = await TagModel.findById(id);
-    if(!updatedTag){
-        res.status(400).json({error:'Place not found'})
-    }else{
+    if (!updatedTag) {
+        res.status(400).json({ error: 'Place not found' })
+    } else {
         try {
-            updatedTag = await TagModel.findByIdAndUpdate(id,req.body)
+            updatedTag = await TagModel.findByIdAndUpdate(id, req.body)
             res.status(200).json(updatedTag);
         } catch (error) {
-            res.status(400).json({error:error.message});
+            res.status(400).json({ error: error.message });
         }
     }
 };
-const deleteTag = async (req,res)=>{
-    const { id} = req.params;
+const deleteTag = async (req, res) => {
+    const { id } = req.params;
     let deletedTag = await TagModel.findById(id);
-    if(!deletedTag){
-        res.status(400).json({error:'Place not found'})
-    }else{
+    if (!deletedTag) {
+        res.status(400).json({ error: 'Place not found' })
+    } else {
         try {
-            deletedTag = await TagModel.findByIdAndDelete(id,req.body)
-            res.status(200).json({message:'Tag was Deleted',deletedTag});
+            deletedTag = await TagModel.findByIdAndDelete(id, req.body)
+            res.status(200).json({ message: 'Tag was Deleted', deletedTag });
         } catch (error) {
-            res.status(400).json({error:error.message});
+            res.status(400).json({ error: error.message });
         }
     }
 };
 
 module.exports = {
     getAllAdmins,
+    getUsers,
     deleteAccount,
     addAdmin,
     addTourGov,

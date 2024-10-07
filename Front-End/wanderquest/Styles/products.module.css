@@ -1,0 +1,101 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+  
+  .productCard {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    padding: 20px;
+    width: 350px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .productCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .productImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .productInfo {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .productPrice {
+    color: #4CAF50;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  
+  .productRating {
+    color: #ff9800;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .reviews {
+    margin-top: 15px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+  }
+  
+  .review {
+    font-size: 14px;
+    color: #555;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+ 
+    margin-bottom: 5px;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  .productUpdate {
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+    /* Added that to remove the underline feature of the Link tag in Next */
+    text-decoration: none;
+  }
+  
+  .productUpdate:hover {
+    background-color: #0056b3;
+    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
+  }
+  
+  .productUpdate:focus {
+    outline: none;
+  }
+.productsearch{
+    display: inline;
+}
+.searchbtn{
+    
+}
+.searchcom{
+    display: inline;
+}
