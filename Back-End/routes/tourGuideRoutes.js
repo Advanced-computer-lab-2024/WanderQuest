@@ -1,7 +1,7 @@
 const express = require('express');
 
 // controller functions
-const { getProfile, updateProfile } = require('../controllers/tourGuideController');
+const { getProfile, updateProfile, getTourGuideId } = require('../controllers/tourGuideController');
 // const requireAuth = require('../middleware/requireAuth');
 const { createItinerary ,readItinerary,updateItinerary,deleteItinerary,readItineraryById,myCreatedItineraries} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
@@ -13,6 +13,7 @@ const router = express.Router();
 // routes
 router.get('/profile/:id', getProfile);
 router.put('/profile/:id', updateProfile);
+router.get('/tourGuideId', getTourGuideId);
 router.post('/create', createItinerary);
 router.get('/itineraries', readItinerary);
 router.get('/itineraries/:id',readItineraryById);

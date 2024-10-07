@@ -22,8 +22,12 @@ const placeSchema = new Schema({
     {type:String,required:true},
     description:
     {type:String,required: true},
-    pictures:
-    [{data:Buffer,type:String,required:true}],
+    pictures: [
+        {
+            data: { type: Buffer, required: true },
+            type: { type: String, required: true }
+        }
+    ],
     location:
     {type:String,required:true},
     openingHours:
@@ -44,7 +48,10 @@ const productSchema = new Schema({
     name:
     {type:String,required:true},
     picture:
-    [{data:Buffer,type:String,required:true}],
+        {
+            data: { type: Buffer, required: true },
+            type: { type: String, required: true }
+        },
     price:
     {type:Number,required:true},
     description:
@@ -125,6 +132,7 @@ const Activity = mongoose.model('Activity' ,activitySchema);
 
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({
+    title: {type: String,required: true},
   activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
   locations: [{ type: String,required:true}],
   timeline: {type: String,required:true},

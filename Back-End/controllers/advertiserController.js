@@ -8,6 +8,12 @@ const CategoryModel = require('../models/objectModel').ActivityCategory;
 const getProfile = async (req, res) => {
     try {
         const advertiser = await Advertiser.findById(req.params.id);
+        if (!advertiser) {
+            return res.status(404).json({ error: 'Advertiser not found' });
+        }
+        if (!advertiser.accepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
         res.json({ advertiser });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -16,12 +22,29 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
+        const advertiser = await Advertiser.findById(req.params.id);
+        if (!advertiser) {
+            return res.status(404).json({ error: 'Advertiser not found' });
+        }
+        if (!advertiser.accepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
         const updatedAdvertiser = await Advertiser.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedAdvertiser);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
+//get the id of the first advertiser
+const getAdvertiserId = async (req, res) => {
+    try {
+        const advertiser = await Advertiser.findOne({});
+        res.json(advertiser._id);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
 
 //create activity
 const createActivity = async (req, res) => {
@@ -192,5 +215,5 @@ const getAllAdvertisers = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
+module.exports = { getProfile, updateProfile, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
 

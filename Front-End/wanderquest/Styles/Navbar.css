@@ -28,7 +28,7 @@ body {
     align-items: center; /* Center the signup button vertically */
 }
 
-button {
+.navbar-button {
     background-color: transparent;
     border: none;
     font-size: 20px;
@@ -37,7 +37,7 @@ button {
     margin: 0 10px; /* Add some horizontal margin for spacing */
 }
 
-button:hover {
+.navbar-button:hover {
     color: #1a6187; /* Hover effect */
 }
 
@@ -59,4 +59,20 @@ button:hover {
 .navbar-signup:hover {
     background-color: #031A29;
     color: #ffffff; 
+}
+.navbar-link {
+    text-decoration: none;
+    color: black;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.navbar-link:hover {
+    color: #1a6187;
+}
+
+.navbar-link:active {
+    color: #ffffff; /* Prevent the link from turning blue when clicked */
 }
