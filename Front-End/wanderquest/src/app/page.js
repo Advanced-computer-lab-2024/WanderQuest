@@ -8,10 +8,11 @@ import Products from "../../components/Products";
 import Museums from "../../components/Museums";
 import Creatprod from "../../components/Creatprod";
 import TagManager from "../../components/TagManager";
+import PrefTag from "../../components/PrefTag";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-    <TagManager/>
+    <PrefTag/>
     {/* <Itineraries></Itineraries> */}
     {/* <Products></Products> */}
     {/* <Museums></Museums> */}
