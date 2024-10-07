@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '/Styles/ActivityCategory.module.css';
 
@@ -46,7 +46,7 @@ const ActivityCategory = () => {
       setMessage({ type: 'success', text: 'Activity Category added successfully!' });
       setActInput('');
       setIsInputVisible(false);
-      
+
       //fetchActs(); // Re-fetch tags after successful POST
     } catch (error) {
       setMessage({ type: 'error', text: error.response?.data?.error || 'Error adding Activity Category.' });
@@ -90,7 +90,7 @@ const ActivityCategory = () => {
       setActs(updatedActs);
       setMessage({ type: 'success', text: 'Activity Category updated successfully!' });
       setIsEditing({ id: null, value: '' });
-      
+
       //fetchActs(); // Re-fetch tags after successful PATCH
     } catch (error) {
       setMessage({ type: 'error', text: error.response?.data?.error || 'Error updating Activity Category.' });

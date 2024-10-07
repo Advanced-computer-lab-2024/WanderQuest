@@ -11,6 +11,7 @@ import TagManager from "../../components/TagManager";
 import PrefTag from "../../components/PrefTag";
 import ActivityCategory from "../../components/ActivityCategory";
 import Link from 'next/link';
+import Cruditinerary from "../../components/cruditinerary";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
@@ -43,17 +44,22 @@ export default function Home() {
                <button className='tourist'>Tourist</button>
             </Link>
             </div>
+    {/* <TagManager/>
+    <PrefTag/> */}
+    {/* <ActivityCategory /> */}
     {/* <Itineraries></Itineraries> */}
     {/* <Products></Products> */}
     {/* <Museums></Museums> */}
     {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}
+
+    <Cruditinerary></Cruditinerary>
     <div className={styles.container}>
       {/* <Activity></Activity> */}
       <div className={styles.content}>
-        
- 
-      {/* <Itineraries/> */}
+
+
+        {/* <Itineraries/> */}
         {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
       </div>
