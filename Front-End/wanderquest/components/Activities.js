@@ -1,10 +1,7 @@
-// Import necessary hooks from React and styles from the CSS module
 import { useEffect, useState } from 'react';
 import styles from '../styles/Activities.module.css';
 
-// Define the Activities component
 const Activities = () => {
-  // Define an array of activity categories
   const cc = [
     "Adventure",
     "Cultural",
@@ -14,205 +11,173 @@ const Activities = () => {
     "Luxury"
   ];
 
-  // Initialize state variables using useState hook
-  const [category, setCategory] = useState([]); // Currently unused state
-  const [selecttedfilters, setSelectedfilers] = useState([]); // Tracks selected category filters
-  const [activities, setActivities] = useState([]); // Stores the currently displayed activities
-  const [allActivities, setAllActivities] = useState([]); // Stores all fetched activities
-  const [loading, setLoading] = useState(true); // Indicates if data is being loaded
-  const [error, setError] = useState(null); // Stores any error messages
-  const [search, setSearch] = useState(''); // Stores the current search query
-  const [ratingFilter, setRatingFilter] = useState(null); // Stores the current rating filter
-  const [filteredactivities, setFilteredactivities] = useState(activities); // Currently unused state
+  const [category, setCategory] = useState([]);
+  const [selecttedfilters, setSelectedfilers] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [allActivities, setAllActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
+  const [ratingFilter, setRatingFilter] = useState(null);
+  const [dateFilter, setDateFilter] = useState(''); // State for the selected date
+  const [minBudget, setMinBudget] = useState(''); // State for minimum budget
+  const [maxBudget, setMaxBudget] = useState(''); // State for maximum budget
 
-  /**
-   * Handles the search functionality by filtering activities based on the search query.
-   */
   const handleSearch = () => {
-    // Filter allActivities based on search criteria
     const filteredActivities = allActivities.filter((prod) => {
-      return search.toLowerCase() === '' || // If search is empty, include all
-        prod.title.toLowerCase().includes(search.toLowerCase()) || // Match title
-        prod.category.toLowerCase().includes(search.toLowerCase()) || // Match category
-        (Array.isArray(prod.tags) && prod.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()))); // Match any tag
+      return search.toLowerCase() === '' ||
+        prod.title.toLowerCase().includes(search.toLowerCase()) ||
+        prod.category.toLowerCase().includes(search.toLowerCase()) ||
+        (Array.isArray(prod.tags) && prod.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase())));
     });
-    setActivities(filteredActivities); // Update activities with filtered results
+    setActivities(filteredActivities);
   };
 
-  /**
-   * Toggles the rating filter. If the same rating is clicked again, it removes the filter.
-   * @param {number} rating - The rating value to filter by
-   */
   const handleRatingChange = (rating) => {
-    setRatingFilter(ratingFilter === rating ? null : rating); // Toggle rating filter
+    setRatingFilter(ratingFilter === rating ? null : rating);
   };
 
-  /**
-   * Applies the rating filter to the activities.
-   */
   const handleRatings = () => {
+    let updatedActivities = allActivities;
     if (ratingFilter !== null) {
-      // Filter activities with rating >= ratingFilter
-      const updatedActivities = allActivities.filter((activity) => activity.rating >= ratingFilter);
-      setActivities(updatedActivities); // Update activities with filtered results
-    } else {
-      setActivities(allActivities); // If no filter, show all activities
+      updatedActivities = updatedActivities.filter((activity) => activity.rating >= ratingFilter);
     }
+    setActivities(updatedActivities);
   };
 
-  /**
-   * Sorts activities by price in ascending order.
-   */
+  const filterByDate = () => {
+    let updatedActivities = allActivities;
+    if (dateFilter) {
+      updatedActivities = updatedActivities.filter((activity) => activity.date === dateFilter);
+    }
+    setActivities(updatedActivities);
+  };
+
+  const filterByBudget = () => {
+    let updatedActivities = allActivities;
+
+    // Filter activities based on the budget range
+    if (minBudget !== '' || maxBudget !== '') {
+      updatedActivities = updatedActivities.filter((activity) => {
+        const price = activity.price;
+        return (minBudget === '' || price >= minBudget) && (maxBudget === '' || price <= maxBudget);
+      });
+    }
+
+    setActivities(updatedActivities);
+  };
+
   const handlesortPriceAsc = () => {
-    const sorted = [...activities].sort((a, b) => a.price - b.price); // Clone and sort
-    setActivities(sorted); // Update activities with sorted results
+    const sorted = [...activities].sort((a, b) => a.price - b.price);
+    setActivities(sorted);
   };
 
-  /**
-   * Sorts activities by price in descending order.
-   */
   const handlesortPriceDsc = () => {
-    const sorted = [...activities].sort((a, b) => b.price - a.price); // Clone and sort
-    setActivities(sorted); // Update activities with sorted results
+    const sorted = [...activities].sort((a, b) => b.price - a.price);
+    setActivities(sorted);
   };
 
-  /**
-   * Sorts activities by rating in ascending order.
-   */
   const handlesortRatingAsc = () => {
-    const sorted = [...activities].sort((a, b) => a.rating - b.rating); // Clone and sort
-    setActivities(sorted); // Update activities with sorted results
+    const sorted = [...activities].sort((a, b) => a.rating - b.rating);
+    setActivities(sorted);
   };
 
-  /**
-   * Sorts activities by rating in descending order.
-   */
   const handlesortRatingDsc = () => {
-    const sorted = [...activities].sort((a, b) => b.rating - a.rating); // Clone and sort
-    setActivities(sorted); // Update activities with sorted results
+    const sorted = [...activities].sort((a, b) => b.rating - a.rating);
+    setActivities(sorted);
   };
 
-  /**
-   * Handles category filter selection. Adds or removes categories from selected filters.
-   * @param {string} catg - The category to filter by
-   */
   const handlefiltercat = (catg) => {
     if (selecttedfilters.includes(catg)) {
-      // If category is already selected, remove it
       let filters = selecttedfilters.filter((el) => el !== catg);
       setSelectedfilers(filters);
     } else {
-      // If category is not selected, add it
       setSelectedfilers([...selecttedfilters, catg]);
     }
   };
 
-  /**
-   * useEffect hook that triggers whenever selected filters change to filter activities by category.
-   */
-  useEffect(() => {
-    filteritemscat(); // Call the category filtering function
-  }, [selecttedfilters]); // Dependency array: runs when selecttedfilters changes
-
-  /**
-   * Filters activities based on selected categories.
-   */
   const filteritemscat = () => {
     if (selecttedfilters.length > 0) {
-      // If there are selected filters, filter activities accordingly
       let temparr = selecttedfilters.map((selectedcat) => {
-        // For each selected category, filter activities
         let temp = allActivities.filter((item) => item.category === selectedcat);
         return temp;
       });
-      setActivities(temparr.flat()); // Flatten the array and update activities
+      setActivities(temparr.flat());
     } else {
-      setActivities([...allActivities]); // If no filters, show all activities
+      setActivities([...allActivities]);
     }
   };
 
-  /**
-   * Fetches activities data from the backend API.
-   */
+  useEffect(() => {
+    filteritemscat();
+  }, [selecttedfilters]);
+
   const fetchData = () => {
-    fetch('http://localhost:5000/activities') // Make a GET request to the API
+    fetch('http://localhost:5000/activities')
       .then((response) => {
         if (!response.ok) {
-          // If response is not OK, throw an error
           throw new Error('Network response was not ok');
         }
-        return response.json(); // Parse JSON data
+        return response.json();
       })
       .then((data) => {
-        setActivities(data); // Set activities state with fetched data
-        setAllActivities(data); // Also set allActivities with fetched data
-        setLoading(false); // Set loading to false as data is fetched
+        setActivities(data);
+        setAllActivities(data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching activities:', error); // Log error to console
-        setError(error.message); // Set error state with error message
-        setLoading(false); // Set loading to false as fetching is complete
+        console.error('Error fetching activities:', error);
+        setError(error.message);
+        setLoading(false);
       });
   };
 
-  /**
-   * useEffect hook that fetches data when the component mounts or when the search query changes.
-   */
   useEffect(() => {
-    fetchData(); // Fetch activities data
-  }, [search]); // Dependency array: runs when search changes
+    fetchData();
+  }, [search]);
 
-  /**
-   * useEffect hook that applies rating filters whenever the ratingFilter state changes.
-   */
   useEffect(() => {
-    handleRatings(); // Apply rating filters
-  }, [ratingFilter]); // Dependency array: runs when ratingFilter changes
+    handleRatings();
+  }, [ratingFilter]);
 
-  // The following useEffect is commented out. It was intended to handle search on search state change.
-  // useEffect(() => {
-  //   handleSearch();
-  // }, [search]);
+  // Apply date filter whenever the dateFilter state changes
+  useEffect(() => {
+    filterByDate();
+  }, [dateFilter]);
 
-  // Render loading state if data is being fetched
+  // Apply budget filter whenever minBudget or maxBudget state changes
+  useEffect(() => {
+    filterByBudget();
+  }, [minBudget, maxBudget]);
+
   if (loading) {
     return <p className={styles.loading}>Loading activities...</p>;
   }
 
-  // Render error message if there was an error fetching data
   if (error) {
     return <p className={styles.error}>Error: {error}</p>;
   }
 
-  // Render a message if there are no activities to display
-  if (!activities || activities.length === 0) {
-    return <p className={styles.noActivities}>No activities available.</p>;
-  }
-
-  // Render the main component UI
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Activities</h1>
 
-      {/* Render category filter buttons */}
       {cc.map((cat, index3) => (
         <div key={index3}>
-          <button onClick={() => handlefiltercat(cat)}>{cat}</button>
+          <input type="checkbox" onClick={() => handlefiltercat(cat)}></input><label htmlFor="">{cat}</label>
         </div>
       ))}
 
-      {/* Search input and button */}
       <div className={styles.searchcom}>
-        <input 
-          className={styles.productsearch} 
-          onChange={(e) => setSearch(e.target.value)} // Update search state on input change
-          type="text" 
-          placeholder="Search activities..." 
+        <input
+          className={styles.productsearch}
+          onChange={(e) => setSearch(e.target.value)}
+          type="text"
+          placeholder="Search activities..."
         />
         <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
       </div>
 
-      {/* Sorting buttons */}
       <div className={styles.sortButtons}>
         <button onClick={handlesortPriceAsc}>Sort Price Asc</button>
         <button onClick={handlesortPriceDsc}>Sort Price Desc</button>
@@ -220,39 +185,67 @@ const Activities = () => {
         <button onClick={handlesortRatingDsc}>Sort Rating Desc</button>
       </div>
 
-      {/* Rating filter checkboxes */}
       <div className={styles.ratingFilters}>
         <label>
-          <input 
-            type="checkbox" 
-            onChange={() => handleRatingChange(1)} // Toggle rating filter for 1+
-            checked={ratingFilter === 1} // Check if current filter is 1
+          <input
+            type="checkbox"
+            onChange={() => handleRatingChange(1)}
+            checked={ratingFilter === 1}
           /> 1 or higher
         </label>
         <label>
-          <input 
-            type="checkbox" 
-            onChange={() => handleRatingChange(2)} // Toggle rating filter for 2+
-            checked={ratingFilter === 2} // Check if current filter is 2
+          <input
+            type="checkbox"
+            onChange={() => handleRatingChange(2)}
+            checked={ratingFilter === 2}
           /> 2 or higher
         </label>
         <label>
-          <input 
-            type="checkbox" 
-            onChange={() => handleRatingChange(3)} // Toggle rating filter for 3+
-            checked={ratingFilter === 3} // Check if current filter is 3
+          <input
+            type="checkbox"
+            onChange={() => handleRatingChange(3)}
+            checked={ratingFilter === 3}
           /> 3 or higher
         </label>
         <label>
-          <input 
-            type="checkbox" 
-            onChange={() => handleRatingChange(4)} // Toggle rating filter for 4+
-            checked={ratingFilter === 4} // Check if current filter is 4
+          <input
+            type="checkbox"
+            onChange={() => handleRatingChange(4)}
+            checked={ratingFilter === 4}
           /> 4 or higher
         </label>
       </div>
 
-      {/* Render the list of activities */}
+      {/* Date filter input */}
+      <div className={styles.dateFilter}>
+        <input 
+          type="date" 
+          onChange={(e) => setDateFilter(e.target.value)} // Update date filter state on date change
+        />
+      </div>
+
+      {/* Budget filter inputs */}
+      <div className={styles.budgetFilter}>
+        <label>
+          Min Budget: 
+          <input 
+            type="number" 
+            value={minBudget} 
+            onChange={(e) => setMinBudget(e.target.value)} 
+            placeholder="Min" 
+          />
+        </label>
+        <label>
+          Max Budget: 
+          <input 
+            type="number" 
+            value={maxBudget} 
+            onChange={(e) => setMaxBudget(e.target.value)} 
+            placeholder="Max" 
+          />
+        </label>
+      </div>
+
       {activities.map((activity) => (
         <div key={activity.id} className={styles.activity}>
           <h3>{activity.title}</h3>
@@ -275,5 +268,4 @@ const Activities = () => {
   );
 };
 
-// Export the Activities component as default export
 export default Activities;
