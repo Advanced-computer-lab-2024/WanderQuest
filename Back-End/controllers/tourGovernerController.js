@@ -126,15 +126,15 @@ const getAllTags = async (req, res) => {
 // tourism Governor createTag
 const createTag = async (req, res) => {
     const { type } = req.body;
-    const validTypes = ["monument", "museum", "religious site", "palace", "castle"];
+    // const validTypes = ["monument", "museum", "religious site", "palace", "castle","shey"];
 
     if (!type) {
         return res.status(400).json({ error: 'Type is required' });
     }
-    if (!validTypes.includes(type.toLowerCase())) {
-        return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["Monument", "Museum", "Religious Site", "Palace", "Castle"]});
-    }
-    else{
+    // if (!validTypes.includes(type.toLowerCase())) {
+    //     return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["Monument", "Museum", "Religious Site", "Palace", "Castle"]});
+    // }
+    
 
     try {
         const existingTag = await TagModel.findOne({ type}); // Correct model usage
@@ -146,7 +146,7 @@ const createTag = async (req, res) => {
         res.status(200).json(newTag);
     } catch (error) {
         res.status(400).json({ error: error.message });
-    }}
+    }
 };
 
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Itineraries.module.css';
 
-const ItineraryList = () => {
+const ItineraryList = (Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
-
+  const role=Props.role;
   const [activityDetails, setActivityDetails] = useState({});
   const [allItineraries, setAllItineraries] = useState([]);
   const [displayedItineraries, setDisplayedItineraries] = useState([]);
@@ -168,6 +168,7 @@ const clearsearch=()=>{
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Itinerary List</h1>
+      {role==="Tourist"?(
       <div className={styles.searchcom}>
         <input 
           className={styles.productsearch} 
@@ -178,7 +179,7 @@ const clearsearch=()=>{
         />
         <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
         <button onClick={clearsearch}>clearsearch</button>
-      </div>
+      </div>):(<></>)}
 
       <div className={styles.filterContainer}>
         <div className={styles.dateFilter}>

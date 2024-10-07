@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Activities.module.css';
 
-const Activities = () => {
+const Activities = (Props) => {
   const cc = [
     "Historical",
     "Cultural",
@@ -10,7 +10,7 @@ const Activities = () => {
     "Family",
     "Luxury"
   ];
-
+  const role=Props.role;
   const [category, setCategory] = useState([]);
   const [selecttedfilters, setSelectedfilers] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -192,17 +192,20 @@ const Activities = () => {
   </div>
 ))}
 
-
-      <div className={styles.searchcom}>
-        <input
-          className={styles.productsearch}
-          onChange={(e) => setSearch(e.target.value)}
-          type="text"
-          placeholder="Search activities..."
-        />
-        <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
-        <button onClick={clearsearch}>clearsearch</button>
-      </div>
+{role === "Tourist" ? (
+  <div className={styles.searchcom}>
+    <input
+      className={styles.productsearch}
+      onChange={(e) => setSearch(e.target.value)}
+      type="text"
+      placeholder="Search activities..."
+    />
+    <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
+    <button onClick={clearsearch}>Clear Search</button>
+  </div>
+) : (
+  <div></div>
+)}
 
       <div className={styles.sortButtons}>
         <button onClick={handlesortPriceAsc}>Sort Price Asc</button>

@@ -3,13 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/museum.css';
 
-const Museums = () => {
+const Museums = (Props) => {
     const [Tags,setTags]=useState([]);
     const [museums, setMuseums] = useState([]);
     const [filteredtags, setFilteredtags] = useState([]);
     const [filteredmuseums, setFilteredmuseums] = useState([]);
     const [search, setSearch] = useState('');
-
+    const role=Props.role;
     // http://localhost:4000/admin/tags
 
     const handlefilter = (tag) => {
@@ -79,7 +79,7 @@ const Museums = () => {
                 <div key={index}>
                    <label htmlFor="">{tag.type}</label> <input type="checkbox"onClick={() => handlefilter(tag)}></input>
                 </div>
-            ))}
+            ))}{role=== "Tourist"?(
             <div className={styles.museumsearchcom}>
                 <input className={styles.museumsearch} 
                        onChange={(e) => setSearch(e.target.value)} 
@@ -88,7 +88,10 @@ const Museums = () => {
                 <button className={styles.museumsearchbtn} onClick={handlesearch}>Search</button>
                 <button onClick={clearsearch}>clearsearch</button>
                 
-            </div>
+            </div>):(<></>
+
+            )}
+            
             {filteredmuseums.map((museum) => (
                 <div className='museum-card' key={museum.id}>
                     <h2 className='museum-name'>{museum.title}</h2>

@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
 
 
-const Products = (props) => {
+const adminprod = () => {
     
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const role = props.role;
+    const role = "Admin";
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
@@ -152,4 +152,4 @@ const Products = (props) => {
     );
 };
 
-export default Products;
+export default adminprod;

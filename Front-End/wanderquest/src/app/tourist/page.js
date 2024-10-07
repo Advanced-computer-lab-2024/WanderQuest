@@ -8,6 +8,15 @@ export default function Tourist() {
     const handleRedirect = () => {
         router.push('/tourist/iti');
     };
+    const handleRedirectp = () => {
+        router.push('/tourist/products');
+    };
+    const handleRedirectm = () => {
+        router.push('/tourist/musuem');
+    };
+    const handleRedirectac = () => {
+        router.push('/tourist/activity');
+    };
 
     return (
         <div>
@@ -15,6 +24,9 @@ export default function Tourist() {
             <h1>Tourist Page</h1>
             <p>Welcome to the Tourist page!</p>
             <button onClick={handleRedirect}>Go to Itinerary</button>
+            <button onClick={handleRedirectac}>Go to activity</button>
+            <button onClick={handleRedirectp}>Go to products</button>
+            <button onClick={handleRedirectm}>Go to museums</button>
         </div>
     );
 };
