@@ -2,35 +2,75 @@
 
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/museum.css';
+
 const Museums = () => {
+    const Tags = ["Travel", "Adventure", "History", "Culture", "Food", "Nature"];
     const [museums, setMuseums] = useState([]);
+    const [filteredtags, setFilteredtags] = useState([]);
+    const [filteredmuseums, setFilteredmuseums] = useState([]);
     const [search, setSearch] = useState('');
+
     const handlesearch = () => {
         const newprod = museums.filter((prod) => {
-            return search.toLowerCase() === '' || prod.name.toLowerCase().includes(search.toLowerCase())||prod.cat.toLowerCase().includes(search.toLowerCase()) ;
+            return search.toLowerCase() === '' || 
+                   prod.name.toLowerCase().includes(search.toLowerCase()) || 
+                   prod.cat.toLowerCase().includes(search.toLowerCase());
         });
-        setMuseums(newprod);
+        setFilteredmuseums(newprod);  // Set the filtered museums based on search
     };
+
+    const handlefilter = (tag) => {
+        if (filteredtags.includes(tag)) {
+            const temp = filteredtags.filter(t => t !== tag);
+            setFilteredtags(temp);
+        } else {
+            setFilteredtags([...filteredtags, tag]);
+        }
+    };
+
+    const filtertags = () => {
+        if (filteredtags.length > 0) {
+            const tempmu = museums.filter(museum => 
+                filteredtags.every(tag => museum.tags.includes(tag))  // Fix: Check if museum includes all selected tags
+            );
+            setFilteredmuseums(tempmu);
+        } else {
+            setFilteredmuseums([...museums]);  // If no tag selected, show all museums
+        }
+    };
+
+    useEffect(() => {
+        filtertags();
+    }, [filteredtags]);
 
     useEffect(() => {
         fetch('http://localhost:7000/museum')
             .then(res => res.json())
-            .then(data => setMuseums(data))
+            .then(data => {
+                setMuseums(data);
+                setFilteredmuseums(data);  // Set both state values at the start
+            })
             .catch(error => {
                 console.error('Error fetching data:', error);
                 setMuseums([]);
             });
-    }, [search]);
+    }, []);
 
     return (
         <div className='container'>
-            <div className={styles.museumsearchcom} onClick={handlesearch}>
-            <input className={styles.museumsearch} onChange={(e) => setSearch(e.target.value)} 
-                    type="text" 
-                    placeholder='Enter your text' />
-            <button className={styles.museumsearchbtn}>Search</button>
+            {Tags.map((tag, index) => (
+                <div key={index}>
+                   <label htmlFor="">{tag}</label> <input type="checkbox"onClick={() => handlefilter(tag)}></input>
+                </div>
+            ))}
+            <div className={styles.museumsearchcom}>
+                <input className={styles.museumsearch} 
+                       onChange={(e) => setSearch(e.target.value)} 
+                       type="text" 
+                       placeholder='Enter your text' />
+                <button className={styles.museumsearchbtn} onClick={handlesearch}>Search</button>
             </div>
-            {museums.map((museum) => (
+            {filteredmuseums.map((museum) => (
                 <div className='museum-card' key={museum.id}>
                     <h2 className='museum-name'>{museum.name}</h2>
                     <p className='museum-description'>{museum.description}</p>
