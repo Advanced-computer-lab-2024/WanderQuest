@@ -53,7 +53,7 @@ const Historicalplaces = () => {
         try {
             if (isUpdating) {
                 const response = await fetch(`http://localhost:4000/tourismGovernor/updatePlace/${currentPlaceId}`, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -173,14 +173,14 @@ const Historicalplaces = () => {
                             placeholder="Tags" 
                             name="tags" 
                             type="text" 
-                            value={formData.tags.join(', ')} 
+                            value={formData.tags.join(',')} 
                             onChange={handleTagsChange} 
                             required
                             />
                         </div>
                         
                         
-                        <button type="submit" className={styles.submit}>{isUpdating ? 'Update Historical Place' : 'Create Historical Place'}</button>
+                        <button onClick={handleSubmit} className={styles.submit}>{isUpdating ? 'Update Historical Place' : 'Create Historical Place'}</button>
                     </form>
                 </div>
             </div>
@@ -197,7 +197,7 @@ const Historicalplaces = () => {
                                     <p><strong>Opening Hours:</strong> {place.openingHours}</p>
                                     <p><strong>Location:</strong> {place.location}</p>
                                     <p><strong>Ticket Prices:</strong> {place.ticketPrices}</p>
-                                    <p><strong>Tags:</strong> {Array.isArray(place.tags) ? place.tags.join(', ') : place.tags}</p>
+                                    <p><strong>Tags:</strong> {Array.isArray(place.tags) ? place.tags.join(',') : place.tags}</p>
                                     </div>
                                 <button className={styles.update} onClick={() => handleUpdate(place)}>Update</button>
                                 <button className={styles.delete} onClick={() => handleDelete(place._id)}>Delete</button>
