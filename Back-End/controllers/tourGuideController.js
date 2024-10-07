@@ -48,9 +48,8 @@ const getTourGuideId = async (req, res) => {
 
 //myCreatedItineraries
 const myCreatedItineraries = async (req, res) => {
-    const myID = req.query.myID;
-    if (myID) {
-        const myItineraries = await Itinerary.find({ createdBy: myID });
+    if (req.params.id) {
+        const myItineraries = await Itinerary.find({ createdBy: req.params.id });
         res.status(200).json(myItineraries);
     } else {
         res.status(400).json({ error: 'UserID is required' })
