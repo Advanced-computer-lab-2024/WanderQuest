@@ -116,9 +116,9 @@ const TagManager = () => {
         <button className={styles.addTag} onClick={() => setIsInputVisible(!isInputVisible)}>
           {isInputVisible ? 'Cancel' : 'Add Tag'}
         </button>
-        {/* <button className={styles.showTags} onClick={() => setShowTags(!showTags)}>
+        <button className={styles.showTags} onClick={() => setShowTags(!showTags)}>
           {showTags ? 'Hide Tags' : 'Show Tags'}
-        </button> */}
+        </button>
       </div>
 
       {/* Add Tag Form */}
