@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from '/Styles/TagManager.module.css';
 
 const TagManager = () => {
   const [tagInput, setTagInput] = useState('');
-  const [tags, setTags] = useState(["Testing", "it", "out"]);
+  const [tags, setTags] = useState([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [isEditing, setIsEditing] = useState({ id: null, value: '' });
   const [showTags, setShowTags] = useState(false); // State to control visibility of the tags list
+
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/admin/tags'); // Adjust URL as needed
+        setTags(response.data);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+      }
+    };
+
+    fetchTags();
+  }, []);
 
   // Handle input change for adding a new tag
   const handleInputChange = (e) => {
@@ -15,29 +30,50 @@ const TagManager = () => {
   };
 
   // Handle form submission to add a new tag
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!tagInput.trim()) {
       setMessage({ type: 'error', text: 'Tag cannot be empty.' });
       return;
     }
+  
+    try {
+      // POST request to add a new tag
+      console.log(tagInput);
+      const response = await axios.post('http://localhost:4000/admin/addTag', { type: tagInput }); // Ensure you're sending the tag's 'type' or relevant field
+      setTags([...tags, response.data]); // Assuming the response contains the new tag object
+      setMessage({ type: 'success', text: 'Tag added successfully!' });
+      setTagInput(''); // Clear input
+      setIsInputVisible(false); // Hide input field after submission
 
-    // Add the new tag to the existing array of tags
-    setTags([...tags, tagInput]);
-    setMessage({ type: 'success', text: 'Tag added successfully!' });
-    setTagInput('');
-    setIsInputVisible(false);
+    } catch (error) {
+      console.error('Error adding tag:', error.response ? error.response.data : error.message);
+      setMessage({ type: 'error', text: 'Error adding tag.' });
+    }
   };
-
+  
+  
   // Handle deleting a tag
-  const handleDelete = (tagToDelete) => {
-    setTags(tags.filter(tag => tag !== tagToDelete));
-    setMessage({ type: 'success', text: 'Tag deleted successfully.' });
+  const handleDelete = async (tagId) => {
+    try {
+      // DELETE request to remove the tag
+      await axios.delete(`http://localhost:4000/admin/deleteTag/${tagId}`); // Send the tag ID to delete
+      setTags(tags.filter(tag => tag._id !== tagId)); // Filter out the deleted tag
+      setMessage({ type: 'success', text: 'Tag deleted successfully.' });
+
+      //fetchTags();
+    } catch (error) {
+      console.error('Error deleting tag:', error);
+      setMessage({ type: 'error', text: 'Error deleting tag.' });
+    }
   };
+  
+  
 
   // Handle initiating edit mode for a tag
   const handleEdit = (tag) => {
-    setIsEditing({ id: tag, value: tag });
+    setIsEditing({ id: tag._id, value: tag.type });
   };
 
   // Handle input change while editing a tag
@@ -46,17 +82,26 @@ const TagManager = () => {
   };
 
   // Handle submitting the edited tag
-  const handleEditSubmit = (tag) => {
+  const handleEditSubmit = async (tagId) => {
     if (!isEditing.value.trim()) {
       setMessage({ type: 'error', text: 'Tag cannot be empty.' });
       return;
     }
+  
+    try {
+      // PATCH request to update the tag
+      const response = await axios.patch(`http://localhost:4000/admin/editTag/${tagId}`, { type: isEditing.value }); // Update the tag string
+      const updatedTags = tags.map((t) => (t._id === tagId ? response.data : t)); // Update the tag in the state
+      setTags(updatedTags);
+      setMessage({ type: 'success', text: 'Tag updated successfully!' });
+      setIsEditing({ id: null, value: '' }); // Exit editing mode
 
-    const updatedTags = tags.map((t) => (t === tag ? isEditing.value : t));
-    setTags(updatedTags);
-    setMessage({ type: 'success', text: 'Tag updated successfully.' });
-    setIsEditing({ id: null, value: '' });
+    } catch (error) {
+      console.error('Error updating tag:', error);
+      setMessage({ type: 'error', text: 'Error updating tag.' });
+    }
   };
+  
 
   // Handle cancelling the edit mode
   const handleCancelEdit = () => {
@@ -106,10 +151,10 @@ const TagManager = () => {
               <ul className={styles.tagGrid}>
                 {tags.map((tag) => (
                   <li
-                    key={tag}
+                    key={tag._id}
                     className={`${styles.tagItem} ${isEditing.id === tag ? styles.editing : ''}`}
                   >
-                    {isEditing.id === tag ? (
+                    {isEditing.id === tag._id ? (
                       <>
                         <input
                           type="text"
@@ -119,7 +164,7 @@ const TagManager = () => {
                         />
                         <div className={styles.tagButtons}>
                           <button
-                            onClick={() => handleEditSubmit(tag)}
+                            onClick={() => handleEditSubmit(tag._id)}
                             className={`${styles.button} ${styles.editButton}`}
                           >
                             Save
@@ -134,7 +179,7 @@ const TagManager = () => {
                       </>
                     ) : (
                       <>
-                        <span>{tag}</span>
+                        <span>{tag.type}</span>
                         <div className={styles.tagButtons}>
                           <button
                             onClick={() => handleEdit(tag)}
@@ -143,7 +188,7 @@ const TagManager = () => {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(tag)}
+                            onClick={() => handleDelete(tag._id)}
                             className={`${styles.button} ${styles.deleteButton}`}
                           >
                             Delete
@@ -163,3 +208,6 @@ const TagManager = () => {
 };
 
 export default TagManager;
+
+
+

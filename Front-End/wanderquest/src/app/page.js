@@ -7,9 +7,11 @@ import Itineraries from "../../components/Itineraries";
 import Products from "../../components/Products";
 import Museums from "../../components/Museums";
 import Creatprod from "../../components/Creatprod";
+import TagManager from "../../components/TagManager";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
+    <TagManager/>
     {/* <Itineraries></Itineraries> */}
     {/* <Products></Products> */}
     {/* <Museums></Museums> */}
