@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
 
 const Products = () => {
@@ -12,9 +13,12 @@ const Products = () => {
     const [maxPrice, setMaxPrice] = useState('');
     // const [filteredProducts]
 
+    const router = useRouter();
+
     const onUpdateClick = (id) => {
+        router.push(`/editProduct/${id}`); // Programmatically navigate to the edit page
         console.log('Update product with id:', id);
-    }
+    };
 
     const handlesearch = () => {
         const newprod = products.filter((prod) => {
@@ -121,11 +125,9 @@ const Products = () => {
                                     </div>
                                 ))}
                                 {role === "Admin" && (
-                                    <div className={styles.productUpdate}>
-                                        <Link href={`/edit/${product._id}`} className={styles.productUpdate}>
-                                            Update
-                                        </Link>
-                                    </div>
+                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productUpdate}>
+                                        Update
+                                    </button>
                                 )}
                             </div>
                         </div>
