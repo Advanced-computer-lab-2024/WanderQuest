@@ -132,6 +132,7 @@ const Activity = mongoose.model('Activity' ,activitySchema);
 
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({
+    title: {type: String,required: true},
   activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
   locations: [{ type: String,required:true}],
   timeline: {type: String,required:true},
