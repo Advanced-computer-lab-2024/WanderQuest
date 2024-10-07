@@ -10,8 +10,8 @@ import Creatprod from "../../components/Creatprod";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-    {/* <Itineraries></Itineraries> */}
-    <Products></Products>
+    <Itineraries></Itineraries>
+    {/* <Products></Products> */}
     {/* <Museums></Museums> */}
     {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}
