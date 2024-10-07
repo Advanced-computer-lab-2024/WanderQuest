@@ -11,9 +11,9 @@ export default function Home() {
   return (<>
     <Navbar></Navbar>
     {/* <Itineraries></Itineraries> */}
-    {/* <Products></Products> */}
+    <Products></Products>
     {/* <Museums></Museums> */}
-    <Activities></Activities>
+    {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}
     <div className={styles.container}>
       {/* <Activity></Activity> */}
