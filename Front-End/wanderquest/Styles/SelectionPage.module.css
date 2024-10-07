@@ -1,0 +1,55 @@
+/* Center the container on the page */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0; /* Light background color */
+}
+
+/* Style for the heading */
+.heading {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* A container for the buttons */
+.buttonGroup {
+    display: flex;
+    gap: 20px; /* Adds space between the buttons */
+}
+
+/* Style the buttons */
+.button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    color: white;
+    background-color: #042335; /* Primary blue color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.button:hover {
+    background-color: #1a6187; /* Darker shade of blue on hover */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .heading {
+        font-size: 2rem;
+    }
+
+    .buttonGroup {
+        flex-direction: column; /* Stack buttons vertically on smaller screens */
+        gap: 15px;
+    }
+
+    .button {
+        width: 100%; /* Make buttons full width on small screens */
+    }
+}
