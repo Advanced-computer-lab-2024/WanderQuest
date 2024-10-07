@@ -1,12 +1,12 @@
 import Activity from "../../../components/activity";
 import Navbar from "../../../components/Navbar";
 
-export default function advertiser(){
+export default function advertiser() {
     return (
         <div>
-            <Navbar/>
+            <Navbar />
             <div>
-                {/* <Activity></Activity> */}
+                <Activity></Activity>
             </div>
             <h1>Advertiser Page</h1>
             <p>Welcome to the Advertiser page!</p>
