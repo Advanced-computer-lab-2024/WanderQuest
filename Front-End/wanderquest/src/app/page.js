@@ -17,9 +17,10 @@ export default function Home() {
     <div className={styles.container}>
       {/* <Activity></Activity> */}
       <div className={styles.content}>
-
+        
+        {/* <Activities></Activities> */}
         <Creatprod></Creatprod>
-        {/* <Itineraries/> */}
+      {/* <Itineraries/> */}
         {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
       </div>
