@@ -62,7 +62,7 @@ const Products = () => {
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                setProduct([]);
+                setProduct([]); 
                 setFilteredProducts([]); // Reset filtered products on error
             });
     }, []);
@@ -98,11 +98,11 @@ const Products = () => {
             <button onClick={handlesortasc}>Sort by Price Asc</button>
             <button onClick={handlesortdsc}>Sort by Price Desc</button>
             <div className={styles.searchcom}>
-                <input
-                    className={styles.productsearch}
-                    onChange={(e) => setSearch(e.target.value)}
-                    type="text"
-                    placeholder='Enter your text'
+                <input 
+                    className={styles.productsearch} 
+                    onChange={(e) => setSearch(e.target.value)} 
+                    type="text" 
+                    placeholder='Enter your text' 
                 />
                 <button className={styles.searchbtn} onClick={handlesearch}>Search</button>
             </div>
@@ -129,6 +129,7 @@ const Products = () => {
                                         Update
                                     </button>
                                 )}
+
                             </div>
                         </div>
                     </div>
