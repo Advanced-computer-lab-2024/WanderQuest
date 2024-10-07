@@ -44,8 +44,8 @@ export default function Home() {
                <button className='tourist'>Tourist</button>
             </Link>
             </div>
-    {/* <TagManager/>
-    <PrefTag/> */}
+     <TagManager/>
+    {/*<PrefTag/> */}
     {/* <ActivityCategory /> */}
     {/* <Itineraries></Itineraries> */}
     {/* <Products></Products> */}
