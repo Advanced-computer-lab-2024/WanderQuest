@@ -35,6 +35,16 @@ const updateProfile = async (req, res) => {
     }
 };
 
+//get the id of the first tour guide
+const getTourGuideId = async (req, res) => {
+    try {
+        const tourGuide = await TourGuide.findOne({});
+        res.json(tourGuide._id);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 
 //myCreatedItineraries
 const myCreatedItineraries = async (req, res) => {
@@ -194,4 +204,4 @@ const deleteItinerary = async (req, res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, createItinerary, readItinerary, updateItinerary, deleteItinerary, readItineraryById, myCreatedItineraries };
+module.exports = { getProfile, updateProfile, getTourGuideId,createItinerary, readItinerary, updateItinerary, deleteItinerary, readItineraryById, myCreatedItineraries };
