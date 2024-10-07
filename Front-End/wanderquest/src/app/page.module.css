@@ -1,12 +1,12 @@
 .container {
     position: relative;
-    height: 100vh; 
-    overflow: hidden; 
-    background-image: url('/wallpaper.jpg'); 
-    background-size: cover; 
-    background-position: center; 
+    height: 100vh;
+    overflow: hidden;
+    background-image: url('/wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
-    z-index: -1; 
+    z-index: -1;
 }
 
 .content {

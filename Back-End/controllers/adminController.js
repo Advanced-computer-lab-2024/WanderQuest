@@ -161,18 +161,38 @@ const addProduct = async (req, res) => {
 
 };
 
+// Admin editProduct
 const editProduct = async (req, res) => {
     const { id } = req.params;
-    let updatedProd = await ProdModel.findById(id)
-    if (!updatedProd) {
-        res.status(400).json({ error: 'Product not found' })
-    } else {
-        try {
-            updatedProd = await ProdModel.findByIdAndUpdate(id, req.body)
-            res.status(200).json(updatedProd);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
+    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const picture = req.file;
+
+    try {
+        let updatedProd = await ProdModel.findById(id);
+        if (!updatedProd) {
+            return res.status(400).json({ error: 'Product not found' });
         }
+
+        // Update fields if they are provided
+        if (name) updatedProd.name = name;
+        if (price) updatedProd.price = price;
+        if (description) updatedProd.description = description;
+        if (seller) updatedProd.seller = seller;
+        if (ratings) updatedProd.ratings = ratings;
+        if (rating) updatedProd.rating = rating;
+        if (reviews) updatedProd.reviews = reviews;
+        if (availableAmount) updatedProd.availableAmount = availableAmount;
+        if (picture) {
+            updatedProd.picture = {
+                data: picture.buffer,
+                type: picture.mimetype
+            };
+        }
+
+        await updatedProd.save();
+        res.status(200).json(updatedProd);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 };
 

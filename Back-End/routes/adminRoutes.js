@@ -50,8 +50,8 @@ router.get('/availableProducts', getAvailableProducts)
 //Admin addProduct
 router.post('/addProduct', upload.single('picture'), addProduct);
 
-//Admin editProduct
-router.patch("/editProduct/:id", editProduct)
+// Use multer middleware to handle file upload
+router.patch('/editProduct/:id', upload.single('picture'), editProduct);
 
 //Admin addActivityCategory
 router.post('/addCategory', addCategory)
