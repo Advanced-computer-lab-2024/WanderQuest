@@ -33,7 +33,7 @@ const TagManager = () => {
   // Handle form submission to add a new tag
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     if (!tagInput.trim()) {
       setMessage({ type: 'error', text: 'Tag cannot be empty.' });
       return;
@@ -41,17 +41,20 @@ const TagManager = () => {
   
     try {
       // POST request to add a new tag
-      console.log(tagInput);
-      const response = await axios.post('http://localhost:4000/tourismGovernor/addTag', { type: tagInput }); // Ensure you're sending the tag's 'type' or relevant field
+      const response = await axios.post('http://localhost:4000/tourismGovernor/addTag', { type: tagInput });
       setTags([...tags, response.data]); // Assuming the response contains the new tag object
       setMessage({ type: 'success', text: 'Tag added successfully!' });
       setTagInput(''); // Clear input
       setIsInputVisible(false); // Hide input field after submission
-
     } catch (error) {
-      console.error('Error adding tag:', error.response ? error.response.data : error.message);
-      setMessage({ type: 'error', text: 'Error adding tag.' });
+      // Improved error handling
+      if (error.response && error.response.data && error.response.data.error) {
+        setMessage({ type: 'error', text: error.response.data.error });
+      } else {
+        setMessage({ type: 'error', text: 'An error occurred while adding the tag.' });
+      }
     }
+  
   };
   
   
@@ -59,7 +62,7 @@ const TagManager = () => {
   const handleDelete = async (tagId) => {
     try {
       // DELETE request to remove the tag
-      await axios.delete(`http://localhost:4000/admin/deleteTag/${tagId}`); // Send the tag ID to delete
+      await axios.delete(``); // Send the tag ID to delete
       setTags(tags.filter(tag => tag._id !== tagId)); // Filter out the deleted tag
       setMessage({ type: 'success', text: 'Tag deleted successfully.' });
 
@@ -91,7 +94,7 @@ const TagManager = () => {
   
     try {
       // PATCH request to update the tag
-      const response = await axios.patch(`http://localhost:4000/admin/editTag/${tagId}`, { type: isEditing.value }); // Update the tag string
+      const response = await axios.patch(``, { type: isEditing.value }); // Update the tag string
       const updatedTags = tags.map((t) => (t._id === tagId ? response.data : t)); // Update the tag in the state
       setTags(updatedTags);
       setMessage({ type: 'success', text: 'Tag updated successfully!' });
