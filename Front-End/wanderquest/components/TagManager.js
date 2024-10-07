@@ -50,7 +50,7 @@ const TagManager = () => {
 
     } catch (error) {
       console.error('Error adding tag:', error.response ? error.response.data : error.message);
-      setMessage({ type: 'error', text: 'Error adding tag.' });
+      setMessage({ type: 'error', text: error.message });
     }
   };
   
@@ -59,7 +59,7 @@ const TagManager = () => {
   const handleDelete = async (tagId) => {
     try {
       // DELETE request to remove the tag
-      await axios.delete(`http://localhost:4000/admin/deleteTag/${tagId}`); // Send the tag ID to delete
+      await axios.delete(``); // Send the tag ID to delete
       setTags(tags.filter(tag => tag._id !== tagId)); // Filter out the deleted tag
       setMessage({ type: 'success', text: 'Tag deleted successfully.' });
 
@@ -91,7 +91,7 @@ const TagManager = () => {
   
     try {
       // PATCH request to update the tag
-      const response = await axios.patch(`http://localhost:4000/admin/editTag/${tagId}`, { type: isEditing.value }); // Update the tag string
+      const response = await axios.patch(``, { type: isEditing.value }); // Update the tag string
       const updatedTags = tags.map((t) => (t._id === tagId ? response.data : t)); // Update the tag in the state
       setTags(updatedTags);
       setMessage({ type: 'success', text: 'Tag updated successfully!' });

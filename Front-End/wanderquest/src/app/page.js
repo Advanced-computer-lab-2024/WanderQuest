@@ -44,8 +44,8 @@ export default function Home() {
                <button className='tourist'>Tourist</button>
             </Link>
             </div>
-     <TagManager/>
-    {/*<PrefTag/> */}
+    {/* <TagManager/>
+    <PrefTag/> */}
     {/* <ActivityCategory /> */}
     {/* <Itineraries></Itineraries> */}
     {/* <Products></Products> */}
@@ -53,7 +53,7 @@ export default function Home() {
     {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}
 
-    {/* <Cruditinerary></Cruditinerary> */}
+    <Cruditinerary></Cruditinerary>
     <div className={styles.container}>
       {/* <Activity></Activity> */}
       <div className={styles.content}>
