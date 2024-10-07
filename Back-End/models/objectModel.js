@@ -147,7 +147,7 @@ const itinerarySchema = new mongoose.Schema({
   pickUpLocation: {type: String, required: true},
   dropOffLocation: {type: String, required: true},
   tags:
-  [{type:tagSchema,required:false,default:null}],
+  [{type:PreferencedTagSchema,required:false,default:null}],
   ///??????????????default
   BookingAlreadyMade: {type: Boolean,default:false},
   createdBy: {
