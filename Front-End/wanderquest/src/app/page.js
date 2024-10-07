@@ -10,14 +10,41 @@ import Creatprod from "../../components/Creatprod";
 import TagManager from "../../components/TagManager";
 import PrefTag from "../../components/PrefTag";
 import ActivityCategory from "../../components/ActivityCategory";
+import Link from 'next/link';
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-    {/* <TagManager/>
-    <PrefTag/> */}
-    <ActivityCategory/>
+
+    <div>
+    <Link href="/profileInfo">
+               <button className='navbar-profile'>Profile</button>
+            </Link>
+
+            <Link href="/admin">
+               <button className='admin'>Admin</button>
+            </Link>
+
+            <Link href="/guest">
+               <button className='guest'>Guest</button>
+            </Link>
+            <Link href="/seller">
+               <button className='seller'>Seller</button>
+            </Link>
+            <Link href="/advertiser">
+               <button className='advertiser'>Advertiser</button>
+            </Link>
+            <Link href="/governer">
+               <button className='governer'>Tourism Governer</button>
+            </Link>
+            <Link href="/tourguide">
+               <button className='tour-guide'>Tour Guide</button>
+            </Link>
+            <Link href="/tourist">
+               <button className='tourist'>Tourist</button>
+            </Link>
+            </div>
     {/* <Itineraries></Itineraries> */}
-    <Products></Products>
+    {/* <Products></Products> */}
     {/* <Museums></Museums> */}
     {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}

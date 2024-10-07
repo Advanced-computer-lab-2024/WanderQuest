@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import styles from '../styles/Admin.module.css';
 import useDeleteUser from '../hooks/useDeleteUser'; // Import delete custom hook
 import useUserList from '../hooks/useUserList'; // Import list custom hook
+import Link from 'next/link';
 
 export default function AdminPage() {
   const [search, setSearch] = useState('');
