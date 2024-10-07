@@ -13,6 +13,7 @@ import ActivityCategory from "../../components/ActivityCategory";
 import Link from 'next/link';
 
 import Allcreated from "../../components/allcreated";
+import Historicalplaces from "../../components/historicalplaces";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
@@ -58,6 +59,7 @@ export default function Home() {
     <div className={styles.container}>
       {/* <Activity></Activity> */}
       <div className={styles.content}>
+         <Historicalplaces></Historicalplaces>
 
 
         {/* <Itineraries/> */}
