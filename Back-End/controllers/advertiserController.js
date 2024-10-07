@@ -146,7 +146,7 @@ const readActivities = async (req, res) => {
 }
 //get myCreatedActivities
 const myCreatedActivities = async (req, res) => {
-    const myID = req.query.myID;
+    const myID = req.params.id;
     if (myID) {
         const myActivities = await ActivityModel.find({ createdBy: myID });
         res.status(200).json(myActivities);
