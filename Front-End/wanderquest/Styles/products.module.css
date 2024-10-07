@@ -78,6 +78,8 @@
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
     box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+    /* Added that to remove the underline feature of the Link tag in Next */
+    text-decoration: none;
   }
   
   .productUpdate:hover {
