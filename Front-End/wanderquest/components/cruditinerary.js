@@ -62,16 +62,16 @@ const Cruditinerary = () => {
                 const data = await response.json();
                 console.log('Data:', data);
                 setActivitiesList(data);
-                console.log("activity list:",activitiesList);
+                console.log("activity list:", activitiesList);
 
             } catch (error) {
                 console.error('Error fetching activities:', error);
-            }   
+            }
 
 
         };
         fetchActivities();
-    }, [activitiesList]);
+    }, []);
 
 
     const handleChange = (event) => {
@@ -120,69 +120,69 @@ const Cruditinerary = () => {
                 console.error('Error updating itinerary:', error);
             }
         } else {
-            try{
-            const response = await fetch('http://localhost:4000/tourGuide/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedFormData)
-        });
+            try {
+                const response = await fetch('http://localhost:4000/tourGuide/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedFormData)
+                });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                setItineraries([...itineraries, data]);
+
+            }
+            catch (error) {
+                console.error('Error creating itinerary:', error);
+            }
+
+        }
+        setFormData({
+            title: '',
+            activities: [],
+            locations: [],
+            timeline: '',
+            duration: '',
+            language: '',
+            price: '',
+            availableDates: [],
+            time: [],
+            accessibility: false,
+            pickUpLocation: '',
+            dropOffLocation: '',
+            tags: [],
+            BookingAlreadyMade: false
+        });
+    };
+
+
+
+    const handleDelete = async (itinerary) => {
+        if (itinerary.bookingAlreadyMade) {
+            alert('Error: This itinerary has already been booked and cannot be deleted.');
+            return;
         }
 
-        const data = await response.json();
-        setItineraries([...itineraries, data]);
-                    
-                    }
-                    catch(error){
-                        console.error('Error creating itinerary:', error);
-                    }
-                    
-                }
-                setFormData({
-                    title: '',
-                    activities: [],
-                    locations: [],
-                    timeline: '',
-                    duration: '',
-                    language: '',
-                    price: '',
-                    availableDates: [],
-                    time: [],
-                    accessibility: false,
-                    pickUpLocation: '',
-                    dropOffLocation: '',
-                    tags: [],
-                    BookingAlreadyMade: false
-                });
-            };
+        try {
+            const response = await fetch(`http://localhost:4000/tourGuide/itineraries/${itinerary._id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error response:', errorData);
+                throw new Error('Network response was not ok');
+            }
 
-
-
-            const handleDelete = async (itinerary) => {
-                if (itinerary.bookingAlreadyMade) {
-                    alert('Error: This itinerary has already been booked and cannot be deleted.');
-                    return;
-                }
-            
-                try {
-                    const response = await fetch(`http://localhost:4000/tourGuide/itineraries/${itinerary._id}`, {
-                        method: 'DELETE'
-                    });
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error('Error response:', errorData);
-                        throw new Error('Network response was not ok');
-                    }
-            
-                    setItineraries(itineraries.filter(item => item._id !== itinerary._id));
-                } catch (error) {
-                    console.error('Error deleting itinerary:', error);
-                }
-            };
+            setItineraries(itineraries.filter(item => item._id !== itinerary._id));
+        } catch (error) {
+            console.error('Error deleting itinerary:', error);
+        }
+    };
 
     const handleUpdate = (itinerary) => {
         setFormData({
@@ -248,24 +248,24 @@ const Cruditinerary = () => {
 
     const fetchActivityDetails = (activityId) => {
         if (activityDetails[activityId]) return; // Avoid refetching
-    
+
         fetch('http://localhost:4000/advertiser/activity/${activityId}')
-          .then(res => {
-            if (!res.ok) {
-              throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
-            }
-            return res.json();
-          })
-          .then(data => {
-            setActivityDetails(prevDetails => ({
-              ...prevDetails,
-              [activityId]: data,
-            }));
-          })
-          .catch(error => {
-            setError(error.message);
-        });
-      };
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                setActivityDetails(prevDetails => ({
+                    ...prevDetails,
+                    [activityId]: data,
+                }));
+            })
+            .catch(error => {
+                setError(error.message);
+            });
+    };
 
     return (
         <div className={styles.parent}>
@@ -319,7 +319,7 @@ const Cruditinerary = () => {
                         </div>
                         <div>
                             <label className={styles.label}>Price</label>
-                            <input className={styles.input} placeholder="Price" name="price" type="number" value={formData.price} onChange={handleChange} required/>
+                            <input className={styles.input} placeholder="Price" name="price" type="number" value={formData.price} onChange={handleChange} required />
                         </div>
                         <div>
                             <label className={styles.label}>Available Dates</label>
@@ -407,24 +407,21 @@ const Cruditinerary = () => {
                 <div>
                     {itineraries.map((itinerary, index) => (
                         <div key={itinerary._id} className={styles.itineraryBox}>
-                        <p><strong>Title: {itinerary.title}</strong></p>
-                        <p><strong>Activities:</strong> {
-                            itinerary.activities
-                                .map(activityId => {
-                                    const activity = activitiesList.find(act => act._id === activityId);
-                                    return activity ? activity.title : 'Unknown Activity';
-                                })
-                                .join(', ')
-                        }</p>
-                        <p><strong>Available Dates:</strong> {itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</p>
-                        <p><strong>Time:</strong> {itinerary.time.join(', ')}</p>
-                        <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
-                        <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
-                        <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
-                        <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-                        <button className={styles.update} onClick={() => handleUpdate(itinerary)}>Update</button>
-                        <button className={styles.delete} onClick={() => handleDelete(itinerary)}>Delete</button>
-                    </div>
+                            <p><strong>Title: {itinerary.title}</strong></p>
+                            <p><strong>Activities:</strong> {
+                                itinerary.activities
+                                    .map(activity => activity.title)
+                                    .join(', ')
+                            }</p>
+                            <p><strong>Available Dates:</strong> {itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</p>
+                            <p><strong>Time:</strong> {itinerary.time.join(', ')}</p>
+                            <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
+                            <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
+                            <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
+                            <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
+                            <button className={styles.update} onClick={() => handleUpdate(itinerary)}>Update</button>
+                            <button className={styles.delete} onClick={() => handleDelete(itinerary)}>Delete</button>
+                        </div>
                     ))}
                 </div>
             </div>

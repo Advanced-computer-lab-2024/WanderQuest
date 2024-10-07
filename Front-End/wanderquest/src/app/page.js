@@ -10,23 +10,26 @@ import Creatprod from "../../components/Creatprod";
 import TagManager from "../../components/TagManager";
 import PrefTag from "../../components/PrefTag";
 import ActivityCategory from "../../components/ActivityCategory";
+import Cruditinerary from "../../components/cruditinerary";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
     {/* <TagManager/>
     <PrefTag/> */}
-    <ActivityCategory/>
+    {/* <ActivityCategory /> */}
     {/* <Itineraries></Itineraries> */}
-    <Products></Products>
+    {/* <Products></Products> */}
     {/* <Museums></Museums> */}
     {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}
+
+    <Cruditinerary></Cruditinerary>
     <div className={styles.container}>
       {/* <Activity></Activity> */}
       <div className={styles.content}>
-        
- 
-      {/* <Itineraries/> */}
+
+
+        {/* <Itineraries/> */}
         {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
       </div>
