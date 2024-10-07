@@ -9,10 +9,13 @@ import Museums from "../../components/Museums";
 import Creatprod from "../../components/Creatprod";
 import TagManager from "../../components/TagManager";
 import PrefTag from "../../components/PrefTag";
+import ActivityCategory from "../../components/ActivityCategory";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-    <PrefTag/>
+    {/* <TagManager/>
+    <PrefTag/> */}
+    <ActivityCategory/>
     {/* <Itineraries></Itineraries> */}
     {/* <Products></Products> */}
     {/* <Museums></Museums> */}

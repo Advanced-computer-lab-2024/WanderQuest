@@ -14,7 +14,7 @@ const TagManager = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/admin/tags'); // Adjust URL as needed
+        const response = await axios.get('http://localhost:4000/tourismGovernor/tags'); // Adjust URL as needed
         setTags(response.data);
       } catch (error) {
         console.error('Error fetching tags:', error);
@@ -41,7 +41,7 @@ const TagManager = () => {
     try {
       // POST request to add a new tag
       console.log(tagInput);
-      const response = await axios.post('http://localhost:4000/admin/addTag', { type: tagInput }); // Ensure you're sending the tag's 'type' or relevant field
+      const response = await axios.post('http://localhost:4000/tourismGovernor/addTag', { type: tagInput }); // Ensure you're sending the tag's 'type' or relevant field
       setTags([...tags, response.data]); // Assuming the response contains the new tag object
       setMessage({ type: 'success', text: 'Tag added successfully!' });
       setTagInput(''); // Clear input
@@ -115,9 +115,9 @@ const TagManager = () => {
         <button className={styles.addTag} onClick={() => setIsInputVisible(!isInputVisible)}>
           {isInputVisible ? 'Cancel' : 'Add Tag'}
         </button>
-        <button className={styles.showTags} onClick={() => setShowTags(!showTags)}>
+        {/* <button className={styles.showTags} onClick={() => setShowTags(!showTags)}>
           {showTags ? 'Hide Tags' : 'Show Tags'}
-        </button>
+        </button> */}
       </div>
 
       {/* Add Tag Form */}
