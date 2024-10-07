@@ -17,7 +17,7 @@ router.get('/tourGuideId', getTourGuideId);
 router.post('/create', createItinerary);
 router.get('/itineraries', readItinerary);
 router.get('/itineraries/:id',readItineraryById);
-router.get('/myItineraries',myCreatedItineraries);
+router.get('/myItineraries/:id',myCreatedItineraries);
 router.put('/itineraries/:id',updateItinerary);
 router.delete('/itineraries/:id', deleteItinerary);
 module.exports = router;
