@@ -105,9 +105,8 @@ const deletePlace = async (req,res)=>{
 };
 //tourism Gorevrnor myCreated
 const myCreatedPlaces = async (req,res)=>{
-    const myID = req.query.myID;
-    if(myID){
-        const myPlaces = await PlaceModel.find({createdBy: myID});
+    if(req.params.id){
+        const myPlaces = await PlaceModel.find({createdBy: req.params.id});
         res.status(200).json(myPlaces);
     }else{
         res.status(400).json({error:'UserID is required'})
