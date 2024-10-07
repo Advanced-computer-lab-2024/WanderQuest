@@ -135,7 +135,7 @@ const Activities = () => {
    * Fetches activities data from the backend API.
    */
   const fetchData = () => {
-    fetch('http://localhost:5000/activities') // Make a GET request to the API
+    fetch('http://localhost:4000/activityRoute/activities') // Make a GET request to the API
       .then((response) => {
         if (!response.ok) {
           // If response is not OK, throw an error

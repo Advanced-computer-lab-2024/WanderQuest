@@ -40,7 +40,7 @@ const Products = () => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:9000/products')
+        fetch('http://localhost:4000/admin/products')
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('Network response was not ok');
