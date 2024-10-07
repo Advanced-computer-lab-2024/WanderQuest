@@ -7,20 +7,26 @@ import Itineraries from "../../components/Itineraries";
 import Products from "../../components/Products";
 import Museums from "../../components/Museums";
 import Creatprod from "../../components/Creatprod";
+import TagManager from "../../components/TagManager";
+import PrefTag from "../../components/PrefTag";
+import ActivityCategory from "../../components/ActivityCategory";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
+    {/* <TagManager/>
+    <PrefTag/> */}
+    <ActivityCategory/>
     {/* <Itineraries></Itineraries> */}
-    {/* <Products></Products> */}
+    <Products></Products>
     {/* <Museums></Museums> */}
+    {/* <Activities></Activities> */}
     {/* <Creatprod></Creatprod> */}
     <div className={styles.container}>
       {/* <Activity></Activity> */}
       <div className={styles.content}>
-
-        {/* <Activities></Activities> */}
-        <Creatprod></Creatprod>
-        {/* <Itineraries/> */}
+        
+ 
+      {/* <Itineraries/> */}
         {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
       </div>

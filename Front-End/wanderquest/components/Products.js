@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
 
+
 const Products = () => {
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -58,6 +59,7 @@ const Products = () => {
             })
             .then((data) => {
                 setProduct(data);
+                console.log(data);
                 setFilteredProducts(data); // Initialize filtered products with fetched data
             })
             .catch((error) => {

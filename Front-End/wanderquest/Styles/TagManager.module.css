@@ -1,0 +1,135 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .tagsList {
+    margin-top: 20px;
+  }
+
+  .addTag{
+    background-color: #1A6187;
+    color: white;
+    border-radius: 4px;
+  }
+  .addTag:hover{
+    background-color: #17455C;
+    color: white;
+  }
+
+  .showTags{
+    background-color: #038b1c;
+    color: white;
+    border-radius: 4px;
+  }
+  
+  .showTags:hover{
+    background-color: #036b14;
+    color: white;
+  }
+
+  
+  .tagScroll {
+    max-height: 200px; /* Set a max height for scrolling */
+    overflow-y: auto;  /* Enable vertical scrolling */
+  }
+  
+  .ul {
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .tagGrid {
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .tagItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    position: relative;
+  }
+  
+  .editInput {
+    width: 100%;
+    transition: width 0.3s ease;
+  }
+  
+  .tagButtons {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+  }
+  
+  .button {
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: #1A6187;
+  }
+  
+  .editButton {
+    background-color: #1A6187;
+    color: white;
+    border-radius: 4px;
+  }
+
+  .editButton:hover {
+    background-color: #17455C;
+    color: white;
+  }
+  
+  .cancelButton {
+    background-color: #f44336;
+    color: white;
+    border-radius: 4px;
+  }
+
+  .cancelButton:hover {
+    background-color: #ff0000;
+    color: white;
+  }
+  
+  .deleteButton {
+    background-color: #f44336;
+    color: white;
+    border-radius: 4px;
+  }
+
+  .deleteButton:hover {
+    background-color: #ff0000;
+    color: white;
+  }
+  
+  .success {
+    color: green;
+    margin-top: 10px;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .editing .editInput {
+    width: 40%;
+  }
+  

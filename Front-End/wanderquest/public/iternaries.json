@@ -40,7 +40,8 @@
       "tags": [],
       "category": "Art",
       "BookingAlreadyMade": false,
-      "rating":5
+      "rating":5,
+      "prefrence":"Shopping"
     },
     {
       "title": "Cultural Day in Paris",
@@ -70,7 +71,8 @@
       "tags": [],
       "rating":4,
       "category": "far",
-      "BookingAlreadyMade": false
+      "BookingAlreadyMade": false,
+      "prefrence":"Beaches"
     }
   ]
 }
