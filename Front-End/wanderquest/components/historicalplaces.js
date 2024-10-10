@@ -67,12 +67,15 @@ const Historicalplaces = () => {
                 setIsUpdating(false);
                 setCurrentPlaceId(null);
             } else {
+                var changedformData=formData;
+                //change changedformData's tags to an array of objects with type as key
+                changedformData.tags=changedformData.tags.map(tag => ({ type: tag }));
                 const response = await fetch('http://localhost:4000/tourismGovernor/addPlace', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(changedformData),
                 });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -119,9 +122,11 @@ const Historicalplaces = () => {
 
     const handleTagsChange = (event) => {
         const { value } = event.target;
+        const mapobject = value.split(',').map(tag => ({ type: tag.trim() }));
+        console.log("Mapped:", JSON.stringify(mapobject, null, 2)); // Use JSON.stringify to print the array of objects
         setFormData({
             ...formData,
-            tags: value.split(',').map(tag => tag.trim())
+            tags: mapobject.map(tag => tag.type)
         });
     };
 
@@ -173,7 +178,7 @@ const Historicalplaces = () => {
                             placeholder="Tags" 
                             name="tags" 
                             type="text" 
-                            value={formData.tags.join(',')} 
+                            value={formData.tags.join(', ')}
                             onChange={handleTagsChange} 
                             required
                             />
@@ -190,15 +195,18 @@ const Historicalplaces = () => {
                         {places.map((place, index) => (
                             <div key={place._id} className={styles.activitybox}>
                                 <p><strong>{place.title}</strong></p>
+
                                 <div className={styles.topcard}>
                                     <p><strong>Description:</strong> {place.description}</p>
                                 </div>
+                                
                                 <div className={styles.bottomcard}>
                                     <p><strong>Opening Hours:</strong> {place.openingHours}</p>
                                     <p><strong>Location:</strong> {place.location}</p>
-                                    <p><strong>Ticket Prices:</strong> {place.ticketPrices}</p>
-                                    <p><strong>Tags:</strong> {Array.isArray(place.tags) ? place.tags.join(',') : place.tags}</p>
-                                    </div>
+                                    <p><strong>Ticket Prices:</strong> {place.ticketPrices.join(', ')}</p>
+                                    <p><strong>Tags:</strong> {Array.isArray(place.tags) ? place.tags.map(tag => tag.type).join(', ') : place.tags}</p>
+                                </div>
+
                                 <button className={styles.update} onClick={() => handleUpdate(place)}>Update</button>
                                 <button className={styles.delete} onClick={() => handleDelete(place._id)}>Delete</button>
                             </div>

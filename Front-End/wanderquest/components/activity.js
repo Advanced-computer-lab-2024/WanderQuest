@@ -10,7 +10,7 @@ const libraries = ['places'];
 const Activity = () => {
 
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your Google Maps API key
+        googleMapsApiKey: 'AIzaSyCSGYfV3Wea6Maoh1Arq4aS86319xt39lo', // Replace with your Google Maps API key
         libraries,
     });
 
@@ -35,8 +35,16 @@ const Activity = () => {
     useEffect(() => {
         // Fetch activities from the backend
         const fetchActivities = async () => {
-            const response = await axios.get('http://localhost:4000/activityRoutes/activities');
-            setActivities(response.data);
+            try {
+                const response = await fetch('http://localhost:4000/advertiser/activities');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setActivities(data);
+            } catch (error) {
+                console.error('Error fetching activities:', error);
+            }
         };
         fetchActivities();
     }, []);
