@@ -14,8 +14,10 @@ const PrefTag = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/admin/tags'); // Adjust URL as needed
-        setTags(response.data);
+        const response = await fetch('http://localhost:4000/admin/tags'); 
+        if(!response.ok) throw new Error('Failed to fetch Preference Tags');
+        const fetched = await response.json();
+        setTags(fetched);
       } catch (error) {
         console.error('Error fetching tags:', error);
       }
@@ -41,12 +43,20 @@ const PrefTag = () => {
     try {
       // POST request to add a new tag
       console.log(tagInput);
-      const response = await axios.post('http://localhost:4000/admin/addTag', { type: tagInput }); // Ensure you're sending the tag's 'type' or relevant field
-      setTags([...tags, response.data]); // Assuming the response contains the new tag object
+      const response = await fetch('http://localhost:4000/admin/addTag', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({type: tagInput}),
+
+      }); 
+      if(!response.ok) throw new Error('Cannot Create Tag!');
+      const newTag = await response.json();
+      setTags([...tags, newTag]); // Assuming the response contains the new tag object
       setMessage({ type: 'success', text: 'Tag added successfully!' });
       setTagInput(''); // Clear input
       setIsInputVisible(false); // Hide input field after submission
-
     } catch (error) {
       console.error('Error adding tag:', error.response ? error.response.data : error.message);
       setMessage({ type: 'error', text: 'Error adding tag.' });
@@ -57,12 +67,12 @@ const PrefTag = () => {
   // Handle deleting a tag
   const handleDelete = async (tagId) => {
     try {
-      // DELETE request to remove the tag
-      await axios.delete(`http://localhost:4000/admin/deleteTag/${tagId}`); // Send the tag ID to delete
-      setTags(tags.filter(tag => tag._id !== tagId)); // Filter out the deleted tag
-      setMessage({ type: 'success', text: 'Tag deleted successfully.' });
-
-      //fetchTags();
+      const response = await fetch(`http://localhost:4000/admin/deleteTag/${tagId}`,{
+        method: 'DELETE'
+      });
+      if(!response.ok) throw new Error('Cannot Delete Tag!');
+      setTags(tags.filter((tag)=> tag._id !== tagId));
+      setMessage({type: 'success', text: 'Preference Tag deleted successfully!'});
     } catch (error) {
       console.error('Error deleting tag:', error);
       setMessage({ type: 'error', text: 'Error deleting tag.' });
@@ -90,8 +100,16 @@ const PrefTag = () => {
   
     try {
       // PATCH request to update the tag
-      const response = await axios.patch(`http://localhost:4000/admin/editTag/${tagId}`, { type: isEditing.value }); // Update the tag string
-      const updatedTags = tags.map((t) => (t._id === tagId ? response.data : t)); // Update the tag in the state
+      const response = await fetch(`http://localhost:4000/admin/editTag/${tagId}`, { 
+        method: 'PATCH',
+        headers:{
+          'Contetnt-type': 'application/json',
+        },
+        body: JSON.stringify({type: isEditing.value}),
+       });
+      if( !response.ok) throw new Error('Cannot Update Tag!');
+      const updatedTags = tags.map((tag) => 
+        (tag._id === tagId ? {...tag, type: isEditing.value } : tag)); // Update the tag in the state
       setTags(updatedTags);
       setMessage({ type: 'success', text: 'Tag updated successfully!' });
       setIsEditing({ id: null, value: '' }); // Exit editing mode
