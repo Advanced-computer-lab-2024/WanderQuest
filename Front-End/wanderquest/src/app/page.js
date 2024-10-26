@@ -57,7 +57,7 @@ export default function Home() {
 
     {/* <Cruditinerary></Cruditinerary> */}
       {/* <Activity></Activity> */}
-         <Historicalplaces></Historicalplaces>
+         {/* <Historicalplaces></Historicalplaces> */}
 
 
         {/* <Itineraries/> */}
