@@ -10,6 +10,7 @@ import Creatprod from "../../components/Creatprod";
 import TagManager from "../../components/TagManager";
 import PrefTag from "../../components/PrefTag";
 import ActivityCategory from "../../components/ActivityCategory";
+import ComplaintCard from "../../components/ComplaintCard";
 import Link from 'next/link';
 
 import Allcreated from "../../components/allcreated";
@@ -45,6 +46,7 @@ export default function Home() {
             <Link href="/tourist">
                <button className='tourist'>Tourist</button>
             </Link>
+            <ComplaintCard />
             </div>
     {/* <TagManager/>
     <PrefTag/> */}
