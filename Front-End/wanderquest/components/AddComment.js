@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 const AddComment = ({comment, setComment}) => {
     return ( 
