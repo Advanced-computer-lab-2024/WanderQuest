@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
-
+import {motion,AnimatePresence} from 'framer-motion';
 
 const Products = (props) => {
     
@@ -43,6 +43,15 @@ const Products = (props) => {
         const editedprod = [...filteredProducts].sort((a, b) => b.price - a.price);
         setFilteredProducts(editedprod);
     };
+    const handleratingfilterasc=()=>{
+        const sortedprod=[...filteredProducts].sort((a,b)=>a.rating-b.rating)
+        setFilteredProducts(sortedprod);
+    };
+    const handleratingdsc=()=>{
+        const sorteddsc=[...filteredProducts].sort((a,b)=>b.rating-a.rating);
+        setFilteredProducts(sorteddsc);
+    }
+    
 
     const handlePriceFilter = () => {
         const filtered = products.filter((product) => {
@@ -77,37 +86,62 @@ const Products = (props) => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.priceFilter}>
-                <h3>Price Filter</h3>
-                <div>
-                    <label>
-                        Min Price:
-                        <input
-                            type="number"
-                            value={minPrice}
-                            onChange={(e) => setMinPrice(e.target.value)}
-                            placeholder="0"
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Max Price:
-                        <input
-                            type="number"
-                            value={maxPrice}
-                            onChange={(e) => setMaxPrice(e.target.value)}
-                            placeholder="1000"
-                        />
-                    </label>
-                </div>
-                <button onClick={handlePriceFilter}>Apply Filter</button>
-            </div>
             <button onClick={handlesortasc}>Sort by Price Asc</button>
             <button onClick={clearsearch}>clearsearch</button>
             <button onClick={ClearFilters}>ClearFilters</button>
-            
+            <button onClick={handleratingfilterasc}>sort by rating asc</button>
+            <button onClick={handleratingdsc}>sort by rating dsc</button>
             <button onClick={handlesortdsc}>Sort by Price Desc</button>
+            <div className={styles.container}>
+      <div className={styles.priceFilter}>
+        <h3>Price Filter</h3>
+        <div>
+          <label>
+            Min Price:
+            <input
+              type="number"
+              className={styles.min}
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              placeholder="0"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Max Price:
+            <input
+              type="number"
+              className={styles.max}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              placeholder="1000"
+            />
+          </label>
+        </div>
+        <div className={styles.slider}><label>min</label>
+          <input
+            type="range"
+            className={styles.rangeMin}
+            min="0"
+            max="10000"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            step="100"
+          /><label>max</label>
+          <input
+            type="range"
+            className={styles.rangeMax}
+            min="0"
+            max="10000"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            step="100"
+          />
+        </div>
+        <button onClick={handlePriceFilter}>Apply Filter</button>
+      </div>
+    </div>
             <div className={styles.searchcom}>
                 <input 
                     className={styles.productsearch} 

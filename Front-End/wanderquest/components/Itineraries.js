@@ -68,7 +68,8 @@ const ItineraryList = (Props) => {
 
   useEffect(() => {
     fetchItineraries();
-  }, []);
+  }, [search]);
+
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
         return search.toLowerCase() === '' || 
