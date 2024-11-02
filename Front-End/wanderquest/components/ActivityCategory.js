@@ -15,15 +15,18 @@ const ActivityCategory = () => {
   useEffect(() => {
     const fetchActs = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/admin/categories'); // Adjust URL as needed
-        setActs(response.data);
+        const response = await fetch('http://localhost:4000/admin/categories'); // Adjust URL as needed
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        const data = await response.json();
+        setActs(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
-
+  
     fetchActs();
   }, []);
+  
 
   // Handle input change for adding a new category
   const handleInputChange = (e) => {
@@ -33,40 +36,47 @@ const ActivityCategory = () => {
   // Handle form submission to add a new category
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!actInput.trim()) {
       setMessage({ type: 'error', text: 'Activity Category cannot be empty.' });
       return;
     }
-
+  
     try {
-      console.log(actInput);
-      const response = await axios.post('http://localhost:4000/admin/addCategory', { category: actInput });
-      setActs([...acts, response.data]);
+      const response = await fetch('http://localhost:4000/admin/addCategory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ category: actInput }),
+      });
+      if (!response.ok) throw new Error('Failed to add category');
+      const newCategory = await response.json();
+      setActs([...acts, newCategory]);
       setMessage({ type: 'success', text: 'Activity Category added successfully!' });
       setActInput('');
       setIsInputVisible(false);
-
-      //fetchActs(); // Re-fetch tags after successful POST
     } catch (error) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Error adding Activity Category.' });
-      console.error('Error adding Activity Category:', error.message);
+      setMessage({ type: 'error', text: error.message || 'Error adding Activity Category.' });
+      console.error('Error adding Activity Category:', error);
     }
   };
-
+  
   // Handle deleting a category
   const handleDelete = async (actId) => {
     try {
-      await axios.delete(`http://localhost:4000/admin/deleteCategory/${actId}`);
+      const response = await fetch(`http://localhost:4000/admin/deleteCategory/${actId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete category');
       setActs(acts.filter((act) => act._id !== actId));
       setMessage({ type: 'success', text: 'Activity Category deleted successfully.' });
-      //fetchActs(); // Re-fetch tags after successful DELETE
     } catch (error) {
       setMessage({ type: 'error', text: 'Error deleting Activity Category.' });
       console.error('Error deleting Activity Category:', error);
     }
   };
-
+  
   // Handle initiating edit mode for a category
   const handleEdit = (act) => {
     setIsEditing({ id: act._id, value: act.category });
@@ -83,20 +93,35 @@ const ActivityCategory = () => {
       setMessage({ type: 'error', text: 'Activity Category cannot be empty.' });
       return;
     }
-
+  
     try {
-      const response = await axios.patch(`http://localhost:4000/admin/editCategory/${actId}`, { category: isEditing.value });
-      const updatedActs = acts.map((act) => (act._id === actId ? response.data : act));
+      const response = await fetch(`http://localhost:4000/admin/editCategory/${actId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ category: isEditing.value }),
+      });
+      if (!response.ok) throw new Error('Failed to update category');
+  
+      // You don't need to rely on the response for the updated category value since
+      // you already have the new value in `isEditing.value`.
+      const updatedActs = acts.map((act) =>
+        act._id === actId ? { ...act, category: isEditing.value } : act
+      );
+  
       setActs(updatedActs);
       setMessage({ type: 'success', text: 'Activity Category updated successfully!' });
-      setIsEditing({ id: null, value: '' });
-
-      //fetchActs(); // Re-fetch tags after successful PATCH
+      setIsEditing({ id: null, value: '' }); // Clear editing state
     } catch (error) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Error updating Activity Category.' });
+      setMessage({ type: 'error', text: error.message || 'Error updating Activity Category.' });
       console.error('Error updating Activity Category:', error);
     }
   };
+  
+  
+  
+  
 
   // Handle cancelling the edit mode
   const handleCancelEdit = () => {
