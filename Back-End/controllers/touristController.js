@@ -58,6 +58,18 @@ const getUpcomingActivities = async (req, res) => {
     }
 };
 
+const getActivityById = async (req, res) => {
+    try {
+        const activity = await ActivityModel.findById(req.params.id);
+        if (!activity) {
+            return res.status(404).json({ error: 'Activity not found' });
+        }
+        res.json(activity);
+    } catch (error){
+        res.status(400).json({ error: error.message });
+    }
+}
+
 const getUpcomingItineraries = async (req, res) => {
     try {
         const currentDate = new Date();
@@ -70,6 +82,19 @@ const getUpcomingItineraries = async (req, res) => {
     }
 };
 
+const getItineraryById = async (req, res) => {
+    try {
+        const itinerary = await ItineraryModel.findById(req.params.id);
+        if (!itinerary) {
+            return res.status(404).json({ error: 'Itinerary not found' });
+        }
+        res.json(itinerary);
+
+    } catch (error){
+        res.status(400).json({ error: error.message });
+    }
+}
+
 const getAvailableProducts = async (req, res) => {
     try {
         const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
@@ -78,4 +103,13 @@ const getAvailableProducts = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, getTouristId, getAvailableProducts, getUpcomingActivities, getUpcomingItineraries };
+module.exports = { 
+    getProfile, 
+    updateProfile, 
+    getTouristId, 
+    getAvailableProducts, 
+    getUpcomingActivities,
+    getActivityById,
+    getItineraryById,
+    getUpcomingItineraries 
+};
