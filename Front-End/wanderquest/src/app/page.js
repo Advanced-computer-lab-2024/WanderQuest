@@ -14,6 +14,7 @@ import Link from 'next/link';
 
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
+import RatingContainer from "../../components/RatingCont";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
@@ -59,7 +60,7 @@ export default function Home() {
       {/* <Activity></Activity> */}
          {/* <Historicalplaces></Historicalplaces> */}
 
-
+<RatingContainer/>
         {/* <Itineraries/> */}
         {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}

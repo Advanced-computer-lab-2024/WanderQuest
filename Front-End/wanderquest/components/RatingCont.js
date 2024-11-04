@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import AddRating from './AddRating';
 import AddComment from './AddComment';
+import styles from '/Styles/BasicContainer.module.css';
 
 const RatingContainer = () => {
     const [rating, setRating] = useState(0);
@@ -15,13 +16,13 @@ const RatingContainer = () => {
 
     return (
 
-        <div>
-            <form>
+        <div className='container'>
                 <h2>Rating Tester</h2>
                 <AddRating rating={rating} setRating={setRating} />
                 <AddComment comment={comment} setComment={setComment}/>
-                <button type="submit" onClick={handleSubmition}>Submit</button>
-            </form>
+                
+                <button className={styles.button} onClick={handleSubmition}>Submit</button>
+                
         </div>
     );
 };
