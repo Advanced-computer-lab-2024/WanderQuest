@@ -205,4 +205,56 @@ const deleteItinerary = async (req, res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, getTourGuideId,createItinerary, readItinerary, updateItinerary, deleteItinerary, readItineraryById, myCreatedItineraries };
+const activateItinerary = async (req, res) => {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Wrong ID format' });
+    }
+
+    const itinerary = await Itinerary.findById(id);
+    if (!itinerary) {
+        return res.status(404).json({ error: 'No such itinerary' });
+    }
+
+    if (itinerary.bookingIsOpen) {
+        return res.status(200).json({ error: 'Booking is already open' });
+    }
+
+    itinerary.bookingIsOpen = true;
+    await itinerary.save();
+    res.status(200).json(itinerary);
+}
+
+const deactivateItinerary = async (req, res) => {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Wrong ID format' });
+    }
+
+    const itinerary = await Itinerary.findById(id);
+    if (!itinerary) {
+        return res.status(404).json({ error: 'No such itinerary' });
+    }
+
+    if (!itinerary.bookingIsOpen) {
+        return res.status(400).json({ error: 'Booking is already closed' });
+    }
+
+    itinerary.bookingIsOpen = false;
+    await itinerary.save();
+    res.status(200).json(itinerary);
+}
+
+module.exports = {
+    getProfile,
+    updateProfile,
+    getTourGuideId,
+    createItinerary,
+    readItinerary,
+    updateItinerary,
+    deleteItinerary,
+    readItineraryById,
+    myCreatedItineraries,
+    activateItinerary,
+    deactivateItinerary
+};
