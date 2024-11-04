@@ -162,8 +162,7 @@ const itinerarySchema = new mongoose.Schema({
     */
     bookingIsOpen: { 
         type: Boolean,
-        default: true,
-        required: true
+        default: true
     },
     
 }, {timestamps:true}) ;
