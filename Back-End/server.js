@@ -14,6 +14,7 @@ const tourGuideRoutes = require('./routes/tourGuideRoutes')
 const activityRoutes = require('./routes/activityRoutes')
 // const { itinerary } = require('./models/objectModel')
 const itineraryRoutes = require('./routes/itineraryRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express()
 
@@ -36,7 +37,8 @@ app.use('/tourist', touristRoutes)
 app.use('/tourGuide', tourGuideRoutes)
 app.use('/tourismGovernor', tourGovernerRoutes)
 app.use('/activityRoutes', activityRoutes)
-app.use('/itinerary', itineraryRoutes);  // This sets the base path for itinerary routes
+app.use('/itinerary', itineraryRoutes);
+app.use('/booking', bookingRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
