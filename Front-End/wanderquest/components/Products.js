@@ -14,7 +14,7 @@ const Products = (props) => {
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     // const [filteredProducts]
-
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     const onUpdateClick = (id) => {
@@ -53,6 +53,7 @@ const Products = (props) => {
     }
     
 
+   
     const handlePriceFilter = () => {
         const filtered = products.filter((product) => {
             const price = product.price;
@@ -75,15 +76,28 @@ const Products = (props) => {
             .then((data) => {
                 setProduct(data);
                 console.log(data);
-                setFilteredProducts(data); // Initialize filtered products with fetched data
+                setFilteredProducts(data); 
+                setLoading(false);// Initialize filtered products with fetched data
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
                 setProduct([]); 
-                setFilteredProducts([]); // Reset filtered products on error
+                setFilteredProducts([]);
+                setLoading(false); // Reset filtered products on error
             });
     }, []);
-
+    if (loading) {return<>
+        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+        <dotlottie-player style={{
+      width: '300px',
+      height: '300px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 'auto'
+    }}
+      src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+        </>}
     return (
         <div className={styles.container}>
             <button onClick={handlesortasc}>Sort by Price Asc</button>

@@ -4,14 +4,14 @@ import {motion} from 'framer-motion';
 function Signin() {
   return (<>
     <motion.img 
-    initial={{rotate:180,scale:0.4,y:0,opacity:0.5}}
-    animate={{rotate:360,scale:1,y:0,opacity:1}}
-    transition={{duration:1.2}}
+    initial={{scale:0.4,y:0,opacity:0.5}}
+    animate={{scale:1,y:0,opacity:1}}
+    transition={{duration:0.5}}
     className={styles.head} src="/image.png" alt="" />
     <motion.div 
     initial={{scale:0.4,y:0,opacity:0.5}}
     animate={{scale:1,y:0,opacity:1}}
-    transition={{duration:1.2}}
+    transition={{duration:1}}
     className={styles.container}>
       <div className={styles.top}>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>

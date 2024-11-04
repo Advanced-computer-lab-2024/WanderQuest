@@ -1,5 +1,8 @@
+'use client'
 import { useEffect, useState } from 'react';
 import styles from '../styles/Itineraries.module.css';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const ItineraryList = (Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
@@ -9,7 +12,11 @@ const ItineraryList = (Props) => {
   const [displayedItineraries, setDisplayedItineraries] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+  const router = useRouter();
+
+  const goToDetails = () => {
+    router.push('./Itidetails');
+  };
   const [search, setSearch] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [minBudget, setMinBudget] = useState('');
@@ -51,6 +58,7 @@ const ItineraryList = (Props) => {
       .then(data => {
         setAllItineraries(data);
         setDisplayedItineraries(data);
+        setTimeout(() => console.log("First"), 10000)
         setLoading(false);
         
         // Fetch details for all activities
@@ -62,6 +70,7 @@ const ItineraryList = (Props) => {
       })
       .catch(error => {
         setError(error.message);
+        setTimeout(() => console.log("First"), 10000)
         setLoading(false);
       });
   };
@@ -158,9 +167,18 @@ const clearsearch=()=>{
     setDisplayedItineraries(allItineraries);
   };
 
-  if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
+  if (loading) {return<>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+    <dotlottie-player style={{
+  width: '300px',
+  height: '300px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  margin: 'auto'
+}}
+  src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+    </>}
 
   if (error) {
     return <div className={styles.error}>Error: {error}</div>;
@@ -168,6 +186,7 @@ const clearsearch=()=>{
 
   return (
     <div className={styles.container}>
+      
       <h1 className={styles.title}>Itinerary List</h1>
       {role==="Tourist"?(
       <div className={styles.searchcom}>
@@ -241,7 +260,6 @@ const clearsearch=()=>{
     ))}
   </select>
 </div>
-
         <div className={styles.filterButtons}>
           <button onClick={handleApplyFilters}>Apply Filters</button>
           <button onClick={handleClearFilters}>Clear Filters</button>
@@ -256,7 +274,7 @@ const clearsearch=()=>{
       </div>
 
       {displayedItineraries.map((itinerary) => (
-        <div key={itinerary.id} className={styles.itinerary}>
+        <div id={itinerary.id} key={itinerary.id} className={styles.itinerary}>
           <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
           <div className={styles.activities}>
             {itinerary.activities.map((activityId) => (
@@ -299,8 +317,13 @@ const clearsearch=()=>{
           <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
           <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
           <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
+          <button onClick={goToDetails} className={styles.addticket}>
+              View
+          </button>
         </div>
+        
       ))}
+      
     </div>
   );
 };

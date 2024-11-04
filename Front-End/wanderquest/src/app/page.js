@@ -14,11 +14,13 @@ import Link from 'next/link';
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
 import {motion,AnimatePresence} from 'framer-motion';
+import Signin from "../../components/Signin";
+
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-    
-    <div>
+
+    {/* <div>
     <Link href="/profileInfo">
                <button className='navbar-profile'>Profile</button>
             </Link>
@@ -53,8 +55,8 @@ export default function Home() {
       >
          Welcome to WanderQuest
 
-      </motion.h1>
-            </div>
+      </motion.h1> */}
+            {/* </div> */}
     {/* <TagManager/>
     <PrefTag/> */}
     {/* <ActivityCategory /> */}
