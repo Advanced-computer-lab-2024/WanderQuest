@@ -46,15 +46,25 @@ const getTourGuideId = async (req, res) => {
 }
 
 
-//myCreatedItineraries
+// myCreatedItineraries
 const myCreatedItineraries = async (req, res) => {
-    if (req.params.id) {
-        const myItineraries = await Itinerary.find({ createdBy: req.params.id });
-        res.status(200).json(myItineraries);
-    } else {
-        res.status(400).json({ error: 'UserID is required' })
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ error: 'UserID is required' });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const myItineraries = await Itinerary.find({ createdBy: id });
+        res.status(200).json(myItineraries);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
 };
 
 
@@ -211,19 +221,24 @@ const activateItinerary = async (req, res) => {
         return res.status(404).json({ error: 'Wrong ID format' });
     }
 
-    const itinerary = await Itinerary.findById(id);
-    if (!itinerary) {
-        return res.status(404).json({ error: 'No such itinerary' });
-    }
+    try {
+        const itinerary = await Itinerary.findById(id);
+        if (!itinerary) {
+            return res.status(404).json({ error: 'No such itinerary' });
+        }
 
-    if (itinerary.bookingIsOpen) {
-        return res.status(200).json({ error: 'Booking is already open' });
-    }
+        if (itinerary.bookingIsOpen) {
+            return res.status(400).json({ error: 'Booking is already open' });
+        }
 
-    itinerary.bookingIsOpen = true;
-    await itinerary.save();
-    res.status(200).json(itinerary);
-}
+        itinerary.bookingIsOpen = true;
+        await itinerary.save();
+        res.status(200).json(itinerary);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
 
 const deactivateItinerary = async (req, res) => {
     const id = req.params.id;
@@ -231,19 +246,24 @@ const deactivateItinerary = async (req, res) => {
         return res.status(404).json({ error: 'Wrong ID format' });
     }
 
-    const itinerary = await Itinerary.findById(id);
-    if (!itinerary) {
-        return res.status(404).json({ error: 'No such itinerary' });
-    }
+    try {
+        const itinerary = await Itinerary.findById(id);
+        if (!itinerary) {
+            return res.status(404).json({ error: 'No such itinerary' });
+        }
 
-    if (!itinerary.bookingIsOpen) {
-        return res.status(400).json({ error: 'Booking is already closed' });
-    }
+        if (!itinerary.bookingIsOpen) {
+            return res.status(400).json({ error: 'Booking is already closed' });
+        }
 
-    itinerary.bookingIsOpen = false;
-    await itinerary.save();
-    res.status(200).json(itinerary);
-}
+        itinerary.bookingIsOpen = false;
+        await itinerary.save();
+        res.status(200).json(itinerary);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
 
 module.exports = {
     getProfile,
