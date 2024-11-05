@@ -10,7 +10,10 @@ const {
     getActivityById,
     getItineraryById, 
     getUpcomingItineraries, 
-    getTouristId 
+    getTouristId ,
+    redeemPoints,
+    fileComplaint,
+    myComplaints
 } = require('../controllers/touristController');
 // const requireAuth = require('../middleware/requireAuth');
 
@@ -38,6 +41,8 @@ router.get('/upcomingPlaces', getAllPlaces);
 
 // Sharing activity via link or email
 router.get('/upcomingPlaces/:id', getPlaceById);
-
+router.put('/redeem/:id',redeemPoints);
+router.post('/fileComplaint',fileComplaint);
+router.get('/myComplaints/:id',myComplaints);
 
 module.exports = router;
