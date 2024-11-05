@@ -1,8 +1,47 @@
-const mongoose = require('mongoose'); // Add this line at the top of your file
+const mongoose = require('mongoose');
 const Advertiser = require('../models/userModel').Advertiser;
 const ActivityModel = require('../models/objectModel').Activity;
 const TagModel = require('../models/objectModel').PrefTag;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const { Types } = require('mongoose');
+
+// Collection name in MongoDB
+const collectionName = 'uploads';
+
+// Initialize GridFS
+let gfs;
+mongoose.connection.once('open', () => {
+    gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    gfs.collection(collectionName);
+});
+
+// Set up GridFS storage
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URI,
+    file: (req, file) => {
+        return {
+            bucketName: collectionName,
+            filename: `${Date.now()}-${file.originalname}`
+        };
+    }
+});
+
+// File filter to allow only photos
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+const upload = multer({
+    storage,
+    fileFilter
+}).array('documents', 1);
 
 // functions
 const getProfile = async (req, res) => {
@@ -46,9 +85,80 @@ const getAdvertiserId = async (req, res) => {
     }
 }
 
+// upload logo
+const uploadLogo = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const advertiser = await Advertiser.findById(req.params.id);
+            if (!advertiser) {
+                return res.status(404).json({ error: 'Advertiser not found' });
+            }
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+            advertiser.logo = documentMetadata;
+
+            await advertiser.save();
+
+            res.json({ message: 'Logo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+}
+
+const getLogo = async (req, res) => {
+    try {
+        const advertiser = await Advertiser.findById(req.params.id);
+        if (!advertiser) {
+            return res.status(404).json({ error: 'Advertiser not found' });
+        }
+
+        const logo = advertiser.logo;
+
+        const fileID = new Types.ObjectId(logo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //create activity
 const createActivity = async (req, res) => {
-    try{
+    try {
         const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
         // If tags are provided, check if all tags exist in the TagModel
         if (tags && tags.length > 0) {
@@ -217,5 +327,5 @@ const getAllAdvertisers = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
 
