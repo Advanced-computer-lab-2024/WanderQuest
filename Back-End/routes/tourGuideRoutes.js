@@ -1,9 +1,25 @@
 const express = require('express');
 
 // controller functions
-const { getProfile, updateProfile, getTourGuideId } = require('../controllers/tourGuideController');
+const {
+    getProfile,
+    updateProfile,
+    uploadPhoto,
+    getPhoto,
+    getTourGuideId
+} = require('../controllers/tourGuideController');
+
 // const requireAuth = require('../middleware/requireAuth');
-const { createItinerary ,readItinerary,updateItinerary,deleteItinerary,readItineraryById,myCreatedItineraries} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
+const {
+    createItinerary,
+    readItinerary,
+    updateItinerary,
+    deleteItinerary,
+    readItineraryById,
+    myCreatedItineraries,
+    activateItinerary,
+    deactivateItinerary
+} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
 
@@ -13,11 +29,15 @@ const router = express.Router();
 // routes
 router.get('/profile/:id', getProfile);
 router.put('/profile/:id', updateProfile);
+router.post('/uploadPhoto/:id', uploadPhoto);
+router.get('/photo/:id', getPhoto);
 router.get('/tourGuideId', getTourGuideId);
 router.post('/create', createItinerary);
 router.get('/itineraries', readItinerary);
-router.get('/itineraries/:id',readItineraryById);
-router.get('/myItineraries/:id',myCreatedItineraries);
-router.put('/itineraries/:id',updateItinerary);
+router.get('/itineraries/:id', readItineraryById);
+router.get('/myItineraries/:id', myCreatedItineraries);
+router.put('/itineraries/:id', updateItinerary);
 router.delete('/itineraries/:id', deleteItinerary);
+router.patch('/itinerary/activate/:id', activateItinerary);
+router.patch('/itinerary/deactivate/:id', deactivateItinerary);
 module.exports = router;
