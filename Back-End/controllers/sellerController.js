@@ -1,0 +1,104 @@
+const { Seller } = require('../models/userModel');
+
+// Read Seller profile
+const getProfile = async (req, res) => {
+    try {
+        const seller = await Seller.findById(req.params.id);
+        if (!seller) {
+            return res.status(404).json({ error: 'Seller not found' });
+        }
+        if (!seller.accepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        res.json(seller);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Update Seller profile
+const updateProfile = async (req, res) => {
+    try {
+        const seller = await Seller.findById(req.params.id);
+        if (!seller) {
+            return res.status(404).json({ error: 'Seller not found' });
+        }
+        if (!seller.accepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        const updatedSeller = await Seller.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(updatedSeller);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// get the first seller id
+const getSellerId = async (req, res) => {
+    try {
+        const seller = await Seller.findOne({});
+        res.json(seller._id);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+//seller getProducts
+const getProducts = async (req, res) => {
+    try {
+        const products = await ProdModel.find({})
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+//seller getAvailableProducts
+const getAvailableProducts = async (req, res) => {
+    try {
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+//seller addProduct
+const addProduct = async (req, res) => {
+    const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+
+    // Validate input
+    if (!name || !picture || !description || !price) {
+        return res.status(400).json({ error: 'Details and prices fields are required' });
+    }
+    try {
+        // Checking if the username already exists
+        const existingProduct = await ProdModel.findOne({ name, price });
+
+        if (existingProduct) {
+            return res.status(400).json({ error: 'Product already exists' });
+        }
+
+        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount })
+        res.status(200).json(product)
+
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+
+};
+const editProduct = async (req, res) => {
+    const { id } = req.params;
+    let updatedProd = await ProdModel.findById(id)
+    if (!updatedProd) {
+        res.status(400).json({ error: 'Product not found' })
+    } else {
+        try {
+            updatedProd = await ProdModel.findByIdAndUpdate(id, req.body)
+            res.status(200).json(updatedProd);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+}
+
+module.exports = { getProfile, updateProfile, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts };

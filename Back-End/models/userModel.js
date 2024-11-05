@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const becrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const validator = require('validator');
 
 const Schema = mongoose.Schema;
@@ -8,57 +8,148 @@ const Schema = mongoose.Schema;
 const options = { discriminatorKey: 'role', collection: 'users' };
 
 const UserSchema = new Schema({
-    username: String,
-    email: String,
-    password: String,
-    mobileNumber: String,
+    username: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
     role: {
         type: String,
-        enum: ['tourist', 'tourGuide', 'advertiser', 'seller', 'admin'],
+        enum: ['tourist', 'tourGuide', 'advertiser', 'seller'],
         required: true,
     },
-    accepted: { type: Boolean, default: false },
+    accepted: { type: Boolean, default: true }, // is accepted for now until functionality is added
 }, options);
 
+UserSchema.statics.signup = async function (username, email, password, role) {
+
+    // validation
+    if (!email || !password || !username) {
+        throw new Error('All fields must be filled');
+    }
+    if (!validator.isEmail(email)) {
+        throw new Error('Invalid email');
+    }
+    if (!validator.isStrongPassword(password)) {
+        throw new Error('Password must be strong, must contain uppercase, number, and special character');
+    }
+
+    // Check if email or username already exists
+    const exists = await User.findOne({
+        $or: [
+            { email: email },
+            { username: username }
+        ]
+    });
+
+    if (exists) {
+        throw new Error('Email or username already exists');
+    }
+
+    // hash the password
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // create new user
+    const user = await this.create({ username, email, password: hashedPassword, role });
+
+    return user;
+}
+
 const User = mongoose.model('User', UserSchema);
+
+
+// Disciminator schemas
 
 // Tourist schema
 const TouristSchema = new Schema({
     nationality: { type: String, required: true },
+    mobileNumber: { type: String, required: true },
     dob: { type: Date, required: true },
     job: { type: String, required: true },
+    wallet: { type: Number, default: 0 },
 });
+
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+// override the signup method
+TouristSchema.statics.signup = async function (username, email, password, role, nationality, mobileNumber, dob, job) {
+    // validation
+    if (!email || !password || !username || !nationality || !mobileNumber || !dob || !job) {
+        throw new Error('All fields must be filled');
+    }
+    if (!validator.isEmail(email)) {
+        throw new Error('Invalid email');
+    }
+    if (!validator.isStrongPassword(password)) {
+        throw new Error('Password must be strong, must contain uppercase, number, and special character');
+    }
+    if (getAge(dob) < 18) {
+        throw new Error('Tourist must be at least 18 years old');
+    }
+
+    // Check if email or username already exists
+    const exists = await User.findOne({
+        $or: [
+            { email: email },
+            { username: username }
+        ]
+    });
+
+    if (exists) {
+        throw new Error('Email or username already exists');
+    }
+
+    // hash the password
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // create new user
+    const user = await this.create({ username, email, password: hashedPassword, role, nationality, mobileNumber, dob, job });
+
+    return user;
+
+}
 
 const Tourist = User.discriminator('tourist', TouristSchema);
 
 // Tour Guide schema
 const TourGuideSchema = new Schema({
-    yearsOfExperience: { type: Number, required: true },
-    previousWork: { type: [String], required: true },
+    yearsOfExperience: { type: Number, default: undefined },
+    mobileNumber: { type: String, default: undefined },
+    previousWork: { type: [String], default: undefined },
 });
 
 const TourGuide = User.discriminator('tourGuide', TourGuideSchema);
 
 // Advertiser schema
 const AdvertiserSchema = new Schema({
-    companyName: { type: String, required: true },
-    companyDescription: { type: String, required: true },
-    companyAddress: { type: String, required: true },
-    websiteLink: { type: String, required: true },
-    hotline: { type: String, required: true },
+    companyName: { type: String, default: undefined },
+    companyDescription: { type: String, default: undefined },
+    companyAddress: { type: String, default: undefined },
+    websiteLink: { type: String, default: undefined },
+    hotline: { type: String, default: undefined },
 });
 
 const Advertiser = User.discriminator('advertiser', AdvertiserSchema);
 
 // Seller schema
 const SellerSchema = new Schema({
-    sellerDescription: { type: String, required: true },
-    sellerName: { type: String, required: true },
+    sellerDescription: { type: String, default: undefined },
+    sellerName: { type: String, default: undefined },
 });
 
 const Seller = User.discriminator('seller', SellerSchema);
 
 module.exports = {
+    User,
     Tourist,
     TourGuide,
     Advertiser,

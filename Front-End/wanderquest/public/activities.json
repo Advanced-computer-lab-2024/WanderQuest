@@ -1,0 +1,52 @@
+{
+    "activities": [
+      {
+        
+          "title": "Hiking Adventure",
+          "date": "2024-10-15",
+          "time": "09:00 AM",
+          "location": "Mountain Trail",
+          "price": 150,
+          "priceRange": "$100 - $200",
+          "category": "Cultural",
+          "tags": ["hiking", "adventure", "nature"],
+          "specialDiscounts": "10% off for groups",
+          "bookingIsOpen": true,
+          "rating":0.5
+        
+      },
+      {
+
+          "title": "Cultural City Tour",
+          "date": "2024-11-01T10:00:00Z",
+          "time": "10:00 AM",
+          "location": "Downtown City",
+          "price": 100,
+          "priceRange": "$50 - $150",
+          "category": "Nature",
+          "tags": ["culture", "city", "museum"],
+          "specialDiscounts": "20% off for children",
+          "bookingIsOpen": true,
+          "rating":5
+        
+      },
+      {
+
+          "title": "Snorkeling Adventure",
+          "date": "2024-12-05T08:00:00Z",
+          "time": "08:00 AM",
+          "location": "Coral Beach",
+          "price": 200,
+          "priceRange": "$150 - $250",
+          "category": "Beach Activity",
+          "tags": ["snorkeling", "beach", "water sports"],
+          "specialDiscounts": "15% off for early bookings",
+          "bookingIsOpen": true,
+          "rating":3
+        
+      }
+    
+    
+    ]
+  }
+  

@@ -1,0 +1,101 @@
+.container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 40px auto;
+  font-family: 'Roboto', sans-serif; /* Use a modern font */
+  background-color: #f7f7f7; /* Light background for contrast */
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #333; /* Darker text for contrast */
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.activity {
+  background-color: white; /* White card style */
+  border: none;
+  margin-bottom: 25px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  transition: transform 0.2s ease-in-out;
+}
+
+.activity:hover {
+  transform: translateY(-5px); /* Slight lift effect on hover */
+}
+
+.activity h3 {
+  margin: 0 0 10px;
+  font-size: 1.75rem;
+  color: #333;
+}
+
+.activity p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.activity a {
+  color: #0070f3;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.activity a:hover {
+  color: #005bb5;
+  text-decoration: underline;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #0070f3;
+  margin-top: 40px;
+}
+
+.no-activities {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #d9534f; /* A bright red to catch attention */
+  margin-top: 40px;
+  font-weight: 600;
+}
+
+/* Additional media queries for responsiveness */
+@media (max-width: 768px) {
+  .container {
+      padding: 15px;
+      margin: 20px auto;
+  }
+
+  .activity {
+      padding: 15px;
+  }
+
+  .title {
+      font-size: 2rem;
+  }
+
+  .activity h3 {
+      font-size: 1.5rem;
+  }
+
+  .loading, .no-activities {
+      font-size: 1.3rem;
+  }
+}
+.actsearchcom{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  width: 25%;
+}
