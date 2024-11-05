@@ -33,41 +33,37 @@ const getPlaceById = async(req,res)=>{
     }
 };
 
-// tourism Governor add Place
+// Tourism Governor add Place
 const addPlace = async (req, res) => {
-    const { title,description, pictures, location, openingHours, ticketPrices, tags,createdBy } = req.body;
+    const { title, description, pictures, location, openingHours, ticketPrices, tags, createdBy } = req.body;
 
-    if (!title||!description || !pictures || !location || !openingHours || !ticketPrices) {
-        return res.status(400).json({ error: 'Field is required' });
+    if (!title || !description || !pictures || !location || !openingHours || !ticketPrices) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
-    // If tags are provided, check if all tags exist in the TagModel
-    // If tags are provided, check if all tags exist in the TagModel
-    if (tags && tags.length > 0) {
-        // Extract the types of the tags from the request
-        const tagTypes = tags.map(tag => tag.type);
 
-        // Fetch existing tags from the database
-        const existingTags = await TagModel.find({ type: { $in: tagTypes } });
-
-        // Create an array of existing tag types for comparison
-        const existingTagTypes = existingTags.map(tag => tag.type);
-
-        // Check if every tag in the request exists in the existing tags
-        const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type));
-
-        if (!allTagsExist) {
-            return res.status(400).json({ error: 'Some tags do not exist' });
-        }}
     try {
-        const existingPlace = await PlaceModel.findOne({ description, location }); // Adjusted to check for unique fields
+        // If tags are provided, check if all tags exist in the TagModel
+        if (tags && tags.length > 0) {
+            const tagTypes = tags.map(tag => tag.type);
+            const existingTags = await TagModel.find({ type: { $in: tagTypes } });
+            const existingTagTypes = existingTags.map(tag => tag.type);
+            const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type));
+
+            if (!allTagsExist) {
+                return res.status(400).json({ error: 'Some tags do not exist' });
+            }
+        }
+
+        const existingPlace = await PlaceModel.findOne({ description, location });
         if (existingPlace) {
             return res.status(400).json({ error: 'Place already exists' });
         }
 
-        const newPlace = await PlaceModel.create({title, description, pictures, location, openingHours, ticketPrices, tags,createdBy });
+        const newPlace = await PlaceModel.create({ title, description, pictures, location, openingHours, ticketPrices, tags, createdBy });
         res.status(200).json(newPlace);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -103,17 +99,33 @@ const deletePlace = async (req,res)=>{
     }
 
 };
-//tourism Gorevrnor myCreated
-const myCreatedPlaces = async (req,res)=>{
-    const myID = req.query.myID;
-    if(myID){
-        const myPlaces = await PlaceModel.find({createdBy: myID});
-        res.status(200).json(myPlaces);
-    }else{
-        res.status(400).json({error:'UserID is required'})
+
+// Tourism Governor myCreatedPlaces
+const myCreatedPlaces = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ error: 'UserID is required' });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const myPlaces = await PlaceModel.find({ createdBy: id });
+        res.status(200).json(myPlaces);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
 };
+
+module.exports = {
+    myCreatedPlaces,
+    // other exports
+};
+
 // tourism Governor getAllTags
 const getAllTags = async (req, res) => {
     try {
@@ -127,15 +139,15 @@ const getAllTags = async (req, res) => {
 // tourism Governor createTag
 const createTag = async (req, res) => {
     const { type } = req.body;
-    const validTypes = ["monument", "museum", "religious site", "palace", "castle"];
+    // const validTypes = ["monument", "museum", "religious site", "palace", "castle","shey"];
 
     if (!type) {
         return res.status(400).json({ error: 'Type is required' });
     }
-    if (!validTypes.includes(type.toLowerCase())) {
-        return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["Monument", "Museum", "Religious Site", "Palace", "Castle"]});
-    }
-    else{
+    // if (!validTypes.includes(type.toLowerCase())) {
+    //     return res.status(400).json({ error: 'Type is not valid', "Valid Types": ["Monument", "Museum", "Religious Site", "Palace", "Castle"]});
+    // }
+    
 
     try {
         const existingTag = await TagModel.findOne({ type}); // Correct model usage
@@ -147,7 +159,7 @@ const createTag = async (req, res) => {
         res.status(200).json(newTag);
     } catch (error) {
         res.status(400).json({ error: error.message });
-    }}
+    }
 };
 
 

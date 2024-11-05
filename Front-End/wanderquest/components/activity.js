@@ -1,6 +1,7 @@
 "use client";
-import styles from '../Styles/activity.module.css';
+
 import React, { useState, useEffect, useRef } from 'react';
+import styles from '../Styles/activity.module.css';
 import axios from 'axios';
 import { useLoadScript, Autocomplete } from '@react-google-maps/api';
 
@@ -34,8 +35,16 @@ const Activity = () => {
     useEffect(() => {
         // Fetch activities from the backend
         const fetchActivities = async () => {
-            const response = await axios.get('http://localhost:4000/activityRoutes/activities');
-            setActivities(response.data);
+            try {
+                const response = await fetch('http://localhost:4000/advertiser/activities');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setActivities(data);
+            } catch (error) {
+                console.error('Error fetching activities:', error);
+            }
         };
         fetchActivities();
     }, []);
@@ -113,33 +122,33 @@ const Activity = () => {
                         </div>
                         <div>
                             <label className={styles.label}>Date</label>
-                            <input className={styles.input} name="date" type="date" value={formData.date} onChange={handleChange} required/>
+                            <input className={styles.input} name="date" type="date" value={formData.date} onChange={handleChange} required />
                         </div>
                         <div>
                             <label className={styles.label}>Time</label>
-                            <input className={styles.input} name="time" type="time" value={formData.time} onChange={handleChange} required/>
+                            <input className={styles.input} name="time" type="time" value={formData.time} onChange={handleChange} required />
                         </div>
                         <div>
                             <label className={styles.label}>Location</label>
                             <Autocomplete onLoad={ref => (autocompleteRef.current = ref)} onPlaceChanged={handlePlaceChanged}>
-                                <input className={styles.input} placeholder="Location" name="location" type="text" value={formData.location} onChange={handleChange} required/>
+                                <input className={styles.input} placeholder="Location" name="location" type="text" value={formData.location} onChange={handleChange} required />
                             </Autocomplete>
                         </div>
                         <div>
                             <label className={styles.label}>Price</label>
-                            <input className={styles.input} placeholder="Price" name="price" type="number" value={formData.price} onChange={handleChange} required/>
+                            <input className={styles.input} placeholder="Price" name="price" type="number" value={formData.price} onChange={handleChange} required />
                         </div>
                         <div>
                             <label className={styles.label}>Category</label>
-                            <input className={styles.input} placeholder="Category" name="category" type="text" value={formData.category} onChange={handleChange} required/>
+                            <input className={styles.input} placeholder="Category" name="category" type="text" value={formData.category} onChange={handleChange} required />
                         </div>
                         <div>
                             <label className={styles.label}>Tags</label>
-                            <input className={styles.input} placeholder="Tags" name="tags" type="text" value={formData.tags} onChange={handleChange} required/>
+                            <input className={styles.input} placeholder="Tags" name="tags" type="text" value={formData.tags} onChange={handleChange} required />
                         </div>
                         <div>
                             <label className={styles.label}>Special Discounts</label>
-                            <input className={styles.input} placeholder="Special Discounts" name="specialDiscounts" type="text" value={formData.specialDiscounts} onChange={handleChange} required/>
+                            <input className={styles.input} placeholder="Special Discounts" name="specialDiscounts" type="text" value={formData.specialDiscounts} onChange={handleChange} required />
                         </div>
                         <div>
                             <label className={styles.label}>Booking is Open?</label>
@@ -149,30 +158,34 @@ const Activity = () => {
                     </form>
                 </div>
             </div>
-                <div className={styles.activitiescontainer}>
-                    <label className={styles.label}>List of activities</label>
-                    <div>
-                        {activities.map((activity, index) => (
-                            <div key={activity._id} className={styles.activitybox}>
-                                <p><strong>{activity.title}</strong></p>
-                                <div className={styles.topcard}>
-                                    <p><strong>Date:</strong> {activity.formattedDate}</p>
-                                    <p><strong>Time:</strong> {activity.time}</p>
-                                    <p><strong>Location:</strong> {activity.location}</p>
-                                    <p><strong>Price:</strong> {activity.price}</p>
-                                </div>
-                                <div className={styles.bottomcard}>
-                                    <p><strong>Category:</strong> {activity.category}</p>
-                                    <p><strong>Tags:</strong> {activity.tags}</p>
-                                    <p><strong>Special Discount:</strong> {activity.specialDiscounts}</p>
-                                    <p><strong>{activity.bookingIsOpen ? 'Booking is open' : 'Booking is Closed'}</strong></p>
-                                </div>
-                                <button className={styles.update} onClick={() => handleUpdate(activity)}>Update</button>
-                                <button className={styles.delete} onClick={() => handleDelete(activity._id)}>Delete</button>
+            <div className={styles.activitiescontainer}>
+                <label className={styles.label}>List of activities</label>
+                <div>
+                    {activities.map((activity) => (
+                        <div key={activity._id} className={styles.activitybox}>
+                            <p><strong>{activity.title}</strong></p>
+                            <div className={styles.topcard}>
+                                <p><strong>Date:</strong> {activity.formattedDate}</p>
+                                <p><strong>Time:</strong> {activity.time}</p>
+                                <p><strong>Location:</strong> {activity.location}</p>
+                                <p><strong>Price:</strong> {activity.price}</p>
                             </div>
-                        ))}
-                    </div>
+                            <div className={styles.bottomcard}>
+                                <p><strong>Category:</strong> {activity.category}</p>
+                                <p><strong>Tags:</strong> {
+                                    Array.isArray(activity.tags)
+                                        ? activity.tags.map(tag => tag.type).join(', ')
+                                        : activity.tags
+                                }</p>
+                                <p><strong>Special Discount:</strong> {activity.specialDiscounts}</p>
+                                <p><strong>{activity.bookingIsOpen ? 'Booking is open' : 'Booking is Closed'}</strong></p>
+                            </div>
+                            <button className={styles.update} onClick={() => handleUpdate(activity)}>Update</button>
+                            <button className={styles.delete} onClick={() => handleDelete(activity._id)}>Delete</button>
+                        </div>
+                    ))}
                 </div>
+            </div>
         </div>
     );
 };

@@ -48,26 +48,28 @@ const getAdvertiserId = async (req, res) => {
 
 //create activity
 const createActivity = async (req, res) => {
-    const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
-    console.log(req.user); // Check if req.user is set
-    // If tags are provided, check if all tags exist in the TagModel
-    // If tags are provided, check if all tags exist in the TagModel
-    if (tags && tags.length > 0) {
-        // Extract the types of the tags from the request
-        const tagTypes = tags.map(tag => tag.type);
+    try{
+        const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
+        // If tags are provided, check if all tags exist in the TagModel
+        if (tags && tags.length > 0) {
+            // Extract the types of the tags from the request
+            const tagTypes = tags.map(tag => tag.type);
 
-        // Fetch existing tags from the database
-        const existingTags = await TagModel.find({ type: { $in: tagTypes } });
+            // Fetch existing tags from the database
+            const existingTags = await TagModel.find({ type: { $in: tagTypes } });
 
-        // Create an array of existing tag types for comparison
-        const existingTagTypes = existingTags.map(tag => tag.type.toLowerCase);
+            // Create an array of existing tag types for comparison
+            const existingTagTypes = existingTags.map(tag => tag.type.toLowerCase);
 
-        // Check if every tag in the request exists in the existing tags
-        const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type.toLowerCase));
+            // Check if every tag in the request exists in the existing tags
+            const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type.toLowerCase));
 
-        if (!allTagsExist) {
-            return res.status(400).json({ error: 'Some tags do not exist' });
+            if (!allTagsExist) {
+                return res.status(400).json({ error: 'Some tags do not exist' });
+            }
         }
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
     const existingCategory = await CategoryModel.findOne({ category: category }); // Adjust the field name as necessary
     if (!existingCategory) {
@@ -146,7 +148,7 @@ const readActivities = async (req, res) => {
 }
 //get myCreatedActivities
 const myCreatedActivities = async (req, res) => {
-    const myID = req.query.myID;
+    const myID = req.params.id;
     if (myID) {
         const myActivities = await ActivityModel.find({ createdBy: myID });
         res.status(200).json(myActivities);

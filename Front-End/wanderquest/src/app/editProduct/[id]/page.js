@@ -1,7 +1,8 @@
 'use client';
 
+import EditProd from "../../../../components/editProd";
 
-import EditProd from '../../../../components/EditProd';
+
 
 const EditProduct = () => {
 
@@ -9,7 +10,7 @@ const EditProduct = () => {
 
     return (
         <div>
-            {<EditProd />}
+            <EditProd />
         </div>
     );
 };

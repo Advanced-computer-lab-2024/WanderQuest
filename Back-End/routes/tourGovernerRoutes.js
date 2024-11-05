@@ -17,7 +17,7 @@ router.get("/places",getAllPlaces)
 //Get Place by ID
 router.get("/places/:id",getPlaceById)
 //Get my Places
-router.get("/myPlaces",myCreatedPlaces)
+router.get("/myPlaces/:id",myCreatedPlaces)
 
 //Tourism Governor create Place
 router.post("/addPlace",addPlace)

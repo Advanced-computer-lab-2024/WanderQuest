@@ -1,5 +1,6 @@
 require('dotenv').config()
 const cors = require('cors')
+const bodyParser = require("body-parser")
 
 const express = require('express')
 const mongoose = require('mongoose')
@@ -13,12 +14,14 @@ const tourGuideRoutes = require('./routes/tourGuideRoutes')
 const activityRoutes = require('./routes/activityRoutes')
 // const { itinerary } = require('./models/objectModel')
 const itineraryRoutes = require('./routes/itineraryRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express()
 
 // Middleware
 app.use(express.json())
 app.use(cors())
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
     console.log(req.method, req.path)
@@ -34,7 +37,8 @@ app.use('/tourist', touristRoutes)
 app.use('/tourGuide', tourGuideRoutes)
 app.use('/tourismGovernor', tourGovernerRoutes)
 app.use('/activityRoutes', activityRoutes)
-app.use('/itinerary', itineraryRoutes);  // This sets the base path for itinerary routes
+app.use('/itinerary', itineraryRoutes);
+app.use('/booking', bookingRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
