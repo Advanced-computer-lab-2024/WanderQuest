@@ -1,9 +1,12 @@
-const User = require('../models/userModel');
+const User = require('../models/userModel').User;
 const Tourist = require('../models/userModel').Tourist;
 const TourGuide = require('../models/userModel').TourGuide;
 const Advertiser = require('../models/userModel').Advertiser;
 const Seller = require('../models/userModel').Seller;
+const Admin = require('../models/adminModel');
+const TourGoverner = require('../models/tourGovernerModel');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 
 // Create a token
@@ -36,11 +39,48 @@ const registerUser = async (req, res) => {
 
         // Create a token
         const token = createToken({ _id: user._id });
-
-        res.json({ role: user.role, email: user.email, id: user._id, token });
+        res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+        res.json({ role: user.role, email: user.email, id: user._id });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 }
 
-module.exports = { registerUser };
+// change password using the old password
+const changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+
+        let user = await User.findById(req.params.id);
+
+        if (!user) {
+            user = await Admin.findById(req.params.id);
+        }
+
+        if (!user) {
+            user = await TourGoverner.findById(req.params.id);
+        }
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const isOldPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+
+        if (!isOldPasswordCorrect) {
+            return res.status(400).json({ error: 'Old password is incorrect' });
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        res.json({ message: 'Password changed successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+module.exports = { registerUser, changePassword };

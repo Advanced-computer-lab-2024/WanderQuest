@@ -101,4 +101,4 @@ const editProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, getSellerId,getProducts, addProduct, editProduct, getAvailableProducts };
+module.exports = { getProfile, updateProfile, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts };
