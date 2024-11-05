@@ -127,28 +127,38 @@ const Activity = mongoose.model('Activity' ,activitySchema);
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({
   
-  activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
-  locations: [{ type: String,required:true}],
-  timeline: {type: String,required:true},
-  duration: {type: String , required: true},
-  language: {type: String, required:true},
-  price: {type:Number, required:true},
-  ratings:[{type:Number,required:false,default:null}],
-  rating:{type:Number,required:false,default:null},
-  availableDates: [{type: Date, required:true}],
-  time: [{type: String, required:true}],
-  accessibility: {type: Boolean, required:true},
-  pickUpLocation: {type: String, required: true},
-  dropOffLocation: {type: String, required: true},
-  tags:
-  [{type:PreferencedTagSchema,required:false,default:null}],
-  ///??????????????default
-  BookingAlreadyMade: {type: Boolean,default:false},
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,  //???color?
-    ref: TourGuideModel ,
-    required: false,
-    }
+    activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
+    locations: [{ type: String,required:true}],
+    timeline: {type: String,required:true},
+    duration: {type: String , required: true},
+    language: {type: String, required:true},
+    price: {type:Number, required:true},
+    ratings:[{type:Number,required:false,default:null}],
+    rating:{type:Number,required:false,default:null},
+    availableDates: [{type: Date, required:true}],
+    time: [{type: String, required:true}],
+    accessibility: {type: Boolean, required:true},
+    pickUpLocation: {type: String, required: true},
+    dropOffLocation: {type: String, required: true},
+    tags:
+    [{type:PreferencedTagSchema,required:false,default:null}],
+    ///??????????????default
+    BookingAlreadyMade: {type: Boolean,default:false},
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,  //???color?
+        ref: TourGuideModel ,
+        required: false,
+    },
+
+    /*
+    Added the following field to handle the availability of booking
+    For the requirement "Activate/ deactivate an itinerary with bookings"
+    */
+    bookingIsOpen: { 
+        type: Boolean,
+        default: true
+    },
+    
 }, {timestamps:true}) ;
 
 itinerarySchema.pre('save', function(next) {

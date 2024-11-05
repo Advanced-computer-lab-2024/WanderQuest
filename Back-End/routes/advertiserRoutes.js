@@ -1,7 +1,7 @@
 const express = require('express');
 
 // controller functions
-const { getProfile, updateProfile, getAdvertiserId } = require('../controllers/advertiserController');
+const { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId } = require('../controllers/advertiserController');
 // const requireAuth = require('../middleware/requireAuth');
 const {
     getAllAdvertisers,
@@ -23,6 +23,8 @@ const router = express.Router();
 router.get('/activity/:id', readOneActivity);
 router.get('/profile/:id', getProfile);
 router.put('/profile/:id', updateProfile);
+router.post('/uploadLogo/:id', uploadLogo);
+router.get('/logo/:id', getLogo);
 router.get('/advertiserId', getAdvertiserId);
 router.get('/allAdvertisers', getAllAdvertisers);
 router.post('/activity', createActivity);

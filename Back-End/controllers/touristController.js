@@ -66,7 +66,7 @@ const getActivityById = async (req, res) => {
             return res.status(404).json({ error: 'Activity not found' });
         }
         res.json(activity);
-    } catch (error){
+    } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
@@ -91,7 +91,7 @@ const getItineraryById = async (req, res) => {
         }
         res.json(itinerary);
 
-    } catch (error){
+    } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
@@ -104,6 +104,25 @@ const getAvailableProducts = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+//change preferred currency
+const changePreferredCurrency = async (req, res) => {
+    try {
+        const tourist = await Tourist.findById(req.params.id);
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+        if (!tourist.accepted) {
+            return res.status(403).json({ error: 'Tourist account not yet accepted' });
+        }
+
+        const updatedTourist = await Tourist.findByIdAndUpdate(req.params.id, { preferredCurrency: req.body.preferredCurrency }, { new: true });
+        res.json(updatedTourist);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 const redeemPoints = async (req, res) => {
     try {
         const tourist = await Tourist.findById(req.params.id);
@@ -156,15 +175,16 @@ const myComplaints = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 };
-module.exports = { 
-    getProfile, 
-    updateProfile, 
-    getTouristId, 
-    getAvailableProducts, 
+module.exports = {
+    getProfile,
+    updateProfile,
+    getTouristId,
+    getAvailableProducts,
     getUpcomingActivities,
     getActivityById,
     getItineraryById,
-    getUpcomingItineraries ,
+    getUpcomingItineraries,
+    changePreferredCurrency,
     redeemPoints,
     fileComplaint,
     myComplaints

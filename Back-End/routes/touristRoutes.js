@@ -3,14 +3,15 @@ const express = require('express');
 // controller functions
 const { getAllPlaces, getPlaceById } = require('../controllers/tourGovernerController')
 const { getAvailableProducts } = require('../controllers/adminController')
-const { 
-    getProfile, 
-    updateProfile, 
+const {
+    getProfile,
+    updateProfile,
     getUpcomingActivities,
     getActivityById,
-    getItineraryById, 
-    getUpcomingItineraries, 
-    getTouristId ,
+    getItineraryById,
+    getUpcomingItineraries,
+    getTouristId,
+    changePreferredCurrency,
     redeemPoints,
     fileComplaint,
     myComplaints
@@ -41,6 +42,8 @@ router.get('/upcomingPlaces', getAllPlaces);
 
 // Sharing activity via link or email
 router.get('/upcomingPlaces/:id', getPlaceById);
+
+router.patch('/changePreferredCurrency/:id', changePreferredCurrency);
 router.put('/redeem/:id',redeemPoints);
 router.post('/fileComplaint',fileComplaint);
 router.get('/myComplaints/:id',myComplaints);

@@ -4,6 +4,12 @@ const validator = require('validator');
 
 const Schema = mongoose.Schema;
 
+const documentSchema = new mongoose.Schema({
+    filename: String,
+    contentType: String,
+    fileID: String,
+});
+
 // Base schema
 const options = { discriminatorKey: 'role', collection: 'users' };
 
@@ -16,7 +22,9 @@ const UserSchema = new Schema({
         enum: ['tourist', 'tourGuide', 'advertiser', 'seller'],
         required: true,
     },
-    accepted: { type: Boolean, default: true }, // is accepted for now until functionality is added
+    accepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
+    isTermsAccepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
+    documents: [documentSchema],
 }, options);
 
 UserSchema.statics.signup = async function (username, email, password, role) {
@@ -66,6 +74,7 @@ const TouristSchema = new Schema({
     dob: { type: Date, required: true },
     job: { type: String, required: true },
     wallet: { type: Number, default: 0 },
+    preferredCurrency: { type: String, enum: ['USD', 'EGP', 'EUR'], default: 'USD' },
     totalPoints:{type: Number,required:false,default:0},
     availablePoints:{type: Number,required:false,default:0},
     level:{type: Number,required:false,default:0}
@@ -161,6 +170,7 @@ const TourGuideSchema = new Schema({
     yearsOfExperience: { type: Number, default: undefined },
     mobileNumber: { type: String, default: undefined },
     previousWork: { type: [String], default: undefined },
+    photo: { type: documentSchema, default: undefined },
 });
 
 const TourGuide = User.discriminator('tourGuide', TourGuideSchema);
@@ -172,6 +182,7 @@ const AdvertiserSchema = new Schema({
     companyAddress: { type: String, default: undefined },
     websiteLink: { type: String, default: undefined },
     hotline: { type: String, default: undefined },
+    logo: { type: documentSchema, default: undefined },
 });
 
 const Advertiser = User.discriminator('advertiser', AdvertiserSchema);
@@ -180,6 +191,7 @@ const Advertiser = User.discriminator('advertiser', AdvertiserSchema);
 const SellerSchema = new Schema({
     sellerDescription: { type: String, default: undefined },
     sellerName: { type: String, default: undefined },
+    logo: { type: documentSchema, default: undefined },
 });
 
 const Seller = User.discriminator('seller', SellerSchema);
