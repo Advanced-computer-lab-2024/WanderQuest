@@ -13,7 +13,7 @@ const bookingSchema = new Schema({
         required: true
     },
     itineraryId: {
-        type: mongoose.Schema.types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Itinerary',
         required: function (){
             return this.bookingType === 'itinerary';
