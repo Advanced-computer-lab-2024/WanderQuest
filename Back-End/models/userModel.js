@@ -75,8 +75,44 @@ const TouristSchema = new Schema({
     job: { type: String, required: true },
     wallet: { type: Number, default: 0 },
     preferredCurrency: { type: String, enum: ['USD', 'EGP', 'EUR'], default: 'USD' },
+    totalPoints:{type: Number,required:false,default:0},
+    availablePoints:{type: Number,required:false,default:0},
+    level:{type: Number,required:false,default:0}
 });
-
+TouristSchema.pre('save', function(next) {
+    if (this.totalPoints <= 100000) {
+        this.level = 1;
+    } else if (this.totalPoints <= 500000) {
+        this.level = 2;
+    } else {
+        this.level = 3;
+    }
+    next();
+});
+TouristSchema.methods.deductFromWallet = async function(amount) {
+    if (amount > this.wallet) {
+        throw new Error('Insufficient wallet balance');
+    }
+    this.wallet -= amount;
+    let pointsEarned;
+    switch (this.level) {
+        case 1:
+            pointsEarned = amount * 0.5;
+            break;
+        case 2:
+            pointsEarned = amount * 1;
+            break;
+        case 3:
+            pointsEarned = amount * 1.5;
+            break;
+        default:
+            pointsEarned = 0; 
+            break;
+    }
+    this.totalPoints += pointsEarned;
+    this.availablePoints += pointsEarned;
+    await this.save();
+}
 function getAge(dateString) {
     var today = new Date();
     var birthDate = new Date(dateString);

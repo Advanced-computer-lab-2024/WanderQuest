@@ -11,7 +11,10 @@ const {
     getItineraryById,
     getUpcomingItineraries,
     getTouristId,
-    changePreferredCurrency
+    changePreferredCurrency,
+    redeemPoints,
+    fileComplaint,
+    myComplaints
 } = require('../controllers/touristController');
 // const requireAuth = require('../middleware/requireAuth');
 
@@ -41,6 +44,8 @@ router.get('/upcomingPlaces', getAllPlaces);
 router.get('/upcomingPlaces/:id', getPlaceById);
 
 router.patch('/changePreferredCurrency/:id', changePreferredCurrency);
-
+router.put('/redeem/:id',redeemPoints);
+router.post('/fileComplaint',fileComplaint);
+router.get('/myComplaints/:id',myComplaints);
 
 module.exports = router;
