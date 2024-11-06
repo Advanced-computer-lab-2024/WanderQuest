@@ -42,9 +42,9 @@ body {
 }
 
 .navbar-logo {
-    width: 80px; /* Adjust width as needed for larger size */
+    width: 105px; /* Adjust width as needed for larger size */
     height: auto; /* Maintain aspect ratio */
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .navbar-signup {

@@ -12,12 +12,19 @@ const AdminPage = () => {
     const handleRedirectedit = () => {
         router.push('/admin/editprod');
     };
+    const handleRedirectediti = () => {
+        router.push('/admin/iti');
+    };
+    const handleRedirectedevent = () => {
+        router.push('/admin/event');
+    };
     return (
         <div>
             <Navbar/>
             <button onClick={handleRedirect}>go to products</button>
             <button onClick={handleRedirectedit}>add products</button>
-            
+            <button onClick={handleRedirectediti}>Itineraries</button>
+            <button onClick={handleRedirectedevent}>events</button>
             <div>
                 <Admin />
             </div>
