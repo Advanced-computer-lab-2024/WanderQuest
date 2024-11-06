@@ -46,7 +46,6 @@ export default function Home() {
             <Link href="/tourist">
                <button className='tourist'>Tourist</button>
             </Link>
-            <ComplaintCard />
             </div>
     {/* <TagManager/>
     <PrefTag/> */}
