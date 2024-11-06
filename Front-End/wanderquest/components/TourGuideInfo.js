@@ -12,6 +12,13 @@ const TourGuideInfo = () => {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
+    //change password states
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordMessage, setPasswordMessage] = useState('');
+    const [showPasswordFields, setShowPasswordFields] = useState(false);
+
     // Fetch the tour guide ID first
     useEffect(() => {
         const fetchTourGuideId = async () => {
@@ -101,6 +108,40 @@ const TourGuideInfo = () => {
             setError("An error occurred while updating the profile");
         }
     };
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+    
+        if (newPassword !== confirmPassword) {
+            setPasswordMessage("New passwords do not match.");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://localhost:4000/changePassword/${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    oldPassword: currentPassword,
+                    newPassword,
+                }),
+            });
+    
+            if (response.ok) {
+                setPasswordMessage("Password changed successfully!");
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+                setShowPasswordFields(false); // Hide fields after successful change
+            } else {
+                const errorData = await response.json();
+                setPasswordMessage(errorData.error || "Failed to change password");
+            }
+        } catch (err) {
+            console.error("Error changing password:", err);
+            setPasswordMessage("An error occurred while changing the password");
+        }
+    };
+    
 
     return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
@@ -145,6 +186,32 @@ const TourGuideInfo = () => {
             />
 
             <button type="submit">Save Changes</button>
+
+            {/* Password Change Toggle */}
+            <button 
+                type="button" 
+                className={styles.changePasswordCancelButton} 
+                onClick={() => setShowPasswordFields(!showPasswordFields)}
+            >
+                {showPasswordFields ? "Cancel Password Change" : "Change Password"}
+            </button>
+
+            {showPasswordFields && (
+                <div className={styles.passwordSection}>
+                    {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
+                    
+                    <label>Current Password:</label>
+                    <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+
+                    <label>New Password:</label>
+                    <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+
+                    <label>Confirm New Password:</label>
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+
+                    <button onClick={handlePasswordChange}>Change Password</button>
+                </div>
+            )}
         </form>
     );
 };

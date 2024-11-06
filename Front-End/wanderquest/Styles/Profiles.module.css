@@ -5,12 +5,11 @@
     margin: 0 auto; 
     margin-top: 100px;
     padding: 30px;
-    background-color: #f9f9f9; 
+    background-color: #FAFAF8; /* Light off-white for a soft background */
     border-radius: 10px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     font-family: Arial, sans-serif;
 }
-
 
 .Profile input[type="text"],
 .Profile input[type="date"],
@@ -18,10 +17,10 @@
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #D1D5DB; /* Subtle gray border for a clean look */
     border-radius: 5px;
     font-size: 16px;
-    background-color: #fff;
+    background-color: #FFFFFF; /* White background for inputs */
     box-sizing: border-box; /* Ensures padding doesn't affect the element's width */
 }
 
@@ -30,31 +29,115 @@
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #122c34; 
+    color: #6B7280; /* Soft grayish color for labels */
 }
 
 
 .h1 {
     text-align: center;
-    color: #17455c;
+    color: #4B5563; /* Darker gray for a more prominent heading */
     margin-bottom: 20px; /* Adjust as needed */
 }
 
 /* Button styling */
-.Profile button { /* Changed from .Registration button to .Profile button */
+.Profile button {
     width: 100%;
     padding: 12px;
-    background-color: #042335; 
+    background-color:#60A5FA ; /* Soft blue for buttons */
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px; /* Add space below the save changes button */
+}
+
+.Profile button:hover {
+    background-color: #93C5FD; /* Slightly darker blue on hover */
+}
+
+/* Password Section Styling */
+.passwordSection {
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #E5E7EB; /* Adds a subtle separation */
+}
+
+/* Styling for password inputs */
+.passwordSection input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #D1D5DB;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+}
+
+/* Label styling for the password section */
+.passwordSection label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #6B7280;
+}
+
+.Profile .changePasswordCancelButton {
+    width: 100%;
+    padding: 12px;
+    background-color: #34D399; /* Soft mint green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.Profile button:hover { /* Changed from .Registration button:hover to .Profile button:hover */
-    background-color: #1a6187; 
+.Profile .changePasswordCancelButton:hover {
+    background-color:#A7F3D0 ; /* Darker mint green on hover */
+}
+
+/* Password change button styling */
+.passwordSection button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color:#60A5FA ;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.passwordSection button:hover {
+    background-color:#93C5FD ;
+}
+
+/* Success and error messages for password change */
+.passwordSection .success,
+.passwordSection .error {
+    font-size: 14px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.passwordSection .success {
+    color: #065F46; /* Dark teal */
+    background-color: #D1FAE5; /* Light green */
+}
+
+.passwordSection .error {
+    color: #B91C1C; /* Dark red */
+    background-color: #FEE2E2; /* Light pink for error */
 }
 
 /* Responsive Design for Mobile Devices */
@@ -63,7 +146,7 @@
         padding: 15px;
     }
 
-    .Profile button { /* Changed from .Registration button to .Profile button */
+    .Profile button {
         font-size: 14px;
     }
 }
