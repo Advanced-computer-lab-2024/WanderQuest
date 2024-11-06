@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const TouristModel = require('../models/userModel').Tourist;
 const SellerModel = require('../models/userModel').Seller;
 const AdvertiserModel = require('../models/userModel').Advertiser;
 const TourGuideModel = require('../models/userModel').TourGuide;
@@ -22,12 +23,8 @@ const placeSchema = new Schema({
     {type:String,required:true},
     description:
     {type:String,required: true},
-    pictures: [
-        {
-            data: { type: Buffer, required: true },
-            type: { type: String, required: true }
-        }
-    ],
+    pictures:
+    [{data:Buffer,type:String,required:true}],
     location:
     {type:String,required:true},
     openingHours:
@@ -48,10 +45,7 @@ const productSchema = new Schema({
     name:
     {type:String,required:true},
     picture:
-        {
-            data: { type: Buffer, required: true },
-            type: { type: String, required: true }
-        },
+    [{data:Buffer,type:String,required:true}],
     price:
     {type:Number,required:true},
     description:
@@ -132,29 +126,39 @@ const Activity = mongoose.model('Activity' ,activitySchema);
 
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({
-    title: {type: String,required: true},
-  activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
-  locations: [{ type: String,required:true}],
-  timeline: {type: String,required:true},
-  duration: {type: String , required: true},
-  language: {type: String, required:true},
-  price: {type:Number, required:true},
-  ratings:[{type:Number,required:false,default:null}],
-  rating:{type:Number,required:false,default:null},
-  availableDates: [{type: Date, required:true}],
-  time: [{type: String, required:true}],
-  accessibility: {type: Boolean, required:true},
-  pickUpLocation: {type: String, required: true},
-  dropOffLocation: {type: String, required: true},
-  tags:
-  [{type:PreferencedTagSchema,required:false,default:null}],
-  ///??????????????default
-  BookingAlreadyMade: {type: Boolean,default:false},
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,  //???color?
-    ref: TourGuideModel ,
-    required: false,
-    }
+  
+    activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
+    locations: [{ type: String,required:true}],
+    timeline: {type: String,required:true},
+    duration: {type: String , required: true},
+    language: {type: String, required:true},
+    price: {type:Number, required:true},
+    ratings:[{type:Number,required:false,default:null}],
+    rating:{type:Number,required:false,default:null},
+    availableDates: [{type: Date, required:true}],
+    time: [{type: String, required:true}],
+    accessibility: {type: Boolean, required:true},
+    pickUpLocation: {type: String, required: true},
+    dropOffLocation: {type: String, required: true},
+    tags:
+    [{type:PreferencedTagSchema,required:false,default:null}],
+    ///??????????????default
+    BookingAlreadyMade: {type: Boolean,default:false},
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,  //???color?
+        ref: TourGuideModel ,
+        required: false,
+    },
+
+    /*
+    Added the following field to handle the availability of booking
+    For the requirement "Activate/ deactivate an itinerary with bookings"
+    */
+    bookingIsOpen: { 
+        type: Boolean,
+        default: true
+    },
+    
 }, {timestamps:true}) ;
 
 itinerarySchema.pre('save', function(next) {
@@ -168,4 +172,22 @@ itinerarySchema.pre('save', function(next) {
 });
 const itinerary = mongoose.model('itinerary',itinerarySchema);
 
-module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag}
+const complaintSchema = new Schema({
+    title:
+    {type:String,required:true},
+    body:
+    {type:String,required:true},
+    status:
+    {type:String,required:false,default:'pending'},
+    date:
+    {type: Date, required: false, default: Date.now },
+    reply:
+    {type:String,required:false},
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,  //???color?
+        ref: TouristModel ,
+        required: false,
+        }
+});
+const complaint = mongoose.model('complaint',complaintSchema)
+module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag,complaint}

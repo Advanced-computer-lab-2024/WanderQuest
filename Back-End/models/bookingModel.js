@@ -4,22 +4,29 @@ const Schema = mongoose.Schema;
 const bookingSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'userModel',
+        ref: 'User',
         required: true
     },
-    flight: {
-        type: Object,
-        required: false
+    bookingType: {
+        type: String,
+        enum: ['flight', 'hotel', 'transportation', 'activity', 'itinerary'],
+        required: true
     },
-    hotel: {
-        type: Object,
-        required: false
+    itineraryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Itinerary',
+        required: function (){
+            return this.bookingType === 'itinerary';
+        }
     },
-    transportation: {
-        type: Object,
-        required: false
+    activityId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Activity',
+        required: function (){
+            return this.bookingType === 'activity';
+        }
     },
-    ticket: {
+    details: {
         type: Object,
         required: false
     },
@@ -32,8 +39,12 @@ const bookingSchema = new Schema({
         enum: ['booked', 'cancelled'],
         default: 'booked'
     },
+    startDate: {
+        type: Date,
+        required: true
+    }
 
-});
+}, { timestamps: true });
 
 const Booking = mongoose.model('Booking', bookingSchema);
 
