@@ -1,5 +1,67 @@
 const Booking = require('../models/bookingModel');
 const axios = require('axios');
+const { User } = require('../models/userModel');
+const Activity = require('../models/objectModel').Activity;
+
+
+const bookActivity = async (req, res) => {
+    const { userId, bookingType, activityId } = req.body;
+
+    const booking = await Booking.findOne({ userId, activityId });
+    if(booking) {
+        return res.status(400).json({ error: 'Activity already booked by this user' });
+    }
+
+    if (bookingType !== 'activity') {
+        return res.status(400).json({ error: 'Can only book an activity' });
+    }
+
+    try {
+        const retUser = await User.findById(userId);
+        if (!retUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (retUser.role !== 'tourist') {
+            return res.status(403).json({ error: 'Only tourists can book activities' });
+        }
+
+        const retActivity = await Activity.findById(activityId);
+        if (!retActivity) {
+            return res.status(404).json({ error: 'Activity not found' });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            activityId,
+            details: retActivity,
+            paid: true,
+            startDate: retActivity.date
+        });
+
+        const savedBooking = await newBooking.save();
+        res.status(201).json(savedBooking);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const bookItinerary = async (req, res) => {
+
+}
+
+const bookTransportation = async (req, res) => {
+
+}
+
+const bookHotel = async (req, res) => {
+
+}
+
+const bookFlight = async (req, res) => {
+
+}
 
 // Flight search
 const flightSearch = async (req, res) => {
@@ -44,4 +106,7 @@ const flightSearch = async (req, res) => {
     }
 };
 
-module.exports = { flightSearch };
+module.exports = {
+    flightSearch,
+    bookActivity,
+};
