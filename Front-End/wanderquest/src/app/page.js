@@ -12,14 +12,16 @@ import PrefTag from "../../components/PrefTag";
 import ActivityCategory from "../../components/ActivityCategory";
 import ComplaintCard from "../../components/ComplaintCard";
 import Link from 'next/link';
-
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
+import {motion,AnimatePresence} from 'framer-motion';
+import Signin from "../../components/Signin";
+
 export default function Home() {
   return (<>
     <Navbar></Navbar>
 
-    <div>
+    {/* <div>
     <Link href="/profileInfo">
                <button className='navbar-profile'>Profile</button>
             </Link>
@@ -46,7 +48,16 @@ export default function Home() {
             <Link href="/tourist">
                <button className='tourist'>Tourist</button>
             </Link>
-            </div>
+            <motion.h1
+      initial={{opacity:0,x:10,y:150}}
+      animate={{scale:1,opacity:1,x:20}}
+      transition={{duration:1}}
+      style={{ border: '0px solid black' ,width:800}}
+      >
+         Welcome to WanderQuest
+
+      </motion.h1> */}
+            {/* </div> */}
     {/* <TagManager/>
     <PrefTag/> */}
     {/* <ActivityCategory /> */}
@@ -58,7 +69,7 @@ export default function Home() {
 
     {/* <Cruditinerary></Cruditinerary> */}
       {/* <Activity></Activity> */}
-         <Historicalplaces></Historicalplaces>
+         {/* <Historicalplaces></Historicalplaces> */}
 
 
         {/* <Itineraries/> */}
