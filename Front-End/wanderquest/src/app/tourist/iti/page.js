@@ -321,11 +321,12 @@ const clearsearch=()=>{
           <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
           <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
           <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-          <Link href={`iti/${itinerary.id}`} className={styles.addticket}>
+          <Link href={`iti/${itinerary._id}`} className={styles.addticket}>
               view
           </Link>
           <p>{itinerary.id}</p>
           <button onClick={share}>share link</button>
+          <button></button>
           
         </div>
         

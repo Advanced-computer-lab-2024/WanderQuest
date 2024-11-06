@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '/styles/museum.css';
 import Navbar from '../../../../components/Navbar';
+import Link from 'next/link';
 
 const Museums = (Props) => {
     const [Tags,setTags]=useState([]);
@@ -133,7 +134,10 @@ const Museums = (Props) => {
                             </div>
                         ))}
                     </div>
-                    <button>view</button> </div> 
+                    <Link href={`musuem/${museum._id}`}>view</Link>
+                    
+                     </div> 
+                    
             ))}
         </div>
         </>);

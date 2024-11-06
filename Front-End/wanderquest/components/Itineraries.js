@@ -317,9 +317,10 @@ const clearsearch=()=>{
           <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
           <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
           <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-          <button onClick={goToDetails} className={styles.addticket}>
-              View
-          </button>
+          {role==="Admin"?(
+            <button className={styles.addticket} >flag</button>
+          ):<div></div>}
+          
         </div>
         
       ))}

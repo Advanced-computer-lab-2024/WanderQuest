@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import styles from '/styles/Activities.module.css';
 import Navbar from '../../../../components/Navbar';
+import Link from 'next/link';
 
 const Activitiespage = (Props) => {
   const cc = [
@@ -293,8 +294,14 @@ const Activitiespage = (Props) => {
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
+            <p>{activity.id}</p>
+            <Link href={`activity/${activity._id}`} className={styles.addticket}>
+              view
+          </Link>
           </p>
+          
         </div>
+        
       ))}
     </div>
     </>);
