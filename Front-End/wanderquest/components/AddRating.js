@@ -7,6 +7,7 @@ const AddRating = ({ rating, setRating }) => {
     const handleRating = (value) => setRating(value);
     const handleMouseEnter = (value) => setHoveredRating(value);
     const handleMouseLeave = () => setHoveredRating(0);
+    //const apiLink `${apiLink}`
 
     return (
         <div>

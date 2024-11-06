@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 
-const AddComment = ({ comment, setComment }) => {
+const AddComment = ({ comment, setComment}) => {
     const [charCount, setCharCount] = useState(comment.length);
     const maxCharLimit = 250;
 
@@ -12,6 +12,7 @@ const AddComment = ({ comment, setComment }) => {
             setCharCount(newComment.length);
         }
     };
+    //const apiLink = `${apiLink}`
 
     return (
         <div className="add-comment">
@@ -24,7 +25,7 @@ const AddComment = ({ comment, setComment }) => {
                     padding: '1.2rem',
                     border: '1px solid #ccc',
                     borderRadius: '5px',
-                    width: '15rem',
+                    width: '80%',
                     height: '8rem',
                     resize: 'vertical',
                     outlineColor: '#1A6187', // Gives a visual cue for focused state
