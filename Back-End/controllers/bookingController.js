@@ -2,6 +2,7 @@ const Booking = require('../models/bookingModel');
 const axios = require('axios');
 const { User } = require('../models/userModel');
 const Activity = require('../models/objectModel').Activity;
+const Itinerary = require('../models/objectModel').itinerary;
 
 
 const bookActivity = async (req, res) => {
@@ -48,6 +49,58 @@ const bookActivity = async (req, res) => {
 };
 
 const bookItinerary = async (req, res) => {
+    const { userId, bookingType, itineraryId, startDate } = req.body;
+
+    const booking = await Booking.findOne({ userId, itineraryId });
+    if(booking) {
+        return res.status(400).json({ error: 'Itinerary already booked by this user' });
+    }
+
+    if (bookingType !== 'itinerary') {
+        return res.status(400).json({ error: 'Can only book an itinerary' });
+    }
+
+    try {
+        const retUser = await User.findById(userId);
+        if (!retUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (retUser.role !== 'tourist') {
+            return res.status(403).json({ error: 'Only tourists can book itineraries' });
+        }
+
+        const retItinerary = await Itinerary.findById(itineraryId);
+        if (!retItinerary) {
+            return res.status(404).json({ error: 'Itinerary not found' });
+        }
+
+        // Convert startDate to ISO string without time part
+        const startDateISO = new Date(startDate).toISOString().split('T')[0];
+
+        // Check if startDate is in availableDates
+        const isDateAvailable = retItinerary.availableDates.some(date => 
+            new Date(date).toISOString().split('T')[0] === startDateISO
+        );
+
+        if (!isDateAvailable) {
+            return res.status(400).json({ error: 'Itinerary not available on this date' });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            itineraryId,
+            details: retItinerary,
+            paid: true,
+            startDate: startDate
+        });
+
+        const savedBooking = await newBooking.save();
+        res.status(201).json(savedBooking);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 
 }
 
@@ -109,4 +162,5 @@ const flightSearch = async (req, res) => {
 module.exports = {
     flightSearch,
     bookActivity,
+    bookItinerary,
 };
