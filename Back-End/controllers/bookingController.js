@@ -9,7 +9,7 @@ const bookActivity = async (req, res) => {
     const { userId, bookingType, activityId } = req.body;
 
     const booking = await Booking.findOne({ userId, activityId });
-    if(booking) {
+    if(booking && booking.status === 'booked') {
         return res.status(400).json({ error: 'Activity already booked by this user' });
     }
 
@@ -41,6 +41,10 @@ const bookActivity = async (req, res) => {
             startDate: retActivity.date
         });
 
+        if(booking && booking.status === 'cancelled') {
+            await Booking.findOneAndDelete({ _id: booking._id });
+            console.log("Deleted booking");
+        }
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
     } catch (error) {
@@ -52,8 +56,8 @@ const bookItinerary = async (req, res) => {
     const { userId, bookingType, itineraryId, startDate } = req.body;
 
     const booking = await Booking.findOne({ userId, itineraryId });
-    if(booking) {
-        return res.status(400).json({ error: 'Itinerary already booked by this user' });
+    if(booking && booking.status === 'booked') {
+        return res.status(400).json({ error: 'Activity already booked by this user' });
     }
 
     if (bookingType !== 'itinerary') {
@@ -95,13 +99,38 @@ const bookItinerary = async (req, res) => {
             paid: true,
             startDate: startDate
         });
-
+        if(booking && booking.status === 'cancelled') {
+            await Booking.findOneAndDelete({ _id: booking._id });
+            console.log("Deleted booking");
+        }
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 
+}
+
+const cancelBooking = async (req, res) => {
+    const { userId, bookingId } = req.body;
+    try{
+        const booking = await Booking.findById(bookingId);
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        if(booking.userId != userId) {
+            console.log(booking.userId, userId);
+            return res.status(403).json({ error: 'Unauthorized action: can not delete the booking of another user' });
+        }
+        if(booking.status === 'cancelled') {
+            return res.status(400).json({ error: 'Booking already cancelled' });
+        }
+        booking.status = 'cancelled';
+        await booking.save();
+        res.status(200).json({ message: 'Booking successfully cancelled' });
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
 }
 
 const bookTransportation = async (req, res) => {
@@ -163,4 +192,5 @@ module.exports = {
     flightSearch,
     bookActivity,
     bookItinerary,
+    cancelBooking
 };
