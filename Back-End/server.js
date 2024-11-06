@@ -6,7 +6,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const adminRoutes = require('./routes/adminRoutes')
 const tourGovernerRoutes = require('./routes/tourGovernerRoutes')
-const registerationRoutes = require('./routes/registerationRoutes')
+const authenticationControllerRoutes = require('./routes/authenticationRoutes')
 const advertiserRoutes = require('./routes/advertiserRoutes')
 const sellerRoutes = require('./routes/sellerRoutes')
 const touristRoutes = require('./routes/touristRoutes')
@@ -26,11 +26,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
     console.log(req.method, req.path)
     next()
-})
+});
 
 //Routes
 app.use('/admin', adminRoutes)
-app.use('/register', registerationRoutes)
+app.use('/authentication', authenticationControllerRoutes)
 app.use('/advertiser', advertiserRoutes)
 app.use('/seller', sellerRoutes)
 app.use('/tourist', touristRoutes)

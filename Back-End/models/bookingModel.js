@@ -9,7 +9,7 @@ const bookingSchema = new Schema({
     },
     bookingType: {
         type: String,
-        enum: ['flight', 'hotel', 'transportation', 'event', 'itinerary'],
+        enum: ['flight', 'hotel', 'transportation', 'activity', 'itinerary'],
         required: true
     },
     itineraryId: {
@@ -17,6 +17,13 @@ const bookingSchema = new Schema({
         ref: 'Itinerary',
         required: function (){
             return this.bookingType === 'itinerary';
+        }
+    },
+    activityId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Activity',
+        required: function (){
+            return this.bookingType === 'activity';
         }
     },
     details: {
