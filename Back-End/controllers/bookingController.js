@@ -46,6 +46,7 @@ const bookActivity = async (req, res) => {
             console.log("Deleted booking");
         }
         const savedBooking = await newBooking.save();
+        retUser.deduceFromWallet(retActivity.price);
         res.status(201).json(savedBooking);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -103,6 +104,7 @@ const bookItinerary = async (req, res) => {
             await Booking.findOneAndDelete({ _id: booking._id });
             console.log("Deleted booking");
         }
+        retUser.deduceFromWallet(retItinerary.price);
         const savedBooking = await newBooking.save();
         res.status(201).json(savedBooking);
     } catch (error) {
@@ -124,6 +126,13 @@ const cancelBooking = async (req, res) => {
         }
         if(booking.status === 'cancelled') {
             return res.status(400).json({ error: 'Booking already cancelled' });
+        }
+        const currentDate = new Date();
+        const startDate = new Date(booking.startDate);
+        const hoursDifference = (startDate - currentDate) / (1000 * 60 * 60);
+
+        if (hoursDifference < 48) {
+            return res.status(400).json({ error: 'Cannot cancel a booking within 48 hours of the start date' });
         }
         booking.status = 'cancelled';
         await booking.save();
