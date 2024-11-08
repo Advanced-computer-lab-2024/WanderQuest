@@ -382,7 +382,7 @@ const specificComplaint = async (req, res) => {
 };
 const markComplaint = async (req, res) => {
     const { id } = req.params;
-    if (!req.body.status || (req.body.status !== 'resolved' && req.body.status !== 'pending')) {
+    if (!req.body.status || (req.body.status.toLowerCase() !== 'resolved' && req.body.status.toLowerCase() !== 'pending')) {
         return res.status(400).json({ error: 'Status must be either "resolved" or "pending"' });
     }
 
