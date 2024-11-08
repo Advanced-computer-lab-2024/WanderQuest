@@ -113,6 +113,7 @@ const bookItinerary = async (req, res) => {
 
 }
 
+
 const cancelBooking = async (req, res) => {
     const { userId, bookingId } = req.body;
     try{
@@ -126,6 +127,9 @@ const cancelBooking = async (req, res) => {
         }
         if(booking.status === 'cancelled') {
             return res.status(400).json({ error: 'Booking already cancelled' });
+        }
+        if(booking.startDate < new Date()) {
+            return res.status(400).json({ error: 'Cannot cancel this booking' });
         }
         const currentDate = new Date();
         const startDate = new Date(booking.startDate);
