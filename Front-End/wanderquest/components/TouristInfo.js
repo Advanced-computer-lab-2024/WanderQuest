@@ -153,46 +153,6 @@ const TouristInfo = () => {
         }
     };
 
-    // Handle logo file selection
-    const handlePicChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setPic(file);
-            setPicPreview(URL.createObjectURL(file)); // Show preview of the logo
-        }
-    };
-
-    const handlePicUpload = async () => {
-        if (!pic) {
-            setError("Please select a logo to upload.");
-            return;
-        }
-    
-        const formData = new FormData();
-        formData.append("documents", pic);
-    
-        try {
-            const response = await fetch(`http://localhost:4000/tourist/uploadLogo/${userId}`, {
-                method: "POST",
-                body: formData,
-            });
-    
-            if (response.ok) {
-                const result = await response.json();
-                setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
-                setLogoPreview("");
-                setError("");
-                setSuccessMessage("Logo uploaded successfully!");
-                setTimeout(() => setSuccessMessage(""), 3000); // Clears after 3 seconds
-            } else {
-                const errorData = await response.json();
-                setError(errorData.error || "Failed to upload logo");
-            }
-        } catch (err) {
-            console.error("Error uploading logo:", err);
-            setError("An error occurred while uploading the logo");
-        }
-    };
 
     const handleRedeem = async () => {
         if (redeemAmount <= 0) {
