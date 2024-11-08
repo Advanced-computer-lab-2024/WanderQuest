@@ -45,7 +45,7 @@ router.get('/upcomingPlaces', getAllPlaces);
 router.get('/upcomingPlaces/:id', getPlaceById);
 router.post('/rateProduct/:productId',rateProduct);
 router.patch('/changePreferredCurrency/:id', changePreferredCurrency);
-router.put('/redeem/:id',redeemPoints);
+router.patch('/redeem/:id',redeemPoints);
 router.post('/fileComplaint',fileComplaint);
 router.get('/myComplaints/:id',myComplaints);
 

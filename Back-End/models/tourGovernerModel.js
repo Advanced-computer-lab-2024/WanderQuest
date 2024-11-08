@@ -12,7 +12,8 @@ const tourGovernorSchema = new Schema({
         type: String,
         required: true,
         minlength: 5
-    }
+    },
+    role:{type:String,required:false,default:'Tourism Governor'}
 }, { timestamps: true});
 
 const tourGovernor = mongoose.model('TourGovernor',tourGovernorSchema);
