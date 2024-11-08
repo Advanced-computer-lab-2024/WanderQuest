@@ -42,7 +42,7 @@ const RegistrationForm = () => {
         setError(""); 
     
         // Make the API call to the backend
-        fetch('http://localhost:4000/register/', { 
+        fetch('http://localhost:4000/authentication/register/', { 
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
