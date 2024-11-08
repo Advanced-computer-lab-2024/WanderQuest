@@ -19,7 +19,6 @@ import Signin from "../../components/Signin";
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-    <ComplaintCard></ComplaintCard> 
 
     {/* <div>
     <Link href="/profileInfo">
