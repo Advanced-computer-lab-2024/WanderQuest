@@ -12,6 +12,18 @@ const TourGuideInfo = () => {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
+    //change password states
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordMessage, setPasswordMessage] = useState('');
+    const [showPasswordFields, setShowPasswordFields] = useState(false);
+
+    // Picture states
+    const [pic, setPic] = useState(null); // For the selected logo file
+    const [picPreview, setPicPreview] = useState(''); // For the preview before upload
+    const [picURL, setPicURL] = useState(''); // For the uploaded logo URL
+
     // Fetch the tour guide ID first
     useEffect(() => {
         const fetchTourGuideId = async () => {
@@ -101,12 +113,88 @@ const TourGuideInfo = () => {
             setError("An error occurred while updating the profile");
         }
     };
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+    
+        if (newPassword !== confirmPassword) {
+            setPasswordMessage("New passwords do not match.");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://localhost:4000/changePassword/${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    oldPassword: currentPassword,
+                    newPassword,
+                }),
+            });
+    
+            if (response.ok) {
+                setPasswordMessage("Password changed successfully!");
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+                setShowPasswordFields(false); // Hide fields after successful change
+            } else {
+                const errorData = await response.json();
+                setPasswordMessage(errorData.error || "Failed to change password");
+            }
+        } catch (err) {
+            console.error("Error changing password:", err);
+            setPasswordMessage("An error occurred while changing the password");
+        }
+    };
+
+    // Handle logo file selection
+    const handlePicChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPic(file);
+            setPicPreview(URL.createObjectURL(file)); // Show preview of the logo
+        }
+    };
+
+    const handlePicUpload = async () => {
+        if (!pic) {
+            setError("Please select a photo to upload.");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("documents", pic);
+    
+        try {
+            const response = await fetch(`http://localhost:4000/tourGuide/uploadPhoto/${userId}`, {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                setPicURL(`http://localhost:4000/tourGuide/photo/${userId}?timestamp=${new Date().getTime()}`);
+                setPicPreview("");
+                setError("");
+                setSuccessMessage("Picture uploaded successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000); // Clears after 3 seconds
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to upload logo");
+            }
+        } catch (err) {
+            console.error("Error uploading logo:", err);
+            setError("An error occurred while uploading the logo");
+        }
+    };
+    
 
     return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
+            <div className={styles.profileHeader}>
             <h3 className={styles.h1}>My Profile</h3>
-            {error && <p className={styles.error}>{error}</p>}
-            {successMessage && <p className={styles.success}>{successMessage}</p>}
+            {picURL && <img src={picURL} alt="Photo" className={styles.logoDisplay} />}
+        </div>
             <label>Username: </label>
             <input
                 type="text"
@@ -145,6 +233,44 @@ const TourGuideInfo = () => {
             />
 
             <button type="submit">Save Changes</button>
+
+            {/* Picture Upload Section */}
+        <div className={styles.logoUploadSection}>
+            <label>Upload Picture:</label>
+            <input type="file" onChange={handlePicChange} />
+            {picPreview && <img src={picPreview} alt="Pic Preview" className={styles.logoPreview} />}
+            <button type="button" onClick={handlePicUpload} className={styles.uploadButton}>
+                Upload
+            </button>
+            {error && <p className={styles.error}>{error}</p>}
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
+        </div>
+
+            {/* Password Change Toggle */}
+            <button 
+                type="button" 
+                className={styles.changePasswordCancelButton} 
+                onClick={() => setShowPasswordFields(!showPasswordFields)}
+            >
+                {showPasswordFields ? "Cancel Password Change" : "Change Password"}
+            </button>
+
+            {showPasswordFields && (
+                <div className={styles.passwordSection}>
+                    {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
+                    
+                    <label>Current Password:</label>
+                    <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+
+                    <label>New Password:</label>
+                    <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+
+                    <label>Confirm New Password:</label>
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+
+                    <button onClick={handlePasswordChange}>Change Password</button>
+                </div>
+            )}
         </form>
     );
 };
