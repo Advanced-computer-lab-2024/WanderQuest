@@ -67,6 +67,10 @@ const TourGuideInfo = () => {
                 setMobileNo(data.mobileNumber || '');
                 setYearsOfExperience(data.yearsOfExperience || '');
                 setPreviousWork(data.previousWork || '');
+                if(data.photo){
+                    setPicURL(`http://localhost:4000/tourGuide/photo/${userId}?timestamp=${new Date().getTime()}`);
+                }
+    
             } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
@@ -122,7 +126,7 @@ const TourGuideInfo = () => {
         }
     
         try {
-            const response = await fetch(`http://localhost:4000/changePassword/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/changePassword/${userId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -245,6 +249,7 @@ const TourGuideInfo = () => {
             {error && <p className={styles.error}>{error}</p>}
             {successMessage && <p className={styles.success}>{successMessage}</p>}
         </div>
+        {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
 
             {/* Password Change Toggle */}
             <button 
@@ -257,7 +262,6 @@ const TourGuideInfo = () => {
 
             {showPasswordFields && (
                 <div className={styles.passwordSection}>
-                    {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
                     
                     <label>Current Password:</label>
                     <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />

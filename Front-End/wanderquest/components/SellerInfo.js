@@ -62,6 +62,9 @@ const SellerInfo = () => {
                 setEmail(data.email || '');
                 setName(data.sellerName || '');
                 setDescription(data.sellerDescription || '');
+                if(data.logo){
+                    setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
+                }
             } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
@@ -117,7 +120,7 @@ const SellerInfo = () => {
         }
     
         try {
-            const response = await fetch(`http://localhost:4000/changePassword/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/changePassword/${userId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
