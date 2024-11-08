@@ -10,7 +10,7 @@ router.post('/register', registerUser);
 router.post('/changePassword/:id', changePassword);
 router.post('/uploadDocuments/:id', uploadDocuments);
 router.get('/getDocuments/:id', getUserDocuments);
-router.get('/getDocumentByFilename/:id', getDocumentByFileID);
+router.get('/getDocumentByFileID/:id', getDocumentByFileID);
 router.patch('/acceptUser/:id', acceptUser);
 router.patch('/acceptTerms/:id', acceptTerms);
 
