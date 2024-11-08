@@ -14,12 +14,12 @@ import ComplaintCard from "../../components/ComplaintCard";
 import Link from 'next/link';
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
-import {motion,AnimatePresence} from 'framer-motion';
 import Signin from "../../components/Signin";
 
 export default function Home() {
   return (<>
     <Navbar></Navbar>
+    <ComplaintCard></ComplaintCard> 
 
     {/* <div>
     <Link href="/profileInfo">

@@ -16,14 +16,34 @@ const ComplaintCard = () => {
     const handleDateChange = (e) => {
         setDate(e.target.value);
     }
-    const handleSubmit= () =>{
-        console.log(title);
-        console.log(body);
-        console.log(date);
-    }
-        // Log the title state whenever it changes
     
-
+    // Log the title state whenever it changes
+    const handleSubmit = async () => {
+        if (!title || !body || !date ) {
+            console.error('All required fields must be filled');
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://localhost:4000/tourist/fileComplaint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title, body, date })
+            });
+    
+            if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to file complaint');
+            }
+    
+            const result = await response.json();
+            console.log('Complaint filed successfully:', result);
+        } catch (error) {
+            console.error('Error filing a complaint:', error.message);
+        }
+        }
 
 
     return (
@@ -41,3 +61,4 @@ const ComplaintCard = () => {
 };
 
 export default ComplaintCard;
+
