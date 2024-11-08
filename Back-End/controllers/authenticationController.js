@@ -196,8 +196,10 @@ const changePassword = async (req, res) => {
     }
 };
 
-// accept user
+// accept user, takes boolean value accepted
 const acceptUser = async (req, res) => {
+    const { accepted } = req.body;
+
     try {
         const user = await User.findById(req.params.id);
 
@@ -205,7 +207,13 @@ const acceptUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        user.accepted = true;
+        if (accepted) {
+            user.accepted = true;
+        }
+        else {
+            user.rejected = true;
+        }
+
         await user.save();
 
         res.json({ message: 'User accepted' });
