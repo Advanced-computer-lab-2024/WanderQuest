@@ -249,6 +249,7 @@ const TourGuideInfo = () => {
             {error && <p className={styles.error}>{error}</p>}
             {successMessage && <p className={styles.success}>{successMessage}</p>}
         </div>
+        {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
 
             {/* Password Change Toggle */}
             <button 
@@ -261,7 +262,6 @@ const TourGuideInfo = () => {
 
             {showPasswordFields && (
                 <div className={styles.passwordSection}>
-                    {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
                     
                     <label>Current Password:</label>
                     <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
