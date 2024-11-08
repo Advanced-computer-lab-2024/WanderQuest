@@ -16,10 +16,10 @@ const {
     updateItinerary,
     deleteItinerary,
     readItineraryById,
-    myCreatedItineraries,
+     myCreatedItineraries,
     activateItinerary,
     deactivateItinerary
-} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
+, rateTourGuide,commentOnTourGuide} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
 
@@ -40,4 +40,7 @@ router.put('/itineraries/:id', updateItinerary);
 router.delete('/itineraries/:id', deleteItinerary);
 router.patch('/itinerary/activate/:id', activateItinerary);
 router.patch('/itinerary/deactivate/:id', deactivateItinerary);
+router.post('/rate/:tourGuideId', rateTourGuide);
+router.post('/comment/:id',commentOnTourGuide);
+
 module.exports = router;
