@@ -1,114 +1,138 @@
-'use client';
 import React, { useState, useEffect } from 'react';
+import styles from '../Styles/AdminReviewRequests.module.css';
 
 const AdminReviewRequests = () => {
-  const [requests, setRequests] = useState([]); // Initialize as an array
+  const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch requests from the backend
   useEffect(() => {
     const fetchRequests = async () => {
-        try {
-          const response = await fetch('http://localhost:4000/authentication/getDocuments/:id'); // Replace with actual user ID
-          if (!response.ok) {
-            throw new Error("Failed to fetch requests");
-          }
-          const data = await response.json();
-          console.log("Fetched data:", data);
-          setRequests(Array.isArray(data) ? data : []);
-        } catch (error) {
-          console.log("Error fetching requests:", error);
-          setRequests([]); // Default to empty array on error
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-
+      try {
+        const response = await fetch('http://localhost:4000/authentication/getUsersRequestingAcceptance');
+        if (!response.ok) throw new Error("Failed to fetch requests");
+        const users = await response.json();
+        setRequests(users);
+      } catch (error) {
+        console.error("Error fetching requests:", error);
+        setRequests([]);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchRequests();
   }, []);
 
-  const handleAccept = (id) => {
-    console.log(`Accept request with ID: ${id}`);
-    // Implement accept logic
+  const fetchDocuments = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/authentication/getDocuments/${userId}`);
+      if (!response.ok) throw new Error("Failed to fetch documents");
+      const data = await response.json();
+      setDocuments(data);
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+      setDocuments([]);
+    }
   };
 
-  const handleReject = (id) => {
-    console.log(`Reject request with ID: ${id}`);
-    // Implement reject logic
-  };
-
+  const handleAccept = (id) => console.log(`Accept request with ID: ${id}`);
+  const handleReject = (id) => console.log(`Reject request with ID: ${id}`);
   const openDocument = (request) => {
     setSelectedRequest(request);
+    fetchDocuments(request._id || request.id);
   };
-
   const closeDocument = () => {
     setSelectedRequest(null);
+    setDocuments([]);
   };
 
-  if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
-  }
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Registration Requests</h1>
-      {/* Requests List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {requests.length > 0 ? (
-          requests.map((request) => (
-            <div key={request._id || request.id} className="border p-4 rounded shadow-md bg-white">
-              <h2 className="text-lg font-semibold">{request.name}</h2>
-              <p className="text-sm text-gray-500">{request.email}</p>
-              <p className="mt-2 text-sm">
-                <span className="font-semibold">Role: </span>{request.role}
-              </p>
-              <button
-                className="mt-4 text-blue-500 underline"
-                onClick={() => openDocument(request)}
-              >
-                View Document
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>No requests found.</p>
-        )}
-      </div>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Registration Requests</h1>
+      <table className={styles.table}>
+        <thead className={styles.tableHeader}>
+          <tr>
+            <th className={styles.tableCell}>Email</th>
+            <th className={styles.tableCell}>Role</th>
+            <th className={styles.tableCell}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {requests.length > 0 ? (
+            requests.map((request) => (
+              <tr key={request._id || request.id} className={styles.tableRow}>
+                <td className={styles.tableCell}>{request.email}</td>
+                <td className={styles.tableCell}>{request.role}</td>
+                <td className={styles.tableCell}>
+                  <button
+                    className={`${styles.actionButton} ${styles.viewButton}`}
+                    onClick={() => openDocument(request)}
+                  >
+                    View Documents
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4" className={styles.tableCell}>
+                No requests found.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
-      {/* Document Preview Modal */}
       {selectedRequest && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg">
-            <h3 className="text-xl font-bold mb-4">Document for {selectedRequest.name}</h3>
-            <iframe
-              src={selectedRequest.documentUrl}
-              className="w-full h-64 mb-4"
-              title={`Document for ${selectedRequest.name}`}
-            />
-            <div className="flex justify-end space-x-4">
+        <>
+          <div className={styles.modalOverlay} onClick={closeDocument} />
+          <div className={styles.modal}>
+            <h3 className={styles.modalTitle}>Documents for {selectedRequest.name}</h3>
+            {documents.length > 0 ? (
+              <div className={styles.downloadButtonContainer}> {/* Apply the new class here */}
+                {documents.map((doc, index) => {
+                  return (
+                    <div key={index} className="mb-4">
+                      <a
+                        href={`http://localhost:4000/authentication/getDocumentByFileID/${doc.fileID}`}
+                        download={doc.filename} // Sets the downloaded file's name
+                        className={`${styles.actionButton} ${styles.downloadButton}`}
+                      >
+                        Download Document {index + 1}
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p>No documents available.</p>
+            )}
+
+            <div className="flex justify-end space-x-4 mt-4">
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className={`${styles.actionButton} ${styles.rejectButton}`}
                 onClick={() => handleReject(selectedRequest._id || selectedRequest.id)}
               >
                 Reject
               </button>
               <button
-                className="bg-green-500 text-white px-4 py-2 rounded"
+                className={`${styles.actionButton} ${styles.acceptButton}`}
                 onClick={() => handleAccept(selectedRequest._id || selectedRequest.id)}
               >
                 Accept
               </button>
               <button
-                className="bg-gray-500 text-white px-4 py-2 rounded"
+                className={`${styles.actionButton} ${styles.viewButton}`}
                 onClick={closeDocument}
               >
                 Close
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
