@@ -113,6 +113,7 @@ const bookItinerary = async (req, res) => {
 
 }
 
+
 const cancelBooking = async (req, res) => {
     const { userId, bookingId } = req.body;
     try{
@@ -126,6 +127,9 @@ const cancelBooking = async (req, res) => {
         }
         if(booking.status === 'cancelled') {
             return res.status(400).json({ error: 'Booking already cancelled' });
+        }
+        if(booking.startDate < new Date()) {
+            return res.status(400).json({ error: 'Cannot cancel this booking' });
         }
         const currentDate = new Date();
         const startDate = new Date(booking.startDate);
@@ -142,6 +146,46 @@ const cancelBooking = async (req, res) => {
     }
 }
 
+const bookFlight = async (req, res) => {
+    const {userId, bookingType, from, to, price, companyName} = req.body;
+    if(bookingType != "flight"){
+        res.status(400).json({ message : "Can only book a flight" });
+    }
+    try{
+        const retuser = await User.findById(userId);
+        if(!retuser){
+            res.status(404).json({ message : "User not found" });
+        }
+        if(retuser.role != "tourist"){
+            res.status(403).json({ message : "Only tourists can book flights" });
+        }
+        if(from == to){
+            res.status(400).json({ message : "From and To cannot be the same" });
+        }
+        const currentDate = new Date();
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
+
+        if (fromDate <= currentDate) {
+            return res.status(400).json({ message: "From date must be a future date" });
+        }
+
+        if (toDate <= currentDate) {
+            return res.status(400).json({ message: "To date must be a future date" });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            details: { from, to, price, companyName },
+            paid: true,
+            startDate: fromDate
+        });
+    } catch (error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const bookTransportation = async (req, res) => {
 
 }
@@ -150,56 +194,10 @@ const bookHotel = async (req, res) => {
 
 }
 
-const bookFlight = async (req, res) => {
-
-}
-
-// Flight search
-const flightSearch = async (req, res) => {
-    const { fromId, toId, departDate, returnDate, adults = '1', children = '0', sort = 'BEST', cabinClass = 'ECONOMY', currency_code = 'USD' } = req.query;
-
-    // Validate input dates
-    const now = new Date();
-    const outboundDate = new Date(departDate);
-    const returnDateObj = new Date(returnDate);
-
-    if (outboundDate < now || returnDateObj < now) {
-        return res.status(400).json({ error: '`departDate` and `returnDate` must be in the future.' });
-    }
-
-    const options = {
-        method: 'GET',
-        url: 'https://booking-com15.p.rapidapi.com/api/v1/flights/searchFlights',
-        params: {
-            fromId,
-            toId,
-            departDate,
-            returnDate,
-            pageNo: '1',
-            adults,
-            children,
-            sort,
-            cabinClass,
-            currency_code
-        },
-        headers: {
-            'x-rapidapi-key': '6c33650851msh45e5c5726fd40fap186e97jsnd692a76b08c6',
-            'x-rapidapi-host': 'booking-com15.p.rapidapi.com'
-        }
-    };
-
-    try {
-        const response = await axios.request(options);
-        res.status(200).json(response.data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
-    }
-};
 
 module.exports = {
-    flightSearch,
     bookActivity,
     bookItinerary,
-    cancelBooking
+    cancelBooking,
+    bookFlight,
 };

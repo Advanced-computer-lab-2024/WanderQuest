@@ -29,7 +29,8 @@
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #122c34; 
+    color: #122c34;
+    margin-top: 8px; 
 }
 
 
@@ -43,6 +44,7 @@
     color: white;
     border: none;
     border-radius: 5px;
+    margin-top: 10px;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -60,6 +62,25 @@
 .Registration input[type="date"] {
     margin-bottom: 15px; 
 }
+
+/* Apply the same styles to the upload button */
+.UploadDocuments button {
+    width: 100%;
+    padding: 12px;
+    background-color: #34D399; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 8px;
+}
+
+.UploadDocuments button:hover {
+    background-color: #A7F3D0; 
+}
+
 
 
 .h1 {

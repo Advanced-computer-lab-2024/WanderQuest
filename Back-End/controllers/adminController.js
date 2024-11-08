@@ -19,12 +19,18 @@ const getAllAdmins = async (req, res) => {
 //getAllUsers
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find({})
-        res.status(200).json(users)
+        const users = await User.find({});
+        const admins = await AdminModel.find({});
+        const tourG = await tourGovModel.find({});
+
+        const allUsers = [...users, ...admins, ...tourG];
+
+        res.status(200).json({ users: allUsers });
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message });
     }
-}
+};
+
 // Delete account off system
 const deleteAccount = async (req, res) => {
     const { id } = req.params;
@@ -346,9 +352,7 @@ const deleteTag = async (req, res) => {
 };
 const getAllComplaints = async (req, res) => {
     try {
-        const { status } = req.body; // Extract status from request body
-        const query = status ? { status } : {}; // If status is provided, filter by it; otherwise, fetch all
-        const complaints = await ComplaintModel.find(query).sort({ date: -1 }); // Sort by date in descending order
+        const complaints = await ComplaintModel.find({}) // Sort by date in descending order
         res.status(200).json(complaints);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -376,7 +380,7 @@ const specificComplaint = async (req, res) => {
 };
 const markComplaint = async (req, res) => {
     const { id } = req.params;
-    if (!req.body.status || (req.body.status !== 'resolved' && req.body.status !== 'pending')) {
+    if (!req.body.status || (req.body.status.toLowerCase() !== 'resolved' && req.body.status.toLowerCase() !== 'pending')) {
         return res.status(400).json({ error: 'Status must be either "resolved" or "pending"' });
     }
 
