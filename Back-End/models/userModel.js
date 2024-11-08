@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const { reject } = require('bcrypt/promises');
 
 const Schema = mongoose.Schema;
 
@@ -23,6 +24,7 @@ const UserSchema = new Schema({
         required: true,
     },
     accepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
+    rejected: { type: Boolean, default: false },
     isTermsAccepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
     documents: [documentSchema],
 }, options);
@@ -75,11 +77,11 @@ const TouristSchema = new Schema({
     job: { type: String, required: true },
     wallet: { type: Number, default: 0 },
     preferredCurrency: { type: String, enum: ['USD', 'EGP', 'EUR'], default: 'USD' },
-    totalPoints:{type: Number,required:false,default:0},
-    availablePoints:{type: Number,required:false,default:0},
-    level:{type: Number,required:false,default:0}
+    totalPoints: { type: Number, required: false, default: 0 },
+    availablePoints: { type: Number, required: false, default: 0 },
+    level: { type: Number, required: false, default: 0 }
 });
-TouristSchema.pre('save', function(next) {
+TouristSchema.pre('save', function (next) {
     if (this.totalPoints <= 100000) {
         this.level = 1;
     } else if (this.totalPoints <= 500000) {
@@ -89,7 +91,7 @@ TouristSchema.pre('save', function(next) {
     }
     next();
 });
-TouristSchema.methods.deductFromWallet = async function(amount) {
+TouristSchema.methods.deductFromWallet = async function (amount) {
     if (amount > this.wallet) {
         throw new Error('Insufficient wallet balance');
     }
@@ -106,7 +108,7 @@ TouristSchema.methods.deductFromWallet = async function(amount) {
             pointsEarned = amount * 1.5;
             break;
         default:
-            pointsEarned = 0; 
+            pointsEarned = 0;
             break;
     }
     this.totalPoints += pointsEarned;
