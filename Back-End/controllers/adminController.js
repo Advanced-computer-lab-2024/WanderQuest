@@ -22,7 +22,7 @@ const getUsers = async (req, res) => {
         const users = await User.find({})
         const admins = await AdminModel.find({})
         const tourG = await tourGovModel.find({})
-        res.status(200).json(users,admins,tourG)
+        res.status(200).json({users,admins,tourG})
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
