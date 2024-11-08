@@ -7,6 +7,7 @@ import useUserList from '../hooks/useUserList'; // Import list custom hook
 import Link from 'next/link';
 import PrefTag from './PrefTag';
 import ActivityCategory from './ActivityCategory';
+import Pending from '../src/app/admin/Requests/page';
 
 export default function AdminPage() {
   const [search, setSearch] = useState('');
@@ -114,23 +115,11 @@ export default function AdminPage() {
     <div className={styles.container}>
       {/* Header Section */}
       <h1>Admin Dashboard</h1>
-      <nav className={styles.basic}>
-        <button>Manage Pending Users</button>
-      </nav>
-
+      <div className={styles.basic}>
+      <button>Manage Pending Requests</button>
+      </div>
       {/* Main Section */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-
-        {/* User Accounts Section */}
-        <div className={styles.userAccounts}>
-          <h2>User Accounts</h2>
-          <p>Total Users: {totalUsers !== null ? totalUsers : 'Loading Users...'}</p>
-          {/* <p>Active: {activeUsers == null ? activeUsers : 'Loading Active Users...'}</p>
-          <p>Inactive: {inactiveUsers == null ? inactiveUsers : 'Loading Inactive Users...'}</p> */}
-          <div>
-            <button>View Details</button>
-          </div>
-        </div>
 
         {/* Add Tourism Governor Section */}
         <div className={styles.tourismGovernor}>
@@ -199,8 +188,8 @@ export default function AdminPage() {
             </tr>
           </thead>
           <tbody>
-            {users.filter(user => user.username.includes(search)).map((user) => (
-              <tr key={user._id}> {/* Change key to user._id */}
+            {users.users.filter(user => user.username.includes(search)).map((user) => (
+              <tr key={user._id}>{/* Change key to user._id */}
                 <td>{user.username}</td>
                 <td>{user.role}</td>
                 <td>{user.email}</td>

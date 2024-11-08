@@ -125,6 +125,21 @@ const getUserDocuments = async (req, res) => {
     }
 };
 
+// get all users that request to be accepted
+const getUsersRequestingAcceptance = async (req, res) => {
+    try {
+        const users = await User.find({ accepted: false, rejected: false });
+
+        if (!users) {
+            return res.status(404).json({ error: 'No users found' });
+        }
+
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 const getDocumentByFileID = async (req, res) => {
     try {
         // Convert req.params.id to ObjectId
@@ -196,8 +211,10 @@ const changePassword = async (req, res) => {
     }
 };
 
-// accept user
+// accept user, takes boolean value accepted
 const acceptUser = async (req, res) => {
+    const { accepted } = req.body;
+
     try {
         const user = await User.findById(req.params.id);
 
@@ -205,7 +222,13 @@ const acceptUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        user.accepted = true;
+        if (accepted) {
+            user.accepted = true;
+        }
+        else {
+            user.rejected = true;
+        }
+
         await user.save();
 
         res.json({ message: 'User accepted' });
@@ -232,4 +255,4 @@ const acceptTerms = async (req, res) => {
     }
 };
 
-module.exports = { uploadDocuments, getUserDocuments, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms };
+module.exports = { uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms };
