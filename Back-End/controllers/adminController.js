@@ -352,9 +352,7 @@ const deleteTag = async (req, res) => {
 };
 const getAllComplaints = async (req, res) => {
     try {
-        const { status } = req.body; // Extract status from request body
-        const query = status ? { status } : {}; // If status is provided, filter by it; otherwise, fetch all
-        const complaints = await ComplaintModel.find(query).sort({ date: -1 }); // Sort by date in descending order
+        const complaints = await ComplaintModel.find({}) // Sort by date in descending order
         res.status(200).json(complaints);
     } catch (error) {
         res.status(400).json({ error: error.message });
