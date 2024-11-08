@@ -65,9 +65,8 @@ const CompanyInfo = () => {
                 setCompanyAddress(data.advertiser.companyAddress || "");
                 setCompanyDescription(data.advertiser.companyDescription || "");
 
-                // Fetch existing logo
-                if (data.advertiser.logo && data.advertiser.logo.fileID) {
-                    setLogoURL(`http://localhost:4000/getLogo/${userId}`);
+                if(data.advertiser.logo){
+                    setLogoURL(`http://localhost:4000/advertiser/logo/${userId}?timestamp=${new Date().getTime()}`);
                 }
             } catch (error) {
                 console.error("Error fetching profile:", error);

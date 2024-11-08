@@ -67,6 +67,10 @@ const TourGuideInfo = () => {
                 setMobileNo(data.mobileNumber || '');
                 setYearsOfExperience(data.yearsOfExperience || '');
                 setPreviousWork(data.previousWork || '');
+                if(data.photo){
+                    setPicURL(`http://localhost:4000/tourGuide/photo/${userId}?timestamp=${new Date().getTime()}`);
+                }
+    
             } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
