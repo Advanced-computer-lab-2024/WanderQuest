@@ -81,31 +81,25 @@ const activityCategorySchema = new Schema({
 const ActivityCategory = mongoose.model('Category',activityCategorySchema);
 
 //activity schema
-const activitySchema = new Schema({
-    title: { type: String , required: true },
+const activitySchema = new mongoose.Schema({
+    title: { type: String, required: true },
     date: { type: Date, required: true },
-    time: { type: String , required: true },
+    time: { type: String, required: true },
     location: { type: String, required: true },
     price: { type: Number, required: true },
-    priceRange: { type: String ,required:false},
-    // ratings:[{type:Number,required:false,default:null}],
-    // rating:{type:Number,required:false,default:null},
-    category: { type:String ,ref:ActivityCategory, required: true },
+    priceRange: { type: String, required: false },
+    category: { type: String, ref: 'ActivityCategory', required: true },
     tags: { type: [PreferencedTagSchema], default: [] },
     specialDiscounts: { type: String },
     bookingIsOpen: { type: Boolean, default: true },
-    ratings: [{
-        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist'},
-        rating: { type: Number ,min: 1,max:5 }
-    }],
-    rating:{ type:Number , default: null},
+    ratings: [{ type: ratingSchema, required: false, default: null }],
+    rating: { type: Number, default: null },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,  
-        ref: AdvertiserModel ,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AdvertiserModel',
         required: false,
     },
-    
-},{timestamps: true});
+}, { timestamps: true });
 
 // Virtual property to format the date without the time zone
 activitySchema.virtual('formattedDate').get(function() {
@@ -115,9 +109,10 @@ activitySchema.virtual('formattedDate').get(function() {
 // Ensure virtual fields are serialized
 activitySchema.set('toJSON', { virtuals: true });
 activitySchema.set('toObject', { virtuals: true });
+
 activitySchema.pre('save', function(next) {
     if (this.ratings && this.ratings.length > 0) {
-        const total = this.ratings.reduce((acc, val) => acc + val.rating, 0);
+        const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
         this.rating = total / this.ratings.length; // Calculate average
     } else {
         this.rating = null; // Set to null if no ratings
@@ -128,48 +123,39 @@ const Activity = mongoose.model('Activity' ,activitySchema);
 
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({
-    title: {type: String,required: true},
-  activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
-  locations: [{ type: String,required:true}],
-  timeline: {type: String,required:true},
-  duration: {type: String , required: true},
-  language: {type: String, required:true},
-  price: {type:Number, required:true},
-//   ratings:[{type:Number,required:false,default:null}],
-//   rating:{type:Number,required:false,default:null},
-  availableDates: [{type: Date, required:true}],
-  time: [{type: String, required:true}],
-  accessibility: {type: Boolean, required:true},
-  pickUpLocation: {type: String, required: true},
-  dropOffLocation: {type: String, required: true},
-  tags:
-  [{type:PreferencedTagSchema,required:false,default:null}],
-  ratings:[
-    {
-        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
-        rating: { type: Number, min: 1, max: 5 },
-    }
-  ],
-  rating: { type: Number, default: null },
-  comments:[
-    {
-        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist'},
-        comment: { type: String , required:true},
-        createdAt: { type: Date, default: Date.now}
-    }
-  ],
-  BookingAlreadyMade: {type: Boolean,default:false},
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,  //???color?
-    ref: TourGuideModel ,
-    required: false,
-    },
- 
-}, {timestamps:true}) ;
+    title: { type: String, required: true },
+    activities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Activity', required: true }],
+    locations: [{ type: String, required: true }],
+    timeline: { type: String, required: true },
+    duration: { type: String, required: true },
+    language: { type: String, required: true },
+    price: { type: Number, required: true },
+    availableDates: [{ type: Date, required: true }],
+    time: [{ type: String, required: true }],
+    accessibility: { type: Boolean, required: true },
+    pickUpLocation: { type: String, required: true },
+    dropOffLocation: { type: String, required: true },
+    tags: [{ type: PreferencedTagSchema, required: false, default: null }],
+    ratings: [{ type: ratingSchema, required: false, default: null }],
+    rating: { type: Number, default: null },
+    comments: [
+        {
+            touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
+            comment: { type: String, required: true },
+            createdAt: { type: Date, default: Date.now }
+        }
+    ],
+    BookingAlreadyMade: { type: Boolean, default: false },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TourGuideModel',
+        required: false,
+    },
+}, { timestamps: true });
 
 itinerarySchema.pre('save', function(next) {
     if (this.ratings && this.ratings.length > 0) {
-        const total = this.ratings.reduce((acc, val) => acc + val.rating, 0);
+        const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
         this.rating = total / this.ratings.length; // Calculate average
     } else {
         this.rating = null; // Set to null if no ratings
@@ -195,5 +181,11 @@ const complaintSchema = new Schema({
         required: false,
         }
 });
+
 const complaint = mongoose.model('complaint',complaintSchema)
-module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag,complaint}
+const ratingSchema = new Schema({
+    touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist',required:false },
+    rating: { type: Number, min: 1, max: 5 },
+})
+const rating = mongoose.model('rating',ratingSchema)
+module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag,complaint,rating}
