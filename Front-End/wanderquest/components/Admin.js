@@ -24,19 +24,8 @@ export default function AdminPage() {
     confirmDelete
   } = useDeleteUser(users, setUsers); // Pass setUsers here
 
-  const totalUsers = users.length; // Display total users from the fetched array
-
   if (loading) return <p>Loading users...</p>; // Show loading state
   if (error) return <p>{error}</p>; // Show error state if any
-
-  const fetchUserData = async () => {
-    const data = await fetch('/api/users'); // Adjust the API endpoint
-    const json = await data.json();
-    setTotalUsers(json.totalUsers);
-    setActiveUsers(json.activeUsers);
-    setInactiveUsers(json.inactiveUsers);
-    setUsers(json.users); 
-  }; 
 
 
   const generatePassword = (length = 10) => {
@@ -78,7 +67,7 @@ export default function AdminPage() {
         alert('Failed to create governor.');
       }
     } catch (error) {
-      console.error('Error creating governor:', error);
+      console.log('Error creating governor:', error);
     }
   };
 
@@ -107,7 +96,7 @@ export default function AdminPage() {
         alert('Failed to add admin.');
       }
     } catch (error) {
-      console.error('Error adding admin:', error);
+      console.log('Error adding admin:', error);
     }
   };
 
@@ -183,7 +172,6 @@ export default function AdminPage() {
             <tr>
               <th>Username</th>
               <th>Role</th>
-              <th>Email</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -192,7 +180,6 @@ export default function AdminPage() {
               <tr key={user._id}>{/* Change key to user._id */}
                 <td>{user.username}</td>
                 <td>{user.role}</td>
-                <td>{user.email}</td>
                 <td>
                   <button
                     className={styles.deleteButton}
