@@ -161,10 +161,9 @@ const createActivity = async (req, res) => {
     try {
         const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
         // If tags are provided, check if all tags exist in the TagModel
-        try{
         if (tags && tags.length > 0) {
-                // Extract the types of the tags from the request
-                const tagTypes = tags.map(tag => tag.type);
+            // Extract the types of the tags from the request
+            const tagTypes = tags.map(tag => tag.type);
 
             // Fetch existing tags from the database
             const existingTags = await TagModel.find({ type: { $in: tagTypes } });
@@ -190,13 +189,13 @@ const createActivity = async (req, res) => {
         const newActivity = await ActivityModel.create({
             title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy
 
-            });
-            res.status(200).json(newActivity);
+        });
+        res.status(200).json(newActivity);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
-
+//Read one activity by id/name
 // Read a single activity by ID
 const readOneActivity = async (req, res) => {
     const { id } = req.params;
@@ -275,21 +274,16 @@ const updateActivity = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: 'No such activity' })
+        return res.status(404).json({ error: 'No such workout' })
     }
 
     try {
-        const theUpdatedActivity = await ActivityModel.findByIdAndUpdate(id, req.body, { new: true,runValidators: true  });
-    //    res.status(200).json(theUpdatedActivity)
+        const theUpdatedActivity = await ActivityModel.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json(theUpdatedActivity)
 
         // const theUpdatedActivity = await ActivityModel.findOneAndUpdate({_id: id},{
         //     ...req.body
         //  })
-        if (!theUpdatedActivity) {
-            return res.status(404).json({ message: 'Activity not found' });
-        }
-        console.log("Updated activity:", theUpdatedActivity);
-        res.status(200).json(theUpdatedActivity);
 
     } catch (error) {
         res.status(404).json({ error: error.message });
@@ -333,4 +327,4 @@ const getAllAdvertisers = async (req, res) => {
     }
 };
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities }
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
