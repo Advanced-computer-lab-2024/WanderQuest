@@ -7,13 +7,13 @@ const TourGuideModel = require('../models/userModel').TourGuide;
 const TourismGovernorModel = require('../models/tourGovernerModel');
 
 const tagSchema = new Schema
-({// for the tags to be created independantly from the places
+({// for the tags to be created independently from the places
     type:{type:String,required:true}
 });
 const Tags = mongoose.model('Tags',tagSchema);
 
 const PreferencedTagSchema = new Schema
-({// for the tags to be created independantly from the places
+({// for the tags to be created independently from the places
     type:{type:String,required:true}
 });
 const PrefTag = mongoose.model('Preference Tags',PreferencedTagSchema);
@@ -85,20 +85,22 @@ const activitySchema = new Schema({
     title: { type: String , required: true },
     date: { type: Date, required: true },
     time: { type: String , required: true },
-    //????????????google maps? --> front end
     location: { type: String, required: true },
     price: { type: Number, required: true },
-    //?????????????????????????????//
     priceRange: { type: String ,required:false},
-    ratings:[{type:Number,required:false,default:null}],
-    rating:{type:Number,required:false,default:null},
+    // ratings:[{type:Number,required:false,default:null}],
+    // rating:{type:Number,required:false,default:null},
     category: { type:String ,ref:ActivityCategory, required: true },
     tags: { type: [PreferencedTagSchema], default: [] },
     specialDiscounts: { type: String },
-    //??????????????default true???????????
     bookingIsOpen: { type: Boolean, default: true },
+    ratings: [{
+        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist'},
+        rating: { type: Number ,min: 1,max:5 }
+    }],
+    rating:{ type:Number , default: null},
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,  //???color?
+        type: mongoose.Schema.Types.ObjectId,  
         ref: AdvertiserModel ,
         required: false,
     },
@@ -115,7 +117,7 @@ activitySchema.set('toJSON', { virtuals: true });
 activitySchema.set('toObject', { virtuals: true });
 activitySchema.pre('save', function(next) {
     if (this.ratings && this.ratings.length > 0) {
-        const total = this.ratings.reduce((acc, val) => acc + val, 0);
+        const total = this.ratings.reduce((acc, val) => acc + val.rating, 0);
         this.rating = total / this.ratings.length; // Calculate average
     } else {
         this.rating = null; // Set to null if no ratings
@@ -126,44 +128,48 @@ const Activity = mongoose.model('Activity' ,activitySchema);
 
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({
-  
-    activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
-    locations: [{ type: String,required:true}],
-    timeline: {type: String,required:true},
-    duration: {type: String , required: true},
-    language: {type: String, required:true},
-    price: {type:Number, required:true},
-    ratings:[{type:Number,required:false,default:null}],
-    rating:{type:Number,required:false,default:null},
-    availableDates: [{type: Date, required:true}],
-    time: [{type: String, required:true}],
-    accessibility: {type: Boolean, required:true},
-    pickUpLocation: {type: String, required: true},
-    dropOffLocation: {type: String, required: true},
-    tags:
-    [{type:PreferencedTagSchema,required:false,default:null}],
-    ///??????????????default
-    BookingAlreadyMade: {type: Boolean,default:false},
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,  //???color?
-        ref: TourGuideModel ,
-        required: false,
-    },
-
-    /*
-    Added the following field to handle the availability of booking
-    For the requirement "Activate/ deactivate an itinerary with bookings"
-    */
-    bookingIsOpen: { 
-        type: Boolean,
-        default: true
-    },
-    
+    title: {type: String,required: true},
+  activities:[{type:mongoose.Schema.Types.ObjectId, ref:'Activity',required: true}],
+  locations: [{ type: String,required:true}],
+  timeline: {type: String,required:true},
+  duration: {type: String , required: true},
+  language: {type: String, required:true},
+  price: {type:Number, required:true},
+//   ratings:[{type:Number,required:false,default:null}],
+//   rating:{type:Number,required:false,default:null},
+  availableDates: [{type: Date, required:true}],
+  time: [{type: String, required:true}],
+  accessibility: {type: Boolean, required:true},
+  pickUpLocation: {type: String, required: true},
+  dropOffLocation: {type: String, required: true},
+  tags:
+  [{type:PreferencedTagSchema,required:false,default:null}],
+  ratings:[
+    {
+        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
+        rating: { type: Number, min: 1, max: 5 },
+    }
+  ],
+  rating: { type: Number, default: null },
+  comments:[
+    {
+        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist'},
+        comment: { type: String , required:true},
+        createdAt: { type: Date, default: Date.now}
+    }
+  ],
+  BookingAlreadyMade: {type: Boolean,default:false},
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,  //???color?
+    ref: TourGuideModel ,
+    required: false,
+    },
+ 
 }, {timestamps:true}) ;
 
 itinerarySchema.pre('save', function(next) {
     if (this.ratings && this.ratings.length > 0) {
-        const total = this.ratings.reduce((acc, val) => acc + val, 0);
+        const total = this.ratings.reduce((acc, val) => acc + val.rating, 0);
         this.rating = total / this.ratings.length; // Calculate average
     } else {
         this.rating = null; // Set to null if no ratings

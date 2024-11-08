@@ -39,7 +39,7 @@ router.delete("/delete/:id", deleteAccount)
 // Add another admin
 router.post("/", addAdmin)
 
-// Add Tourism Governer
+// Add Tourism Governor
 router.post("/governor", addTourGov)
 
 //Admin getProducts
