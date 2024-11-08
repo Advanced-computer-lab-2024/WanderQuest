@@ -11,6 +11,8 @@ const TouristInfo = () => {
     const [dob, setDob] = useState('');
     const [job, setOccupation] = useState('');
     const [wallet, setWallet] = useState('');
+    const [availablePoints, setAvailablePoints] = useState('');
+    const [redeemAmount, setRedeemAmount] = useState(0); // State for redeem amount
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
@@ -20,6 +22,11 @@ const TouristInfo = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMessage, setPasswordMessage] = useState('');
     const [showPasswordFields, setShowPasswordFields] = useState(false);
+
+    // Picture states
+    const [pic, setPic] = useState(null); // For the selected logo file
+    const [picPreview, setPicPreview] = useState(''); // For the preview before upload
+    const [picURL, setPicURL] = useState(''); // For the uploaded logo URL
 
     // Fetch the tourist ID first
     useEffect(() => {
@@ -145,6 +152,86 @@ const TouristInfo = () => {
             setPasswordMessage("An error occurred while changing the password");
         }
     };
+
+    // Handle logo file selection
+    const handlePicChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPic(file);
+            setPicPreview(URL.createObjectURL(file)); // Show preview of the logo
+        }
+    };
+
+    const handlePicUpload = async () => {
+        if (!pic) {
+            setError("Please select a logo to upload.");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("documents", pic);
+    
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/uploadLogo/${userId}`, {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
+                setLogoPreview("");
+                setError("");
+                setSuccessMessage("Logo uploaded successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000); // Clears after 3 seconds
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to upload logo");
+            }
+        } catch (err) {
+            console.error("Error uploading logo:", err);
+            setError("An error occurred while uploading the logo");
+        }
+    };
+
+    const handleRedeem = async () => {
+        if (redeemAmount <= 0) {
+            setError("Redeem amount must be greater than 0.");
+            return;
+        }
+
+        const pointsRequired = redeemAmount * 100; // 100 EGP per 10000 points
+        if (availablePoints < pointsRequired) {
+            setError("Not enough points for the redemption.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/redeem/${userId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    points: pointsRequired,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setWallet(data.wallet); // Update wallet with new amount
+                setAvailablePoints(data.availablePoints); // Update available points
+                setSuccessMessage(`Successfully redeemed ${redeemAmount} EGP!`);
+                setError(''); // Clear any error message
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to redeem points");
+            }
+        } catch (err) {
+            console.error("Error redeeming points:", err);
+            setError("An error occurred while redeeming the points");
+        }
+    };
     
 
     return (
@@ -195,6 +282,23 @@ const TouristInfo = () => {
                 value={wallet}
                 required readOnly
             />
+            <label>Available Points: </label>
+            <input
+                type="number"
+                value={availablePoints}
+                required readOnly
+            />
+
+            {/* Redeem section */}
+            <label>Redeem Points (10000 points = 100 EGP): </label>
+            <input
+                type="number"
+                value={redeemAmount}
+                onChange={(e) => setRedeemAmount(e.target.value)}
+                min="1"
+                max={availablePoints / 10000}
+            />
+            <button type="button" onClick={handleRedeem}>Redeem</button>
 
             <button type="submit">Save Changes</button>
 

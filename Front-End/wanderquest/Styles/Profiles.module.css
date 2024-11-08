@@ -58,6 +58,62 @@
     background-color: #93C5FD; /* Slightly darker blue on hover */
 }
 
+.profileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.h1 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logoDisplay {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-left: 20px;
+}
+
+/* Logo Upload Section */
+.logoUploadSection {
+    margin-top: 20px;
+}
+
+.logoUploadSection label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.logoPreview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.uploadButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.uploadButton:hover {
+    background-color: #45a049;
+}
+
 /* Password Section Styling */
 .passwordSection {
     margin-top: 10px;
@@ -139,6 +195,19 @@
     color: #B91C1C; /* Dark red */
     background-color: #FEE2E2; /* Light pink for error */
 }
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.success {
+    color: green;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
 
 /* Responsive Design for Mobile Devices */
 @media (max-width: 600px) {

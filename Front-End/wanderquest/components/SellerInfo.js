@@ -18,6 +18,11 @@ const SellerInfo = () => {
     const [passwordMessage, setPasswordMessage] = useState('');
     const [showPasswordFields, setShowPasswordFields] = useState(false);
 
+    // Logo states
+    const [logo, setLogo] = useState(null); // For the selected logo file
+    const [logoPreview, setLogoPreview] = useState(''); // For the preview before upload
+    const [logoURL, setLogoURL] = useState(''); // For the uploaded logo URL
+
     // Fetch the seller ID first
     useEffect(() => {
         const fetchSellerId = async () => {
@@ -136,13 +141,54 @@ const SellerInfo = () => {
             setPasswordMessage("An error occurred while changing the password");
         }
     };
+    // Handle logo file selection
+    const handleLogoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setLogo(file);
+            setLogoPreview(URL.createObjectURL(file)); // Show preview of the logo
+        }
+    };
+
+    const handleLogoUpload = async () => {
+        if (!logo) {
+            setError("Please select a logo to upload.");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("documents", logo);
+    
+        try {
+            const response = await fetch(`http://localhost:4000/seller/uploadLogo/${userId}`, {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
+                setLogoPreview("");
+                setError("");
+                setSuccessMessage("Logo uploaded successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000); // Clears after 3 seconds
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to upload logo");
+            }
+        } catch (err) {
+            console.error("Error uploading logo:", err);
+            setError("An error occurred while uploading the logo");
+        }
+    };
     
 
     return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
+            <div className={styles.profileHeader}>
             <h3 className={styles.h1}>My Profile</h3>
-            {error && <p className={styles.error}>{error}</p>}
-            {successMessage && <p className={styles.success}>{successMessage}</p>}
+            {logoURL && <img src={logoURL} alt="Company Logo" className={styles.logoDisplay} />}
+        </div>
             <label>Username: </label>
             <input
                 type="text"
@@ -174,6 +220,18 @@ const SellerInfo = () => {
             />
 
             <button type="submit">Save Changes</button>
+
+        {/* Logo Upload Section */}
+        <div className={styles.logoUploadSection}>
+            <label>Upload Logo:</label>
+            <input type="file" onChange={handleLogoChange} />
+            {logoPreview && <img src={logoPreview} alt="Logo Preview" className={styles.logoPreview} />}
+            <button type="button" onClick={handleLogoUpload} className={styles.uploadButton}>
+                Upload
+            </button>
+            {error && <p className={styles.error}>{error}</p>}
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
+        </div>
 
             {/* Password Change Toggle */}
             <button 
