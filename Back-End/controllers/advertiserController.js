@@ -52,33 +52,34 @@ const createActivity = async (req, res) => {
     console.log(req.user); // Check if req.user is set
     // If tags are provided, check if all tags exist in the TagModel
     // If tags are provided, check if all tags exist in the TagModel
-    if (tags && tags.length > 0) {
-        // Extract the types of the tags from the request
-        const tagTypes = tags.map(tag => tag.type);
+    try{
+        if (tags && tags.length > 0) {
+            // Extract the types of the tags from the request
+            const tagTypes = tags.map(tag => tag.type);
 
-        // Fetch existing tags from the database
-        const existingTags = await TagModel.find({ type: { $in: tagTypes } });
+            // Fetch existing tags from the database
+            const existingTags = await TagModel.find({ type: { $in: tagTypes } });
 
-        // Create an array of existing tag types for comparison
-        const existingTagTypes = existingTags.map(tag => tag.type.toLowerCase);
+            // Create an array of existing tag types for comparison
+            const existingTagTypes = existingTags.map(tag => tag.type.toLowerCase());
 
-        // Check if every tag in the request exists in the existing tags
-        const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type.toLowerCase));
+            // Check if every tag in the request exists in the existing tags
+            const allTagsExist = tagTypes.every(type => existingTagTypes.includes(type.toLowerCase()));
 
-        if (!allTagsExist) {
-            return res.status(400).json({ error: 'Some tags do not exist' });
+            if (!allTagsExist) {
+                return res.status(400).json({ error: 'Some tags do not exist' });
+            }
         }
-    }
-    const existingCategory = await CategoryModel.findOne({ category: category }); // Adjust the field name as necessary
-    if (!existingCategory) {
-        return res.status(400).json({ error: 'Category does not exist' });
-    }
-    try {
-        const newActivity = await ActivityModel.create({
-            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy
+        const existingCategory = await CategoryModel.findOne({ category: category }); // Adjust the field name as necessary
+        if (!existingCategory) {
+            return res.status(400).json({ error: 'Category does not exist' });
+        }
+        
+            const newActivity = await ActivityModel.create({
+                title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy
 
-        });
-        res.status(200).json(newActivity);
+            });
+            res.status(200).json(newActivity);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -162,16 +163,21 @@ const updateActivity = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: 'No such workout' })
+        return res.status(404).json({ error: 'No such activity' })
     }
 
     try {
-        const theUpdatedActivity = await ActivityModel.findByIdAndUpdate(id, req.body, { new: true });
-        res.status(200).json(theUpdatedActivity)
+        const theUpdatedActivity = await ActivityModel.findByIdAndUpdate(id, req.body, { new: true,runValidators: true  });
+    //    res.status(200).json(theUpdatedActivity)
 
         // const theUpdatedActivity = await ActivityModel.findOneAndUpdate({_id: id},{
         //     ...req.body
         //  })
+        if (!theUpdatedActivity) {
+            return res.status(404).json({ message: 'Activity not found' });
+        }
+        console.log("Updated activity:", theUpdatedActivity);
+        res.status(200).json(theUpdatedActivity);
 
     } catch (error) {
         res.status(404).json({ error: error.message });

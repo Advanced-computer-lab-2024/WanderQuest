@@ -3,7 +3,7 @@ const express = require('express');
 // controller functions
 const { getProfile, updateProfile, getTourGuideId } = require('../controllers/tourGuideController');
 // const requireAuth = require('../middleware/requireAuth');
-const { createItinerary ,readItinerary,updateItinerary,deleteItinerary,readItineraryById,myCreatedItineraries} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
+const { createItinerary ,readItinerary,updateItinerary,deleteItinerary,readItineraryById, myCreatedItineraries, rateTourGuide,commentOnTourGuide} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
 
@@ -20,4 +20,7 @@ router.get('/itineraries/:id',readItineraryById);
 router.get('/myItineraries/:id',myCreatedItineraries);
 router.put('/itineraries/:id',updateItinerary);
 router.delete('/itineraries/:id', deleteItinerary);
+router.post('/rate/:tourGuideId', rateTourGuide);
+router.post('/comment/:id',commentOnTourGuide);
+
 module.exports = router;

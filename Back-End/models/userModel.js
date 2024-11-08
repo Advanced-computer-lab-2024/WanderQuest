@@ -125,6 +125,19 @@ const TourGuideSchema = new Schema({
     yearsOfExperience: { type: Number, default: undefined },
     mobileNumber: { type: String, default: undefined },
     previousWork: { type: [String], default: undefined },
+    ratings:[
+    {
+        //???????????????????????????????????
+    touristId:{type: mongoose.Schema.Types.ObjectId, ref: 'Tourist'},
+    rating: { type: Number, min: 1 ,max :5 },
+    }],
+    comments: [
+        {
+            touristId: {type: mongoose.Schema.Types.ObjectId , ref: 'Tourist'},
+            comment: { type : String, required: true },
+            date: { type: Date,default: Date.now}
+        }
+    ],
 });
 
 const TourGuide = User.discriminator('tourGuide', TourGuideSchema);
