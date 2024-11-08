@@ -114,11 +114,8 @@ export default function AdminPage() {
     <div className={styles.container}>
       {/* Header Section */}
       <h1>Admin Dashboard</h1>
-      <nav>
-        <button>Add New</button>
-        <button>Manage Users</button>
-        <button>Logs</button>
-        <button>Settings</button>
+      <nav className={styles.basic}>
+        <button>Manage Pending Users</button>
       </nav>
 
       {/* Main Section */}

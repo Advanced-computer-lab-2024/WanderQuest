@@ -11,8 +11,22 @@ const TouristInfo = () => {
     const [dob, setDob] = useState('');
     const [job, setOccupation] = useState('');
     const [wallet, setWallet] = useState('');
+    const [availablePoints, setAvailablePoints] = useState('');
+    const [redeemAmount, setRedeemAmount] = useState(0); // State for redeem amount
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+
+    //change password states
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordMessage, setPasswordMessage] = useState('');
+    const [showPasswordFields, setShowPasswordFields] = useState(false);
+
+    // Picture states
+    const [pic, setPic] = useState(null); // For the selected logo file
+    const [picPreview, setPicPreview] = useState(''); // For the preview before upload
+    const [picURL, setPicURL] = useState(''); // For the uploaded logo URL
 
     // Fetch the tourist ID first
     useEffect(() => {
@@ -105,6 +119,81 @@ const TouristInfo = () => {
         }
     };
 
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+    
+        if (newPassword !== confirmPassword) {
+            setPasswordMessage("New passwords do not match.");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://localhost:4000/authentication/changePassword/${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    oldPassword: currentPassword,
+                    newPassword,
+                }),
+            });
+    
+            if (response.ok) {
+                setPasswordMessage("Password changed successfully!");
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+                setShowPasswordFields(false); // Hide fields after successful change
+            } else {
+                const errorData = await response.json();
+                setPasswordMessage(errorData.error || "Failed to change password");
+            }
+        } catch (err) {
+            console.error("Error changing password:", err);
+            setPasswordMessage("An error occurred while changing the password");
+        }
+    };
+
+
+    const handleRedeem = async () => {
+        if (redeemAmount <= 0) {
+            setError("Redeem amount must be greater than 0.");
+            return;
+        }
+
+        const pointsRequired = redeemAmount * 100; // 100 EGP per 10000 points
+        if (availablePoints < pointsRequired) {
+            setError("Not enough points for the redemption.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/redeem/${userId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    points: pointsRequired,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setWallet(data.wallet); // Update wallet with new amount
+                setAvailablePoints(data.availablePoints); // Update available points
+                setSuccessMessage(`Successfully redeemed ${redeemAmount} EGP!`);
+                setError(''); // Clear any error message
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to redeem points");
+            }
+        } catch (err) {
+            console.error("Error redeeming points:", err);
+            setError("An error occurred while redeeming the points");
+        }
+    };
+    
+
     return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
             <h3 className={styles.h1}>My Profile</h3>
@@ -153,8 +242,51 @@ const TouristInfo = () => {
                 value={wallet}
                 required readOnly
             />
+            <label>Available Points: </label>
+            <input
+                type="number"
+                value={availablePoints}
+                required readOnly
+            />
+
+            {/* Redeem section */}
+            <label>Redeem Points (10000 points = 100 EGP): </label>
+            <input
+                type="number"
+                value={redeemAmount}
+                onChange={(e) => setRedeemAmount(e.target.value)}
+                min="1"
+                max={availablePoints / 10000}
+            />
+            <button type="button" onClick={handleRedeem}>Redeem</button>
 
             <button type="submit">Save Changes</button>
+
+            {/* Password Change Toggle */}
+            <button 
+                type="button" 
+                className={styles.changePasswordCancelButton} 
+                onClick={() => setShowPasswordFields(!showPasswordFields)}
+            >
+                {showPasswordFields ? "Cancel Password Change" : "Change Password"}
+            </button>
+
+            {showPasswordFields && (
+                <div className={styles.passwordSection}>
+                    {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
+                    
+                    <label>Current Password:</label>
+                    <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+
+                    <label>New Password:</label>
+                    <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+
+                    <label>Confirm New Password:</label>
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+
+                    <button onClick={handlePasswordChange}>Change Password</button>
+                </div>
+            )}
         </form>
     );
 };
