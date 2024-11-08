@@ -19,12 +19,18 @@ const getAllAdmins = async (req, res) => {
 //getAllUsers
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find({})
-        res.status(200).json(users)
+        const users = await User.find({});
+        const admins = await AdminModel.find({});
+        const tourG = await tourGovModel.find({});
+
+        const allUsers = [...users, ...admins, ...tourG];
+
+        res.status(200).json({ users: allUsers });
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message });
     }
-}
+};
+
 // Delete account off system
 const deleteAccount = async (req, res) => {
     const { id } = req.params;

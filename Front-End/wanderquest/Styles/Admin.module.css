@@ -36,6 +36,16 @@
     color: white; /* Ensure text color stays white on hover */
 }
 
+.basic button {
+    background-color: #1a6187; /* Blumine color */
+    color: white; /* Text color */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+}
+
 /* User Accounts Card */
 .userAccounts {
     border: 1px solid #122c34; /* Big Stone color */
