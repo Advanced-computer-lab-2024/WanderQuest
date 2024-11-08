@@ -41,6 +41,12 @@ const placeSchema = new Schema({
 });
 const Places = mongoose.model('Places',placeSchema);
 
+const ratingSchema = new Schema({
+    touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist',required:false },
+    rating: { type: Number, min: 1, max: 5 },
+})
+const rating = mongoose.model('rating',ratingSchema)
+
 const productSchema = new Schema({
     name:
     {type:String,required:true},
@@ -54,7 +60,7 @@ const productSchema = new Schema({
     {type: mongoose.Schema.Types.ObjectId,  //???color?
         ref: SellerModel },
     ratings:
-    [{type:Number,required:false,default:null}],
+    [{type:ratingSchema,required:false,default:null}],
     rating:
     {type:Number, required:false,default:null},
     reviews:
@@ -183,9 +189,5 @@ const complaintSchema = new Schema({
 });
 
 const complaint = mongoose.model('complaint',complaintSchema)
-const ratingSchema = new Schema({
-    touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist',required:false },
-    rating: { type: Number, min: 1, max: 5 },
-})
-const rating = mongoose.model('rating',ratingSchema)
+
 module.exports = {Places, Tags, Product, Activity ,itinerary,ActivityCategory,PrefTag,complaint,rating}
