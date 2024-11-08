@@ -19,7 +19,11 @@ const {
     createTag,
     getAllTags,
     updateTag,
-    deleteTag
+    deleteTag,
+    getAllComplaints,
+    specificComplaint,
+    markComplaint,
+    reply
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -77,4 +81,16 @@ router.patch('/editTag/:id', updateTag)
 //Admin deleteTag
 router.delete('/deleteTag/:id', deleteTag)
 
+//Admin getComplaints
+router.get('/complaints',getAllComplaints)
+
+//Admin getSpecificComplaint
+router.get('/complaints/:id',specificComplaint)
+
+//Admin markComplaint
+router.patch('/markComplaint/:id',markComplaint)
+
+//Admin reply
+router.patch('/reply/:id',reply)
+//Admin filterByStatus
 module.exports = router

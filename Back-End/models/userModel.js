@@ -1,8 +1,15 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const { reject } = require('bcrypt/promises');
 
 const Schema = mongoose.Schema;
+
+const documentSchema = new mongoose.Schema({
+    filename: String,
+    contentType: String,
+    fileID: String,
+});
 
 // Base schema
 const options = { discriminatorKey: 'role', collection: 'users' };
@@ -16,7 +23,10 @@ const UserSchema = new Schema({
         enum: ['tourist', 'tourGuide', 'advertiser', 'seller'],
         required: true,
     },
-    accepted: { type: Boolean, default: true }, // is accepted for now until functionality is added
+    accepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
+    rejected: { type: Boolean, default: false },
+    isTermsAccepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
+    documents: [documentSchema],
 }, options);
 
 UserSchema.statics.signup = async function (username, email, password, role) {
@@ -66,8 +76,45 @@ const TouristSchema = new Schema({
     dob: { type: Date, required: true },
     job: { type: String, required: true },
     wallet: { type: Number, default: 0 },
+    preferredCurrency: { type: String, enum: ['USD', 'EGP', 'EUR'], default: 'USD' },
+    totalPoints: { type: Number, required: false, default: 0 },
+    availablePoints: { type: Number, required: false, default: 0 },
+    level: { type: Number, required: false, default: 0 }
 });
-
+TouristSchema.pre('save', function (next) {
+    if (this.totalPoints <= 100000) {
+        this.level = 1;
+    } else if (this.totalPoints <= 500000) {
+        this.level = 2;
+    } else {
+        this.level = 3;
+    }
+    next();
+});
+TouristSchema.methods.deductFromWallet = async function (amount) {
+    if (amount > this.wallet) {
+        throw new Error('Insufficient wallet balance');
+    }
+    this.wallet -= amount;
+    let pointsEarned;
+    switch (this.level) {
+        case 1:
+            pointsEarned = amount * 0.5;
+            break;
+        case 2:
+            pointsEarned = amount * 1;
+            break;
+        case 3:
+            pointsEarned = amount * 1.5;
+            break;
+        default:
+            pointsEarned = 0;
+            break;
+    }
+    this.totalPoints += pointsEarned;
+    this.availablePoints += pointsEarned;
+    await this.save();
+}
 function getAge(dateString) {
     var today = new Date();
     var birthDate = new Date(dateString);
@@ -125,6 +172,7 @@ const TourGuideSchema = new Schema({
     yearsOfExperience: { type: Number, default: undefined },
     mobileNumber: { type: String, default: undefined },
     previousWork: { type: [String], default: undefined },
+    photo: { type: documentSchema, default: undefined },
     ratings:[
     {
         //???????????????????????????????????
@@ -149,6 +197,7 @@ const AdvertiserSchema = new Schema({
     companyAddress: { type: String, default: undefined },
     websiteLink: { type: String, default: undefined },
     hotline: { type: String, default: undefined },
+    logo: { type: documentSchema, default: undefined },
 });
 
 const Advertiser = User.discriminator('advertiser', AdvertiserSchema);
@@ -157,6 +206,7 @@ const Advertiser = User.discriminator('advertiser', AdvertiserSchema);
 const SellerSchema = new Schema({
     sellerDescription: { type: String, default: undefined },
     sellerName: { type: String, default: undefined },
+    logo: { type: documentSchema, default: undefined },
 });
 
 const Seller = User.discriminator('seller', SellerSchema);

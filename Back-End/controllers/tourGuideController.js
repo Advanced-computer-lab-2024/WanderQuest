@@ -2,6 +2,45 @@ const mongoose = require('mongoose');
 const { Activity } = require('../models/objectModel');
 const TourGuide = require('../models/userModel').TourGuide;
 const Itinerary = require('../models/objectModel').itinerary;
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const { Types } = require('mongoose');
+
+// Collection name in MongoDB
+const collectionName = 'uploads';
+
+// Initialize GridFS
+let gfs;
+mongoose.connection.once('open', () => {
+    gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    gfs.collection(collectionName);
+});
+
+// Set up GridFS storage
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URI,
+    file: (req, file) => {
+        return {
+            bucketName: collectionName,
+            filename: `${Date.now()}-${file.originalname}`
+        };
+    }
+});
+
+// File filter to allow only photos
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+const upload = multer({
+    storage,
+    fileFilter
+}).array('documents', 1);
 
 // functions
 const getProfile = async (req, res) => {
@@ -35,6 +74,77 @@ const updateProfile = async (req, res) => {
     }
 };
 
+// upload Photo
+const uploadPhoto = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const tourGuide = await TourGuide.findById(req.params.id);
+            if (!tourGuide) {
+                return res.status(404).json({ error: 'TourGuide not found' });
+            }
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+            tourGuide.photo = documentMetadata;
+
+            await tourGuide.save();
+
+            res.json({ message: 'Photo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+}
+
+const getPhoto = async (req, res) => {
+    try {
+        const tourGuide = await TourGuide.findById(req.params.id);
+        if (!tourGuide) {
+            return res.status(404).json({ error: 'TourGuide not found' });
+        }
+
+        const photo = tourGuide.photo;
+
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //get the id of the first tour guide
 const getTourGuideId = async (req, res) => {
     try {
@@ -46,15 +156,25 @@ const getTourGuideId = async (req, res) => {
 };
 
 
-//myCreatedItineraries
+// myCreatedItineraries
 const myCreatedItineraries = async (req, res) => {
-    if (req.params.id) {
-        const myItineraries = await Itinerary.find({ createdBy: req.params.id });
-        res.status(200).json(myItineraries);
-    } else {
-        res.status(400).json({ error: 'UserID is required' })
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ error: 'UserID is required' });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const myItineraries = await Itinerary.find({ createdBy: id });
+        res.status(200).json(myItineraries);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
 };
 
 
@@ -207,6 +327,57 @@ const deleteItinerary = async (req, res) => {
     }
 }
 
+const activateItinerary = async (req, res) => {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Wrong ID format' });
+    }
+
+    try {
+        const itinerary = await Itinerary.findById(id);
+        if (!itinerary) {
+            return res.status(404).json({ error: 'No such itinerary' });
+        }
+
+        if (itinerary.bookingIsOpen) {
+            return res.status(400).json({ error: 'Booking is already open' });
+        }
+
+        itinerary.bookingIsOpen = true;
+        await itinerary.save();
+        res.status(200).json(itinerary);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const deactivateItinerary = async (req, res) => {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Wrong ID format' });
+    }
+
+    try {
+        const itinerary = await Itinerary.findById(id);
+        if (!itinerary) {
+            return res.status(404).json({ error: 'No such itinerary' });
+        }
+
+        if (!itinerary.bookingIsOpen) {
+            return res.status(400).json({ error: 'Booking is already closed' });
+        }
+
+        itinerary.bookingIsOpen = false;
+        await itinerary.save();
+        res.status(200).json(itinerary);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 //Rate a tourGuide
 const rateTourGuide = async (req,res) => {
     const { tourGuideId } = req.params;
@@ -325,4 +496,22 @@ const commentOnItinerary = async (req,res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, getTourGuideId,createItinerary, readItinerary, updateItinerary, deleteItinerary, readItineraryById, myCreatedItineraries,rateTourGuide,commentOnTourGuide,rateItinerary,commentOnItinerary };
+module.exports = {
+    getProfile,
+    updateProfile,
+    uploadPhoto,
+    getPhoto,
+    getTourGuideId,
+    createItinerary,
+    readItinerary,
+    updateItinerary,
+    deleteItinerary,
+    readItineraryById,
+    myCreatedItineraries,
+    activateItinerary,
+    deactivateItinerary,
+    rateTourGuide,
+    commentOnTourGuide,
+    rateItinerary,
+    commentOnItinerary
+};

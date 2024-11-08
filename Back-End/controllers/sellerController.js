@@ -1,4 +1,44 @@
 const { Seller } = require('../models/userModel');
+const multer = require('multer');
+const mongoose = require('mongoose');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const { Types } = require('mongoose');
+
+// Collection name in MongoDB
+const collectionName = 'uploads';
+
+// Initialize GridFS
+let gfs;
+mongoose.connection.once('open', () => {
+    gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    gfs.collection(collectionName);
+});
+
+// Set up GridFS storage
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URI,
+    file: (req, file) => {
+        return {
+            bucketName: collectionName,
+            filename: `${Date.now()}-${file.originalname}`
+        };
+    }
+});
+
+// File filter to allow only photos
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+const upload = multer({
+    storage,
+    fileFilter
+}).array('documents', 1);
 
 // Read Seller profile
 const getProfile = async (req, res) => {
@@ -32,6 +72,77 @@ const updateProfile = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+// upload logo
+const uploadLogo = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const seller = await Seller.findById(req.params.id);
+            if (!seller) {
+                return res.status(404).json({ error: 'Seller not found' });
+            }
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+            seller.logo = documentMetadata;
+
+            await seller.save();
+
+            res.json({ message: 'Logo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+}
+
+const getLogo = async (req, res) => {
+    try {
+        const seller = await Seller.findById(req.params.id);
+        if (!seller) {
+            return res.status(404).json({ error: 'Seller not found' });
+        }
+
+        const logo = seller.logo;
+
+        const fileID = new Types.ObjectId(logo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
 
 // get the first seller id
 const getSellerId = async (req, res) => {
@@ -101,4 +212,4 @@ const editProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, getSellerId,getProducts, addProduct, editProduct, getAvailableProducts };
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts };

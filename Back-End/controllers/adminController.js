@@ -4,6 +4,7 @@ const tourGovModel = require('../models/tourGovernerModel');
 const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
+const ComplaintModel = require('../models/objectModel').complaint;
 const mongoose = require('mongoose');
 
 // Get all admins
@@ -18,12 +19,18 @@ const getAllAdmins = async (req, res) => {
 //getAllUsers
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find({})
-        res.status(200).json(users)
+        const users = await User.find({});
+        const admins = await AdminModel.find({});
+        const tourG = await tourGovModel.find({});
+
+        const allUsers = [...users, ...admins, ...tourG];
+
+        res.status(200).json({ users: allUsers });
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message });
     }
-}
+};
+
 // Delete account off system
 const deleteAccount = async (req, res) => {
     const { id } = req.params;
@@ -343,7 +350,66 @@ const deleteTag = async (req, res) => {
         }
     }
 };
+const getAllComplaints = async (req, res) => {
+    try {
+        const { status } = req.body; // Extract status from request body
+        const query = status ? { status } : {}; // If status is provided, filter by it; otherwise, fetch all
+        const complaints = await ComplaintModel.find(query).sort({ date: -1 }); // Sort by date in descending order
+        res.status(200).json(complaints);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
+const specificComplaint = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid complaint ID' });
+    }
+
+    try {
+
+        const complaint = await ComplaintModel.findById(id);
+
+        if (!complaint) {
+            return res.status(404).json({ message: 'Complaint not found' });
+        }
+
+        res.status(200).json(complaint);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+const markComplaint = async (req, res) => {
+    const { id } = req.params;
+    if (!req.body.status || (req.body.status !== 'resolved' && req.body.status !== 'pending')) {
+        return res.status(400).json({ error: 'Status must be either "resolved" or "pending"' });
+    }
+
+    try {
+        const updatedComplaint = await ComplaintModel.findByIdAndUpdate
+        (id,{ status: req.body.status }, { new: true });
+        if (!updatedComplaint) {
+            return res.status(404).json({ error: 'Complaint not found' });
+        }
+        res.status(200).json(updatedComplaint);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+const reply = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updatedComplaint = await ComplaintModel.findByIdAndUpdate
+        (id,{ reply: req.body.reply }, { new: true });
+        if (!updatedComplaint) {
+            return res.status(404).json({ error: 'Complaint not found' });
+        }
+        res.status(200).json(updatedComplaint);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -362,5 +428,9 @@ module.exports = {
     getAllTags,
     createTag,
     updateTag,
-    deleteTag
+    deleteTag,
+    getAllComplaints,
+    specificComplaint,
+    markComplaint,
+    reply
 }
