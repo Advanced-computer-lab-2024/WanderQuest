@@ -1,8 +1,9 @@
-"use client";
+"use client"
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
 
 const CompanyInfo = () => {
+    // Existing state variables...
     const [userId, setUserId] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -14,37 +15,48 @@ const CompanyInfo = () => {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
+    // Change password states
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordMessage, setPasswordMessage] = useState('');
+    const [showPasswordFields, setShowPasswordFields] = useState(false);
+
+    // Logo states
+    const [logo, setLogo] = useState(null); // For the selected logo file
+    const [logoPreview, setLogoPreview] = useState(''); // For the preview before upload
+    const [logoURL, setLogoURL] = useState(''); // For the uploaded logo URL
+
     // Fetch the advertiser ID first
     useEffect(() => {
-        fetch(`http://localhost:4000/advertiser/advertiserId`)
-            .then((response) => {
+        const fetchAdvertiserId = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/advertiser/advertiserId`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch advertiser ID');
                 }
-                return response.json();
-            })
-            .then((data) => {
-                const advertiserId = data; // Assuming the backend sends the ID directly
+                const advertiserId = await response.json(); // Assuming the backend sends the ID directly
                 setUserId(advertiserId);  // Store the fetched ID
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("Error fetching advertiser ID:", error);
                 setError("Error fetching advertiser ID");
-            });
+            }
+        };
+
+        fetchAdvertiserId();
     }, []);
 
     // Fetch the full profile using the advertiser's userId
     useEffect(() => {
-        if (!userId) return; // Don't fetch profile if userId is not available
+        const fetchProfile = async () => {
+            if (!userId) return; // Don't fetch profile if userId is not available
 
-        fetch(`http://localhost:4000/advertiser/profile/${userId}`)
-            .then((response) => {
+            try {
+                const response = await fetch(`http://localhost:4000/advertiser/profile/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
-                return response.json();
-            })
-            .then((data) => {
+                const data = await response.json();
                 setUsername(data.advertiser.username || "");
                 setEmail(data.advertiser.email || "");
                 setWebsiteLink(data.advertiser.websiteLink || "");
@@ -52,13 +64,21 @@ const CompanyInfo = () => {
                 setCompanyName(data.advertiser.companyName || "");
                 setCompanyAddress(data.advertiser.companyAddress || "");
                 setCompanyDescription(data.advertiser.companyDescription || "");
-            })
-            .catch((error) => {
+
+                // Fetch existing logo
+                if (data.advertiser.logo && data.advertiser.logo.fileID) {
+                    setLogoURL(`http://localhost:4000/getLogo/${userId}`);
+                }
+            } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
-            });
+            }
+        };
+
+        fetchProfile();
     }, [userId]);
 
+    // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -98,15 +118,98 @@ const CompanyInfo = () => {
         }
     };
 
+    // Handle password change
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+
+        if (newPassword !== confirmPassword) {
+            setPasswordMessage("New passwords do not match.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:4000/changePassword/${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    oldPassword: currentPassword,
+                    newPassword,
+                }),
+            });
+
+            if (response.ok) {
+                setPasswordMessage("Password changed successfully!");
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+                setShowPasswordFields(false); // Hide fields after successful change
+            } else {
+                const errorData = await response.json();
+                setPasswordMessage(errorData.error || "Failed to change password");
+            }
+        } catch (err) {
+            console.error("Error changing password:", err);
+            setPasswordMessage("An error occurred while changing the password");
+        }
+    };
+
+    // Handle logo file selection
+    const handleLogoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setLogo(file);
+            setLogoPreview(URL.createObjectURL(file)); // Show preview of the logo
+        }
+    };
+
+    const handleLogoUpload = async () => {
+        if (!logo) {
+            setError("Please select a logo to upload.");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("documents", logo);
+    
+        try {
+            const response = await fetch(`http://localhost:4000/advertiser/uploadLogo/${userId}`, {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                setLogoURL(`http://localhost:4000/advertiser/logo/${userId}?timestamp=${new Date().getTime()}`);
+                setLogoPreview("");
+                setError("");
+                setSuccessMessage("Logo uploaded successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000); // Clears after 3 seconds
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to upload logo");
+            }
+        } catch (err) {
+            console.error("Error uploading logo:", err);
+            setError("An error occurred while uploading the logo");
+        }
+    };
+    
+    
+
+    
+
     return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
-            <h3 className={styles.h1}>My profile</h3>
-            {error && <p className={styles.error}>{error}</p>}
+        <div className={styles.profileHeader}>
+            <h3 className={styles.h1}>My Profile</h3>
+            {logoURL && <img src={logoURL} alt="Company Logo" className={styles.logoDisplay} />}
+        </div>
+
             <label>Username: </label>
-            <input type="text" value={username} required readOnly/>
+            <input type="text" value={username} required readOnly />
 
             <label>Email: </label>
-            <input type="text" value={email} required readOnly/>
+            <input type="text" value={email} required readOnly />
 
             <label>Company Name:</label>
             <input
@@ -144,9 +247,49 @@ const CompanyInfo = () => {
             />
 
             <button type="submit">Save Changes</button>
+
+            {/* Logo Upload Section */}
+        <div className={styles.logoUploadSection}>
+            <label>Upload Logo:</label>
+            <input type="file" onChange={handleLogoChange} />
+            {logoPreview && <img src={logoPreview} alt="Logo Preview" className={styles.logoPreview} />}
+            <button type="button" onClick={handleLogoUpload} className={styles.uploadButton}>
+                Upload
+            </button>
+            {error && <p className={styles.error}>{error}</p>}
             {successMessage && <p className={styles.success}>{successMessage}</p>}
+        </div>
+
+            {/* Password Change Toggle */}
+            <button
+                type="button"
+                className={styles.changePasswordCancelButton}
+                onClick={() => setShowPasswordFields(!showPasswordFields)}
+            >
+                {showPasswordFields ? "Cancel Password Change" : "Change Password"}
+            </button>
+
+            {showPasswordFields && (
+                <div className={styles.passwordSection}>
+                    {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
+
+                    <label>Current Password:</label>
+                    <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+
+                    <label>New Password:</label>
+                    <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+
+                    <label>Confirm New Password:</label>
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+
+                    <button onClick={handlePasswordChange} className={styles.changePasswordButton}>
+                        Change Password
+                    </button>
+                </div>
+            )}
         </form>
     );
+
 };
 
 export default CompanyInfo;
