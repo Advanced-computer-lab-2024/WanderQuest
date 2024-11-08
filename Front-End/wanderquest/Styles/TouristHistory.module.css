@@ -1,0 +1,106 @@
+/* Itineraries.module.css */
+
+.histContainer {
+    padding: 30px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
+    display:block;
+    
+    align-items: center;
+  }
+
+  .innerContainer{
+    padding: 30px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+
+  .innerTitle{
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  .histTitle {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-left: 20px;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .pastItern {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    border-left: 5px solid #007BFF; /* Accent color for the left border */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+  }
+  
+  .pastItern:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+  }
+  
+  .pastIternTitle {
+    font-size: 1.8rem;
+    color: #007BFF;
+    margin-bottom: 15px;
+  }
+  
+  .attendedActivity,
+  .locs,
+  .dates {
+    margin: 15px 0;
+    padding-left: 10px;
+  }
+  
+  .histActivity {
+    margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .loadingScreen {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #007BFF;
+  }
+  
+  .errorMessage {
+    color: red;
+    text-align: center;
+    font-size: 1.5rem;
+  }
+  
+  /* Local class for styling strong elements */
+  .fontStrong {
+    color: #555; /* Dark gray for labels */
+  }
+  
+  .btnFeedback {
+    padding: 5px 10px;
+    font-size: 1rem;
+    width: 150px;
+    background-color: #1A6187; /* Blumine color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor for button */
+    transition: background-color 0.3s; /* Smooth transition */
+    border-radius: 5px; /* Rounded corners */
+  }
+  
+  .btnFeedback:hover {
+    background-color: #17455C; /* Elephant color on hover */
+  }
+  

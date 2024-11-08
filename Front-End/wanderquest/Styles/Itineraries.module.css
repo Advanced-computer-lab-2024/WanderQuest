@@ -68,18 +68,4 @@
   color: #555; /* Dark gray for labels */
 }
 
-.btnFeedback {
-  padding: 5px 10px;
-  font-size: 1rem;
-  width: 150px;
-  background-color: #1A6187; /* Blumine color */
-  color: white; /* Text color */
-  border: none; /* Remove border */
-  cursor: pointer; /* Pointer cursor for button */
-  transition: background-color 0.3s; /* Smooth transition */
-  border-radius: 5px; /* Rounded corners */
-}
 
-.btnFeedback:hover {
-  background-color: #17455C; /* Elephant color on hover */
-}
