@@ -128,7 +128,7 @@ const TouristInfo = () => {
         }
     
         try {
-            const response = await fetch(`http://localhost:4000/changePassword/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/changePassword/${userId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
