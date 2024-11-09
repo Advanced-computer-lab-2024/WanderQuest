@@ -94,6 +94,38 @@
     color:white;
 }
 
+.active {
+    margin-right: 10px;
+    background-color: #00bb00;
+    color:white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+
+.active:hover {
+    background-color: #009900;
+    color:white;
+}
+
+
+.inactive {
+    margin-right: 10px;
+    background-color: #dc3545;
+    color:white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+
+.inactive:hover {
+    background-color: #c82333;
+    color:white;
+}
+
+
 .itineraryBox{
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     border-radius:5px;

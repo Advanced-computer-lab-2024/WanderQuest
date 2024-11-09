@@ -419,8 +419,15 @@ const Cruditinerary = () => {
                             <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
                             <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                             <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
+                           
+                            {itinerary.isActive ?
+                            <button className={styles.active} onClick={() => handleDeativation(itinerary._id)}>Active</button> : 
+                            <button className={styles.inactive} onClick={() => handleActivation(itinerary._id)}>Inactive</button>
+                            }
+                            
                             <button className={styles.update} onClick={() => handleUpdate(itinerary)}>Update</button>
                             <button className={styles.delete} onClick={() => handleDelete(itinerary)}>Delete</button>
+                            
                         </div>
                     ))}
                 </div>
