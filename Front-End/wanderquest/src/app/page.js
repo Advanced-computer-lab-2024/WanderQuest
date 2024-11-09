@@ -20,7 +20,7 @@ export default function Home() {
   return (<>
     <Navbar></Navbar>
 
-    {/* <div>
+    
     <Link href="/profileInfo">
                <button className='navbar-profile'>Profile</button>
             </Link>
@@ -55,7 +55,7 @@ export default function Home() {
       >
          Welcome to WanderQuest
 
-      </motion.h1> */}
+      </motion.h1>
             {/* </div> */}
     {/* <TagManager/>
     <PrefTag/> */}
