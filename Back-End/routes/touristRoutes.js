@@ -11,10 +11,12 @@ const {
     getItineraryById,
     getUpcomingItineraries,
     getTouristId,
+    rateProduct,
     changePreferredCurrency,
     redeemPoints,
     fileComplaint,
-    myComplaints
+    myComplaints,
+    reviewProduct
 } = require('../controllers/touristController');
 // const requireAuth = require('../middleware/requireAuth');
 
@@ -42,9 +44,10 @@ router.get('/upcomingPlaces', getAllPlaces);
 
 // Sharing activity via link or email
 router.get('/upcomingPlaces/:id', getPlaceById);
-
+router.post('/rateProduct/:productId',rateProduct);
+router.post('/reviewProduct/:id', reviewProduct); 
 router.patch('/changePreferredCurrency/:id', changePreferredCurrency);
-router.put('/redeem/:id',redeemPoints);
+router.patch('/redeem/:id',redeemPoints);
 router.post('/fileComplaint',fileComplaint);
 router.get('/myComplaints/:id',myComplaints);
 

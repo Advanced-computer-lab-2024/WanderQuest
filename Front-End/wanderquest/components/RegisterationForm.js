@@ -15,6 +15,13 @@ const RegistrationForm = () => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [occupation, setOccupation] = useState('');
     const [error, setError] = useState('');
+    const [id,setID]=useState('');
+    const [certificate,setCertificate]=useState('');
+    const [taxRegistry,setTax]=useState('');
+    //const [documents, setDocuments] = useState([]);
+    const [userId,setUserId]=useState('');
+
+    const [message, setMessage] = useState(null);
 
     const countries = getNames();
 
@@ -42,7 +49,7 @@ const RegistrationForm = () => {
         setError(""); 
     
         // Make the API call to the backend
-        fetch('http://localhost:4000/register/', { 
+        fetch('http://localhost:4000/authentication/register/', { 
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -55,6 +62,8 @@ const RegistrationForm = () => {
                 // Handle server errors (e.g., validation issues)
                 setError(data.error);
             } else {
+                setUserId(data.id);
+                console.log(data.id);
                 // Handle success (e.g., redirect to login or another page)
                 console.log("Registration successful:", data);
             }
@@ -65,61 +74,100 @@ const RegistrationForm = () => {
             console.error("Error:", err);
         });
     };
+
+    const handleFileChange = (event, type) => {
+        const file = event.target.files[0];
+        if (type === 'id') setID(file);
+        if (type === 'certificate') setCertificate(file);
+        if (type === 'taxRegistry') setTax(file);
+    };
     
+    const handleUpload = async () => {
+        if (!userId) {
+            setMessage("Please register first to get a user ID.");
+            return;
+        }
 
+        const formData = new FormData();
+        if (id) formData.append('documents', id);
+        if (certificate) formData.append('documents', certificate);
+        if (taxRegistry) formData.append('documents', taxRegistry);
 
+        console.log(`Uploading to: http://localhost:4000/authentication/uploadDocuments/${userId}`);
 
+        try {
+            const response = await fetch(`http://localhost:4000/authentication/uploadDocuments/${userId}`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setMessage(errorData.error || 'An error occurred');
+            } else {
+                const data = await response.json();
+                setMessage(data.message);
+                setTimeout(() => setMessage(""), 3000);
+            }
+        } catch (error) {
+            setMessage('An error occurred');
+        }
+    };
+    
+    
+    
     return (
-        
         <form className={styles.Registration} onSubmit={handleSubmit}>
-            <h1 className={styles.h1}>Sign Up</h1>
-            
-            <label>Email: </label>
-            <input
-                type="text"
-                required
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-            />
+    <h1 className={styles.h1}>Sign Up</h1>
+    
+    <label>Email: </label>
+    <input
+        type="text"
+        required
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
+    />
 
-            <label>Username: </label>
-            <input
-                type="text"
-                required
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-            />
+    <label>Username: </label>
+    <input
+        type="text"
+        required
+        onChange={(e) => setUsername(e.target.value)}
+        value={username}
+    />
 
-            <label>Password: </label>
-            <input
-                type="password"
-                required
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-            />
+    <label>Password: </label>
+    <input
+        type="password"
+        required
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
+    />
 
-            <label>Confirm Password: </label>
-            <input
-                type="password"
-                required
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                value={confirmPassword}
-            />
+    <label>Confirm Password: </label>
+    <input
+        type="password"
+        required
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        value={confirmPassword}
+    />
 
-            <label>You are a: </label>
-            <select
-                required
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-            >
-                <option value="">Select</option>
-                <option value="tourist">Tourist</option>
-                <option value="tourGuide">Tour Guide</option>
-                <option value="advertiser">Advertiser</option>
-                <option value="seller">Seller</option>
-            </select>
 
-            {userType === 'tourist' && (
+
+    <label>You are a: </label>
+    <select
+        required
+        value={userType}
+        onChange={(e) => setUserType(e.target.value)}
+    >
+        <option value="">Select</option>
+        <option value="tourist">Tourist</option>
+        <option value="tourGuide">Tour Guide</option>
+        <option value="advertiser">Advertiser</option>
+        <option value="seller">Seller</option>
+    </select>
+
+    {userType === 'tourist' && (
                 <>
                     <label>Mobile Number: </label>
                     <input
@@ -163,10 +211,57 @@ const RegistrationForm = () => {
                     </select>
                 </>
             )}
-            {error && <p className={styles.error}>{error}</p>}
-            <button type="submit">Submit</button>
-        </form>
-    );
+
+    {(userType === 'tourGuide' || userType === 'advertiser' || userType === 'seller') && (
+        <div className={styles.UploadDocuments}>
+            <h3>Upload Documents</h3>
+
+            <label>ID: </label>
+            <input 
+                type="file" 
+                onChange={(e) => handleFileChange(e, 'id')} 
+                required 
+            />
+            <br />
+
+            <label>Certificate: </label>
+            {userType === 'tourGuide' && (
+                <>
+                    <input 
+                        type="file" 
+                        onChange={(e) => handleFileChange(e, 'certificate')} 
+                        required 
+                    />
+                    <br />
+                </>
+            )}
+
+            {/* Tax Registry upload (for advertisers and sellers) */}
+            {(userType === 'advertiser' || userType === 'seller') && (
+                <>
+                    <label>Taxation Registry: </label>
+                    <input 
+                        type="file" 
+                        onChange={(e) => handleFileChange(e, 'taxRegistry')} 
+                        required 
+                    />
+                    <br />
+                </>
+            )}
+
+            {/* Use type="button" to prevent form submission */}
+            <button type="button" onClick={handleUpload}>Upload</button>
+            {message && <p>{message}</p>}
+        </div>
+    )}
+
+    {error && <p className={styles.error}>{error}</p>}
+
+    {/* Form Submit Button */}
+    <button type="submit">Submit</button>
+</form>
+    )
+
 };
 
 export default RegistrationForm;

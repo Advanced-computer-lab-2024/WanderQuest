@@ -5,6 +5,9 @@ const Advertiser = require('../models/userModel').Advertiser;
 const Seller = require('../models/userModel').Seller;
 const Admin = require('../models/adminModel');
 const TourGoverner = require('../models/tourGovernerModel');
+const Booking = require('../models/bookingModel');
+const Activity = require('../models/objectModel').Activity;
+const Itinerary = require('../models/objectModel').itinerary;
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -125,6 +128,21 @@ const getUserDocuments = async (req, res) => {
     }
 };
 
+// get all users that request to be accepted
+const getUsersRequestingAcceptance = async (req, res) => {
+    try {
+        const users = await User.find({ accepted: false, rejected: false });
+
+        if (!users) {
+            return res.status(404).json({ error: 'No users found' });
+        }
+
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 const getDocumentByFileID = async (req, res) => {
     try {
         // Convert req.params.id to ObjectId
@@ -196,8 +214,10 @@ const changePassword = async (req, res) => {
     }
 };
 
-// accept user
+// accept user, takes boolean value accepted
 const acceptUser = async (req, res) => {
+    const { accepted } = req.body;
+
     try {
         const user = await User.findById(req.params.id);
 
@@ -205,7 +225,13 @@ const acceptUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        user.accepted = true;
+        if (accepted) {
+            user.accepted = true;
+        }
+        else {
+            user.rejected = true;
+        }
+
         await user.save();
 
         res.json({ message: 'User accepted' });
@@ -232,4 +258,54 @@ const acceptTerms = async (req, res) => {
     }
 };
 
-module.exports = { uploadDocuments, getUserDocuments, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms };
+async function requestAccountDeletion(req, res) {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userId = user._id;
+
+        const currentDate = new Date();
+
+        const paidBookings = await Booking.find({
+            $or: [
+                {
+                    itineraryId: {
+                        $in: await Itinerary.find({
+                            createdBy: userId,
+                            availableDates: { $gte: currentDate }
+                        }).distinct('_id')
+                    },
+                    paid: true
+                },
+                {
+                    activityId: {
+                        $in: await Activity.find({
+                            createdBy: userId,
+                            date: { $gte: currentDate }
+                        }).distinct('_id')
+                    },
+                    paid: true
+                }
+            ]
+        });
+
+        if (paidBookings.length > 0) {
+            return res.status(400).json({ message: 'You have paid bookings. Please cancel them before requesting account deletion.' });
+        }
+
+        user.requestToBeDeleted = true;
+        await user.save();
+
+        return res.status(200).json({ message: 'Account deletion requested successfully.' });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while processing your request.' });
+    }
+}
+
+module.exports = { uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion };

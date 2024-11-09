@@ -19,26 +19,37 @@ const getAllAdmins = async (req, res) => {
 //getAllUsers
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find({})
-        res.status(200).json(users)
+        const users = await User.find({ accepted: true });
+        const admins = await AdminModel.find({});
+        const tourG = await tourGovModel.find({});
+
+        const allUsers = [...users, ...admins, ...tourG];
+
+        res.status(200).json({ users: allUsers });
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message });
     }
-}
+};
+
 // Delete account off system
 const deleteAccount = async (req, res) => {
     const { id } = req.params;
 
     // Validate input
     let userAccount = await User.findOne({ _id: id });
+    let adminAccount = await AdminModel.findOne({ _id: id });
     let tourGovAccount = await tourGovModel.findOne({ _id: id });
 
-    if (!userAccount && !tourGovAccount) {
+    if (!userAccount && !tourGovAccount && !adminAccount) {
         return res.status(400).json({ error: 'Account not found' });
     }
 
     try {
-        if (userAccount) {
+        if(adminAccount){
+            adminAccount = await AdminModel.findByIdAndDelete(id);
+            res.status(200).json({ message: 'Account deleted', adminAccount });
+        }
+        else if (userAccount) {
             userAccount = await User.findByIdAndDelete(id);
             res.status(200).json({ message: 'Account deleted', userAccount });
         }
@@ -116,7 +127,7 @@ const getProdById = async (req, res) => {
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/} ,{ availableAmount: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -253,7 +264,7 @@ const deleteCategory = async (req, res) => {
 
 
 
-// Add a Tourism Governer
+// Add a Tourism Governor
 const addTourGov = async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -346,9 +357,7 @@ const deleteTag = async (req, res) => {
 };
 const getAllComplaints = async (req, res) => {
     try {
-        const { status } = req.body; // Extract status from request body
-        const query = status ? { status } : {}; // If status is provided, filter by it; otherwise, fetch all
-        const complaints = await ComplaintModel.find(query).sort({ date: -1 }); // Sort by date in descending order
+        const complaints = await ComplaintModel.find({}) // Sort by date in descending order
         res.status(200).json(complaints);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -376,13 +385,13 @@ const specificComplaint = async (req, res) => {
 };
 const markComplaint = async (req, res) => {
     const { id } = req.params;
-    if (!req.body.status || (req.body.status !== 'resolved' && req.body.status !== 'pending')) {
+    if (!req.body.status || (req.body.status.toLowerCase() !== 'resolved' && req.body.status.toLowerCase() !== 'pending')) {
         return res.status(400).json({ error: 'Status must be either "resolved" or "pending"' });
     }
 
     try {
         const updatedComplaint = await ComplaintModel.findByIdAndUpdate
-        (id,{ status: req.body.status }, { new: true });
+            (id, { status: req.body.status }, { new: true });
         if (!updatedComplaint) {
             return res.status(404).json({ error: 'Complaint not found' });
         }
@@ -395,7 +404,7 @@ const reply = async (req, res) => {
     const { id } = req.params;
     try {
         const updatedComplaint = await ComplaintModel.findByIdAndUpdate
-        (id,{ reply: req.body.reply }, { new: true });
+            (id, { reply: req.body.reply }, { new: true });
         if (!updatedComplaint) {
             return res.status(404).json({ error: 'Complaint not found' });
         }
@@ -404,6 +413,31 @@ const reply = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+//admin can archive or unarchive products
+const archiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product archived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
+const unarchiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product unarchived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -426,5 +460,7 @@ module.exports = {
     getAllComplaints,
     specificComplaint,
     markComplaint,
-    reply
+    reply,
+    archiveProduct,
+    unarchiveProduct
 }

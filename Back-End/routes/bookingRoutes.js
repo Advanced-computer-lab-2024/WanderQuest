@@ -1,11 +1,18 @@
 const express = require("express");
-const { flightSearch, bookActivity, bookItinerary, cancelBooking } = require('../controllers/bookingController'); // Destructure the flightSearch function
+const {
+    bookActivity,
+    bookItinerary,
+    cancelBooking,
+    bookFlight,
+    bookHotel
+} = require('../controllers/bookingController'); // Destructure the flightSearch function
 
 const router = express.Router(); // Capitalize Router
 
-router.get("/flightSearch", flightSearch);
-router.post("/bookActivity", bookActivity);
-router.post("/bookItinerary", bookItinerary);
+router.post("/activity", bookActivity);
+router.post("/itinerary", bookItinerary);
 router.patch("/cancel", cancelBooking);
+router.post("/flight", bookFlight);
+router.post("/hotel", bookHotel);
 
 module.exports = router;
