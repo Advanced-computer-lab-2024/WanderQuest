@@ -7,6 +7,7 @@ import axios from 'axios';
 const Cruditinerary = () => {
     const [activityDetails, setActivityDetails] = useState({});
     const [itineraries, setItineraries] = useState([]);
+    const [showMessage, setShowMessage] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
         activities: [],
@@ -72,6 +73,9 @@ const Cruditinerary = () => {
         };
         fetchActivities();
     }, []);
+
+
+    
 
 
     const handleChange = (event) => {
@@ -245,6 +249,79 @@ const Cruditinerary = () => {
             availableDates: prevState.availableDates.filter((_, i) => i !== index)
         }));
     };
+
+
+    // const [itineraryStatuses, setItineraryStatuses] = useState(
+    //     itineraries.reduce((acc, itinerary) => {
+    //         acc[itinerary._id] = itinerary.bookingIsOpen;
+    //         return acc;
+    //     }, {})
+    // );
+
+    const handleActivation = async (itineraryId) => {
+        try {
+            const response = await fetch(`http://localhost:4000/tourGuide/itinerary/activate/${itineraryId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ bookingIsOpen: true })
+               
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error response:', errorData);
+                throw new Error('Network response was not ok');
+            }
+            setItineraries((prevItineraries) =>
+                prevItineraries.map((itinerary) =>
+                    itinerary._id === itineraryId
+                        ? { ...itinerary, bookingIsOpen: true }
+                        : itinerary
+                )
+            );
+            setShowMessage(true);
+            setTimeout(() => setShowMessage(false), 3000);
+            console.log('Itinerary activated successfully');
+        } catch (error) {
+            console.error('Error activating itinerary:', error);
+        }
+    }
+
+
+    const handleDeativation = async (itineraryId) => {
+        try {
+            const response = await fetch(`http://localhost:4000/tourGuide/itinerary/deactivate/${itineraryId}`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bookingIsOpen: false })
+                }
+            );
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error response:', errorData);
+                throw new Error('Network response was not ok');
+            }
+            setShowMessage(true);
+            setTimeout(() => setShowMessage(false), 3000);
+            setItineraries((prevItineraries) =>
+                prevItineraries.map((itinerary) =>
+                    itinerary._id === itineraryId
+                        ? { ...itinerary, bookingIsOpen: false }
+                        : itinerary
+                )
+            );
+            console.log('Itinerary deactivated successfully');
+        }
+        catch (error) {
+            console.error('Error deactivating itinerary:', error);
+        }
+    }
+
+    
 
     const fetchActivityDetails = (activityId) => {
         if (activityDetails[activityId]) return; // Avoid refetching
@@ -420,15 +497,26 @@ const Cruditinerary = () => {
                             <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                             <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
                            
-                            {itinerary.isActive ?
-                            <button className={styles.active} onClick={() => handleDeativation(itinerary._id)}>Active</button> : 
-                            <button className={styles.inactive} onClick={() => handleActivation(itinerary._id)}>Inactive</button>
+                            {
+                                itinerary.bookingIsOpen ?
+                            <button className={styles.inactive} onClick={() => handleDeativation(itinerary._id)}>Deactivate</button> : 
+                            <button className={styles.active} onClick={() => handleActivation(itinerary._id)}>Activate</button>
                             }
                             
                             <button className={styles.update} onClick={() => handleUpdate(itinerary)}>Update</button>
                             <button className={styles.delete} onClick={() => handleDelete(itinerary)}>Delete</button>
                             
+                            <div>
+                                { showMessage && (
+                                    itinerary.bookingIsOpen ? <p className={`${styles.activationmessage} ${showMessage ? styles.fadeOut : ''}`}><strong>Booking is Open</strong></p>
+                                 :
+                                  <p className={`${styles.deactivationmessage} ${showMessage ? styles.fadeOut : ''}`}><strong>Booking is Closed</strong></p>
+                                )
+                                }
+                            </div>
                         </div>
+
+                        
                     ))}
                 </div>
             </div>

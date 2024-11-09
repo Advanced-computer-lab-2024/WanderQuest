@@ -182,3 +182,21 @@
 .activitiescheckboxes div {
     margin-bottom: 10px;
 }
+
+@keyframes fadeOut{
+    0%{ opacity: 1;}
+    100%{ opacity: 0;}
+}
+
+.activationmessage{
+    margin-top: 10px;
+    color: #00bb00;
+    animation: fadeOut 3s forwards;
+}
+
+.deactivationmessage{
+    margin-top: 10px;
+    color: #dc3545;
+    animation: fadeOut 3s forwards;
+}
+
