@@ -8,6 +8,7 @@ const Cruditinerary = () => {
     const [activityDetails, setActivityDetails] = useState({});
     const [itineraries, setItineraries] = useState([]);
     const [showMessage, setShowMessage] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState(null);
     const [formData, setFormData] = useState({
         title: '',
         activities: [],
@@ -280,6 +281,7 @@ const Cruditinerary = () => {
                         : itinerary
                 )
             );
+            setLastUpdated(itineraryId);
             setShowMessage(true);
             setTimeout(() => setShowMessage(false), 3000);
             console.log('Itinerary activated successfully');
@@ -305,6 +307,7 @@ const Cruditinerary = () => {
                 console.error('Error response:', errorData);
                 throw new Error('Network response was not ok');
             }
+            setLastUpdated(itineraryId);
             setShowMessage(true);
             setTimeout(() => setShowMessage(false), 3000);
             setItineraries((prevItineraries) =>
@@ -507,7 +510,7 @@ const Cruditinerary = () => {
                             <button className={styles.delete} onClick={() => handleDelete(itinerary)}>Delete</button>
                             
                             <div>
-                                { showMessage && (
+                                { showMessage && lastUpdated === itinerary._id  && (
                                     itinerary.bookingIsOpen ? <p className={`${styles.activationmessage} ${showMessage ? styles.fadeOut : ''}`}><strong>Booking is Open</strong></p>
                                  :
                                   <p className={`${styles.deactivationmessage} ${showMessage ? styles.fadeOut : ''}`}><strong>Booking is Closed</strong></p>

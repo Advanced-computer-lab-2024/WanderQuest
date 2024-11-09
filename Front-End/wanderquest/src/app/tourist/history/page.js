@@ -3,6 +3,18 @@ import Navbar from "../../../../components/Navbar";
 import styles from '/Styles/TouristHistory.module.css';
 
 const TouristHistory = () => {
+    
+    const [followedGuides, setFollowedGuides] = useState([]);
+    const [pastItineraries, setPastItineraries] = useState([]);
+    const [attendedActivities, setAttendedActivities] = useState([]);
+    
+    const [formData, setFormData] = useState([
+        {
+            rating: '',
+            comment: '',
+        }
+    ]);
+
     return ( 
         <div>
             <Navbar/>
