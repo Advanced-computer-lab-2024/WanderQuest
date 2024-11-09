@@ -167,7 +167,7 @@ const redeemPoints = async (req, res) => {
         if (!tourist.accepted) {
             return res.status(403).json({ error: 'Tourist account not yet accepted' });
         }
-        if (tourist.availablePoints > 10000) {
+        if (tourist.availablePoints >= 10000) {
             tourist.wallet += 100;
             tourist.availablePoints -= 10000;
             await tourist.save();
