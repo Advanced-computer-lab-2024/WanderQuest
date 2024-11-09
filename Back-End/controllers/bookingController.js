@@ -186,11 +186,47 @@ const bookFlight = async (req, res) => {
     }
 }
 
-const bookTransportation = async (req, res) => {
+const bookHotel = async (req, res) => {
+    const { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut } = req.body;
+    if(bookingType != "hotel"){
+        res.status(400).json({ message : "Can only book a hotel" });
+    }
+    try{
+        const retuser = await User.findById(userId);
+        if(!retuser){
+            res.status(404).json({ message : "User not found" });
+        }
+        if(retuser.role != "tourist"){
+            res.status(403).json({ message : "Only tourists can book hotels" });
+        }
+        if(checkIn >= checkOut){
+            res.status(400).json({ message : "Check-in date must be before check-out date" });
+        }
+        const currentDate = new Date();
+        const checkInDate = new Date(checkIn);
+        const checkOutDate = new Date(checkOut);
 
+        if (checkInDate <= currentDate) {
+            return res.status(400).json({ message: "Check-in date must be a future date" });
+        }
+
+        if (checkOutDate <= currentDate) {
+            return res.status(400).json({ message: "Check-out date must be a future date" });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            details: { hotelName, rating, description, price, stars, checkIn, checkOut },
+            paid: true,
+            startDate: checkInDate
+        });
+    } catch (error){
+        res.status(500).json({ error: error.message });
+    }
 }
 
-const bookHotel = async (req, res) => {
+const bookTransportation = async (req, res) => {
 
 }
 
@@ -200,4 +236,5 @@ module.exports = {
     bookItinerary,
     cancelBooking,
     bookFlight,
+    bookHotel
 };
