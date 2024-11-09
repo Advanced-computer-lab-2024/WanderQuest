@@ -119,13 +119,12 @@ const AdminReviewRequests = () => {
               <div className={styles.downloadButtonContainer}>
                 {documents.map((doc, index) => (
                   <div key={index} className="mb-4">
-                    <p>User ID: {doc.userId}</p> {/* Display the user ID associated with each document */}
                     <a
                       href={`http://localhost:4000/authentication/getDocumentByFileID/${doc.fileID}`}
                       download={doc.filename}
                       className={`${styles.actionButton} ${styles.downloadButton}`}
                     >
-                      Download Document {index + 1}
+                      Download {doc.filename} {/* Display the document filename here */}
                     </a>
                   </div>
                 ))}

@@ -82,8 +82,8 @@
     background-color: #ffffff; /* White */
     padding: 1.5rem;
     border-radius: 8px;
-    width: 40%;
-    max-width: 250px;
+    width: 100%;
+    max-width: 500px;
     color: #042335; /* Tangaroa */
     position: fixed;
     top: 50%;

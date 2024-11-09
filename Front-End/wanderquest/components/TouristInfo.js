@@ -108,6 +108,7 @@ const TouristInfo = () => {
             if (response.ok) {
                 const data = await response.json();
                 setSuccessMessage("Profile updated successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000);
                 setError(''); // Clear any error message
             } else {
                 const errorData = await response.json();
@@ -155,43 +156,32 @@ const TouristInfo = () => {
 
 
     const handleRedeem = async () => {
-        if (redeemAmount <= 0) {
-            setError("Redeem amount must be greater than 0.");
-            return;
-        }
-
-        const pointsRequired = redeemAmount * 100; // 100 EGP per 10000 points
-        if (availablePoints < pointsRequired) {
-            setError("Not enough points for the redemption.");
-            return;
-        }
-
+      
         try {
-            const response = await fetch(`http://localhost:4000/tourist/redeem/${userId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    points: pointsRequired,
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setWallet(data.wallet); // Update wallet with new amount
-                setAvailablePoints(data.availablePoints); // Update available points
-                setSuccessMessage(`Successfully redeemed ${redeemAmount} EGP!`);
-                setError(''); // Clear any error message
-            } else {
-                const errorData = await response.json();
-                setError(errorData.error || "Failed to redeem points");
+          const response = await fetch(`http://localhost:4000/tourist/redeem/${userId}`, {
+            method: "PATCH",  // Updated to PATCH to match backend route
+            headers: {
+              "Content-Type": "application/json",
             }
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+            setWallet(data.wallet); // Update wallet with new amount
+            setAvailablePoints(data.availablePoints); // Update available points
+            setSuccessMessage("Successfully redeemed 100 EGP for 10,000 points!");
+            setTimeout(() => setSuccessMessage(""), 3000);
+            setError(''); // Clear any error message
+          } else {
+            const errorData = await response.json();
+            setError(errorData.error || "Failed to redeem points");
+            setTimeout(() => setError(""), 3000);
+          }
         } catch (err) {
-            console.error("Error redeeming points:", err);
-            setError("An error occurred while redeeming the points");
+          console.error("Error redeeming points:", err);
+          setError("An error occurred while redeeming the points");
         }
-    };
+      };
     
 
     return (
@@ -249,18 +239,17 @@ const TouristInfo = () => {
                 required readOnly
             />
 
-            {/* Redeem section */}
-            <label>Redeem Points (10000 points = 100 EGP): </label>
-            <input
-                type="number"
-                value={redeemAmount}
-                onChange={(e) => setRedeemAmount(e.target.value)}
-                min="1"
-                max={availablePoints / 10000}
-            />
-            <button type="button" onClick={handleRedeem}>Redeem</button>
-
-            <button type="submit">Save Changes</button>
+<div>
+    {/* Redeem section */}
+    <label>Redeem Points (10,000 points = 100 EGP): </label>
+    <button type="button" onClick={handleRedeem}>Redeem</button>
+    
+    {/* Display success or error messages */}
+    {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+    {error && <p style={{ color: 'red' }}>{error}</p>}
+    
+    <button type="submit">Save Changes</button>
+  </div>
 
             {/* Password Change Toggle */}
             <button 
