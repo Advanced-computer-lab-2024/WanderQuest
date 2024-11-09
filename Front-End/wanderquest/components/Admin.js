@@ -40,17 +40,15 @@ export default function AdminPage() {
 
   const handleCreateGovernor = async (e) => {
     e.preventDefault();
-
+  
     const generatedPassword = generatePassword();
     setGovPassword(generatedPassword); // Update state with generated password
-
-
+  
     const newGovernorData = {
       username: govUsername,
       password: generatedPassword,
     };
-    console.log(generatePassword);
-
+  
     try {
       const response = await fetch('http://localhost:4000/admin/governor', {
         method: 'POST',
@@ -59,10 +57,10 @@ export default function AdminPage() {
         },
         body: JSON.stringify(newGovernorData),
       });
-
+  
       if (response.ok) {
         alert('Governor created successfully!');
-        fetchUserData(); // Refresh the user data
+        window.location.reload(); // Refresh the page
       } else {
         alert('Failed to create governor.');
       }
@@ -70,16 +68,15 @@ export default function AdminPage() {
       console.log('Error creating governor:', error);
     }
   };
-
+  
   const handleAddAdmin = async (e) => {
-    e.preventDefault(); 
-
-
+    e.preventDefault();
+  
     const newAdminData = {
       username: adminUsername,
       password: adminPassword,
     };
-
+  
     try {
       const response = await fetch('http://localhost:4000/admin/', { // Adjust endpoint
         method: 'POST',
@@ -88,10 +85,10 @@ export default function AdminPage() {
         },
         body: JSON.stringify(newAdminData),
       });
-
+  
       if (response.ok) {
         alert('Admin added successfully!');
-        fetchUserData(); // Refresh the user data
+        window.location.reload(); // Refresh the page
       } else {
         alert('Failed to add admin.');
       }
