@@ -266,7 +266,11 @@ const complaintSchema = new Schema({
     body:
         { type: String, required: true },
     status:
+<<<<<<< HEAD
+    {type:String,required:false,default:'Pending'},
+=======
         { type: String, required: false, default: 'pending' },
+>>>>>>> ab515562d2dc429166800a2e7dbeebb8ec3c1b02
     date:
         { type: Date, required: false, default: Date.now },
     reply:

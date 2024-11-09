@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
-import {motion,AnimatePresence} from 'framer-motion';
 
 const Products = (props) => {
     
