@@ -7,9 +7,9 @@ import AddRating from '../../../../components/AddRating';
 
 const TouristHistory = () => {
     
-    const [followedGuides, setFollowedGuides] = useState({});
-    const [pastItineraries, setPastItineraries] = useState({});
-    const [attendedActivities, setAttendedActivities] = useState({});
+    const [followedGuides, setFollowedGuides] = useState([]);
+    const [pastItineraries, setPastItineraries] = useState([]);
+    const [attendedActivities, setAttendedActivities] = useState([]);
 
     const [formData, setFormData] = useState([
         {
@@ -17,6 +17,24 @@ const TouristHistory = () => {
             comment: '',
         }
     ]);
+
+    const id1 = "507f1f77bcf86cd799439011";
+    const id2 = "672e33ac93c8d93da59e6f4d";
+
+    useEffect(() => {
+        const fetchGuides = async () => {
+            try {
+                // Fetch all guides in parallel using Promise.all
+                const responses = await fetch("http://localhost:4000/tourGuide/tourGuideId");
+                const data = await responses.json();
+                setFollowedGuides(data);
+            } catch (error) {
+                console.error("Error fetching guides:", error);
+            }
+        };
+
+        fetchGuides();
+    }, []);
 
     return ( 
         <div>
@@ -26,6 +44,10 @@ const TouristHistory = () => {
 
                 <div className={styles.innerContainer}>
                     <h2 className={styles.innerTitle}>Followed Tour Guides</h2>
+                        <div className={styles.pastItern} >
+                            {followedGuides.username}
+
+                        </div>
                 </div>
 
                 <div className={styles.innerContainer}>
