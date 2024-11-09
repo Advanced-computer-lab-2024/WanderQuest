@@ -9,7 +9,7 @@ const {
     readOneActivity,
     myCreatedActivities }
     = require('../controllers/advertiserController');
-const { getUpcomingActivities, getUpcomingItineraries,rateAnActivity } = require('../controllers/touristController');
+const { getUpcomingActivities, getUpcomingItineraries,rateAnActivity,commentOnActivity } = require('../controllers/touristController');
 const router = express.Router()
 
 router.get('/activity/:id', readOneActivity);
@@ -22,5 +22,5 @@ router.delete('/activity/:id', deleteActivity);
 router.get('/upcomingActivities', getUpcomingActivities);
 router.get('/upcomingItineraries', getUpcomingItineraries);
 router.post('/activity/rate/:id',rateAnActivity);
-
+router.post('/comment/:id',commentOnActivity),
 module.exports = router

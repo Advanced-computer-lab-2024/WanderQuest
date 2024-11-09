@@ -107,6 +107,7 @@ const RegistrationForm = () => {
             } else {
                 const data = await response.json();
                 setMessage(data.message);
+                setTimeout(() => setMessage(""), 3000);
             }
         } catch (error) {
             setMessage('An error occurred');

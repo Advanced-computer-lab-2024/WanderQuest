@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile, uploadLogo, getLogo, getSellerId } = require('../controllers/sellerController');
+const { getProfile, updateProfile, uploadLogo, getLogo, getSellerId,archiveProduct,unarchiveProduct } = require('../controllers/sellerController');
 const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
@@ -21,5 +21,9 @@ router.get("/products/:id", getProdById);
 router.post('/addProduct', addProduct);
 router.patch('/editProduct/:id', editProduct);
 router.get('/availableProducts', getAvailableProducts)
+//seller archive and unarchive products
+router.patch('/products/archive/:id', archiveProduct);
+
+router.patch('/products/unarchive/:id', unarchiveProduct);
 
 module.exports = router;
