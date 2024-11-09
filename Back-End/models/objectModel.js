@@ -178,7 +178,7 @@ const complaintSchema = new Schema({
     body:
     {type:String,required:true},
     status:
-    {type:String,required:false,default:'pending'},
+    {type:String,required:false,default:'Pending'},
     date:
     {type: Date, required: false, default: Date.now },
     reply:

@@ -6,7 +6,6 @@ const ComplaintPage = () => {
 
     return (
         <div>
-            <h1>File a complaint</h1>
             <ComplaintCard/>
         </div>
     );

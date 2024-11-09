@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../styles/complaints.module.css';
 
 const ComplaintCard = () => {
     const [title, setTitle] = useState('');
@@ -47,15 +48,25 @@ const ComplaintCard = () => {
 
 
     return (
-        <div>
-            <h1>Complaint Card</h1>
-            <label>Title</label>
-            <input type="text" value={title} onChange={handleTitleChange} required />
-            <label>Body</label>
-            <input type="text" value={body} onChange={handleBodyChange} required />
-            <label>Date</label>
-            <input type="date" value ={date} onChange={handleDateChange}required />
-            <button onClick={handleSubmit}>Submit</button>
+        <div className={styles.container}>
+            <div className={styles.complaintCard}>
+                <h1>Complaint Card</h1>
+                <div className={styles.complaintInfo}>
+                    <div>
+                        <label>Title</label>
+                        <input type="text" value={title} onChange={handleTitleChange} required />
+                    </div>
+                    <div>
+                        <label>Body</label>
+                        <input type="text" value={body} onChange={handleBodyChange} required />
+                    </div>
+                    <div>
+                        <label>Date</label>
+                        <input type="date" value ={date} onChange={handleDateChange}required />
+                    </div>
+                    <button className={styles.complaintButton} onClick={handleSubmit}>Submit</button>
+                </div>
+            </div>
         </div>
     );
 };

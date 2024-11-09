@@ -382,8 +382,8 @@ const specificComplaint = async (req, res) => {
 };
 const markComplaint = async (req, res) => {
     const { id } = req.params;
-    if (!req.body.status || (req.body.status !== 'resolved' && req.body.status !== 'pending')) {
-        return res.status(400).json({ error: 'Status must be either "resolved" or "pending"' });
+    if (!req.body.status || (req.body.status !== 'Resolved' && req.body.status !== 'Pending')) {
+        return res.status(400).json({ error: 'Status must be either "Resolved" or "Pending"' });
     }
 
     try {

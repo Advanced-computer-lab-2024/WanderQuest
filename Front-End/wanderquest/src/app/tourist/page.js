@@ -21,6 +21,9 @@ export default function Tourist() {
     const handleRedirectcomp = () => {
         router.push('/tourist/complaint');
     };
+    const handleRedirectviewcomp = () => {
+        router.push('/tourist/viewComplaint');
+    };
 
     return (
         <div>
@@ -32,6 +35,7 @@ export default function Tourist() {
             <button onClick={handleRedirectp}>Go to products</button>
             <button onClick={handleRedirectm}>Go to museums</button>
             <button onClick={handleRedirectcomp}>File a complaint</button>
+            <button onClick={handleRedirectviewcomp}>View Complaint</button>
 
         </div>
     );
