@@ -176,8 +176,9 @@ const getLogo = async (req, res) => {
 
 //create activity
 const createActivity = async (req, res) => {
+    const { title, date, time, location, price, priceRange,  category, tags, specialDiscounts, bookingIsOpen,ratings,comments,createdBy } = req.body;
+
     try {
-        const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
         // If tags are provided, check if all tags exist in the TagModel
         if (tags && tags.length > 0) {
             // Extract the types of the tags from the request
@@ -205,7 +206,7 @@ const createActivity = async (req, res) => {
     }
     try {
         const newActivity = await ActivityModel.create({
-            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy
+            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy,comments
 
         });
         res.status(200).json(newActivity);
