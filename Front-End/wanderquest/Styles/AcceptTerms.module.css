@@ -13,11 +13,13 @@
 
 .modalContent {
     background-color: white;
+    max-height: 80vh;
     padding: 20px;
     border-radius: 8px;
     width: 90%;
-    max-width: 500px;
+    max-width: 600px;
     text-align: center;
+    overflow-y: auto;
 }
 
 .checkboxContainer {
