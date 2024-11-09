@@ -22,8 +22,8 @@ router.post('/addProduct', addProduct);
 router.patch('/editProduct/:id', editProduct);
 router.get('/availableProducts', getAvailableProducts)
 //seller archive and unarchive products
-router.patch('/products/archive/:id', archiveProduct);
+router.patch('/archiveProduct/:id', archiveProduct);
 
-router.patch('/products/unarchive/:id', unarchiveProduct);
+router.patch('/unarchiveProduct/:id', unarchiveProduct);
 
 module.exports = router;
