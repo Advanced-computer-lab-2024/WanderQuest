@@ -1,13 +1,16 @@
 'use client'
+import {useState, useEffect} from 'react';
 import Navbar from "../../../../components/Navbar";
 import styles from '/Styles/TouristHistory.module.css';
+import AddComment from '../../../../components/AddComment';
+import AddRating from '../../../../components/AddRating';
 
 const TouristHistory = () => {
     
-    const [followedGuides, setFollowedGuides] = useState([]);
-    const [pastItineraries, setPastItineraries] = useState([]);
-    const [attendedActivities, setAttendedActivities] = useState([]);
-    
+    const [followedGuides, setFollowedGuides] = useState({});
+    const [pastItineraries, setPastItineraries] = useState({});
+    const [attendedActivities, setAttendedActivities] = useState({});
+
     const [formData, setFormData] = useState([
         {
             rating: '',
