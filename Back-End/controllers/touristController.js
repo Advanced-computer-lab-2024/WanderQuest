@@ -262,6 +262,7 @@ const commentOnActivity = async (req,res) => {
     res.status(404).json({error: error.message});
   }
 }
+
 //rate a product
 const rateProduct = async (req, res) => {
     try {
@@ -304,8 +305,22 @@ const rateProduct = async (req, res) => {
 //review a product that is purchased
 const reviewProduct = async (req,res) => {
     try{
-      const { productId } = req.params;
-      
+      const  productId  = req.params.id;
+      const { touristId, review } = req.body;
+      if (!review) {
+        return res.status(400).json({ error: 'Review is required' });
+    }
+    if (!touristId) {
+        return res.status(400).json({ error: 'Tourist id is required' });
+    }
+    const product = await Product.findById(productId);
+    if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+    }
+    // Add the review object to the reviews array
+    product.reviews.push({ touristId, review });
+    await product.save();
+    return res.status(200).json({ message: 'Review added successfully', product });
     }catch(error){
         res.status(500).json({error: error.message});
     }
