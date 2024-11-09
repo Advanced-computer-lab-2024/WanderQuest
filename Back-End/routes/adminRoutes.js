@@ -23,7 +23,9 @@ const {
     getAllComplaints,
     specificComplaint,
     markComplaint,
-    reply
+    reply,
+    archiveProduct,
+    unarchiveProduct
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -39,7 +41,7 @@ router.delete("/delete/:id", deleteAccount)
 // Add another admin
 router.post("/", addAdmin)
 
-// Add Tourism Governer
+// Add Tourism Governor
 router.post("/governor", addTourGov)
 
 //Admin getProducts
@@ -92,5 +94,12 @@ router.patch('/markComplaint/:id',markComplaint)
 
 //Admin reply
 router.patch('/reply/:id',reply)
+
+//Admin archive a product
+router.patch('/products/archive/:id', archiveProduct);
+//Admin unarchive a product
+router.patch('/products/unarchive/:id', unarchiveProduct);
+
+
 //Admin filterByStatus
 module.exports = router

@@ -26,8 +26,38 @@ const UserSchema = new Schema({
     accepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
     rejected: { type: Boolean, default: false },
     isTermsAccepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
+    requestToBeDeleted: { type: Boolean, default: false },
     documents: [documentSchema],
 }, options);
+
+// Middleware to exclude users with requestToBeDeleted set to true
+UserSchema.pre('find', function (next) {
+    if (!this.getQuery().includeDeleted) {
+        this.where({ requestToBeDeleted: { $ne: true } });
+    } else {
+        delete this.getQuery().includeDeleted;
+    }
+    next();
+});
+
+UserSchema.pre('findOne', function (next) {
+    if (!this.getQuery().includeDeleted) {
+        this.where({ requestToBeDeleted: { $ne: true } });
+    } else {
+        delete this.getQuery().includeDeleted;
+    }
+    next();
+});
+
+UserSchema.pre('findById', function (next) {
+    if (!this.getQuery().includeDeleted) {
+        this.where({ requestToBeDeleted: { $ne: true } });
+    } else {
+        delete this.getQuery().includeDeleted;
+    }
+    next();
+});
+
 
 UserSchema.statics.signup = async function (username, email, password, role) {
 
@@ -76,7 +106,7 @@ const TouristSchema = new Schema({
     dob: { type: Date, required: true },
     job: { type: String, required: true },
     wallet: { type: Number, default: 0 },
-    preferredCurrency: { type: String, enum: ['USD', 'EGP', 'EUR'], default: 'USD' },
+    preferredCurrency: { type: String, default: 'USD' },
     totalPoints: { type: Number, required: false, default: 0 },
     availablePoints: { type: Number, required: false, default: 0 },
     level: { type: Number, required: false, default: 0 }
@@ -173,6 +203,19 @@ const TourGuideSchema = new Schema({
     mobileNumber: { type: String, default: undefined },
     previousWork: { type: [String], default: undefined },
     photo: { type: documentSchema, default: undefined },
+    ratings: [
+        {
+            //???????????????????????????????????
+            touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
+            rating: { type: Number, min: 1, max: 5 },
+        }],
+    comments: [
+        {
+            touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
+            comment: { type: String, required: true },
+            date: { type: Date, default: Date.now }
+        }
+    ],
 });
 
 const TourGuide = User.discriminator('tourGuide', TourGuideSchema);

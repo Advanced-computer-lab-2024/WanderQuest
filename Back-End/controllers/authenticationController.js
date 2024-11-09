@@ -5,6 +5,9 @@ const Advertiser = require('../models/userModel').Advertiser;
 const Seller = require('../models/userModel').Seller;
 const Admin = require('../models/adminModel');
 const TourGoverner = require('../models/tourGovernerModel');
+const Booking = require('../models/bookingModel');
+const Activity = require('../models/objectModel').Activity;
+const Itinerary = require('../models/objectModel').itinerary;
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -255,4 +258,50 @@ const acceptTerms = async (req, res) => {
     }
 };
 
-module.exports = { uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms };
+async function requestAccountDeletion(req, res) {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userId = user._id;
+        const currentDate = new Date();
+
+        // Find all itineraries created by the user with upcoming dates
+        const itineraries = await Itinerary.find({
+            createdBy: userId,
+            availableDates: { $gte: currentDate }
+        }).distinct('_id');
+
+        // Find all activities created by the user with upcoming dates
+        const activities = await Activity.find({
+            createdBy: userId,
+            date: { $gte: currentDate }
+        }).distinct('_id');
+
+        // Check for paid bookings associated with these itineraries and activities
+        const paidBookings = await Booking.find({
+            $or: [
+                { itineraryId: { $in: itineraries }, paid: true },
+                { activityId: { $in: activities }, paid: true }
+            ]
+        });
+
+        if (paidBookings.length > 0) {
+            return res.status(400).json({ message: 'You have paid bookings. Please cancel them before requesting account deletion.' });
+        }
+
+        user.requestToBeDeleted = true;
+        await user.save();
+
+        return res.status(200).json({ message: 'Account deletion requested successfully.' });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while processing your request.' });
+    }
+}
+
+module.exports = { uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion };

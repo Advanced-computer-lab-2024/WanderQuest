@@ -107,6 +107,7 @@ const RegistrationForm = () => {
             } else {
                 const data = await response.json();
                 setMessage(data.message);
+                setTimeout(() => setMessage(""), 3000);
             }
         } catch (error) {
             setMessage('An error occurred');
@@ -151,6 +152,8 @@ const RegistrationForm = () => {
         value={confirmPassword}
     />
 
+
+
     <label>You are a: </label>
     <select
         required
@@ -163,6 +166,51 @@ const RegistrationForm = () => {
         <option value="advertiser">Advertiser</option>
         <option value="seller">Seller</option>
     </select>
+
+    {userType === 'tourist' && (
+                <>
+                    <label>Mobile Number: </label>
+                    <input
+                        type="text"
+                        required
+                        onChange={(e) => setMobileNo(e.target.value)}
+                        value={mobileNo}
+                    />
+
+                    <label>Nationality: </label>
+                    <select
+                        required
+                        value={nationality}  // Ensure the selected value is reflected here
+                        onChange={(e) => setNationality(e.target.value)}
+                    >
+                        <option value="">Select your nationality</option>
+                        {countries.map((country) => (
+                            <option key={country} value={country}>
+                                {country}
+                            </option>
+                        ))}
+                    </select>
+
+                    <label>Date of Birth: </label>
+                    <input
+                        type="date"
+                        required
+                        onChange={(e) => setDateOfBirth(e.target.value)}
+                        value={dateOfBirth}
+                    />
+
+                    <label>Occupation: </label>
+                    <select
+                        required
+                        value={occupation}
+                        onChange={(e) => setOccupation(e.target.value)}
+                    >
+                        <option value="">Select your occupation</option>
+                        <option value="student">Student</option>
+                        <option value="job">Job</option>
+                    </select>
+                </>
+            )}
 
     {(userType === 'tourGuide' || userType === 'advertiser' || userType === 'seller') && (
         <div className={styles.UploadDocuments}>
