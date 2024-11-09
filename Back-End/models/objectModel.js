@@ -45,7 +45,7 @@ const ratingSchema = new Schema({
     touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist',required:false },
     rating: { type: Number, min: 1, max: 5 },
 })
-const rating = mongoose.model('rating',ratingSchema)
+const rating = mongoose.model('rating',ratingSchema);
 
 const productSchema = new Schema({
     name:

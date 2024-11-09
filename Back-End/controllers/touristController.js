@@ -125,6 +125,22 @@ const changePreferredCurrency = async (req, res) => {
     }
 }
 
+const getLevel = async(req,res)=>{
+    try {
+        const tourist = await Tourist.findById(req.params.id);
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+        if (!tourist.accepted) {
+            return res.status(403).json({ error: 'Tourist account not yet accepted' });
+        }
+
+        res.status(200).json({level:tourist.level});
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 const redeemPoints = async (req, res) => {
     try {
         const tourist = await Tourist.findById(req.params.id);
@@ -281,5 +297,6 @@ module.exports = {
     myComplaints,
     rateAnActivity,
     rateProduct,
-    reviewProduct
+    reviewProduct,
+    getLevel
 };
