@@ -157,6 +157,14 @@ const itinerarySchema = new mongoose.Schema({
         ref: 'TourGuideModel',
         required: false,
     },
+     /*
+    Added the following field to handle the availability of booking
+    For the requirement "Activate/ deactivate an itinerary with bookings"
+    */
+    bookingIsOpen: { 
+        type: Boolean,
+        default: true
+    },
 }, { timestamps: true });
 
 itinerarySchema.pre('save', function(next) {
