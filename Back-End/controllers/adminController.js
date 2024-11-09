@@ -37,14 +37,19 @@ const deleteAccount = async (req, res) => {
 
     // Validate input
     let userAccount = await User.findOne({ _id: id });
+    let adminAccount = await AdminModel.findOne({ _id: id });
     let tourGovAccount = await tourGovModel.findOne({ _id: id });
 
-    if (!userAccount && !tourGovAccount) {
+    if (!userAccount && !tourGovAccount && !adminAccount) {
         return res.status(400).json({ error: 'Account not found' });
     }
 
     try {
-        if (userAccount) {
+        if(adminAccount){
+            adminAccount = await AdminModel.findByIdAndDelete(id);
+            res.status(200).json({ message: 'Account deleted', adminAccount });
+        }
+        else if (userAccount) {
             userAccount = await User.findByIdAndDelete(id);
             res.status(200).json({ message: 'Account deleted', userAccount });
         }
