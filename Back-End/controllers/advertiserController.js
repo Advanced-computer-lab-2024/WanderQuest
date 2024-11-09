@@ -53,6 +53,9 @@ const getProfile = async (req, res) => {
         if (!advertiser.accepted) {
             return res.status(403).json({ error: 'Advertiser account not yet accepted' });
         }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
+        }
         res.json({ advertiser });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -67,6 +70,9 @@ const updateProfile = async (req, res) => {
         }
         if (!advertiser.accepted) {
             return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
         }
         const updatedAdvertiser = await Advertiser.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedAdvertiser);
@@ -97,6 +103,12 @@ const uploadLogo = async (req, res) => {
             if (!advertiser) {
                 return res.status(404).json({ error: 'Advertiser not found' });
             }
+            if (!advertiser.accepted) {
+                return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+            }
+            if (!advertiser.isTermsAccepted) {
+                return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
+            }
 
             const file = req.files[0];
 
@@ -122,6 +134,12 @@ const getLogo = async (req, res) => {
         const advertiser = await Advertiser.findById(req.params.id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
+        }
+        if (!advertiser.accepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
         }
 
         const logo = advertiser.logo;

@@ -50,6 +50,9 @@ const getProfile = async (req, res) => {
         if (!seller.accepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted' });
         }
+        if(!seller.isTermsAccepted){
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
+        }
         res.json(seller);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -65,6 +68,9 @@ const updateProfile = async (req, res) => {
         }
         if (!seller.accepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        if (!seller.isTermsAccepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
         const updatedSeller = await Seller.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedSeller);
@@ -84,6 +90,12 @@ const uploadLogo = async (req, res) => {
             const seller = await Seller.findById(req.params.id);
             if (!seller) {
                 return res.status(404).json({ error: 'Seller not found' });
+            }
+            if (!seller.accepted) {
+                return res.status(403).json({ error: 'Seller account not yet accepted' });
+            }
+            if (!seller.isTermsAccepted) {
+                return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
             }
 
             const file = req.files[0];
@@ -110,6 +122,12 @@ const getLogo = async (req, res) => {
         const seller = await Seller.findById(req.params.id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
+        }
+        if (!seller.accepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        if (!seller.isTermsAccepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
 
         const logo = seller.logo;
