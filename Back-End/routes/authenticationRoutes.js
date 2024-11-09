@@ -1,7 +1,7 @@
 const express = require('express');
 
 // controller functions
-const { registerUser, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, acceptUser, acceptTerms } = require('../controllers/authenticationController');
+const { registerUser, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, acceptUser, acceptTerms, requestAccountDeletion } = require('../controllers/authenticationController');
 
 const router = express.Router();
 
@@ -14,5 +14,6 @@ router.get('/getUsersRequestingAcceptance', getUsersRequestingAcceptance);
 router.get('/getDocumentByFileID/:id', getDocumentByFileID);
 router.patch('/acceptUser/:id', acceptUser);
 router.patch('/acceptTerms/:id', acceptTerms);
+router.patch('/requestAccountDeletion/:id', requestAccountDeletion);
 
 module.exports = router;

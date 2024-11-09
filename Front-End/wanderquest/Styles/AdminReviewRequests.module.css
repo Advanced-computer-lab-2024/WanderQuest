@@ -1,0 +1,118 @@
+/* Container for the entire component */
+.container {
+    background-color: #c6dbe7; /* Tangaroa */
+    color: #ffffff; /* White */
+    padding: 2rem;
+  }
+  
+  /* Title styling */
+  .title {
+    font-size: 1.8rem;
+    color: #17455c; /* Elephant */
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Table styling */
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #122c34; /* Big Stone */
+  }
+  
+  .tableHeader {
+    background-color: #1a6187; /* Blumine */
+    color: #ffffff;
+  }
+  
+  .tableRow {
+    background-color: #122c34; /* Big Stone */
+  }
+  
+  .tableCell {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #17455c; /* Elephant */
+    align-items: center;
+  }
+  
+  /* Action buttons */
+  .actionButton {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    margin: 0 0.25rem;
+    color: #ffffff; /* White */
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .acceptButton {
+    background-color: #008000; /* Green */
+    margin-top: 30px;
+  }
+  
+  .rejectButton {
+    background-color: #ff0000; /* Red */
+  }
+
+  /* New container class for separating download buttons */
+.downloadButtonContainer {
+    display: flex;
+    flex-direction: column;  /* Stack the buttons vertically */
+    gap: 25px;               /* Space between buttons */
+    margin-bottom: 20px;      /* Bottom margin for some extra spacing */
+  }
+  
+  .downloadButton {
+    /* Optional custom styles for the download button */
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    color: #ffffff;
+    background-color: #17455c; /* Change as needed */
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none; /* To remove underline for links */
+  }
+  
+  
+  .viewButton {
+    background-color: #17455c; /* Elephant */
+  }
+  
+  /* Modal styling */
+  .modal {
+    background-color: #ffffff; /* White */
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    color: #042335; /* Tangaroa */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+  }
+  
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  
+  .modalTitle {
+    font-size: 1.5rem;
+    color: #1a6187; /* Blumine */
+    margin-bottom: 1rem;
+  }
+  
+  .message {
+    background-color: #17455c;
+    color: white;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-radius: 4px;
+  }

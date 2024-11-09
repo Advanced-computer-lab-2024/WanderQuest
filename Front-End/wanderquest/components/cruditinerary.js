@@ -163,7 +163,7 @@ const Cruditinerary = () => {
 
 
     const handleDelete = async (itinerary) => {
-        if (itinerary.bookingAlreadyMade) {
+        if (itinerary.BookingAlreadyMade) {
             alert('Error: This itinerary has already been booked and cannot be deleted.');
             return;
         }
