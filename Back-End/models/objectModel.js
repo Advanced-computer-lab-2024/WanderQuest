@@ -63,14 +63,19 @@ const productSchema = new Schema({
     [{type:ratingSchema,required:false,default:null}],
     rating:
     {type:Number, required:false,default:null},
+    isArchived: { type: Boolean, default: false },
     reviews:
-    [{type:String,required:false,default:null}],
+    [{
+        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
+        review: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now }
+    }],
     availableAmount:
     {type:Number,required:true}
 });
 productSchema.pre('save', function(next) {
     if (this.ratings && this.ratings.length > 0) {
-        const total = this.ratings.reduce((acc, val) => acc + val, 0);
+        const total = this.ratings.reduce((acc, val) => acc + val.rating, 0);
         this.rating = total / this.ratings.length; // Calculate average
     } else {
         this.rating = null; // Set to null if no ratings
@@ -100,6 +105,13 @@ const activitySchema = new mongoose.Schema({
     bookingIsOpen: { type: Boolean, default: true },
     ratings: [{ type: ratingSchema, required: false, default: null }],
     rating: { type: Number, default: null },
+    comments: [
+        {
+            touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
+            comment: String,
+            createdAt: { type: Date, default: Date.now }
+        }
+    ],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AdvertiserModel',
