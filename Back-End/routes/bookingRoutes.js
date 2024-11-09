@@ -1,5 +1,10 @@
 const express = require("express");
-const { bookActivity, bookItinerary, cancelBooking, bookFlight } = require('../controllers/bookingController'); // Destructure the flightSearch function
+const {
+    bookActivity,
+    bookItinerary,
+    cancelBooking,
+    bookFlight
+} = require('../controllers/bookingController'); // Destructure the flightSearch function
 
 const router = express.Router(); // Capitalize Router
 

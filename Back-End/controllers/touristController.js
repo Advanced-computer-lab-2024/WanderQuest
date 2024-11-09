@@ -1,8 +1,11 @@
+const { TourGuide } = require('../models/userModel');
+const ProdModel = require('../models/objectModel').Product;
 const Tourist = require('../models/userModel').Tourist;
 const PlaceModel = require('../models/objectModel').Places;
 const ActivityModel = require('../models/objectModel').Activity;
 const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
+const axios = require('axios');
 
 // functions
 const getProfile = async (req, res) => {
@@ -105,18 +108,34 @@ const getAvailableProducts = async (req, res) => {
     }
 };
 
-//change preferred currency
 const changePreferredCurrency = async (req, res) => {
     try {
         const tourist = await Tourist.findById(req.params.id);
+
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
-        if (!tourist.accepted) {
-            return res.status(403).json({ error: 'Tourist account not yet accepted' });
+
+        const newCurrency = req.body.preferredCurrency;
+        const oldCurrency = tourist.preferredCurrency;
+
+        // Fetch exchange rates
+        const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/latest/${oldCurrency}`);
+        const rates = response.data.conversion_rates;
+
+        if (!rates[newCurrency]) {
+            return res.status(400).json({ error: 'Unsupported currency' });
         }
 
-        const updatedTourist = await Tourist.findByIdAndUpdate(req.params.id, { preferredCurrency: req.body.preferredCurrency }, { new: true });
+        // Convert wallet amount
+        const conversionRate = rates[newCurrency];
+        const newWalletAmount = tourist.wallet * conversionRate;
+
+        // Update tourist's preferred currency and wallet amount
+        tourist.preferredCurrency = newCurrency;
+        tourist.wallet = newWalletAmount;
+
+        const updatedTourist = await tourist.save();
         res.json(updatedTourist);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -145,18 +164,18 @@ const redeemPoints = async (req, res) => {
         return res.status(500).json({ error: err.message });
     }
 };
-const fileComplaint = async(req,res)=>{
-    const {title,body,status,date,reply,createdBy} = req.body;
-    if (!title || !body ) {
+const fileComplaint = async (req, res) => {
+    const { title, body, status, date, reply, createdBy } = req.body;
+    if (!title || !body) {
         return res.status(400).json({ error: 'Title and Body fields are required' });
     }
     try {
         // Checking if the username already exists
-        const existingComplaint = await ComplaintModel.findOne({ title,body });
+        const existingComplaint = await ComplaintModel.findOne({ title, body });
         if (existingComplaint) {
             return res.status(400).json({ error: 'Complaint already exists' });
         }
-        const complaint = await ComplaintModel.create({title,body,status,date,reply,createdBy})
+        const complaint = await ComplaintModel.create({ title, body, status, date, reply, createdBy })
         res.status(200).json(complaint)
 
     } catch (error) {
@@ -175,6 +194,95 @@ const myComplaints = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 };
+
+//rate an activity
+const rateAnActivity = async (req, res) => {
+
+    try {
+        const activityId = req.params.id;
+        const { touristId, rating } = req.body;
+        // Check if touristId and rating are provided
+        // Debugging log to see if values are correctly parsed
+        console.log("Received activityId:", activityId);
+        console.log("Received touristId:", touristId);
+        console.log("Received rating:", rating);
+
+        if (!touristId || !rating) {
+            return res.status(400).json({ message: "touristId and rating are required" });
+        }
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ error: ' Rating must be between 1 and 5' });
+        }
+
+        const activity = await ActivityModel.findById(activityId);
+        if (!activity) {
+            return res.status(404).json({ error: 'Activity not found' });
+        }
+
+        const existingRating = activity.ratings.findIndex(r => r.touristId.toString() === touristId);
+        if (existingRating !== -1) {
+            activity.ratings[existingRating].rating = rating;
+        } else {
+            activity.ratings.push({ touristId, rating });
+        }
+
+        const totalRatings = activity.ratings.reduce((acc, r) => acc + r.rating, 0);
+        activity.rating = totalRatings / activity.ratings.length;
+        await activity.save();
+        return res.status(200).json({ message: "Activity rated successfully", activity });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+
+    }
+}
+
+//rate a product
+const rateProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const { rating } = req.body;
+
+        // if(!touristId ){
+        //     return res.status(400).json({error: 'touristId is required'});
+        // }
+        if (!rating) {
+            return res.status(400).json({ error: 'rating is required' });
+        }
+        // if (!touristId || rating === undefined) {
+        //     return res.status(400).json({ error: 'touristId and rating are required' });
+        // }
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'rating should be between 1 and 5' });
+        }
+        const product = await ProdModel.findById(productId);
+        if (!product) {
+            return res.status(400).json({ error: 'Product not found' });
+        }
+        // const existingRating  = product.ratings.findIndex(r => r.touristId.toString() === touristId)
+        // if (existingRatingIndex !== -1) {
+        //     // Update the existing rating
+        //     product.ratings[existingRatingIndex].rating = rating;
+        // }
+        product.ratings.push(rating);
+        const totalRatings = product.ratings.reduce((acc, r) => acc + r, 0);
+        product.rating = totalRatings / product.ratings.length;
+
+        await product.save();
+        return res.status(200).json({ message: 'Product rated successfully', product });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+};
+//review a product that is purchased
+const reviewProduct = async (req, res) => {
+    try {
+        const { productId } = req.params;
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 module.exports = {
     getProfile,
     updateProfile,
@@ -187,5 +295,8 @@ module.exports = {
     changePreferredCurrency,
     redeemPoints,
     fileComplaint,
-    myComplaints
+    myComplaints,
+    rateAnActivity,
+    rateProduct,
+    reviewProduct
 };

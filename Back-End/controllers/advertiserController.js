@@ -328,4 +328,3 @@ const getAllAdvertisers = async (req, res) => {
 };
 
 module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
-
