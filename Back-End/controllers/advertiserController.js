@@ -53,6 +53,9 @@ const getProfile = async (req, res) => {
         if (!advertiser.accepted) {
             return res.status(403).json({ error: 'Advertiser account not yet accepted' });
         }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
+        }
         res.json({ advertiser });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -67,6 +70,9 @@ const updateProfile = async (req, res) => {
         }
         if (!advertiser.accepted) {
             return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
         }
         const updatedAdvertiser = await Advertiser.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedAdvertiser);
@@ -97,6 +103,12 @@ const uploadLogo = async (req, res) => {
             if (!advertiser) {
                 return res.status(404).json({ error: 'Advertiser not found' });
             }
+            if (!advertiser.accepted) {
+                return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+            }
+            if (!advertiser.isTermsAccepted) {
+                return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
+            }
 
             const file = req.files[0];
 
@@ -122,6 +134,12 @@ const getLogo = async (req, res) => {
         const advertiser = await Advertiser.findById(req.params.id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
+        }
+        if (!advertiser.accepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
         }
 
         const logo = advertiser.logo;
@@ -158,8 +176,9 @@ const getLogo = async (req, res) => {
 
 //create activity
 const createActivity = async (req, res) => {
+    const { title, date, time, location, price, priceRange,  category, tags, specialDiscounts, bookingIsOpen,ratings,comments,createdBy } = req.body;
+
     try {
-        const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
         // If tags are provided, check if all tags exist in the TagModel
         if (tags && tags.length > 0) {
             // Extract the types of the tags from the request
@@ -187,7 +206,7 @@ const createActivity = async (req, res) => {
     }
     try {
         const newActivity = await ActivityModel.create({
-            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy
+            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy,comments
 
         });
         res.status(200).json(newActivity);

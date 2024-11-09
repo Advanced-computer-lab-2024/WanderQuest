@@ -122,7 +122,7 @@ const getProdById = async (req, res) => {
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/} ,{ availableAmount: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -259,7 +259,7 @@ const deleteCategory = async (req, res) => {
 
 
 
-// Add a Tourism Governer
+// Add a Tourism Governor
 const addTourGov = async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -408,6 +408,31 @@ const reply = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+//admin can archive or unarchive products
+const archiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product archived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
+const unarchiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product unarchived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -430,5 +455,7 @@ module.exports = {
     getAllComplaints,
     specificComplaint,
     markComplaint,
-    reply
+    reply,
+    archiveProduct,
+    unarchiveProduct
 }
