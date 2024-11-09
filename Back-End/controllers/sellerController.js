@@ -50,6 +50,9 @@ const getProfile = async (req, res) => {
         if (!seller.accepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted' });
         }
+        if(!seller.isTermsAccepted){
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
+        }
         res.json(seller);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -65,6 +68,9 @@ const updateProfile = async (req, res) => {
         }
         if (!seller.accepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        if (!seller.isTermsAccepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
         const updatedSeller = await Seller.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedSeller);
@@ -84,6 +90,12 @@ const uploadLogo = async (req, res) => {
             const seller = await Seller.findById(req.params.id);
             if (!seller) {
                 return res.status(404).json({ error: 'Seller not found' });
+            }
+            if (!seller.accepted) {
+                return res.status(403).json({ error: 'Seller account not yet accepted' });
+            }
+            if (!seller.isTermsAccepted) {
+                return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
             }
 
             const file = req.files[0];
@@ -110,6 +122,12 @@ const getLogo = async (req, res) => {
         const seller = await Seller.findById(req.params.id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
+        }
+        if (!seller.accepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        if (!seller.isTermsAccepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
 
         const logo = seller.logo;
@@ -212,4 +230,29 @@ const editProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts };
+//seller can archive or unarchive products
+const archiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product archived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
+const unarchiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product unarchived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct };
