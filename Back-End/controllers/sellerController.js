@@ -212,4 +212,29 @@ const editProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts };
+//seller can archive or unarchive products
+const archiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product archived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
+const unarchiveProduct = async (req,res) => {
+    try{
+        const  productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
+        if (!product){ 
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product unarchived successfully', product });
+    }catch(error){
+        res.status(500).json({error: error.message});
+    }
+}
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct };

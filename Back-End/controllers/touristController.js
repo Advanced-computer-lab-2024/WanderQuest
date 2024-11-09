@@ -100,7 +100,7 @@ const getItineraryById = async (req, res) => {
 
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } , isArchived: false }, { availableAmount: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -218,12 +218,38 @@ const rateAnActivity = async (req,res) => {
 
     }
 }
+//comment an activity
+const commentOnActivity = async (req,res) => {
+  try{
+    const activityId = req.params.id;
+    const { touristId, comment } = req.body;
+    if(!touristId){
+        return res.status(400).json({error: 'touristId is required'});
+    }
+    if(!comment){
+        return res.status(400).json({error: 'comment is required'});
 
+    }
+    if (!touristId || !rating) {
+        return res.status(400).json({ message: "touristId and rating are required" });
+    }
+    const activity = await ActivityModel.findById(activityId);
+    if (!activity) {
+        return res.status(404).json({ error: 'Activity not found' });
+    }
+    activity.comments.push({ touristId, comment });
+    await activity.save();
+    return res.status(200).json({ message: 'Comment added successfully', activity });
+
+  }catch(error){
+    res.status(404).json({error: error.message});
+  }
+}
 //rate a product
 const rateProduct = async (req,res) =>{
     try{
-    const { productId } = req.params;
-    const {  rating} = req.body;
+    const  productId  = req.params.id;
+    const { touristId, rating} = req.body;
 
     // if(!touristId ){
     //     return res.status(400).json({error: 'touristId is required'});
@@ -231,9 +257,9 @@ const rateProduct = async (req,res) =>{
     if(!rating ){
         return res.status(400).json({error: 'rating is required'});
     }
-    // if (!touristId || rating === undefined) {
-    //     return res.status(400).json({ error: 'touristId and rating are required' });
-    // }
+    if (!touristId || rating === undefined) {
+        return res.status(400).json({ error: 'touristId and rating are required' });
+    }
     if (rating < 1 || rating > 5) {
         return res.status(400).json({ error: 'rating should be between 1 and 5' });
     }
@@ -241,12 +267,13 @@ const rateProduct = async (req,res) =>{
     if(!product){
         return res.status(400).json({error: 'Product not found'});
     }
-    // const existingRating  = product.ratings.findIndex(r => r.touristId.toString() === touristId)
-    // if (existingRatingIndex !== -1) {
-    //     // Update the existing rating
-    //     product.ratings[existingRatingIndex].rating = rating;
-    // }
-    product.ratings.push(rating);
+    const existingRating  = product.ratings.findIndex(r => r.touristId.toString() === touristId)
+    if (existingRating !== -1) {
+        // Update the existing rating
+        product.ratings[existingRating].rating = rating;
+    }else{
+        product.ratings.push({ touristId, rating });
+    }
     const totalRatings = product.ratings.reduce((acc, r) => acc + r, 0);
     product.rating = totalRatings / product.ratings.length;
 
@@ -260,8 +287,23 @@ const rateProduct = async (req,res) =>{
 //review a product that is purchased
 const reviewProduct = async (req,res) => {
     try{
-      const { productId } = req.params;
-      
+      const  productId  = req.params.id;
+      const { touristId, review } = req.body;
+
+      if(!review){
+        return res.status(400).json({error: 'Review is required'});
+      }
+      if(!touristId){
+        return res.status(400).json({error: 'Tourist id is required'});
+      }
+      const product = await ProdModel.findById(productId);
+      if(!product){
+        return res.status(404).json({error: 'Product not found'});
+      }
+      product.reviews.push({touristId,review});
+      await product.save();
+      return res.status(200).json({ message: 'Review added successfully', product });
+
     }catch(error){
         res.status(500).json({error: error.message});
     }
@@ -280,6 +322,7 @@ module.exports = {
     fileComplaint,
     myComplaints,
     rateAnActivity,
+    commentOnActivity,
     rateProduct,
     reviewProduct
 };
