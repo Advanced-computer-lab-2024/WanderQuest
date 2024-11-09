@@ -100,32 +100,3 @@
     width: 50%;
   }
   
-  .suggestions {
-    position: absolute;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 5px; /* Space between the input and suggestions */
-    z-index: 999;
-    list-style-type: none;
-    padding-left: 0;
-  }
-  
-  .suggestions li {
-    padding: 10px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .suggestions li:hover {
-    background-color: #f0f0f0; /* Hover effect */
-  }
-  
-  .suggestions li:active {
-    background-color: #e0e0e0; /* Active effect */
-  }
-  

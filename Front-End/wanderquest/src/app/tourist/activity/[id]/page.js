@@ -5,39 +5,62 @@ import Navbar from '../../../../../components/Navbar';
 
 function Page({ params }) {
   const id = params.id;
-  const [activity, setActivities] = useState([]);
+  const userId = 1234;
+  const [activity, setActivity] = useState(null);
+  const [bookingType, setBookingType] = useState('activity');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const share=()=>{
+
+  const share = () => {
     navigator.share({
-        url:`http://localhost:3000/tourist/activity/${id}`
-    })
-}
-  const fetchData = () => {
-    fetch(`http://localhost:4000/advertiser/activity/${id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setActivities(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching activities:', error);
-        setLoading(false);
-      });
+      url: `http://localhost:3000/tourist/activity/${id}`,
+    });
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/advertiser/activity/${id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setActivity(data);
+    } catch (error) {
+      console.error('Error fetching activities:', error);
+      setError('Error fetching activity details.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  const handleBooking = async () => {
+    const act = { userId, bookingType, id };
+    try {
+      const response = await fetch('http://localhost:4000/booking/bookActivity', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(act),
+      });
+      if (!response.ok) {
+        throw new Error('Booking failed');
+      }
+      alert('Booking successful!');
+    } catch (error) {
+      console.error('Error booking activity:', error);
+      alert('Booking failed, please try again.');
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
     <>
-    <Navbar></Navbar>
+      <Navbar />
       {activity && (
         <div key={activity.id} className={styles.activity}>
           <h3>{activity.title}</h3>
@@ -53,8 +76,10 @@ function Page({ params }) {
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-            <button onClick={share}>share link</button>
           </p>
+          <button onClick={share}>Share Link</button>
+          {activity.bookingIsOpen ?(<button onClick={handleBooking}>Book</button>):(<></>)}
+          <button>cancel booking </button>
         </div>
       )}
     </>

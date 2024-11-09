@@ -325,8 +325,8 @@ const clearsearch=()=>{
               view
           </Link>
           <p>{itinerary.id}</p>
-          <button onClick={share}>share link</button>
-          <button></button>
+          
+          
           
         </div>
         
