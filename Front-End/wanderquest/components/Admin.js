@@ -62,7 +62,7 @@ export default function AdminPage() {
 
       if (response.ok) {
         alert('Governor created successfully!');
-        fetchUserData(); // Refresh the user data
+        fetchUsers(); // Refresh the user data
       } else {
         alert('Failed to create governor.');
       }
@@ -91,7 +91,7 @@ export default function AdminPage() {
 
       if (response.ok) {
         alert('Admin added successfully!');
-        fetchUserData(); // Refresh the user data
+        fetchUsers(); // Refresh the user data
       } else {
         alert('Failed to add admin.');
       }
