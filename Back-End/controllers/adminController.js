@@ -19,7 +19,7 @@ const getAllAdmins = async (req, res) => {
 //getAllUsers
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find({});
+        const users = await User.find({ accepted: true });
         const admins = await AdminModel.find({});
         const tourG = await tourGovModel.find({});
 
@@ -386,7 +386,7 @@ const markComplaint = async (req, res) => {
 
     try {
         const updatedComplaint = await ComplaintModel.findByIdAndUpdate
-        (id,{ status: req.body.status }, { new: true });
+            (id, { status: req.body.status }, { new: true });
         if (!updatedComplaint) {
             return res.status(404).json({ error: 'Complaint not found' });
         }
@@ -399,7 +399,7 @@ const reply = async (req, res) => {
     const { id } = req.params;
     try {
         const updatedComplaint = await ComplaintModel.findByIdAndUpdate
-        (id,{ reply: req.body.reply }, { new: true });
+            (id, { reply: req.body.reply }, { new: true });
         if (!updatedComplaint) {
             return res.status(404).json({ error: 'Complaint not found' });
         }
