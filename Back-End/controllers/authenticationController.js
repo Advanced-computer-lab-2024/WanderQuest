@@ -267,29 +267,25 @@ async function requestAccountDeletion(req, res) {
         }
 
         const userId = user._id;
-
         const currentDate = new Date();
 
+        // Find all itineraries created by the user with upcoming dates
+        const itineraries = await Itinerary.find({
+            createdBy: userId,
+            availableDates: { $gte: currentDate }
+        }).distinct('_id');
+
+        // Find all activities created by the user with upcoming dates
+        const activities = await Activity.find({
+            createdBy: userId,
+            date: { $gte: currentDate }
+        }).distinct('_id');
+
+        // Check for paid bookings associated with these itineraries and activities
         const paidBookings = await Booking.find({
             $or: [
-                {
-                    itineraryId: {
-                        $in: await Itinerary.find({
-                            createdBy: userId,
-                            availableDates: { $gte: currentDate }
-                        }).distinct('_id')
-                    },
-                    paid: true
-                },
-                {
-                    activityId: {
-                        $in: await Activity.find({
-                            createdBy: userId,
-                            date: { $gte: currentDate }
-                        }).distinct('_id')
-                    },
-                    paid: true
-                }
+                { itineraryId: { $in: itineraries }, paid: true },
+                { activityId: { $in: activities }, paid: true }
             ]
         });
 
