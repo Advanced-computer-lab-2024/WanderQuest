@@ -51,7 +51,7 @@ const productSchema = new Schema({
     name:
         { type: String, required: true },
     picture:
-        [{ data: Buffer, type: String, required: true }],
+        [{ data: Buffer, type: String, required: false }],
     price:
         { type: Number, required: true },
     description:
@@ -73,7 +73,9 @@ const productSchema = new Schema({
         createdAt: { type: Date, default: Date.now }
     }],
     availableAmount:
-        { type: Number, required: true }
+        { type: Number, required: true },
+    sales: { type: Number, required: true,default: 0}
+
 });
 productSchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {

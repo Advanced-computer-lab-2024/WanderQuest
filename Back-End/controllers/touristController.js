@@ -280,44 +280,86 @@ const commentOnActivity = async (req,res) => {
 }
 
 //rate a product
+// const rateProduct = async (req, res) => {
+//     try {
+//         const  id = req.params.id;
+//         const {touristId, rating } = req.body;
+
+//         // if(!touristId ){
+//         //     return res.status(400).json({error: 'touristId is required'});
+//         // }
+//         if (!rating) {
+//             return res.status(400).json({ error: 'rating is required' });
+//         }
+//         if (!touristId || rating === undefined) {
+//             return res.status(400).json({ error: 'touristId and rating are required' });
+//         }
+//         if (rating < 1 || rating > 5) {
+//             return res.status(400).json({ error: 'rating should be between 1 and 5' });
+//         }
+//         console.log(id);
+//         const product = await ProdModel.findById(id);
+//         if (!product) {
+//             return res.status(400).json({ error: 'Product not found' });
+//         }
+//         const existingRating  = product.ratings.findIndex(r => r.touristId === touristId)
+//         if (existingRating !== -1) {
+//             // Update the existing rating
+//             product.ratings[existingRating].rating = rating;
+//         }else{
+//             product.ratings.push({ touristId, rating });
+//         }
+//         const totalRatings = product.ratings.reduce((acc, r) => acc + r, 0);
+//         product.rating = totalRatings / product.ratings.length;
+
+//         await product.save();
+//         return res.status(200).json({ message: 'Product rated successfully', product });
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+
+// };
 const rateProduct = async (req, res) => {
     try {
-        const  productId  = req.params.id;
-        const {touristId, rating } = req.body;
+        const productId = req.params.id;
+        const { touristId, rating } = req.body;
 
-        // if(!touristId ){
-        //     return res.status(400).json({error: 'touristId is required'});
-        // }
         if (!rating) {
-            return res.status(400).json({ error: 'rating is required' });
+            return res.status(400).json({ error: 'Rating is required' });
         }
         if (!touristId || rating === undefined) {
-            return res.status(400).json({ error: 'touristId and rating are required' });
+            return res.status(400).json({ error: 'TouristId and rating are required' });
         }
         if (rating < 1 || rating > 5) {
-            return res.status(400).json({ error: 'rating should be between 1 and 5' });
+            return res.status(400).json({ error: 'Rating should be between 1 and 5' });
         }
+
         const product = await ProdModel.findById(productId);
         if (!product) {
-            return res.status(400).json({ error: 'Product not found' });
+            return res.status(404).json({ error: 'Product not found' });
         }
-        const existingRating  = product.ratings.findIndex(r => r.touristId.toString() === touristId)
-        if (existingRating !== -1) {
+
+        // Check if the tourist has already rated the product
+        const existingRatingIndex = product.ratings.findIndex(r => r.touristId.toString() === touristId);
+        if (existingRatingIndex !== -1) {
             // Update the existing rating
-            product.ratings[existingRating].rating = rating;
-        }else{
+            product.ratings[existingRatingIndex].rating = rating;
+        } else {
+            // Add a new rating
             product.ratings.push({ touristId, rating });
         }
-    const totalRatings = product.ratings.reduce((acc, r) => acc + r, 0);
+
+        // Calculate the new average rating
+        const totalRatings = product.ratings.reduce((acc, r) => acc + r.rating, 0); // Fix: sum only the 'rating' field
         product.rating = totalRatings / product.ratings.length;
 
         await product.save();
         return res.status(200).json({ message: 'Product rated successfully', product });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
-
 };
+
 //review a product that is purchased
 const reviewProduct = async (req,res) => {
     try{
