@@ -181,6 +181,7 @@ const bookFlight = async (req, res) => {
             paid: true,
             startDate: fromDate
         });
+        return res.status(200).json(newBooking);
     } catch (error){
         res.status(500).json({ error: error.message });
     }
@@ -221,6 +222,7 @@ const bookHotel = async (req, res) => {
             paid: true,
             startDate: checkInDate
         });
+        return res.status(200).json(newBooking);
     } catch (error){
         res.status(500).json({ error: error.message });
     }
