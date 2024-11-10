@@ -3,8 +3,12 @@ import { useEffect, useState } from 'react';
 import styles from '../styles/Itineraries.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import AddRating from './AddRating';
+import AddComment from './AddComment';
 
 const ItineraryList = (Props) => {
+
+
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const role=Props.role;
   const [activityDetails, setActivityDetails] = useState({});
@@ -25,6 +29,9 @@ const ItineraryList = (Props) => {
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
   const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Japanese", "Russian"];
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
   const fetchActivityDetails = (activityId) => {
     if (activityDetails[activityId]) return; // Avoid refetching
@@ -87,6 +94,30 @@ const ItineraryList = (Props) => {
     });
     setDisplayedItineraries(newprod);  // Set the filtered museums based on search
 };
+
+const handleFeedback = async (e) => {
+  e.preventDefault();
+    const ratingFeedback = await fetch('http://localhost:4000/bagarab7aga', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rating }),
+    });
+    const commentFeedback = await fetch('http://localhost:4000/bagarab7agtein', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ comment }),
+    });
+    console.log('Rating:', rating);
+    console.log('Comment:', comment);
+    if (commentFeedback.ok && ratingFeedback.ok) {
+      console.log('Feedback sent successfully');
+      feedbackFlag = true;
+    }
+}
 const clearsearch=()=>{
   setDisplayedItineraries(allItineraries);
 }
@@ -272,6 +303,7 @@ const clearsearch=()=>{
         <button onClick={handleSortRatingAsc}>Sort on Rating Asc</button>
         <button onClick={handleSortRatingDesc}>Sort on Rating Desc</button>
       </div>
+      <br/>
 
       {displayedItineraries.map((itinerary) => (
         <div id={itinerary.id} key={itinerary.id} className={styles.itinerary}>
@@ -317,9 +349,18 @@ const clearsearch=()=>{
           <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
           <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
           <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
+          { role === "Tourist" ? (
+          <div>
+              <AddRating rating={rating} setRating={setRating} />
+              <AddComment comment={comment} setComment={setComment} />
+              <button className={styles.btnFeedback} onClick={handleFeedback} >Send Feedback</button> 
+          </div>) : (null)
+          }
           {role==="Admin"?(
             <button className={styles.addticket} >flag</button>
           ):<div></div>}
+          
+
           
         </div>
         

@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import Navbar from '../../../components/Navbar';
 
+
 export default function Tourist() {
     const router = useRouter();
 
@@ -17,6 +18,17 @@ export default function Tourist() {
     const handleRedirectac = () => {
         router.push('/tourist/activity');
     };
+    const handleRedirectcomp = () => {
+        router.push('/tourist/complaint');
+    };
+    const handleRedirectviewcomp = () => {
+        router.push('/tourist/viewComplaint');
+
+    };
+    const handleRedirectHist = () => {
+        router.push('/tourist/history');
+    };
+    
 
     return (
         <div>
@@ -27,6 +39,10 @@ export default function Tourist() {
             <button onClick={handleRedirectac}>Go to activity</button>
             <button onClick={handleRedirectp}>Go to products</button>
             <button onClick={handleRedirectm}>Go to museums</button>
+            <button onClick={handleRedirectcomp}>File a complaint</button>
+            <button onClick={handleRedirectviewcomp}>View Complaint</button>
+            <button onClick={handleRedirectHist}>Go to History</button>
         </div>
     );
+
 };
