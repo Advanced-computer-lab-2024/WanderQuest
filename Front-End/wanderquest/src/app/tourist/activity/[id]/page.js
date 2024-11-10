@@ -40,6 +40,7 @@ function Page({ params }) {
   const handleBooking = async () => {
     const activityId=id;
     const act = { userId, bookingType, activityId };
+    
     try {
       const response = await fetch('http://localhost:4000/booking/activity', {
         method: 'POST',
@@ -52,7 +53,7 @@ function Page({ params }) {
       alert('Booking successful!');
     } catch (error) {
       console.error('Error booking activity:', error);
-      alert('Booking failed, please try again.');
+      alert('Booking failed, already booked ');
     }
   };
 

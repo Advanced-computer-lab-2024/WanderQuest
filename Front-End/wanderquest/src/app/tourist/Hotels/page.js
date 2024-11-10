@@ -85,7 +85,7 @@ function BookingsPage() {
   const handlebooking=(hotelName,stars,rating,description,price1,)=>{
     const bookingType="hotel";
     const price=price1;
-    const userId='672fce1b259054c6c4871c33';
+    const userId='6730b1a173c9606ee0aaddf6';
     const checkIn=departureDate;
     const checkOut=returnDate;
     const hotel= { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut }

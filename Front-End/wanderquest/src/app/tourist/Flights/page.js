@@ -43,9 +43,7 @@ function BookingsPage() {
       max: 10,
     };
 
-    if (returnDate) {
-      requestParams.returnDate = returnDate;
-    }
+   
 
     amadeus.shopping.flightOffersSearch
       .get(requestParams)
@@ -77,8 +75,11 @@ function BookingsPage() {
 
   const handlebooking=(price1,companyName)=>{
     const bookingType="flight";
-    const userId=1;
-    const flight= {userId, bookingType, originLocationCode, destinationLocationCode, price1, companyName};
+    const userId='672fce1b259054c6c4871c33';
+    const from=departureDate;
+    const to=returnDate;
+    const price=price1;
+    const flight= {userId, bookingType, from, price, companyName};
     console.log('flight details:',flight);
     fetch('http://localhost:4000/booking/flight',{
       method:"POST",

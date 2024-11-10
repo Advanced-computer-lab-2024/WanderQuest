@@ -5,8 +5,7 @@
 
     const ItinerarydetailsPage = ({ params }) => {
         const id = params.id;
-        const userId='672fce1b259054c6c4871c33';
-        const bookingType='itinerary';
+      
         const [itinerary, setAllItineraries] = useState({});
         const [activityDetails, setActivityDetails] = useState({});
         const [loading, setLoading] = useState(true);
@@ -70,6 +69,8 @@
         if (error) return <p>Error: {error}</p>;
 
         const handleBooking = (date) => {
+            const userId='6730b1a173c9606ee0aaddf6';
+            const bookingType='itinerary';
             const startDate=date
             const itineraryId=id;
             const iti = { userId, bookingType, itineraryId, startDate };
@@ -91,7 +92,7 @@
             })
             .catch(error => {
                 console.error('Error booking itinerary:', error);
-                alert('Booking failed. Please try again.');
+                alert('Booking failed. Please try again.'+error);
             });
         };
 
