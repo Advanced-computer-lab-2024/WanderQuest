@@ -3,6 +3,7 @@ const axios = require('axios');
 const { User } = require('../models/userModel');
 const Activity = require('../models/objectModel').Activity;
 const Itinerary = require('../models/objectModel').itinerary;
+const mongoose = require('mongoose');
 
 
 const bookActivity = async (req, res) => {
@@ -18,6 +19,11 @@ const bookActivity = async (req, res) => {
     }
 
     try {
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+        
         const retUser = await User.findById(userId);
         if (!retUser) {
             return res.status(404).json({ error: 'User not found' });
@@ -53,6 +59,27 @@ const bookActivity = async (req, res) => {
     }
 };
 
+const activityBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'activity' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no activity bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const bookItinerary = async (req, res) => {
     const { userId, bookingType, itineraryId, startDate } = req.body;
 
@@ -66,6 +93,11 @@ const bookItinerary = async (req, res) => {
     }
 
     try {
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
         const retUser = await User.findById(userId);
         if (!retUser) {
             return res.status(404).json({ error: 'User not found' });
@@ -113,10 +145,36 @@ const bookItinerary = async (req, res) => {
 
 }
 
+const itineraryBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'itinerary' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no itinerary bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
 
 const cancelBooking = async (req, res) => {
     const { userId, bookingId } = req.body;
     try{
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
         const booking = await Booking.findById(bookingId);
         if (!booking) {
             return res.status(404).json({ error: 'Booking not found' });
@@ -152,6 +210,11 @@ const bookFlight = async (req, res) => {
         res.status(400).json({ message : "Can only book a flight" });
     }
     try{
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
         const retuser = await User.findById(userId);
         if(!retuser){
             res.status(404).json({ message : "User not found" });
@@ -181,27 +244,61 @@ const bookFlight = async (req, res) => {
             paid: true,
             startDate: fromDate
         });
+        await newBooking.save();
+        return res.status(201).json(newBooking);
     } catch (error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const flightBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'flight' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no flight bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
         res.status(500).json({ error: error.message });
     }
 }
 
 const bookHotel = async (req, res) => {
     const { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut } = req.body;
-    if(bookingType != "hotel"){
-        res.status(400).json({ message : "Can only book a hotel" });
+
+    if (bookingType !== "hotel") {
+        return res.status(400).json({ message: "Can only book a hotel" });
     }
-    try{
-        const retuser = await User.findById(userId);
-        if(!retuser){
-            res.status(404).json({ message : "User not found" });
+
+    try {
+
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
         }
-        if(retuser.role != "tourist"){
-            res.status(403).json({ message : "Only tourists can book hotels" });
+
+        const retUser = await User.findById(userId);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
         }
-        if(checkIn >= checkOut){
-            res.status(400).json({ message : "Check-in date must be before check-out date" });
+
+        if (retUser.role !== "tourist") {
+            return res.status(403).json({ message: "Only tourists can book hotels" });
         }
+
+        if (checkIn >= checkOut) {
+            return res.status(400).json({ message: "Check-in date must be before check-out date" });
+        }
+
         const currentDate = new Date();
         const checkInDate = new Date(checkIn);
         const checkOutDate = new Date(checkOut);
@@ -221,7 +318,31 @@ const bookHotel = async (req, res) => {
             paid: true,
             startDate: checkInDate
         });
-    } catch (error){
+
+        await newBooking.save();
+        return res.status(201).json(newBooking);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const hotelBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'hotel' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no hotel bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
         res.status(500).json({ error: error.message });
     }
 }
@@ -236,5 +357,9 @@ module.exports = {
     bookItinerary,
     cancelBooking,
     bookFlight,
-    bookHotel
+    bookHotel,
+    hotelBookings,
+    flightBookings,
+    itineraryBookings,
+    activityBookings
 };
