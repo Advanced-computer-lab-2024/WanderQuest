@@ -22,6 +22,10 @@ const AdminPage = () => {
     const handleRedirectcomp = () => {
         router.push('/admin/complaints');
     };
+    const handleRedirectarchive = () => {
+        router.push('/admin/archive');
+    };
+    
 
     return (
         <div>
@@ -31,6 +35,9 @@ const AdminPage = () => {
             <button onClick={handleRedirectediti}>Itineraries</button>
             <button onClick={handleRedirectedevent}>events</button>
             <button onClick={handleRedirectcomp}>complaints</button>
+            <button onClick={handleRedirectarchive}>Archived products</button>
+
+
             <div>
                 <Admin />
             </div>

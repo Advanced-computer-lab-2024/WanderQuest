@@ -11,7 +11,6 @@ const ProfileInfo = () => {
         <Navbar />
         <div>
             <TourGuideInfo/>
-            <ChangePassword/>
         </div>
     </div>
   );

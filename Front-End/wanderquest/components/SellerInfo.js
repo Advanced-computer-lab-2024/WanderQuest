@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
+import DeleteAccount from "../components/DeleteAccount";
+import ChangePassword from "./ChangePassword";
 
 const SellerInfo = () => {
     const [userId, setUserId] = useState(''); // State for storing the seller ID
@@ -30,7 +32,7 @@ const SellerInfo = () => {
                 console.log("Fetched seller ID:", sellerId); // Debugging line
                 setUserId(sellerId); // Assuming sellerId is returned as a string
             } catch (error) {
-                console.error("Error fetching seller ID:", error);
+                console.log("Error fetching seller ID:", error);
                 setError("Error fetching seller ID");
             }
         };
@@ -61,7 +63,7 @@ const SellerInfo = () => {
                     setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
                 }
             } catch (error) {
-                console.error("Error fetching profile:", error);
+                console.log("Error fetching profile:", error);
                 setError("Error fetching profile data");
             }
         };
@@ -147,9 +149,15 @@ const SellerInfo = () => {
             setError("An error occurred while uploading the logo");
         }
     };
+
+    const handleDeleteSuccess = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => setSuccessMessage(""), 3000);
+    };
     
 
     return (
+        <div>
         <form className={styles.Profile} onSubmit={handleSubmit}>
             <div className={styles.profileHeader}>
             <h3 className={styles.h1}>My Profile</h3>
@@ -201,6 +209,9 @@ const SellerInfo = () => {
 
             
         </form>
+        <ChangePassword userId={userId}/>
+        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+    </div>
     );
 };
 
