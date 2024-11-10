@@ -59,6 +59,27 @@ const bookActivity = async (req, res) => {
     }
 };
 
+const activityBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'activity' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no activity bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const bookItinerary = async (req, res) => {
     const { userId, bookingType, itineraryId, startDate } = req.body;
 
@@ -122,6 +143,27 @@ const bookItinerary = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 
+}
+
+const itineraryBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'itinerary' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no itinerary bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
 }
 
 
@@ -209,6 +251,27 @@ const bookFlight = async (req, res) => {
     }
 }
 
+const flightBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'flight' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no flight bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const bookHotel = async (req, res) => {
     const { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut } = req.body;
 
@@ -263,6 +326,26 @@ const bookHotel = async (req, res) => {
     }
 };
 
+const hotelBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'hotel' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no hotel bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
+}
 
 const bookTransportation = async (req, res) => {
 
@@ -274,5 +357,9 @@ module.exports = {
     bookItinerary,
     cancelBooking,
     bookFlight,
-    bookHotel
+    bookHotel,
+    hotelBookings,
+    flightBookings,
+    itineraryBookings,
+    activityBookings
 };
