@@ -142,6 +142,38 @@ const changePreferredCurrency = async (req, res) => {
     }
 }
 
+const getavailablePoints = async(req,res)=>{
+    try {
+        const tourist = await Tourist.findById(req.params.id);
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+        if (!tourist.accepted) {
+            return res.status(403).json({ error: 'Tourist account not yet accepted' });
+        }
+
+        res.status(200).json({availablePoints:tourist.availablePoints});
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+const getTotalPoints = async(req,res)=>{
+    try {
+        const tourist = await Tourist.findById(req.params.id);
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+        if (!tourist.accepted) {
+            return res.status(403).json({ error: 'Tourist account not yet accepted' });
+        }
+
+        res.status(200).json({totalPoints:tourist.totalPoints});
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 const getLevel = async(req,res)=>{
     try {
         const tourist = await Tourist.findById(req.params.id);
@@ -400,5 +432,7 @@ module.exports = {
     commentOnActivity,
     rateProduct,
     reviewProduct,
-    getLevel
+    getLevel,
+    getavailablePoints,
+    getTotalPoints
 };
