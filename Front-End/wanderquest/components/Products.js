@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
+import AddRating from './AddRating';
+import AddComment from './AddComment';
 
 const Products = (props) => {
     
@@ -12,7 +14,8 @@ const Products = (props) => {
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
-    // const [filteredProducts]
+    const [ratings, setRatings] = useState({});
+    const [comments, setComments] = useState({});  // State to hold comments for each product
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
@@ -63,6 +66,67 @@ const Products = (props) => {
         });
         setFilteredProducts(filtered);
     };
+
+    const updateRating = async (productId, newRating) => {
+        const touristId = '6730b1a173c9606ee0aaddf6';  // Get the tourist ID from props
+        console.log(`Product ID: ${productId}, New Rating: ${newRating}`);  // Check if the correct product ID is passed
+        
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/rateProduct/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ touristId:touristId, rating: newRating }),  // Include touristId and rating
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                alert('Rating updated successfully!');
+                setRatings((prevRatings) => ({
+                    ...prevRatings,
+                    [productId]: newRating,
+                }));
+            } else {
+                const errorData = await response.json();
+                alert(`Failed to update rating: ${errorData.error}`);
+            }
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        }
+    };
+
+    const addComment = async (productId, comment) => {
+        console.log("comments", comments);
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/reviewProduct/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    touristId: '6730b1a173c9606ee0aaddf6', // Replace with the actual touristId
+                    review: comment,
+                }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert(result.message);
+                // Optionally: Update product list to reflect new comment
+                const updatedProducts = products.map(product => 
+                    product._id === productId ? result.product : product
+                );
+                setProduct(updatedProducts);
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        }
+    };
+    
 
     const onArchiveClick = async (productId) => {
         try {
@@ -198,26 +262,49 @@ const Products = (props) => {
                             <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
                             <p>{product.description}</p>
                             <p>Seller: {product.seller}</p>
+                            <p>Available Quantity: {product.availableAmount}</p>
+                            {role === "Admin" && (
+                            <p>Sales: {product.sales}</p>
+                            )}
                             <div className={styles.productRating}>
                                 <strong>Rating: </strong>{product.rating} / 5
                             </div>
                             <div className={styles.reviews}>
-                                {product.reviews.map((review, index) => (
-                                    <div className={styles.review} key={index}>
-                                        <strong>{review.user}:</strong> {review.comment} (Rating: {review.rating})
-                                    </div>
-                                ))}
+                                
                                 {role === "Admin" && (
-                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productUpdate}>
+                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productArchive}>
                                         Update
                                     </button>
                                 )}
+                                {role === "Admin" && (
+                                <label className={styles.uploadButton}>
+                                    Upload Picture
+                                    <input type="file" onChange={(e) => onUploadClick(e, product._id)} />
+                                </label>
+                                )}
+                                {role === "Admin" && (
                                 <button 
                                     onClick={() => onArchiveClick(product._id)} 
                                     className={styles.productArchive}>
                                     Archive
                                 </button>
-
+                                )}
+                                {role === "Tourist"&&(
+                                    <>
+                                <AddRating
+                                    rating={ratings[product._id] || product.rating}
+                                    setRating={(newRating) => updateRating(product._id, newRating)}
+                                />
+                                
+                                <AddComment
+                                    comment={comments[product._id] || ''} 
+                                    setComment={(newComment) => setComments(prev => ({ ...prev, [product._id]: newComment }))}
+                                />
+                                <button className={styles.productArchive} onClick={() => addComment(product._id, comments[product._id])}>
+                                    Add a Comment
+                                </button>
+                                </>
+                                )}
                             </div>
                         </div>
                     </div>

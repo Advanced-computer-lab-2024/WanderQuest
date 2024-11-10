@@ -222,9 +222,6 @@ const bookFlight = async (req, res) => {
         if(retuser.role != "tourist"){
             res.status(403).json({ message : "Only tourists can book flights" });
         }
-        if(from == to){
-            res.status(400).json({ message : "From and To cannot be the same" });
-        }
         const currentDate = new Date();
         const fromDate = new Date(from);
 

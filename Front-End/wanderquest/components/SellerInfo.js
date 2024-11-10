@@ -32,7 +32,7 @@ const SellerInfo = () => {
                 console.log("Fetched seller ID:", sellerId); // Debugging line
                 setUserId(sellerId); // Assuming sellerId is returned as a string
             } catch (error) {
-                console.error("Error fetching seller ID:", error);
+                console.log("Error fetching seller ID:", error);
                 setError("Error fetching seller ID");
             }
         };
@@ -63,7 +63,7 @@ const SellerInfo = () => {
                     setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
                 }
             } catch (error) {
-                console.error("Error fetching profile:", error);
+                console.log("Error fetching profile:", error);
                 setError("Error fetching profile data");
             }
         };
