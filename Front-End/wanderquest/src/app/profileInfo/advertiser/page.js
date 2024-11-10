@@ -1,6 +1,7 @@
 import CompanyInfo from "../../../../components/CompanyInfo";
 import AcceptTerms from "../../../../components/AcceptTerms";
 import Navbar from "../../../../components/Navbar";
+import ChangePassword from "../../../../components/ChangePassword";
 
 
 const ProfileInfo = () => {
@@ -11,6 +12,7 @@ const ProfileInfo = () => {
         <Navbar />
         <div>
             <CompanyInfo/>
+            <ChangePassword/>
         </div>
     </div>
   );
