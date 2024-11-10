@@ -5,7 +5,7 @@ import Navbar from '../../../../../components/Navbar';
 
 function Page({ params }) {
   const id = params.id;
-  const userId = 1234;
+  const userId='672fce1b259054c6c4871c33';
   const [activity, setActivity] = useState(null);
   const [bookingType, setBookingType] = useState('activity');
   const [error, setError] = useState(null);
@@ -38,9 +38,10 @@ function Page({ params }) {
   }, []);
 
   const handleBooking = async () => {
-    const act = { userId, bookingType, id };
+    const activityId=id;
+    const act = { userId, bookingType, activityId };
     try {
-      const response = await fetch('http://localhost:4000/booking/bookActivity', {
+      const response = await fetch('http://localhost:4000/booking/activity', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(act),

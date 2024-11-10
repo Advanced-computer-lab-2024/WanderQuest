@@ -5,7 +5,7 @@
 
     const ItinerarydetailsPage = ({ params }) => {
         const id = params.id;
-        const userId=123456;
+        const userId='672fce1b259054c6c4871c33';
         const bookingType='itinerary';
         const [itinerary, setAllItineraries] = useState({});
         const [activityDetails, setActivityDetails] = useState({});
@@ -69,10 +69,13 @@
         if (loading) return <p>Loading itinerary...</p>;
         if (error) return <p>Error: {error}</p>;
 
-        const handleBooking = () => {
-            const iti = { userId, bookingType, id, startDate };
+        const handleBooking = (date) => {
+            const startDate=date
+            const itineraryId=id;
+            const iti = { userId, bookingType, itineraryId, startDate };
+            console.log(iti);
             
-            fetch('http://localhost:4000/booking/bookItinerary', {
+            fetch('http://localhost:4000/booking/itinerary', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(iti)
@@ -139,11 +142,11 @@
                     <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
                     <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                     <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-                    {itinerary.BookingAlreadyMade ?(<button className={styles.addticket} onClick={handleBooking} >
+                    {itinerary.BookingAlreadyMade ?(<button className={styles.addticket} onClick={()=>{handleBooking(itinerary.availableDates[0])}} >
                         Book
                     </button>):(<></>) }
                     <button onClick={share}>share link</button>
-                    <button>cancel</button>
+                    
                 </div>
             </>
         );

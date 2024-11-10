@@ -333,7 +333,8 @@ const handleFeedback = async (e, id) => {
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-          </p>
+            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}          
+            </p>
 
           {role === "Tourist" ? (
             <div>

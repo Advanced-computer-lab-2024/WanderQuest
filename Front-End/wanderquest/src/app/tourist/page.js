@@ -28,7 +28,9 @@ export default function Tourist() {
     const handleRedirectHist = () => {
         router.push('/tourist/history');
     };
-    
+    const handleRedirec = () => {
+        router.push('/tourist/mybookings');
+    };
 
     return (
         <div>
@@ -42,6 +44,8 @@ export default function Tourist() {
             <button onClick={handleRedirectcomp}>File a complaint</button>
             <button onClick={handleRedirectviewcomp}>View Complaint</button>
             <button onClick={handleRedirectHist}>Go to History</button>
+            <button onClick={handleRedirec}>my bookings</button>
+
         </div>
     );
 
