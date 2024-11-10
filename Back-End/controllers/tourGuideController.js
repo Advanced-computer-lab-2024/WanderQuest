@@ -398,7 +398,7 @@ const deactivateItinerary = async (req, res) => {
 
 //Rate a tourGuide
 const rateTourGuide = async (req, res) => {
-    const { tourGuideId } = req.params;
+    const  {tourGuideId}  = req.params;
     const { touristId, rating } = req.body;
 
     if (rating < 1 || rating > 5) {
@@ -407,7 +407,7 @@ const rateTourGuide = async (req, res) => {
 
     try {
         const tourGuide = await TourGuide.findById(tourGuideId);
-
+        console.log(tourGuide);
         if (!tourGuide) {
             return res.status(404).json({ error: 'Tour guide not found' });
         }
@@ -420,7 +420,9 @@ const rateTourGuide = async (req, res) => {
         } else {
             tourGuide.ratings.push({ touristId, rating });
         }
-
+        // Update the average rating *********
+        const totalRatings = tourGuide.ratings.reduce((acc, r) => acc + r.rating, 0);
+        tourGuide.rating = totalRatings / tourGuide.ratings.length;
         await tourGuide.save();
         res.status(200).json({ message: 'Rating submitted successfully', tourGuide });
 
