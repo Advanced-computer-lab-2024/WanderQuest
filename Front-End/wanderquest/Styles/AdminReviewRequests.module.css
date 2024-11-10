@@ -42,15 +42,20 @@
     color: #ffffff; /* White */
     cursor: pointer;
     text-align: center;
+    border: none;
   }
   
   .acceptButton {
     background-color: #008000; /* Green */
     margin-top: 30px;
+    color: white;
+    border: none;
   }
   
   .rejectButton {
     background-color: #ff0000; /* Red */
+    color: white;
+    border: none;
   }
 
   /* New container class for separating download buttons */
@@ -89,7 +94,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1000;
+    z-index: 20;
   }
   
   .modalOverlay {
@@ -99,8 +104,32 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    z-index: 19;
   }
+
+  /* Confirm overlay styles */
+.confirmOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 30; /* Higher than modal to appear above */
+}
+
+/* Confirm dialog container */
+.confirmDialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 40; /* Highest to ensure it's above everything else */
+}
   
   .modalTitle {
     font-size: 1.5rem;
@@ -116,3 +145,19 @@
     text-align: center;
     border-radius: 4px;
   }
+
+  /* Success message styling */
+.acceptMessage {
+  color: #008000; /* Green */
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Rejection message styling */
+.rejectMessage {
+  color: #ff0000; /* Red */
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}

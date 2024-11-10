@@ -121,7 +121,7 @@ TouristSchema.pre('save', function (next) {
     }
     next();
 });
-TouristSchema.methods.deductFromWallet = async function (amount) {
+TouristSchema.methods.deduceFromWallet = async function (amount) {
     if (amount > this.wallet) {
         throw new Error('Insufficient wallet balance');
     }

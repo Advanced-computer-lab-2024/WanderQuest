@@ -7,6 +7,8 @@ const AdminReviewRequests = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [showConfirmReject, setShowConfirmReject] = useState(false); // New state for reject confirmation
+  const [isAcceptedMessage, setIsAcceptedMessage] = useState(null); // New state to track accept/reject message
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -30,44 +32,43 @@ const AdminReviewRequests = () => {
       const response = await fetch(`http://localhost:4000/authentication/getDocuments/${userId}`);
       if (!response.ok) throw new Error("Failed to fetch documents");
       const data = await response.json();
-
-      // Wrap documents with the userId for easy identification
       setDocuments(data.map((doc) => ({ ...doc, userId })));
     } catch (error) {
-      console.error("Error fetching documents:", error);
+      console.log("Error fetching documents:", error);
       setDocuments([]);
     }
   };
 
   const handleAcceptReject = async (id, accepted) => {
-    console.log('Updating user with ID:', id, 'Accepted:', accepted);
-
     try {
-        const response = await fetch(`http://localhost:4000/authentication/acceptUser/${id}`, {
-            method: 'PATCH',  // Updated method to PATCH
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ accepted }),
-        });
-        if (!response.ok) throw new Error("Failed to update user");
+      const response = await fetch(`http://localhost:4000/authentication/acceptUser/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accepted }),
+      });
+      if (!response.ok) throw new Error("Failed to update user");
 
-        setRequests((prevRequests) => prevRequests.filter((request) => request._id !== id));
-        setMessage(`User has been ${accepted ? 'accepted' : 'rejected'}`);
+      setRequests((prevRequests) => prevRequests.filter((request) => request._id !== id));
+      setMessage(`User has been ${accepted ? 'accepted' : 'rejected'}`);
+      setIsAcceptedMessage(accepted); // Set accept/reject status here
+      closeDocument(); // Close the document modal after accept/reject
     } catch (error) {
-        console.log("Error updating user:", error);
-        setMessage("Error updating user.");
+      console.log("Error updating user:", error);
+      setMessage("Error updating user.");
     } finally {
-        setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
+      setTimeout(() => setMessage(""), 3000);
     }
-};
+  };
 
-  
   const openDocument = (request) => {
     setSelectedRequest(request);
     fetchDocuments(request._id || request.id);
   };
+
   const closeDocument = () => {
     setSelectedRequest(null);
     setDocuments([]);
+    setShowConfirmReject(false); // Close the confirm dialog if open
   };
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
@@ -75,7 +76,11 @@ const AdminReviewRequests = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Registration Requests</h1>
-      {message && <div className={styles.message}>{message}</div>}
+      {message && (
+        <div className={isAcceptedMessage ? styles.acceptMessage : styles.rejectMessage}>
+          {message}
+        </div>
+      )}
       <table className={styles.table}>
         <thead className={styles.tableHeader}>
           <tr>
@@ -124,7 +129,7 @@ const AdminReviewRequests = () => {
                       download={doc.filename}
                       className={`${styles.actionButton} ${styles.downloadButton}`}
                     >
-                      Download {doc.filename} {/* Display the document filename here */}
+                      Download {doc.filename}
                     </a>
                   </div>
                 ))}
@@ -133,28 +138,51 @@ const AdminReviewRequests = () => {
               <p>No documents available.</p>
             )}
 
-<div className={styles.buttonContainer}>
-  <button
-    className={`${styles.actionButton} ${styles.rejectButton}`}
-    onClick={() => handleAcceptReject(selectedRequest._id || selectedRequest.id, false)}
-  >
-    Reject
-  </button>
-  <button
-    className={`${styles.actionButton} ${styles.acceptButton}`}
-    onClick={() => handleAcceptReject(selectedRequest._id || selectedRequest.id, true)}
-  >
-    Accept
-  </button>
-  <button
-    className={`${styles.actionButton} ${styles.viewButton}`}
-    onClick={closeDocument}
-  >
-    Close
-  </button>
-</div>
-
+            <div className={styles.buttonContainer}>
+              <button
+                className={`${styles.actionButton} ${styles.rejectButton}`}
+                onClick={() => setShowConfirmReject(true)} // Show confirmation dialog
+              >
+                Reject
+              </button>
+              <button
+                className={`${styles.actionButton} ${styles.acceptButton}`}
+                onClick={() => handleAcceptReject(selectedRequest._id || selectedRequest.id, true)}
+              >
+                Accept
+              </button>
+              <button
+                className={`${styles.actionButton} ${styles.viewButton}`}
+                onClick={closeDocument}
+              >
+                Close
+              </button>
+            </div>
           </div>
+
+          {showConfirmReject && (
+            <div className={styles.confirmOverlay}>
+              <div className={styles.confirmDialog}>
+                <p>Are you sure you want to reject this request?</p>
+                <div className={styles.buttonContainer}>
+                  <button
+                    className={`${styles.actionButton} ${styles.rejectButton}`}
+                    onClick={() => handleAcceptReject(selectedRequest._id || selectedRequest.id, false)}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className={`${styles.actionButton} ${styles.viewButton}`}
+                    onClick={() => {
+                      setShowConfirmReject(false); // Only closes confirm dialog
+                    }}
+                  >
+                    No
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
