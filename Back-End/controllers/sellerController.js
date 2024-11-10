@@ -1,4 +1,5 @@
 const { Seller } = require('../models/userModel');
+const ProdModel = require('../models/objectModel').Product;
 const multer = require('multer');
 const mongoose = require('mongoose');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -264,4 +265,17 @@ const viewProductSales = async (req,res) => {
         res.status(400).json({error: error.message});
     }
 }
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales };
+const viewAllProductSales = async (req, res) => {
+    try {
+        // Fetch all products with only the specified fields: name, availableAmount, and sales
+        const products = await ProdModel.find({}, "name availableAmount sales");
+        
+        // Return the list of products
+        return res.status(200).json(products);
+
+    } catch (error) {
+        // If an error occurs, return the error message
+        res.status(400).json({ error: error.message });
+    }
+};
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales };
