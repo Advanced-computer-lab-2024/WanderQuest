@@ -168,3 +168,19 @@
     background-color: #042335;
     color:white;
 }
+
+.uploadButton {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #031A29;
+    color:white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.uploadButton input[type="file"] {
+  display: none;
+}
