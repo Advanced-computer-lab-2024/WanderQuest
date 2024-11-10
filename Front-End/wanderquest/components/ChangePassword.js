@@ -2,8 +2,7 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/ChangePass.module.css"
 
-const ChangePassword = () => {
-    const [userId, setUserId] = useState('');
+const ChangePassword = ({userId}) => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -12,25 +11,7 @@ const ChangePassword = () => {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    // Fetch the tourist ID first
-    useEffect(() => {
-        const fetchTouristId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/tourist/touristId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tourist ID');
-                }
-                const touristId = await response.json(); // Assuming the backend sends the ID directly
-                console.log("Fetched tourist ID:", touristId); // Debugging line
-                setUserId(touristId); // Set the fetched ID
-            } catch (error) {
-                console.error("Error fetching tourist ID:", error);
-                setError("Error fetching tourist ID");
-            }
-        };
-
-        fetchTouristId();
-    }, []);
+    
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();

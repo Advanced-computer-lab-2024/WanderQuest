@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
+import DeleteAccount from "../components/DeleteAccount";
+import ChangePassword from "./ChangePassword";
 
 const TouristInfo = () => {
     const [userId, setUserId] = useState(''); // State for storing the tourist ID
@@ -164,35 +166,17 @@ const TouristInfo = () => {
         }
     };
 
-    const handleAccountDeletion = async () => {
-        try {
-            const response = await fetch(`http://localhost:4000/authentication/requestAccountDeletion/${userId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                alert("Your account has been deleted.");
-                setIsModalVisible(false);
-                setSuccessMessage(data.message);
-                setTimeout(() => setSuccessMessage(""), 3000);
-            } else {
-                const errorData = await response.json();
-                setError(errorData.error || "Failed to request account deletion");
-                setTimeout(() => setError(""), 3000);
-            }
-        } catch (error) {
-            console.error("Error requesting account deletion:", error);
-            setError("An error occurred while requesting account deletion");
-        }
+    const handleDeleteSuccess = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => setSuccessMessage(""), 3000);
     };
 
     
 
+    
+
     return (
+        <div>
         <form className={styles.Profile} onSubmit={handleSubmit}>
             <h3 className={styles.h1}>My Profile  {badgeUrl && <img src={badgeUrl} alt="Badge" className={styles.badge} />}</h3>
             <label>Username: </label>
@@ -254,29 +238,14 @@ const TouristInfo = () => {
     <button type="submit">Save Changes</button>
   </div>
 
-            
-
-            
-<button className={styles.deleteButton} onClick={() => setIsModalVisible(true)}>Request Account Deletion</button>
-{isModalVisible && (
-    <div className={styles.modaloverlay}>
-        <div className={styles.modal}>
-            <h3>Are you sure you want to delete your account?</h3>
-            <p>This action is irreversible.</p>
-            <div className={styles.modalbuttons}>
-                <button className={styles.confimdelete} onClick={handleAccountDeletion}>Yes, Delete</button>
-                <button className={styles.canceldelete} onClick={() => setIsModalVisible(false)}>Cancel</button>
-            </div>
-        </div>
-    </div>
-)}
-
-
-            
-            {/* Display success or error messages */}
+    {/* Display success or error messages */}
     {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
     {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
+        <ChangePassword userId={userId}/>
+        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+    </div>
+    
     );
 };
 
