@@ -10,7 +10,7 @@ const TouristHistory = () => {
     const [tourGuideData, setTourGuideData] = useState([]);
     const [pastItineraries, setPastItineraries] = useState([]);
     const [attendedActivities, setAttendedActivities] = useState([]);
-    const [touristID, setTouristID] = useState(null); // Hardcoded for now, will be dynamic in the future
+    const [touristID, setTouristID] = useState(""); // Hardcoded for now, will be dynamic in the future
 
     const[rating, setRating] = useState(0);
     const[comment, setComment] = useState('');
@@ -83,7 +83,7 @@ const TouristHistory = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ touristId : touristID , rating: rating })
+                body: JSON.stringify({ touristId : touristID , rating : rating })
             });
             const commentResp = await fetch(`http://localhost:4000/tourGuide/comment/${tourGuideData._id}`, {
                 method: 'POST',
@@ -97,7 +97,7 @@ const TouristHistory = () => {
                 const ratingData = await ratingResp.json();
                 setRating(ratingData);
                 const commentData = await commentResp.json();
-                setComment(commentData);
+                setComment("");
             } else {
                 console.log(ratingResp.json(), commentResp.json());
             }
@@ -125,7 +125,7 @@ const TouristHistory = () => {
                         </div>     
                     ) 
                          :
-                        (<p></p>) }
+                        (<p> No Followed Tour Guides</p>) }
                 </div>
 
                 <div className={styles.innerContainer}>
