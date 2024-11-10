@@ -1,0 +1,40 @@
+/* General container styling for the page */
+.container {
+    max-width: 40%;
+    margin: 10px auto;
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Heading for the rating section */
+.container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+}
+
+/* Submit button styling */
+.button {
+    padding: 5px 10px;
+    font-size: 1.2rem;
+    width: 150px;
+    background-color: #1A6187; /* Blumine color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor for button */
+    transition: background-color 0.3s; /* Smooth transition */
+    border-radius: 5px; /* Rounded corners */
+  }
+
+.button:hover {
+    background-color: #17455C; /* Elephant color on hover */
+}
+
+

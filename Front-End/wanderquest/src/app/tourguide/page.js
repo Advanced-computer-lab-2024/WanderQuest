@@ -16,8 +16,8 @@ export default function TourGuide() {
     return (
         <div>
             <Navbar />
-            <h1>Tourist Page</h1>
-            <p>Welcome to the Tourist page!</p>
+            <h1>Tour Guide Page</h1>
+            <p>Welcome to the Tour Guide page!</p>
             <button onClick={handleRedirect}>View a list of all my created activities/ itineraries / museums and historical places</button>
             <button onClick={handleRedirectp}>crud iti</button>
       

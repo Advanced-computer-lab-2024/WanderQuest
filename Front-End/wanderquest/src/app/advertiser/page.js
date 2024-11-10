@@ -16,8 +16,8 @@ export default function advertiser() {
     return (
         <div>
             <Navbar />
-            <h1>Tourist Page</h1>
-            <p>Welcome to the Tourist page!</p>
+            <h1>Advertiser Page</h1>
+            <p>Welcome to the Advertiser page!</p>
             <button onClick={handleRedirect}>View a list of all my created activities/ itineraries / museums and historical places</button>
             <button onClick={handleRedirectp}>crud act</button>
       

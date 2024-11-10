@@ -45,7 +45,7 @@ const ratingSchema = new Schema({
     touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist', required: false },
     rating: { type: Number, min: 1, max: 5 },
 })
-const rating = mongoose.model('rating', ratingSchema)
+const rating = mongoose.model('rating', ratingSchema);
 
 const productSchema = new Schema({
     name:
@@ -266,7 +266,7 @@ const complaintSchema = new Schema({
     body:
         { type: String, required: true },
     status:
-        { type: String, required: false, default: 'pending' },
+    {type:String,required:false,default:'Pending'},
     date:
         { type: Date, required: false, default: Date.now },
     reply:
