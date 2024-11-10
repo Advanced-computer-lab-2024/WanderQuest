@@ -11,7 +11,6 @@ const ProfileInfo = () => {
         <Navbar />
         <div>
             <SellerInfo/>
-            <ChangePassword/>
         </div>
     </div>
   );

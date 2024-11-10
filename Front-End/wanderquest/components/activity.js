@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styles from '../Styles/activity.module.css';
-import axios from 'axios';
+// import axios from 'axios'; // Removed unused import
 import { useLoadScript, Autocomplete } from '@react-google-maps/api';
 
 const libraries = ['places'];
@@ -15,6 +15,42 @@ const Activity = () => {
     });
 
     const [activities, setActivities] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [tags, setTags] = useState([]);
+
+    useEffect(() => {
+        // Fetch tags from the backend
+        const fetchTags = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/admin/tags');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setTags(data);
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        };
+        fetchTags();
+    }, []);
+
+    useEffect(() => {
+        // Fetch categories from the backend
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/admin/categories');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setCategories(data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+        fetchCategories();
+    }, []);
     const [formData, setFormData] = useState({
         title: '',
         date: '',
@@ -22,7 +58,7 @@ const Activity = () => {
         location: '',
         price: '',
         category: '',
-        tags: '',
+        tags: [],
         specialDiscounts: '',
         bookingIsOpen: false
     });
@@ -68,13 +104,43 @@ const Activity = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isUpdating) {
-            await axios.put(`http://localhost:4000/activityRoutes/activity/${currentActivityId}`, formData);
-            setActivities(activities.map(activity => activity._id === currentActivityId ? { ...activity, ...formData } : activity));
-            setIsUpdating(false);
-            setCurrentActivityId(null);
+            try {
+                const response = await fetch(`http://localhost:4000/activityRoutes/activity/${currentActivityId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const updatedActivity = await response.json();
+                setActivities(activities.map(activity => activity._id === currentActivityId ? { ...activity, ...formData } : activity));
+                setIsUpdating(false);
+                setCurrentActivityId(null);
+            } catch (error) {
+                console.error('Error updating activity:', error);
+            }
         } else {
-            const response = await axios.post('http://localhost:4000/activityRoutes/activity', formData);
-            setActivities([...activities, response.data]);
+            try {
+
+                const response = await fetch('http://localhost:4000/activityRoutes/activity', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const newActivity = await response.json();
+                console.log(newActivity);
+                setActivities([...activities, newActivity]);
+            } catch (error) {
+                console.error('Error creating activity:', error);
+            }
         }
         setFormData({
             title: '',
@@ -83,7 +149,7 @@ const Activity = () => {
             location: '',
             price: '',
             category: '',
-            tags: '',
+            tags: [],
             specialDiscounts: '',
             bookingIsOpen: false
         });
@@ -91,7 +157,12 @@ const Activity = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:4000/activityRoutes/activity/${id}`);
+            const response = await fetch(`http://localhost:4000/activityRoutes/activity/${id}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
             setActivities(activities.filter(activity => activity._id !== id));
         } catch (error) {
             console.error('Error deleting activity:', error);
@@ -108,6 +179,23 @@ const Activity = () => {
         setCurrentActivityId(activity._id);
         formRef.current.scrollIntoView({ behavior: 'smooth' });
     };
+
+// Handle tags through checkboxes
+const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+
+    setFormData((prevFormData) => {
+        const updatedTags = checked
+            ? [...prevFormData.tags, { type: value }] // Add tag if checked
+            : prevFormData.tags.filter((formTag) => formTag.type !== value); // Remove tag if unchecked
+        
+        return {
+            ...prevFormData,
+            tags: updatedTags,
+        };
+    });
+};
+
 
     if (!isLoaded) return <div>Loading...</div>;
 
@@ -138,13 +226,42 @@ const Activity = () => {
                             <label className={styles.label}>Price</label>
                             <input className={styles.input} placeholder="Price" name="price" type="number" value={formData.price} onChange={handleChange} required />
                         </div>
+                        
                         <div>
                             <label className={styles.label}>Category</label>
-                            <input className={styles.input} placeholder="Category" name="category" type="text" value={formData.category} onChange={handleChange} required />
+                            {categories.map((category) => (
+                                <div key={category._id}>
+                                    <input
+                                        type="radio"
+                                        name="category"
+                                        value={category.category}
+                                        checked={formData.category === category.category}
+                                        onChange={(e) => {
+                                            const { value } = e.target;
+                                            setFormData((prevFormData) => ({
+                                                ...prevFormData,
+                                                category: value,
+                                            }));
+                                        }}
+                                    />
+                                    <label>{category.category}</label>
+                                </div>
+                            ))}
                         </div>
                         <div>
                             <label className={styles.label}>Tags</label>
-                            <input className={styles.input} placeholder="Tags" name="tags" type="text" value={formData.tags} onChange={handleChange} required />
+                            {tags.map((tag) => (
+                                <div key={tag._id}>
+                                    <input
+                                        type="checkbox"
+                                        name="tags"
+                                        value={tag.type}
+                                        checked={formData.tags.some((formTag) => formTag.type === tag.type)}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                    <label>{tag.type}</label>
+                                </div>
+                            ))}
                         </div>
                         <div>
                             <label className={styles.label}>Special Discounts</label>
