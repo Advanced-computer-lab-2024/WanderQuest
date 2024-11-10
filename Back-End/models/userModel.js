@@ -209,6 +209,7 @@ const TourGuideSchema = new Schema({
             touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
             rating: { type: Number, min: 1, max: 5 },
         }],
+    
     comments: [
         {
             touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
@@ -216,7 +217,20 @@ const TourGuideSchema = new Schema({
             date: { type: Date, default: Date.now }
         }
     ],
+    averageRating: { type: Number, default: 0 },  // New field for average rating
+
 });
+// Middleware to calculate average rating before saving
+TourGuideSchema.pre('save', function(next) {
+    // Calculate average rating if ratings exist
+    if (this.ratings.length > 0) {
+      const totalRatings = this.ratings.reduce((sum, rating) => sum + rating.rating, 0);
+      this.averageRating = totalRatings / this.ratings.length;
+    } else {
+      this.averageRating = 0;  // Set to 0 if no ratings
+    }
+    next();
+  });
 
 const TourGuide = User.discriminator('tourGuide', TourGuideSchema);
 

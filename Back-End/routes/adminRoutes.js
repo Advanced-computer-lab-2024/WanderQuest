@@ -25,7 +25,11 @@ const {
     markComplaint,
     reply,
     archiveProduct,
-    unarchiveProduct
+    unarchiveProduct,
+    viewProductSales,
+    /* uploadProductImage,*/
+     flagActivity,
+     flagItinerary
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -52,6 +56,9 @@ router.get("/products/:id", getProdById)
 
 //Admin getAvailableProducts
 router.get('/availableProducts', getAvailableProducts)
+
+//Admin viewProduct Sales
+router.get('products/sales',viewProductSales)
 
 //Admin addProduct
 router.post('/addProduct', upload.single('picture'), addProduct);
@@ -100,6 +107,11 @@ router.patch('/products/archive/:id', archiveProduct);
 //Admin unarchive a product
 router.patch('/products/unarchive/:id', unarchiveProduct);
 
+//flag an activity
+router.patch('/flagActivity/:id', flagActivity);
+
+//flag an itinerary
+router.patch('/flagItinerary/:id', flagItinerary);
 
 //Admin filterByStatus
 module.exports = router

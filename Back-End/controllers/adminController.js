@@ -5,6 +5,8 @@ const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const ComplaintModel = require('../models/objectModel').complaint;
+const { Activity, itinerary } = require('../models/objectModel');
+
 const mongoose = require('mongoose');
 
 // Get all admins
@@ -438,6 +440,44 @@ const unarchiveProduct = async (req,res) => {
         res.status(500).json({error: error.message});
     }
 }
+
+//view available quantity and sales
+const viewProductSales = async (req,res) => {
+    try{
+        const products = await ProdModel.find({}, "name availableAmount sales" );
+        res.status(200).json(products);
+    }catch(error){
+        res.status(400).json({error: error.message});
+    }
+}
+//flag an activity
+const flagActivity = async (req,res) => {
+    try{
+        const activityId = req.params.id;
+        const activity = await Activity.findByIdAndUpdate(activityId,{ flagged: true}, {new: true});
+        if(!activity){
+            return res.status(404).json({error: 'Activity not found'});
+        }
+        res.status(200).json({message: 'Event flagged successfully',activity});
+    }catch(error){
+        res.status(400).json({error: error.message});
+    }
+}
+
+//flag an itinerary
+const flagItinerary = async (req,res) => {
+    try{
+        const {itineraryId} = req.params;
+        const itinerary = await itinerary.findByIdAndUpdate(itineraryId,{flagged: true},{new: true});
+        console.log(itinerary);
+        if(!itinerary){
+            return res.status(404).json({error: ' Itinerary with this id not found'});
+        }
+        res.status(200).json({message: 'Itinerary flagged successfully',itinerary});
+    }catch(error){
+        res.status(404).json({error: error.message});
+    }
+}
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -462,5 +502,8 @@ module.exports = {
     markComplaint,
     reply,
     archiveProduct,
-    unarchiveProduct
+    unarchiveProduct,
+    viewProductSales,
+    flagActivity,
+    flagItinerary
 }
