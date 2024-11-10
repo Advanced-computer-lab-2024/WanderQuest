@@ -5,17 +5,24 @@ import styles from '/Styles/TouristHistory.module.css';
 import AddComment from '../../../../components/AddComment';
 import AddRating from '../../../../components/AddRating';
 
+
 const TouristHistory = () => {
     const [followedGuides, setFollowedGuides] = useState(null);
     const [tourGuideData, setTourGuideData] = useState([]);
     const [pastItineraries, setPastItineraries] = useState([]);
     const [attendedActivities, setAttendedActivities] = useState([]);
-    const [touristID, setTouristID] = useState(""); // Hardcoded for now, will be dynamic in the future
+    const [touristID, setTouristID] = useState("");
 
-    const[rating, setRating] = useState(0);
-    const[comment, setComment] = useState('');
+    const [showMessage, setShowMessage] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState(null);
 
-    // Hardcoded for now, will be dynamic in the future
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+
+    const [itiFeedback, setItiFeedback] = useState({});
+
+    const [activityFeedback, setActivityFeedback] = useState({});
+
 
     const guideID = "672e33ac93c8d93da59e6f4d"; // Hardcoded for now, will be dynamic in the future
     
@@ -70,8 +77,33 @@ const TouristHistory = () => {
     
         fetchProfile();
     }, [followedGuides]); 
+
+    useEffect(() => {
+        const fetchItineraries = async () => {
+            try{
+            const response = await fetch(`http://localhost:4000/tourGuide/myItineraries/${guideID}`);
+            const data = await response.json();
+            setPastItineraries(data);
+            }catch(error){
+                console.error('Error fetching itineraries:', error);
+            }
+        };
+        fetchItineraries();
+    }, []);
         
 
+    useEffect(() => {
+        const fetchActivities = async () =>{
+            try{
+                const response = await fetch(`http://localhost:4000/activityRoutes/myActivities/${guideID}`);
+                const data = await response.json();
+                setAttendedActivities(data);
+            }catch(error){
+                console.error('Error fetching activities:', error);
+            }
+        }
+        fetchActivities();
+    }, []);
 
     const handleFeedback = async () => {
         try{
@@ -94,10 +126,11 @@ const TouristHistory = () => {
             });
             if (ratingResp.ok && commentResp.ok) {
                 console.log('Feedback sent successfully');
-                const ratingData = await ratingResp.json();
-                setRating(ratingData);
-                const commentData = await commentResp.json();
+                setRating(0);
                 setComment("");
+                setLastUpdated(tourGuideData._id);
+                setShowMessage(true);
+                setTimeout(() => setShowMessage(false), 3000);
             } else {
                 console.log(ratingResp.json(), commentResp.json());
             }
@@ -106,6 +139,95 @@ const TouristHistory = () => {
         }
 
     }
+
+    const handleItiFeedbackChange = (id, type, value) => {
+        setItiFeedback(prevState => ({
+          ...prevState,
+          [id]: {
+            ...prevState[id],
+            [type]: value
+          }
+        }));
+      };
+
+    const handleActivityFeedbackChange = (id, type, value) => {
+        setActivityFeedback(prevState => ({
+            ...prevState,
+            [id]:{
+                ...prevState[id],
+                [type]: value
+            }
+        }));
+    };
+
+
+
+    const handleItiFeedback = async (e, id) => {
+        e.preventDefault();
+        const { rating = '', comment = '' } = itiFeedback[id] || {};
+      
+        const ratingFeedback = await fetch(`http://localhost:4000/itinerary/rate/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ touristID ,rating: rating }),
+        });
+      
+        const commentFeedback = await fetch(`http://localhost:4000/itinerary/comment/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ touristID, comment }),
+        });
+      
+        if (commentFeedback.ok && ratingFeedback.ok) {
+            setItiFeedback(prevState => {
+                const newState = { ...prevState };
+                delete newState[id];
+                return newState;
+                });
+            setLastUpdated(id);
+            setShowMessage(true);
+            setTimeout(() => setShowMessage(false), 3000);
+          console.log('Feedback sent successfully for activity ID:', id);
+        }
+      };
+
+      const handleActivityFeedback = async (e, id) => {
+        e.preventDefault();
+        const { rating = '', comment = '' } = activityFeedback[id] || {};
+        
+            const ratingFeedback = await fetch(`http://localhost:4000/activityRoutes/activity/rate/${id}`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ touristId : touristID , rating }),
+            });
+            const commentFeedback = await fetch(`http://localhost:4000/activityRoutes/comment/${id}`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ touristId : touristID , comment }),
+            });
+            if(ratingFeedback.ok && commentFeedback.ok){
+                setActivityFeedback(prevState => {
+                    const newState = { ...prevState };
+                    delete newState[id];
+                    return newState;
+                });
+                setLastUpdated(id);
+                setShowMessage(true);
+                setTimeout(() => setShowMessage(false), 3000);
+                console.log('Feedback sent successfully for activity ID:', id);
+            }
+      };
+
+
+      
 
     return (
         <div>
@@ -121,7 +243,10 @@ const TouristHistory = () => {
                         <p>Email: {tourGuideData.email}</p>
                         <AddRating rating={rating} setRating={setRating} />
                         <AddComment comment={comment} setComment={setComment} />
-                        <button className={styles.btnFeedback} onClick={handleFeedback}>Send</button>
+                        <button className={styles.btnFeedback} onClick={handleFeedback} >Send</button>
+                        <div>
+                        { showMessage && lastUpdated === tourGuideData._id ? <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>Feedback sent successfully</p> : null }
+                        </div>
                         </div>     
                     ) 
                          :
@@ -129,26 +254,56 @@ const TouristHistory = () => {
                 </div>
 
                 <div className={styles.innerContainer}>
-                    <h2 className={styles.innerTitle}>Itineraries by Followed Tour Guides</h2>
-                    {pastItineraries.length > 0 ? (
-                        pastItineraries.map((itinerary, index) => (
-                            <div key={index} className={styles.itineraryContainer}>
-                                <p><strong>Itinerary Title:</strong> {itinerary.title}</p>
-                                <p><strong>Description:</strong> {itinerary.description}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No past itineraries available.</p>
-                    )}
+                <h2 className={styles.innerTitle}>List of Itineraries</h2>
+                <div>
+                    {pastItineraries ? (pastItineraries.map((itinerary) => (
+                        <div key={itinerary._id} className={styles.innerBox}>
+                            <p><strong>Title: {itinerary.title}</strong></p>
+                            <p><strong>Available Dates:</strong> {itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</p>
+                            <p><strong>Time:</strong> {itinerary.time.join(', ')}</p>
+                            <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
+                            <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
+                            <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
+                            <p><strong>Price:</strong> {itinerary.price}</p>
+                            <p><strong>Rating:</strong> {itinerary.rating}</p>
+                            <AddRating rating={itiFeedback[itinerary._id]?.rating || ''} 
+                setRating={(value) => handleItiFeedbackChange(itinerary._id, 'rating', value)} />
+              <AddComment comment={itiFeedback[itinerary._id]?.comment || ''} 
+                setComment={(value) => handleItiFeedbackChange(itinerary._id, 'comment', value)} />
+              <button className={styles.btnFeedback} 
+                onClick={(e) => handleItiFeedback(e, itinerary._id)}>
+                Send </button>
+                <div>
+                { showMessage && lastUpdated === itinerary._id ? <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>Feedback sent successfully</p> : null }
                 </div>
+                </div>
+                                
+                    ))) : (<p>No itineraries available</p>)}
+                </div>
+            </div>
+
 
                 <div className={styles.innerContainer}>
                     <h2 className={styles.innerTitle}>Attended Activities</h2>
                     {attendedActivities.length > 0 ? (
                         attendedActivities.map((activity, index) => (
-                            <div key={index} className={styles.activityContainer}>
-                                <p><strong>Activity Name:</strong> {activity.name}</p>
+                            <div key={index} className={styles.innerBox}>
+                                <p><strong>Activity:</strong> {activity.title}</p>
                                 <p><strong>Date:</strong> {activity.date}</p>
+                                <p><strong>Price:</strong> {activity.price}</p>
+                                <p><strong>Location:</strong> {activity.location}</p>
+                                <p><strong>Category:</strong> {activity.category}</p>
+                                <p><strong>Rating:</strong> {activity.rating} </p>
+                                <AddRating rating={activityFeedback[activity._id]?.rating || ''}
+                                setRating={(value) => handleActivityFeedbackChange(activity._id, 'rating', value)}/>
+                                <AddComment comment={activityFeedback[activity._id]?.comment || ''}
+                                setComment={(value) => handleActivityFeedbackChange(activity._id, 'comment', value)}/>
+                                <button className={styles.btnFeedback}
+                                onClick={(e) => handleActivityFeedback(e, activity._id)}> Send </button>
+                                <div>
+                                { showMessage && lastUpdated === activity._id ? <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>Feedback sent successfully</p> : null }
+
+                                </div>
                             </div>
                         ))
                     ) : (

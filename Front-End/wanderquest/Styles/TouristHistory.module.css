@@ -18,7 +18,9 @@
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     max-width: 600px;
-    margin: 20px auto;
+    margin-top: 60px ;
+    margin-left: auto;
+    margin-right: auto;
   }
   
 
@@ -104,3 +106,31 @@
     background-color: #17455C; /* Elephant color on hover */
   }
   
+
+  .innerBox {
+    padding: 30px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 30px auto;
+    display:block;
+    align-items: center;
+  }
+
+  @keyframes fadeOut{
+    0%{ opacity: 1;}
+    100%{ opacity: 0;}
+}
+
+.confirmMessage{
+    margin-top: 10px;
+    color: #00bb00;
+    animation: fadeOut 3s forwards;
+}
+
+.failedMessage{
+    margin-top: 10px;
+    color: #dc3545;
+    animation: fadeOut 3s forwards;
+}
