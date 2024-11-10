@@ -193,7 +193,7 @@ const getAvailableProducts = async (req, res) => {
 
 //seller addProduct
 const addProduct = async (req, res) => {
-    const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales } = req.body;
 
     // Validate input
     if (!name || !picture || !description || !price) {
@@ -207,7 +207,7 @@ const addProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount })
+        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales })
         res.status(200).json(product)
 
     } catch (error) {
@@ -255,4 +255,13 @@ const unarchiveProduct = async (req,res) => {
         res.status(500).json({error: error.message});
     }
 }
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct };
+//view available quantity and sales
+const viewProductSales = async (req,res) => {
+    try{
+        const products = await ProdModel.find({}, "name availableAmount sales" );
+        res.status(200).json(products);
+    }catch(error){
+        res.status(400).json({error: error.message});
+    }
+}
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales };
