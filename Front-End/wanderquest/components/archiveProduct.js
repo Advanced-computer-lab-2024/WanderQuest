@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
+import {motion,AnimatePresence} from 'framer-motion';
 
-const Products = (props) => {
+
+const Archive = (props) => {
     
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -64,9 +66,9 @@ const Products = (props) => {
         setFilteredProducts(filtered);
     };
 
-    const onArchiveClick = async (productId) => {
+    const onUnarchiveClick = async (productId) => {
         try {
-            const response = await fetch(`http://localhost:4000/admin/products/archive/${productId}`, {
+            const response = await fetch(`http://localhost:4000/admin/products/unarchive/${productId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,6 +80,7 @@ const Products = (props) => {
                 alert(result.message);  // Notify the user of success
                 setFilteredProducts(filteredProducts.filter(product => product._id !== productId));
                 setProduct(products.filter(product => product._id !== productId));
+                
             } else {
                 const errorData = await response.json();
                 alert(`Error: ${errorData.message}`);
@@ -123,7 +126,7 @@ const Products = (props) => {
         </>}
     return (
         <div className={styles.container}>
-            <h1>Products</h1>
+            <h1>Archived Products</h1>
             <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
             <button className={styles.productArchive} onClick={clearsearch}>clearsearch</button>
             <button className={styles.productArchive} onClick={ClearFilters}>ClearFilters</button>
@@ -190,7 +193,7 @@ const Products = (props) => {
                 <button className={styles.searchbtn} onClick={handlesearch}>Search</button>
             </div>
             {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-                filteredProducts.filter(product => !product.isArchived).map((product) => (
+                filteredProducts.filter(product => product.isArchived).map((product) => (
                     <div className={styles.productCard} key={product._id}>
                         <img src={product.picture} alt={product.name} className={styles.productImage} />
                         <div className={styles.productInfo}>
@@ -213,9 +216,9 @@ const Products = (props) => {
                                     </button>
                                 )}
                                 <button 
-                                    onClick={() => onArchiveClick(product._id)} 
+                                    onClick={() => onUnarchiveClick(product._id)} 
                                     className={styles.productArchive}>
-                                    Archive
+                                    Unarchive
                                 </button>
 
                             </div>
@@ -229,4 +232,4 @@ const Products = (props) => {
     );
 };
 
-export default Products;
+export default Archive;

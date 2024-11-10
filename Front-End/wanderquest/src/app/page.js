@@ -15,6 +15,7 @@ import Link from 'next/link';
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
 import Signin from "../../components/Signin";
+import { motion } from 'framer-motion';
 
 export default function Home() {
   return (<>
