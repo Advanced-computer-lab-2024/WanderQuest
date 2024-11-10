@@ -210,11 +210,7 @@ const Archive = (props) => {
                                         <strong>{review.user}:</strong> {review.comment} (Rating: {review.rating})
                                     </div>
                                 ))}
-                                {role === "Admin" && (
-                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productUpdate}>
-                                        Update
-                                    </button>
-                                )}
+                                
                                 <button 
                                     onClick={() => onUnarchiveClick(product._id)} 
                                     className={styles.productArchive}>
