@@ -263,26 +263,34 @@ const Products = (props) => {
                             <p>{product.description}</p>
                             <p>Seller: {product.seller}</p>
                             <p>Available Quantity: {product.availableAmount}</p>
+                            {role === "Admin" && (
+                            <p>Sales: {product.sales}</p>
+                            )}
                             <div className={styles.productRating}>
                                 <strong>Rating: </strong>{product.rating} / 5
                             </div>
                             <div className={styles.reviews}>
                                 
                                 {role === "Admin" && (
-                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productUpdate}>
+                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productArchive}>
                                         Update
                                     </button>
                                 )}
+                                {role === "Admin" && (
                                 <label className={styles.uploadButton}>
                                     Upload Picture
                                     <input type="file" onChange={(e) => onUploadClick(e, product._id)} />
                                 </label>
+                                )}
+                                {role === "Admin" && (
                                 <button 
                                     onClick={() => onArchiveClick(product._id)} 
                                     className={styles.productArchive}>
                                     Archive
                                 </button>
-
+                                )}
+                                {role === "Tourist"&&(
+                                    <>
                                 <AddRating
                                     rating={ratings[product._id] || product.rating}
                                     setRating={(newRating) => updateRating(product._id, newRating)}
@@ -295,7 +303,8 @@ const Products = (props) => {
                                 <button className={styles.productArchive} onClick={() => addComment(product._id, comments[product._id])}>
                                     Add a Comment
                                 </button>
-
+                                </>
+                                )}
                             </div>
                         </div>
                     </div>
