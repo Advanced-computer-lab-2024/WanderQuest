@@ -1,9 +1,17 @@
+'use client'
 import React from 'react'
 
 function transportpage() {
-  return (
+  return (<>
     <div>transportpage</div>
-  )
+    
+
+
+
+
+
+
+    </>)
 }
 
 export default transportpage;

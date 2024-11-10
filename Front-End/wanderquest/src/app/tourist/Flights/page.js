@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Navbar from "../../../../components/Navbar";
-import styles from "/Styles/Bookings.module.css";
+import styles from "/Styles/Flights.module.css";
 import { motion } from "framer-motion";
 import { useRouter } from 'next/navigation';
 const Amadeus = require("amadeus");
@@ -214,7 +214,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ width: "90px", height: '40px' }}
+          style={{ width: "80px", height: '40px' }}
           min='0'
           placeholder="Adults"
           type="number"

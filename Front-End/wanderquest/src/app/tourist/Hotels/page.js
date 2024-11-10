@@ -153,7 +153,7 @@ function BookingsPage() {
       >
         <input
           className={styles.input}
-          style={{ marginLeft: "3px", height: '41px' }}
+          style={{marginLeft: "3px", height: '41px' }}
           placeholder="To"
           type="text"
           value={destinationLocationCode}
@@ -179,7 +179,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ width: "90px", height: '40px' }}
+          style={{ width: "60px", height: '40px' }}
           min='0'
           placeholder="Adults"
           type="number"
@@ -189,7 +189,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ width: "90px", height: '40px' }}
+          style={{ width: "80px", height: '40px' }}
           min='0'
           placeholder="rooms"
           type="number"
@@ -202,7 +202,7 @@ function BookingsPage() {
         </button>
       </motion.div>
 
-      {loading && <div className={styles.loading}>Loading...</div>}
+
 
       <div className={styles.form}>
         {hotels && hotels.data && hotels.data.hotels ? (

@@ -69,7 +69,7 @@ function Page({ params }) {
             <strong>Date:</strong> {activity.date}<br />
             <strong>Time:</strong> {activity.time}<br />
             <strong>Location:</strong>{' '}
-            <a href={activity.location} target="_blank" rel="noopener noreferrer">
+            <a href=''target="_blank" rel="noopener noreferrer">
               {activity.location}
             </a><br />
             <strong>Price:</strong> {activity.price}<br />
@@ -77,6 +77,13 @@ function Page({ params }) {
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
+            {activity.comments.map((Comment)=>(<div>
+              <strong>comment</strong> {Comment.touristId}<br />
+              <strong>comment</strong> {Comment.comment}<br />
+              <strong>comment</strong> {Comment.createdAt}<br />
+            </div>
+            ))}
+
           </p>
           <button onClick={share}>Share Link</button>
           {activity.bookingIsOpen ?(<button onClick={handleBooking}>Book</button>):(<></>)}
