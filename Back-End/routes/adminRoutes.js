@@ -58,7 +58,7 @@ router.get("/products/:id", getProdById)
 router.get('/availableProducts', getAvailableProducts)
 
 //Admin viewProduct Sales
-router.get('products/sales',viewProductSales)
+router.get('/products/sales',viewProductSales)
 
 //Admin addProduct
 router.post('/addProduct', upload.single('picture'), addProduct);
