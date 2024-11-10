@@ -77,9 +77,10 @@ function BookingsPage() {
     const bookingType="flight";
     const userId='672fce1b259054c6c4871c33';
     const from=departureDate;
-    const to=returnDate;
     const price=price1;
-    const flight= {userId, bookingType, from, price, companyName};
+    const fromAir=originLocationCode;
+    const toAir=destinationLocationCode;
+    const flight= {userId, bookingType, from,fromAir, toAir, price, companyName};
     console.log('flight details:',flight);
     fetch('http://localhost:4000/booking/flight',{
       method:"POST",
