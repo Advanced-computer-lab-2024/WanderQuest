@@ -75,6 +75,31 @@ function BookingsPage() {
       });
   };
 
+  const handlebooking=(price1,companyName)=>{
+    const bookingType="flight";
+    const userId=1;
+    const flight= {userId, bookingType, originLocationCode, destinationLocationCode, price1, companyName};
+    console.log('flight details:',flight);
+    fetch('http://localhost:4000/booking/flight',{
+      method:"POST",
+      headers:{ "Content-Type": "application/json" },
+      body: JSON.stringify(flight)
+    }).then(response => {
+      if (!response.ok) {
+          throw new Error('Booking failed');
+      }
+      return response.json();
+  })
+  .then(() => {
+      alert('Booking has been made successfully!');
+  })
+  .catch(error => {
+      console.error('Error booking itinerary:', error);
+      alert('Booking failed. Please try again.');
+  });
+  }
+
+
   return (
     <div className={styles.all}>
       <Navbar />
@@ -230,7 +255,7 @@ function BookingsPage() {
           const arrivalMinutes = String(arrivalDate.getMinutes()).padStart(2, '0');
           const formattedArrivalDate = `${arrivalDay}/${arrivalMonth}/${arrivalYear}`;
           const formattedArrivalTime = `${arrivalHours}:${arrivalMinutes}`;
-
+          const pricetotal=`${price.grandTotal}`
           return (
             <div key={index} className={styles.card}>
               <p>
@@ -245,6 +270,7 @@ function BookingsPage() {
               <p>
                 <strong>Airline:</strong> {Airline}
               </p>
+              <button onClick={()=>{handlebooking(pricetotal,Airline)}}>book</button>
             </div>
           );
         })}
