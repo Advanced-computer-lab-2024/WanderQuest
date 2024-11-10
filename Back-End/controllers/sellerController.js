@@ -165,7 +165,7 @@ const getLogo = async (req, res) => {
 // get the first seller id
 const getSellerId = async (req, res) => {
     try {
-        const seller = await Seller.findOne({});
+        const seller = await Seller.findOne({accepted: true});
         res.json(seller._id);
     } catch (err) {
         res.status(500).json({ error: err.message });
