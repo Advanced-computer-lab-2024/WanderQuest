@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile, uploadLogo, getLogo, getSellerId,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales } = require('../controllers/sellerController');
+const { getProfile, updateProfile, uploadLogo, getLogo, getSellerId,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto,ensureGridFSInitialized } = require('../controllers/sellerController');
 const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
@@ -24,6 +24,9 @@ router.get('/sales', viewAllProductSales);
 
 
 router.get("/products/:id", getProdById);
+// router.post('/uploadProductPhoto', ensureGridFSInitialized,uploadProductPhoto);
+router.post('/uploadProductPhoto', uploadProductPhoto);
+
 router.post('/addProduct', addProduct);
 router.patch('/editProduct/:id', editProduct);
 router.get('/availableProducts', getAvailableProducts)
