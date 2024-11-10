@@ -102,7 +102,9 @@ export default function AdminPage() {
       {/* Header Section */}
       <h1>Admin Dashboard</h1>
       <div className={styles.basic}>
+      <Link href="/admin/Requests">
       <button>Manage Pending Requests</button>
+      </Link>
       </div>
       {/* Main Section */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
