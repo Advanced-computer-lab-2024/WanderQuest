@@ -138,75 +138,9 @@
     
 }
 
-/* Style for the delete button */
-.Profile .deleteButton {
-    background-color: red;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    text-align: center;
-}
 
-/* Hover effect for the delete button */
-.Profile .deleteButton:hover {
-    background-color: darkred;
-}
 
-/* Modal overlay */
-.modaloverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Ensure the modal is on top of other elements */
-}
 
-/* Modal styling */
-.modal {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 400px; /* Fixed width */
-    text-align: center;
-}
-
-/* Modal buttons */
-.modalbuttons {
-    display: flex;
-    justify-content: space-around;
-    margin-right: 20px;
-    margin-top: 20px;
-}
-
-.confirmdelete, .canceldelete {
-    padding: 10px 20px;
-    border: none;
-    color: white;
-    font-size: 16px;
-    border-radius: 5px;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-.canceldelete {
-    background-color: #f44336; /* Red for cancel */
-}
-
-/* On hover, change background color */
-.confirmdelete:hover, .canceldelete:hover {
-    background-color: #0056b3; /* Darker blue for confirm, darker red for cancel */
-}
 
 
 
