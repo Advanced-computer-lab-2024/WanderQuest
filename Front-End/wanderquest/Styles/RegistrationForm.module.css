@@ -63,23 +63,6 @@
     margin-bottom: 15px; 
 }
 
-/* Apply the same styles to the upload button */
-.UploadDocuments button {
-    width: 100%;
-    padding: 12px;
-    background-color: #34D399; 
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 8px;
-}
-
-.UploadDocuments button:hover {
-    background-color: #A7F3D0; 
-}
 
 
 
