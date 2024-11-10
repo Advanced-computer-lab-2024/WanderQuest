@@ -205,7 +205,7 @@ const cancelBooking = async (req, res) => {
 }
 
 const bookFlight = async (req, res) => {
-    const {userId, bookingType, from, to, price, companyName} = req.body;
+    const {userId, bookingType, from, fromAir, toAir, price, companyName} = req.body;
     if(bookingType != "flight"){
         res.status(400).json({ message : "Can only book a flight" });
     }
@@ -222,25 +222,17 @@ const bookFlight = async (req, res) => {
         if(retuser.role != "tourist"){
             res.status(403).json({ message : "Only tourists can book flights" });
         }
-        if(from == to){
-            res.status(400).json({ message : "From and To cannot be the same" });
-        }
         const currentDate = new Date();
         const fromDate = new Date(from);
-        const toDate = new Date(to);
 
         if (fromDate <= currentDate) {
             return res.status(400).json({ message: "From date must be a future date" });
         }
 
-        if (toDate <= currentDate) {
-            return res.status(400).json({ message: "To date must be a future date" });
-        }
-
         const newBooking = new Booking({
             userId,
             bookingType,
-            details: { from, to, price, companyName },
+            details: { from, fromAir, toAir, price, companyName },
             paid: true,
             startDate: fromDate
         });
