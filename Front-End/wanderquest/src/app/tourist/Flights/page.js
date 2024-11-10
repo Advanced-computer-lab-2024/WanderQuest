@@ -270,7 +270,7 @@ function BookingsPage() {
               <p>
                 <strong>Airline:</strong> {Airline}
               </p>
-              <button onClick={()=>{handlebooking(pricetotal,Airline)}}>book</button>
+              <button className={styles.button} onClick={()=>{handlebooking(pricetotal,Airline)}}>book</button>
             </div>
           );
         })}

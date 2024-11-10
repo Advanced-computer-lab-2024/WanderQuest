@@ -217,7 +217,7 @@ function BookingsPage() {
               )}
               <h3>{hotel.name || 'Unnamed Hotel'}</h3>
               {hotel.stars && <p><strong>Stars:</strong> {hotel.stars} Stars</p>}
-              {hotel.price && <p><strong>Price:</strong> {hotel.price}</p>}
+              {hotel.price && <p><strong>Price:</strong> {hotel.price} per night</p>}
               {hotel.distance && <p><strong>Distance:</strong> {hotel.distance}</p>}
               {hotel.relevantPoiDistance && (
                 <p><strong>Relevant Location:</strong> {hotel.relevantPoiDistance}</p>
@@ -231,7 +231,7 @@ function BookingsPage() {
               {hotel.priceDescription && (
                 <p><strong>Price Description:</strong> {hotel.priceDescription}</p>
               )}
-              <button onClick={()=>{handlebooking(hotel.name,hotel.stars,hotel.rating.value,hotel.rating.description,hotel.priceDescription)}}>book</button>
+              <button className={styles.button} onClick={()=>{handlebooking(hotel.name,hotel.stars,hotel.rating.value,hotel.rating.description,hotel.priceDescription)}}>book</button>
             </div>
           ))
         ) : (
