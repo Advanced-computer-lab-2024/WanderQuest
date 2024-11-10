@@ -15,13 +15,10 @@ const TouristInfo = () => {
     const [redeemAmount, setRedeemAmount] = useState(0); // State for redeem amount
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [badgeUrl, setBadgeUrl] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    //change password states
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordMessage, setPasswordMessage] = useState('');
-    const [showPasswordFields, setShowPasswordFields] = useState(false);
+    
 
     // Picture states
     const [pic, setPic] = useState(null); // For the selected logo file
@@ -79,6 +76,23 @@ const TouristInfo = () => {
         fetchProfile();
     }, [userId]);
 
+    // Fetch the level based on the tourist ID
+    useEffect(() => {
+        const fetchLevel = async () => {
+            if (!userId) return;
+            try {
+                const response = await fetch(`http://localhost:4000/tourist/level/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch tourist level');
+                const data = await response.json();
+                setBadgeUrl(`/level${data.level}.png`);
+            } catch (error) {
+                console.error("Error fetching tourist level:", error);
+                setError("Error fetching tourist level");
+            }
+        };
+        fetchLevel();
+    }, [userId]);
+
     // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -120,39 +134,6 @@ const TouristInfo = () => {
         }
     };
 
-    const handlePasswordChange = async (e) => {
-        e.preventDefault();
-    
-        if (newPassword !== confirmPassword) {
-            setPasswordMessage("New passwords do not match.");
-            return;
-        }
-    
-        try {
-            const response = await fetch(`http://localhost:4000/authentication/changePassword/${userId}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    oldPassword: currentPassword,
-                    newPassword,
-                }),
-            });
-    
-            if (response.ok) {
-                setPasswordMessage("Password changed successfully!");
-                setCurrentPassword('');
-                setNewPassword('');
-                setConfirmPassword('');
-                setShowPasswordFields(false); // Hide fields after successful change
-            } else {
-                const errorData = await response.json();
-                setPasswordMessage(errorData.error || "Failed to change password");
-            }
-        } catch (err) {
-            console.error("Error changing password:", err);
-            setPasswordMessage("An error occurred while changing the password");
-        }
-    };
 
 
     const handleRedeem = async () => {
@@ -181,14 +162,39 @@ const TouristInfo = () => {
           console.error("Error redeeming points:", err);
           setError("An error occurred while redeeming the points");
         }
-      };
+    };
+
+    const handleAccountDeletion = async () => {
+        try {
+            const response = await fetch(`http://localhost:4000/authentication/requestAccountDeletion/${userId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert("Your account has been deleted.");
+                setIsModalVisible(false);
+                setSuccessMessage(data.message);
+                setTimeout(() => setSuccessMessage(""), 3000);
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to request account deletion");
+                setTimeout(() => setError(""), 3000);
+            }
+        } catch (error) {
+            console.error("Error requesting account deletion:", error);
+            setError("An error occurred while requesting account deletion");
+        }
+    };
+
     
 
     return (
         <form className={styles.Profile} onSubmit={handleSubmit}>
-            <h3 className={styles.h1}>My Profile</h3>
-            {error && <p className={styles.error}>{error}</p>}
-            {successMessage && <p className={styles.success}>{successMessage}</p>}
+            <h3 className={styles.h1}>My Profile  {badgeUrl && <img src={badgeUrl} alt="Badge" className={styles.badge} />}</h3>
             <label>Username: </label>
             <input type="text" value={username} required readOnly />
 
@@ -244,38 +250,32 @@ const TouristInfo = () => {
     <label>Redeem Points (10,000 points = 100 EGP): </label>
     <button type="button" onClick={handleRedeem}>Redeem</button>
     
-    {/* Display success or error messages */}
-    {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-    {error && <p style={{ color: 'red' }}>{error}</p>}
     
     <button type="submit">Save Changes</button>
   </div>
 
-            {/* Password Change Toggle */}
-            <button 
-                type="button" 
-                className={styles.changePasswordCancelButton} 
-                onClick={() => setShowPasswordFields(!showPasswordFields)}
-            >
-                {showPasswordFields ? "Cancel Password Change" : "Change Password"}
-            </button>
+            
 
-            {showPasswordFields && (
-                <div className={styles.passwordSection}>
-                    {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
-                    
-                    <label>Current Password:</label>
-                    <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+            
+<button className={styles.deleteButton} onClick={() => setIsModalVisible(true)}>Request Account Deletion</button>
+{isModalVisible && (
+    <div className={styles.modaloverlay}>
+        <div className={styles.modal}>
+            <h3>Are you sure you want to delete your account?</h3>
+            <p>This action is irreversible.</p>
+            <div className={styles.modalbuttons}>
+                <button className={styles.confimdelete} onClick={handleAccountDeletion}>Yes, Delete</button>
+                <button className={styles.canceldelete} onClick={() => setIsModalVisible(false)}>Cancel</button>
+            </div>
+        </div>
+    </div>
+)}
 
-                    <label>New Password:</label>
-                    <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
 
-                    <label>Confirm New Password:</label>
-                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-
-                    <button onClick={handlePasswordChange}>Change Password</button>
-                </div>
-            )}
+            
+            {/* Display success or error messages */}
+    {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+    {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
     );
 };

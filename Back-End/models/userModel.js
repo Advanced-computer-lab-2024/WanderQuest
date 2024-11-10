@@ -122,28 +122,33 @@ TouristSchema.pre('save', function (next) {
     next();
 });
 TouristSchema.methods.deduceFromWallet = async function (amount) {
-    if (amount > this.wallet) {
-        throw new Error('Insufficient wallet balance');
+    try {
+        if (amount > this.wallet) {
+            throw new Error('Insufficient wallet balance');
+        }
+        this.wallet -= amount;
+        let pointsEarned;
+        switch (this.level) {
+            case 1:
+                pointsEarned = amount * 0.5;
+                break;
+            case 2:
+                pointsEarned = amount * 1;
+                break;
+            case 3:
+                pointsEarned = amount * 1.5;
+                break;
+            default:
+                pointsEarned = 0;
+                break;
+        }
+        this.totalPoints += pointsEarned;
+        this.availablePoints += pointsEarned;
+        await this.save();
+    } catch (error) {
+        console.error('Error deducting from wallet:', error);
+        throw error; // Re-throw the error to be handled by the caller
     }
-    this.wallet -= amount;
-    let pointsEarned;
-    switch (this.level) {
-        case 1:
-            pointsEarned = amount * 0.5;
-            break;
-        case 2:
-            pointsEarned = amount * 1;
-            break;
-        case 3:
-            pointsEarned = amount * 1.5;
-            break;
-        default:
-            pointsEarned = 0;
-            break;
-    }
-    this.totalPoints += pointsEarned;
-    this.availablePoints += pointsEarned;
-    await this.save();
 }
 function getAge(dateString) {
     var today = new Date();
@@ -209,6 +214,7 @@ const TourGuideSchema = new Schema({
             touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
             rating: { type: Number, min: 1, max: 5 },
         }],
+    
     comments: [
         {
             touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
@@ -216,7 +222,20 @@ const TourGuideSchema = new Schema({
             date: { type: Date, default: Date.now }
         }
     ],
+    averageRating: { type: Number, default: 0 },  // New field for average rating
+
 });
+// Middleware to calculate average rating before saving
+TourGuideSchema.pre('save', function(next) {
+    // Calculate average rating if ratings exist
+    if (this.ratings.length > 0) {
+      const totalRatings = this.ratings.reduce((sum, rating) => sum + rating.rating, 0);
+      this.averageRating = totalRatings / this.ratings.length;
+    } else {
+      this.averageRating = 0;  // Set to 0 if no ratings
+    }
+    next();
+  });
 
 const TourGuide = User.discriminator('tourGuide', TourGuideSchema);
 
