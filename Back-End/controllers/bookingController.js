@@ -227,13 +227,16 @@ const bookFlight = async (req, res) => {
         }
         const currentDate = new Date();
         const fromDate = new Date(from);
-        const toDate = new Date(to);
+        const toDate = null;
+        if(to){
+            toDate = new Date(to);
+        }
 
         if (fromDate <= currentDate) {
             return res.status(400).json({ message: "From date must be a future date" });
         }
 
-        if (toDate <= currentDate) {
+        if (toDate && toDate <= currentDate) {
             return res.status(400).json({ message: "To date must be a future date" });
         }
 
