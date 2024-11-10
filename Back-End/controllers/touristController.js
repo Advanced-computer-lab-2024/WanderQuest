@@ -55,7 +55,7 @@ const getTouristId = async (req, res) => {
 const getUpcomingActivities = async (req, res) => {
     try {
         const currentDate = new Date();
-        const activities = await ActivityModel.find({ date: { $gt: currentDate } });
+        const activities = await ActivityModel.find({ date: { $gt: currentDate },flagged: false });
         res.status(200).json(activities);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -65,7 +65,7 @@ const getUpcomingActivities = async (req, res) => {
 const getActivityById = async (req, res) => {
     try {
         const activity = await ActivityModel.findById(req.params.id);
-        if (!activity) {
+        if (!activity || activity.flagged ) {
             return res.status(404).json({ error: 'Activity not found' });
         }
         res.json(activity);
@@ -78,7 +78,7 @@ const getUpcomingItineraries = async (req, res) => {
     try {
         const currentDate = new Date();
         const itineraries = await ItineraryModel.find({
-            availableDates: { $elemMatch: { $gt: currentDate } }
+            availableDates: { $elemMatch: { $gt: currentDate } }, flagged: false 
         });
         res.status(200).json(itineraries);
     } catch (error) {
@@ -89,7 +89,7 @@ const getUpcomingItineraries = async (req, res) => {
 const getItineraryById = async (req, res) => {
     try {
         const itinerary = await ItineraryModel.findById(req.params.id);
-        if (!itinerary) {
+        if (!itinerary || itinerary.flagged) {
             return res.status(404).json({ error: 'Itinerary not found' });
         }
         res.json(itinerary);
@@ -329,7 +329,7 @@ const reviewProduct = async (req,res) => {
     if (!touristId) {
         return res.status(400).json({ error: 'Tourist id is required' });
     }
-    const product = await Product.findById(productId);
+    const product = await ProdModel.findById(productId);
     if (!product) {
         return res.status(404).json({ error: 'Product not found' });
     }

@@ -119,6 +119,7 @@ const activitySchema = new mongoose.Schema({
         ref: 'AdvertiserModel',
         required: false,
     },
+    flagged: { type: Boolean, default: false },  // This field tracks if the activity is flagged
 }, { timestamps: true });
 
 // Middleware to exclude activities where the createdBy user has requestToBeDeleted set to true
@@ -213,6 +214,7 @@ const itinerarySchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    flagged: { type: Boolean, default: false },  // This field tracks if the activity is flagged
 }, { timestamps: true });
 
 // Middleware to exclude itineraries where the createdBy user has requestToBeDeleted set to true
