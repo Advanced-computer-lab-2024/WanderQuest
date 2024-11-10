@@ -1,0 +1,80 @@
+/* Password Section Styling */
+.passwordSection {
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #E5E7EB; /* Adds a subtle separation */
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto; 
+    margin-top: 50px;
+    padding: 30px;
+    background-color: #FAFAF8; /* Light off-white for a soft background */
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    font-family: Arial, sans-serif;
+}
+
+.h3{
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+}
+
+
+/* Styling for password inputs */
+.passwordFields input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #D1D5DB;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+}
+
+/* Label styling */
+.passwordFields label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #6B7280;
+}
+
+/* Password change button styling */
+.passwordChangeButton {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: #50e8b8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.passwordChangeButton:hover {
+    background-color: #21b19b;
+}
+
+/* Success and error messages */
+.passwordSection .success,
+.passwordSection .error {
+    font-size: 14px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.passwordSection .success {
+    color: #065F46;
+    background-color: #D1FAE5;
+}
+
+.passwordSection .error {
+    color: #B91C1C;
+    background-color: #FEE2E2;
+}

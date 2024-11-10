@@ -1,0 +1,75 @@
+/* General Form Styling for Upload Documents */
+.UploadDocuments {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Styling for input fields (ID, Certificate, Tax Registry) */
+.UploadDocuments input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+/* Styling for form labels */
+.UploadDocuments label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #122c34;
+    margin-top: 8px;
+}
+
+/* Styling for the upload button */
+.UploadDocuments button[type="button"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #042335;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.UploadDocuments button[type="button"]:hover {
+    background-color: #1a6187;
+}
+
+/* Styling for error/success message */
+.UploadDocuments p {
+    color: #17455c;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.UploadDocuments .message{
+    color: #122c34;
+    font-size: 16px;
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 600px) {
+    .UploadDocuments {
+        padding: 15px;
+    }
+
+    .UploadDocuments button[type="button"] {
+        font-size: 14px;
+    }
+}
