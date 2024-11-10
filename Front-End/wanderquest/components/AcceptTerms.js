@@ -10,13 +10,21 @@ const AcceptTerms = () => {
     const [viewMore, setViewMore] = useState(false); // State to toggle "View More" section
 
     useEffect(() => {
-        const token = document.cookie.split(';').find(cookie => cookie.trim().startsWith('jwt='));
-        if (token) {
-            const decodedToken = jwt.decode(token.split('=')[1]);
-            if (decodedToken && decodedToken.userId) {
-                setUserId(decodedToken.userId);
+        const fetchAdvertiserId = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/advertiser/advertiserId`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch advertiser ID');
+                }
+                const advertiserId = await response.json(); // Assuming the backend sends the ID directly
+                setUserId(advertiserId);  // Store the fetched ID
+            } catch (error) {
+                console.error("Error fetching advertiser ID:", error);
+                setError("Error fetching advertiser ID");
             }
-        }
+        };
+
+        fetchAdvertiserId();
     }, []);
 
     const handleAccept = async () => {
