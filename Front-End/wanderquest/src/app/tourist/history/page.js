@@ -78,14 +78,14 @@ const TouristHistory = () => {
 
             console.log('Rating:', rating);
             console.log('Comment:', comment);
-            const ratingResp = await fetch(`http://localhost:4000/tourGuide/rate/${followedGuides}`, {
+            const ratingResp = await fetch(`http://localhost:4000/tourGuide/rate/${tourGuideData._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ touristId : touristID , rating: rating })
             });
-            const commentResp = await fetch(`http://localhost:4000/tourGuide/comment/${followedGuides}`, {
+            const commentResp = await fetch(`http://localhost:4000/tourGuide/comment/${tourGuideData._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
