@@ -108,6 +108,18 @@ const getAvailableProducts = async (req, res) => {
     }
 };
 
+const getAllCurrencies = async (req, res) => {
+    try{
+        const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/codes`);
+        if(!response){
+            return res.status(404).json({error: 'Error fetching currencies'});
+        }
+        res.status(200).json(response.data.supported_codes);
+    } catch (error){
+        return res.status(500).json({error: error.message});
+    }
+};
+
 const changePreferredCurrency = async (req, res) => {
     try {
         const tourist = await Tourist.findById(req.params.id);
@@ -434,5 +446,6 @@ module.exports = {
     reviewProduct,
     getLevel,
     getavailablePoints,
-    getTotalPoints
+    getTotalPoints,
+    getAllCurrencies
 };

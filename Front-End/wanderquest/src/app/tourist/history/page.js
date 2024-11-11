@@ -89,7 +89,7 @@ const TouristHistory = () => {
             }
         };
         fetchItineraries();
-    }, []);
+    }, [lastUpdated]);
         
 
     useEffect(() => {
@@ -103,7 +103,7 @@ const TouristHistory = () => {
             }
         }
         fetchActivities();
-    }, []);
+    }, [lastUpdated]);
 
     const handleFeedback = async () => {
         try{
@@ -204,7 +204,7 @@ const TouristHistory = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ touristId : touristID , rating }),
+                body: JSON.stringify({ touristId : touristID , rating : rating }),
             });
             const commentFeedback = await fetch(`http://localhost:4000/activityRoutes/comment/${id}`,{
                 method: 'POST',
@@ -289,6 +289,7 @@ const TouristHistory = () => {
                         attendedActivities.map((activity, index) => (
                             <div key={index} className={styles.innerBox}>
                                 <p><strong>Activity:</strong> {activity.title}</p>
+                                <p><strong>ID:</strong> {activity._id}</p>
                                 <p><strong>Date:</strong> {activity.date}</p>
                                 <p><strong>Price:</strong> {activity.price}</p>
                                 <p><strong>Location:</strong> {activity.location}</p>

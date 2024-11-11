@@ -19,7 +19,8 @@ const {
     reviewProduct,
     getLevel,
     getavailablePoints,
-    getTotalPoints
+    getTotalPoints,
+    getAllCurrencies
 } = require('../controllers/touristController');
 // const requireAuth = require('../middleware/requireAuth');
 
@@ -49,6 +50,7 @@ router.get('/upcomingPlaces', getAllPlaces);
 router.get('/upcomingPlaces/:id', getPlaceById);
 router.post('/rateProduct/:id',rateProduct);
 router.post('/reviewProduct/:id', reviewProduct); 
+router.get('/currencies', getAllCurrencies);
 router.patch('/changePreferredCurrency/:id', changePreferredCurrency);
 router.patch('/redeem/:id',redeemPoints);
 router.post('/fileComplaint',fileComplaint);
