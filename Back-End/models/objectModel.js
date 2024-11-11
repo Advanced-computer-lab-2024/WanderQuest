@@ -46,18 +46,18 @@ const ratingSchema = new Schema({
     rating: { type: Number, min: 1, max: 5 },
 })
 const rating = mongoose.model('rating', ratingSchema);
-
+const documentSchema = new mongoose.Schema({
+    filename: String,
+    contentType: String,
+    fileID: String,
+});
 const productSchema = new Schema({
     name:
         { type: String, required: true },
+    // picture:
+    //     [{ data: Buffer, type: String, required: false }],
     picture:
-        [{ data: Buffer, type: String, required: false }],
-    // picture: [
-    //     {
-    //         id: mongoose.Schema.Types.ObjectId,  // Reference to GridFS file ID
-    //         filename: String,
-    //         contentType: String
-    //     }],
+    { type: documentSchema, default: undefined },
     price:
         { type: Number, required: true },
     description:
