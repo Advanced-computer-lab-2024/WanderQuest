@@ -27,9 +27,11 @@ const {
     archiveProduct,
     unarchiveProduct,
     viewProductSales,
+    viewAllProductSales,
     /* uploadProductImage,*/
      flagActivity,
      flagItinerary
+     
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -58,7 +60,10 @@ router.get("/products/:id", getProdById)
 router.get('/availableProducts', getAvailableProducts)
 
 //Admin viewProduct Sales
-router.get('/products/sales',viewProductSales)
+router.get('/products/sales/:id',viewProductSales)
+
+// Admin view all product sales
+router.get('/sales', viewAllProductSales);
 
 //Admin addProduct
 router.post('/addProduct', upload.single('picture'), addProduct);

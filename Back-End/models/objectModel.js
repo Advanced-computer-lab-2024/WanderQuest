@@ -52,6 +52,12 @@ const productSchema = new Schema({
         { type: String, required: true },
     picture:
         [{ data: Buffer, type: String, required: false }],
+    // picture: [
+    //     {
+    //         id: mongoose.Schema.Types.ObjectId,  // Reference to GridFS file ID
+    //         filename: String,
+    //         contentType: String
+    //     }],
     price:
         { type: Number, required: true },
     description:
