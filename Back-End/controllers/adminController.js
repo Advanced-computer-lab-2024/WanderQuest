@@ -485,13 +485,12 @@ const flagActivity = async (req,res) => {
 //flag an itinerary
 const flagItinerary = async (req,res) => {
     try{
-        const {itineraryId} = req.params;
-        const itinerary = await itinerary.findByIdAndUpdate(itineraryId,{flagged: true},{new: true});
-        console.log(itinerary);
-        if(!itinerary){
+        const { id } = req.params;
+        const retItinerary = await itinerary.findByIdAndUpdate(id,{flagged: true},{new: true});
+        if(!retItinerary){
             return res.status(404).json({error: ' Itinerary with this id not found'});
         }
-        res.status(200).json({message: 'Itinerary flagged successfully',itinerary});
+        res.status(200).json({message: 'Itinerary flagged successfully',retItinerary});
     }catch(error){
         res.status(404).json({error: error.message});
     }
