@@ -12,7 +12,6 @@ const ProfileInfo = () => {
         <Navbar />
         <div>
             <CompanyInfo/>
-            <ChangePassword/>
         </div>
     </div>
   );

@@ -17,7 +17,9 @@ const {
     fileComplaint,
     myComplaints,
     reviewProduct,
-    getLevel
+    getLevel,
+    getavailablePoints,
+    getTotalPoints
 } = require('../controllers/touristController');
 // const requireAuth = require('../middleware/requireAuth');
 
@@ -45,12 +47,15 @@ router.get('/upcomingPlaces', getAllPlaces);
 
 // Sharing activity via link or email
 router.get('/upcomingPlaces/:id', getPlaceById);
-router.post('/rateProduct/:productId',rateProduct);
+router.post('/rateProduct/:id',rateProduct);
 router.post('/reviewProduct/:id', reviewProduct); 
 router.patch('/changePreferredCurrency/:id', changePreferredCurrency);
 router.patch('/redeem/:id',redeemPoints);
 router.post('/fileComplaint',fileComplaint);
 router.get('/myComplaints/:id',myComplaints);
 router.get('/level/:id',getLevel)
+router.get('/availablePoints/:id',getavailablePoints)
+router.get('/totalPoints/:id',getTotalPoints)
+
 
 module.exports = router;

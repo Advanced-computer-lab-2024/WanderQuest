@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
+import DeleteAccount from "../components/DeleteAccount";
+import ChangePassword from "./ChangePassword";
 
 const TourGuideInfo = () => {
     const [userId, setUserId] = useState(''); // State for storing the tour guide ID
@@ -152,9 +154,15 @@ const TourGuideInfo = () => {
             setError("An error occurred while uploading the logo");
         }
     };
+
+    const handleDeleteSuccess = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => setSuccessMessage(""), 3000);
+    };
     
 
     return (
+        <div>
         <form className={styles.Profile} onSubmit={handleSubmit}>
             <div className={styles.profileHeader}>
             <h3 className={styles.h1}>My Profile</h3>
@@ -213,6 +221,11 @@ const TourGuideInfo = () => {
         
 
         </form>
+        <ChangePassword userId={userId}/>
+        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+
+
+        </div>
     );
 };
 

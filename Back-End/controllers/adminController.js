@@ -139,10 +139,10 @@ const getAvailableProducts = async (req, res) => {
 
 const addProduct = async (req, res) => {
     const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
-    const picture = req.file;
+ //   const picture = req.file;
 
     // Validate input
-    if (!name || !picture || !description || !price) {
+    if (!name /*|| !picture*/ || !description || !price) {
         return res.status(400).json({ error: 'Details and prices fields are required' });
     }
     try {
@@ -162,10 +162,11 @@ const addProduct = async (req, res) => {
             rating,
             reviews,
             availableAmount,
-            picture: {
-                data: picture.buffer,
-                type: picture.mimetype
-            }
+            // picture: {
+            //     data: picture.buffer,
+            //     type: picture.mimetype
+            // },
+            
         });
         res.status(200).json(product)
 
