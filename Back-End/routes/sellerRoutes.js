@@ -25,7 +25,7 @@ router.get('/sales', viewAllProductSales);
 
 router.get("/products/:id", getProdById);
 // router.post('/uploadProductPhoto', ensureGridFSInitialized,uploadProductPhoto);
-router.post('/uploadProductPhoto', uploadProductPhoto);
+router.post('/uploadProductPhoto/:id', uploadProductPhoto);
 
 router.post('/addProduct', addProduct);
 router.patch('/editProduct/:id', editProduct);
