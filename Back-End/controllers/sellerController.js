@@ -12,25 +12,13 @@ const collectionName = 'uploads';
 // Initialize GridFS
 let gfs;
 mongoose.connection.once('open', () => {
-    //Explanation: Initializes GridFS when the MongoDB connection is opened. It uses gridfs-stream to establish 
-    //a connection to the database, enabling read and write operations in the uploads collection.
     gfs = Grid(mongoose.connection.db, mongoose.mongo);
     gfs.collection(collectionName);
-   // console.log("GridFS initialized and ready for file storage.");
-
 });
-// Middleware to ensure GridFS is initialized before upload
-// const ensureGridFSInitialized = (req, res, next) => {
-//     if (!gfs) {
-//         return res.status(503).json({ error: "GridFS not initialized. Please try again later." });
-//     }
-//     next();
-// };
+
 // Set up GridFS storage
 const storage = new GridFsStorage({
     url: process.env.MONGO_URI,
-    options: { useUnifiedTopology: true },
-
     file: (req, file) => {
         return {
             bucketName: collectionName,
@@ -38,22 +26,7 @@ const storage = new GridFsStorage({
         };
     }
 });
-// let storage;
-// try {
-//     storage = new GridFsStorage({
-//         url: process.env.MONGO_URI,
-//         options: { useUnifiedTopology: true },
-//         file: (req, file) => {
-//             console.log(file); // Log file object for debugging
-//             return {
-//                 bucketName: collectionName,
-//                 filename: `${Date.now()}-${file.originalname}`
-//             };
-//         }
-//     });
-// } catch (error) {
-//     console.error('Error initializing GridFsStorage:', error.message);
-// }
+
 // File filter to allow only photos
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
@@ -63,16 +36,17 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+
 const upload = multer({
     storage,
     fileFilter
 }).array('documents', 1);
 
 //Add a new multer configuration for handling product images
-const uploadProductImage = multer({
-    storage,
-    fileFilter
-}).single('photo'); // 'photo' will be the key for the product image
+// const uploadProductImage = multer({
+//     storage,
+//     fileFilter
+// }).single('photo'); // 'photo' will be the key for the product image
 
 // Read Seller profile
 const getProfile = async (req, res) => {
@@ -225,147 +199,169 @@ const getAvailableProducts = async (req, res) => {
     }
 };
 
-//seller addProduct
-// const addProduct = async (req, res) => {
-//     const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales } = req.body;
-
-//     // Validate input
-//     if (!name || !picture || !description || !price) {
-//         return res.status(400).json({ error: 'Details and prices fields are required' });
-//     }
-//     try {
-//         // Checking if the username already exists
-//         const existingProduct = await ProdModel.findOne({ name, price });
-
-//         if (existingProduct) {
-//             return res.status(400).json({ error: 'Product already exists' });
-//         }
-
-//         const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales })
-//         res.status(200).json(product)
-
-//     } catch (error) {
-//         res.status(400).json({ error: error.message })
-//     }
-
-// };
-
-
-// const uploadProductPhoto = async (req, res) => {
-//     // First, verify that `uploadProductImage` middleware runs correctly
-//     uploadProductImage(req, res, async (err) => {
-//         // Check for errors from multer
-//         if (err) {
-//             console.error("Upload error:", err);
-//             return res.status(400).json({ error: err.message });
-//         }
-
-//         // Debugging statements
-//         console.log("Request body:", req.body); // Check if `productId` is in `req.body`
-//         console.log("Uploaded file:", req.file); // Check if `req.file` contains the uploaded file
-//         console.log("File:", req.file); // Check if the file is saved correctly
-
-//         const { productId } = req.body;
-
-//         if (!productId) {
-//             return res.status(400).json({ error: 'Product ID is required' });
-//         }
-
-//         if (!req.file) {
-//             console.error("File upload failed: No file in request.");
-//             return res.status(400).json({ error: 'No file uploaded' });
-//         }
-//         console.log("File uploaded:", req.file);
-
-
-//         try {
-//             // Check if the product exists in the database
-//             const product = await ProdModel.findById(productId);
-//             if (!product) {
-//                 return res.status(404).json({ error: 'Product not found' });
-//             }
-
-//             // Prepare image data
-//             const picture = [{
-//                 id: req.file.id,         // Reference to the GridFS file ID
-//                 filename: req.file.filename,  // Optional: store the filename
-//                 contentType: req.file.contentType // MIME type
-//             }];
-
-//             // Update product with picture
-//             product.picture = picture;
-//             await product.save();
-
-//             res.status(200).json({ message: 'Product photo uploaded successfully', product });
-//         } catch (error) {
-//             res.status(500).json({ error: error.message });
-//         }
-//     });
-// };
-const uploadProductPhoto = async (req, res) => {
-    const { productId } = req.body;
-     console.log("request body",req.body);
-    if (!productId) {
-        return res.status(400).json({ error: 'Product ID is required' });
-    }
-
-    if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
-
+const getProductPhoto = async (req, res) => {
     try {
-        // Ensure the product exists in the database
-        const product = await ProdModel.findById(productId);
+        const product = await ProdModel.findById(req.params.id);
         if (!product) {
-            return res.status(404).json({ error: 'Product not found' });
+            return res.status(404).json({ error: 'product not found' });
         }
 
-        // Instead of `buffer`, store the `id` of the file in GridFS
-        const picture = [{
-            data: req.file.id,  // GridFS file ID
-            type: req.file.mimetype
-        }];
 
-        // Update the product with the new image reference
-        product.picture = picture;
-        await product.save();
+        const photo = product.picture;
 
-        res.status(200).json({ message: 'Product photo uploaded successfully', product });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-};
+}
 
+//seller addProduct
 const addProduct = async (req, res) => {
-    const { name, price, description, seller, ratings, reviews, availableAmount, sales } = req.body;
+    const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales } = req.body;
 
-    if (!name || !description || !price) {
+    // Validate input
+    if (!name || !picture || !description || !price) {
         return res.status(400).json({ error: 'Details and prices fields are required' });
     }
-
     try {
+        // Checking if the username already exists
         const existingProduct = await ProdModel.findOne({ name, price });
+
         if (existingProduct) {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ 
-            name, 
-            picture: [], // Empty array for pictures, to be added later
-            price, 
-            description, 
-            seller, 
-            ratings: ratings || [], 
-            reviews: reviews || [], 
-            availableAmount, 
-            sales: sales || 0
-        });
+        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales })
+        res.status(200).json(product)
 
-        res.status(200).json(product);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message })
     }
+
 };
+
+
+const uploadProductPhoto = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const product = await ProdModel.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ error: 'product not found' });
+            }
+
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+           product.picture = documentMetadata;
+
+            await product.save();
+
+            res.json({ message: 'product photo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+};
+
+//correct one
+// const uploadProductPhoto = async (req, res) => {
+//     const { productId } = req.body;
+//      console.log("request body",req.body);
+//     if (!productId) {
+//         return res.status(400).json({ error: 'Product ID is required' });
+//     }
+
+//     if (!req.file) {
+//         return res.status(400).json({ error: 'No file uploaded' });
+//     }
+
+//     try {
+//         // Ensure the product exists in the database
+//         const product = await ProdModel.findById(productId);
+//         if (!product) {
+//             return res.status(404).json({ error: 'Product not found' });
+//         }
+
+//         // Instead of `buffer`, store the `id` of the file in GridFS
+//         const picture = [{
+//             data: req.file.id,  // GridFS file ID
+//             type: req.file.mimetype
+//         }];
+
+//         // Update the product with the new image reference
+//         product.picture = picture;
+//         await product.save();
+
+//         res.status(200).json({ message: 'Product photo uploaded successfully', product });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+
+// const addProduct = async (req, res) => {
+//     const { name, price, description, seller, ratings, reviews, availableAmount, sales } = req.body;
+
+//     if (!name || !description || !price) {
+//         return res.status(400).json({ error: 'Details and prices fields are required' });
+//     }
+
+//     try {
+//         const existingProduct = await ProdModel.findOne({ name, price });
+//         if (existingProduct) {
+//             return res.status(400).json({ error: 'Product already exists' });
+//         }
+
+//         const product = await ProdModel.create({ 
+//             name, 
+//             picture: [], // Empty array for pictures, to be added later
+//             price, 
+//             description, 
+//             seller, 
+//             ratings: ratings || [], 
+//             reviews: reviews || [], 
+//             availableAmount, 
+//             sales: sales || 0
+//         });
+
+//         res.status(200).json(product);
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
 
 
 const editProduct = async (req, res) => {
@@ -464,4 +460,4 @@ const viewAllProductSales = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, uploadLogo,/*ensureGridFSInitialized ,*/getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
+module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,/*ensureGridFSInitialized ,*/getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
