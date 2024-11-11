@@ -413,7 +413,7 @@ const rateTourGuide = async (req, res) => {
         }
 
         //V.I check if tourist has already rated this tour guide
-        const existingRating = tourGuide.ratings.findIndex(r => r.touristId.toString() === touristId);
+        const existingRating = tourGuide.ratings.findIndex(r => r.touristId === touristId);
 
         if (existingRating !== -1) {
             tourGuide.ratings[existingRating].rating = rating;
@@ -476,7 +476,7 @@ const rateItinerary = async (req, res) => {
             return res.status(404).json({ error: 'Itinerary not found' });
 
         }
-        const existingRating = itinerary.ratings.findIndex(r => r.touristId.toString() === touristId);
+        const existingRating = itinerary.ratings.findIndex(r => r.touristId === touristId);
         if (existingRating !== -1) {
             itinerary.ratings[existingRating].rating = rating;
         } else {
