@@ -14,6 +14,7 @@ const TouristInfo = () => {
     const [job, setOccupation] = useState('');
     const [wallet, setWallet] = useState('');
     const [availablePoints, setAvailablePoints] = useState('');
+    const[preferredCurrency,setPreferredCurrency]= useState('');
     const [redeemAmount, setRedeemAmount] = useState(0); // State for redeem amount
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -68,7 +69,8 @@ const TouristInfo = () => {
                 setNationality(data.nationality || '');
                 setDob(data.dob.split("T")[0] || '');
                 setOccupation(data.job || '');
-                setWallet(data.wallet || '');
+                setWallet(data.wallet || 0);
+                setPreferredCurrency(data.preferredCurrency || '');
             } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
@@ -170,9 +172,6 @@ const TouristInfo = () => {
         setSuccessMessage(message);
         setTimeout(() => setSuccessMessage(""), 3000);
     };
-
-    
-
     
 
     return (
@@ -228,6 +227,13 @@ const TouristInfo = () => {
                 value={availablePoints}
                 required readOnly
             />
+            <label>Preferred Currency: </label>
+            <input
+                type="text"
+                value={preferredCurrency}
+                required 
+            />
+
 
 <div>
     {/* Redeem section */}
