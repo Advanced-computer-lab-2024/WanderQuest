@@ -15,6 +15,7 @@ const TouristInfo = () => {
     const [wallet, setWallet] = useState('');
     const [availablePoints, setAvailablePoints] = useState('');
     const[preferredCurrency,setPreferredCurrency]= useState('');
+    const [currencies, setCurrencies] = useState([]);
     const [redeemAmount, setRedeemAmount] = useState(0); // State for redeem amount
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -70,6 +71,7 @@ const TouristInfo = () => {
                 setDob(data.dob.split("T")[0] || '');
                 setOccupation(data.job || '');
                 setWallet(data.wallet || 0);
+                setAvailablePoints(data.availablePoints || 0);
                 setPreferredCurrency(data.preferredCurrency || '');
             } catch (error) {
                 console.error("Error fetching profile:", error);
@@ -96,6 +98,23 @@ const TouristInfo = () => {
         };
         fetchLevel();
     }, [userId]);
+
+    useEffect(() => {
+        const fetchCurrencies = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/tourist/currencies`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch currencies");
+                }
+                const data = await response.json();
+                setCurrencies(Object.keys(data.conversion_rates)); // Assuming data contains conversion_rates with currency codes as keys
+            } catch (error) {
+                console.error("Error fetching currencies:", error);
+            }
+        };
+
+        fetchCurrencies();
+    }, []);
 
     // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
@@ -172,6 +191,34 @@ const TouristInfo = () => {
         setSuccessMessage(message);
         setTimeout(() => setSuccessMessage(""), 3000);
     };
+
+    const handleCurrencyChange = async (e) => {
+        const selectedCurrency = e.target.value;
+        setPreferredCurrency(selectedCurrency);
+
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/changeCurrency/${userId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ preferredCurrency: selectedCurrency }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setWallet(data.wallet); // Update wallet with converted amount
+                setSuccessMessage("Currency updated successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000);
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to update currency");
+            }
+        } catch (error) {
+            console.error("Error updating currency:", error);
+            setError("An error occurred while updating the currency");
+        }
+    };
     
 
     return (
@@ -228,11 +275,13 @@ const TouristInfo = () => {
                 required readOnly
             />
             <label>Preferred Currency: </label>
-            <input
-                type="text"
-                value={preferredCurrency}
-                required 
-            />
+            <select value={preferredCurrency} onChange={handleCurrencyChange} required>
+                {currencies.map((currency) => (
+                    <option key={currency} value={currency}>
+                        {currency}
+                    </option>
+                ))}
+            </select>
 
 
 <div>
