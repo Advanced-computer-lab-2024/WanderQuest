@@ -445,12 +445,29 @@ const unarchiveProduct = async (req,res) => {
 //view available quantity and sales
 const viewProductSales = async (req,res) => {
     try{
-        const products = await ProdModel.find({}, "name availableAmount sales" );
+        const { id } = req.params;
+        const products = await ProdModel.findById(id, "name availableAmount sales" );
         res.status(200).json(products);
     }catch(error){
         res.status(400).json({error: error.message});
     }
 }
+
+const viewAllProductSales = async (req, res) => {
+    try {
+        // Fetch all products with only the specified fields: name, availableAmount, and sales
+        const products = await ProdModel.find({}, "name availableAmount sales");
+        
+        // Return the list of products
+        return res.status(200).json(products);
+
+    } catch (error) {
+        // If an error occurs, return the error message
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
 //flag an activity
 const flagActivity = async (req,res) => {
     try{
@@ -506,5 +523,6 @@ module.exports = {
     unarchiveProduct,
     viewProductSales,
     flagActivity,
-    flagItinerary
+    flagItinerary,
+    viewAllProductSales
 }
