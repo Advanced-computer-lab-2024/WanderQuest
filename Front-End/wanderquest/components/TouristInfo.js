@@ -102,12 +102,12 @@ const TouristInfo = () => {
     useEffect(() => {
         const fetchCurrencies = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/tourist/currencies`);
+                const response = await fetch("http://localhost:4000/tourist/currencies");
                 if (!response.ok) {
                     throw new Error("Failed to fetch currencies");
                 }
                 const data = await response.json();
-                setCurrencies(Object.keys(data.conversion_rates)); // Assuming data contains conversion_rates with currency codes as keys
+                setCurrencies(data); // Set the fetched currencies
             } catch (error) {
                 console.error("Error fetching currencies:", error);
             }
@@ -192,12 +192,15 @@ const TouristInfo = () => {
         setTimeout(() => setSuccessMessage(""), 3000);
     };
 
+
+
     const handleCurrencyChange = async (e) => {
         const selectedCurrency = e.target.value;
         setPreferredCurrency(selectedCurrency);
+        console.log(selectedCurrency);
 
         try {
-            const response = await fetch(`http://localhost:4000/tourist/changeCurrency/${userId}`, {
+            const response = await fetch(`http://localhost:4000/tourist/changePreferredCurrency/${userId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -276,9 +279,9 @@ const TouristInfo = () => {
             />
             <label>Preferred Currency: </label>
             <select value={preferredCurrency} onChange={handleCurrencyChange} required>
-                {currencies.map((currency) => (
-                    <option key={currency} value={currency}>
-                        {currency}
+                {currencies.map(([code, name]) => (
+                    <option key={code} value={code}>
+                        {name} ({code})
                     </option>
                 ))}
             </select>
