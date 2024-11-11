@@ -59,9 +59,6 @@ function activitypage() {
   return (<>
     <Navbar></Navbar>
     {activities.map((activity) => (
-    activity.status === "cancelled" ? (
-        <></>
-    ) : (
         <div key={activity.id} className={styles.activity}>
             <h3>{activity.details.category}</h3>
             <p>
@@ -70,12 +67,13 @@ function activitypage() {
                 <label><strong>Location:</strong> {activity.details.location}</label><br />
                 <strong>Start Date:</strong> {activity.startDate}<br />
                 <strong>Special Discounts:</strong> {activity.details.specialDiscounts}<br />
+                <strong>status:</strong> {activity.status}<br />
             </p>
-            <button onClick={() => handlecancel(activity._id)}>Cancel Booking</button>
+            {activity.status === "cancelled" ?(<></>):(<button onClick={() => handlecancel(activity._id)}>Cancel Booking</button>)}
         </div>
-    )
-))}
 
+))}
+{activities.length === 0?(<>YOU have no activities</>):(null)}
     </>)
 }
 
