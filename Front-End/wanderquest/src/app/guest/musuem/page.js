@@ -6,7 +6,7 @@ const museumguestpage = () => {
     return (
         <div>
             <Navbar />
-            <h1>museum Page</h1>
+            <h1>Museum Page</h1>
            <Museums></Museums>
         </div>
     );
