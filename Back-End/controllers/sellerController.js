@@ -199,6 +199,46 @@ const getAvailableProducts = async (req, res) => {
     }
 };
 
+const getProductPhoto = async (req, res) => {
+    try {
+        const product = await ProdModel.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'product not found' });
+        }
+
+
+        const photo = product.picture;
+
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //seller addProduct
 const addProduct = async (req, res) => {
     const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales } = req.body;
@@ -420,4 +460,4 @@ const viewAllProductSales = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, uploadLogo,/*ensureGridFSInitialized ,*/getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
+module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,/*ensureGridFSInitialized ,*/getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
