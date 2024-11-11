@@ -304,7 +304,7 @@ const getAvailableProducts = async (req, res) => {
 // };
 const uploadProductPhoto = async (req, res) => {
     const { productId } = req.body;
-
+     console.log("request body",req.body);
     if (!productId) {
         return res.status(400).json({ error: 'Product ID is required' });
     }
