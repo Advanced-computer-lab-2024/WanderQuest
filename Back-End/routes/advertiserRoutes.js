@@ -13,6 +13,8 @@ const {
     readOneActivity,
     readOneActivityByName }
     = require('../controllers/advertiserController');
+const { createTransportation, getAllTransportations } = require('../controllers/transportationController');
+
 const router = express.Router();
 
 // // require auth for all advertiser routes
@@ -32,5 +34,7 @@ router.get('/activities', readActivities);
 router.put('/activity/:id', updateActivity);
 router.delete('/activity/:id', deleteActivity);
 router.get('/myActivities/:id', myCreatedActivities);
+router.post('/transportation/create', createTransportation);
+router.get('/transportations', getAllTransportations);
 
 module.exports = router;
