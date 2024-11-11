@@ -5,7 +5,7 @@ import Navbar from '../../../../../components/Navbar';
 
 function Page({ params }) {
   const id = params.id;
-  const userId='672fce1b259054c6c4871c33';
+  const userId='67310bdba3280f11a947c86d';
   const [activity, setActivity] = useState(null);
   const [bookingType, setBookingType] = useState('activity');
   const [error, setError] = useState(null);
@@ -88,7 +88,6 @@ function Page({ params }) {
           </p>
           <button onClick={share}>Share Link</button>
           {activity.bookingIsOpen ?(<button onClick={handleBooking}>Book</button>):(<></>)}
-          <button>cancel booking </button>
         </div>
       )}
     </>

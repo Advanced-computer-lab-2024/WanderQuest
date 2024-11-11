@@ -69,7 +69,7 @@
         if (error) return <p>Error: {error}</p>;
 
         const handleBooking = (date) => {
-            const userId='6730b1a173c9606ee0aaddf6';
+            const userId='67310bdba3280f11a947c86d';
             const bookingType='itinerary';
             const startDate=date
             const itineraryId=id;
