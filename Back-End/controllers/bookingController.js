@@ -375,7 +375,7 @@ const bookTransportation = async (req, res) => {
             bookingType,
             details: { company, type, price, departure, arrival, transportationDate, bookingAlreadyMade: true, pickUpLocation, dropOffLocation },
             paid: true,
-            startDate: fromDate
+            startDate: transportationDate
         });
 
         await newBooking.save();
