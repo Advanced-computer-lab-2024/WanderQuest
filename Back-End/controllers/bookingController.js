@@ -385,6 +385,27 @@ const bookTransportation = async (req, res) => {
     }
 }
 
+const transportationBookings = async (req, res) => {
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try{
+        const retUser = await User.findById(id);
+        if(!retUser){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'transportation' });
+        if(bookings.length === 0){
+            return res.status(404).json({ message: "User has no transportation bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch(error){
+        res.status(500).json({ error: error.message });
+    }
+}
+
 
 module.exports = {
     bookActivity,
@@ -396,5 +417,6 @@ module.exports = {
     flightBookings,
     itineraryBookings,
     activityBookings,
-    bookTransportation
+    bookTransportation,
+    transportationBookings
 };
