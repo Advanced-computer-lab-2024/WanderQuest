@@ -150,6 +150,32 @@ TouristSchema.methods.deduceFromWallet = async function (amount) {
         throw error; // Re-throw the error to be handled by the caller
     }
 }
+ouristSchema.methods.refundToWallet = async function (amount) {
+    try {
+        this.wallet += amount;
+        let pointsEarned;
+        switch (this.level) {
+            case 1:
+                pointsEarned = amount * 0.5;
+                break;
+            case 2:
+                pointsEarned = amount * 1;
+                break;
+            case 3:
+                pointsEarned = amount * 1.5;
+                break;
+            default:
+                pointsEarned = 0;
+                break;
+        }
+        this.totalPoints -= pointsEarned;
+        this.availablePoints -= pointsEarned;
+        await this.save();
+    } catch (error) {
+        console.error('Error refunding wallet:', error);
+        throw error; // Re-throw the error to be handled by the caller
+    }
+}
 function getAge(dateString) {
     var today = new Date();
     var birthDate = new Date(dateString);
