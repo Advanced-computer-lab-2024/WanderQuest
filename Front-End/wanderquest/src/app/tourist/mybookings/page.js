@@ -10,7 +10,7 @@ function mybookingspage() {
         router.push('/tourist/mybookings/itiniraries');
     };
     const handleRedirecttrans = () => {
-        router.push('/tourist/mybookings/transportation');
+        router.push('/tourist/mybookings/transport');
     };
     const handleRedirectactivit = () => {
         router.push('/tourist/mybookings/activities');
@@ -29,6 +29,7 @@ function mybookingspage() {
     <button onClick={handleRedirectactivit} >activities</button>
     <button onClick={handleRedirectiti} >itiniraties</button>
     <button onClick={handleRedirecthotel} >Hotels</button>
+
   
     </>)
 }
