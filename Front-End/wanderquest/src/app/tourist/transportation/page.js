@@ -28,12 +28,21 @@ function transportpage() {
     fetchData();
   }, []);
 
-  const handleBooking = async () => {
-    const activityId=id;
-    const act = { userId, bookingType, activityId };
+  const handleBooking = async (company1,type1,price1,departure1,arrival1,date1,pickUpLocation1,dropOffLocation1) => {
+    const userId='67310bdba3280f11a947c86d'
+    const bookingType='transportation'
+    const company=company1;
+    const type=type1
+    const price=price1
+    const departure=departure1
+    const arrival=arrival1
+    const date=date1
+    const pickUpLocation=pickUpLocation1
+    const dropOffLocation=dropOffLocation1
+    const act = { userId, bookingType, company, type, price, departure, arrival, date, pickUpLocation, dropOffLocation };
     
     try {
-      const response = await fetch('http://localhost:4000/booking/activity', {
+      const response = await fetch('http://localhost:4000/booking/transportation', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(act),
@@ -81,7 +90,7 @@ function transportpage() {
             <p>
               <strong>DropOffLocatione:</strong> {transport.dropOffLocation}
             </p>
-            {transport.bookingAlreadyMade ?(<button onClick={handleBooking}>Book</button>):(<></>)}
+            {transport.bookingAlreadyMade ?(<button onClick={()=>{handleBooking(transport.company,transport.type,transport.price,transport.departure,transport.arrival,transport.date,transport.pickUpLocation,transport.dropOffLocation)}}>Book</button>):(<></>)}
           </div>
         </div>
     ))}
