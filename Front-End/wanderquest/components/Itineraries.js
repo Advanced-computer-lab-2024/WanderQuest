@@ -18,9 +18,7 @@ const ItineraryList = (Props) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const goToDetails = () => {
-    router.push('./Itidetails');
-  };
+
   const [search, setSearch] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [minBudget, setMinBudget] = useState('');
@@ -53,6 +51,25 @@ const ItineraryList = (Props) => {
         setError(error.message);
       });
   };
+
+  const handleflag = async (actid) => {
+    try {
+      const response = await fetch(`http://localhost:4000/admin/flagItinerary/${actid}`, {
+        method: 'PATCH',
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        throw new Error('flag failed');
+      }
+      alert('flag successful!');
+    } catch (error) {
+      console.error('Error booking activity:', error);
+      alert('flag failed');
+    }
+  };
+  
+
+
 
   const fetchItineraries = () => {
     fetch('http://localhost:4000/tourist/upcomingItineraries')
@@ -356,9 +373,8 @@ const clearsearch=()=>{
               <button className={styles.btnFeedback} onClick={handleFeedback} >Send Feedback</button> 
           </div>) : (null)
           }
-          {role==="Admin"?(
-            <button className={styles.addticket} >flag</button>
-          ):<div></div>}
+          <p>this{itinerary._id}</p>
+{role === "Admin"?(<button onClick={()=>{handleflag(itinerary._id)}}>flag</button>):(null)}
           
 
           
