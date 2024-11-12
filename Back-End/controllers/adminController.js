@@ -6,8 +6,47 @@ const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const ComplaintModel = require('../models/objectModel').complaint;
 const { Activity, itinerary } = require('../models/objectModel');
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 
 const mongoose = require('mongoose');
+
+// Collection name in MongoDB
+const collectionName = 'uploads';
+
+// Initialize GridFS
+let gfs;
+mongoose.connection.once('open', () => {
+    gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    gfs.collection(collectionName);
+});
+
+// Set up GridFS storage
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URI,
+    file: (req, file) => {
+        return {
+            bucketName: collectionName,
+            filename: `${Date.now()}-${file.originalname}`
+        };
+    }
+});
+
+// File filter to allow only photos
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+
+const upload = multer({
+    storage,
+    fileFilter
+}).array('documents', 1);
 
 // Get all admins
 const getAllAdmins = async (req, res) => {
@@ -176,6 +215,77 @@ const addProduct = async (req, res) => {
 
 };
 
+const getProductPhoto = async (req, res) => {
+    try {
+        const product = await ProdModel.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'product not found' });
+        }
+
+
+        const photo = product.picture;
+
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+const uploadProductPhoto = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const product = await ProdModel.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ error: 'product not found' });
+            }
+
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+           product.picture = documentMetadata;
+
+            await product.save();
+
+            res.json({ message: 'product photo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+};
 // Admin editProduct
 const editProduct = async (req, res) => {
     const { id } = req.params;
@@ -199,8 +309,9 @@ const editProduct = async (req, res) => {
         if (availableAmount) updatedProd.availableAmount = availableAmount;
         if (picture) {
             updatedProd.picture = {
-                data: picture.buffer,
-                type: picture.mimetype
+                filename: picture.filename,  // Set filename from the uploaded file
+                contentType: picture.mimetype, // Use file's MIME type
+                fileID: picture.id // Assuming multer-gridfs-storage provides file ID in `picture.id`
             };
         }
 
@@ -523,5 +634,7 @@ module.exports = {
     viewProductSales,
     flagActivity,
     flagItinerary,
-    viewAllProductSales
+    viewAllProductSales,
+    uploadProductPhoto,
+    getProductPhoto
 }
