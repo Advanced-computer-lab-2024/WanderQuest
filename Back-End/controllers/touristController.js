@@ -279,7 +279,7 @@ const rateAnActivity = async (req, res) => {
             return res.status(404).json({ error: 'Activity not found' });
         }
 
-        const existingRating = activity.ratings.findIndex(r => r.touristId.toString() === touristId);
+        const existingRating = activity.ratings.findIndex(r => r.touristId === touristId);
         if (existingRating !== -1) {
             activity.ratings[existingRating].rating = rating;
         } else {
