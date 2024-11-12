@@ -11,6 +11,9 @@ export default function advertiser() {
     const handleRedirectp = () => {
         router.push('/advertiser/activitys');
     };
+    const handleRedirecttransportation = () => {
+        router.push('/advertiser/transportation');
+    };
 
 
     return (
@@ -19,7 +22,9 @@ export default function advertiser() {
             <h1>Advertiser Page</h1>
             <p>Welcome to the Advertiser page!</p>
             <button onClick={handleRedirect}>View a list of all my created activities/ itineraries / museums and historical places</button>
-            <button onClick={handleRedirectp}>crud act</button>
+            <button onClick={handleRedirectp}>crud activity</button>
+            <button onClick={handleRedirecttransportation}>crud Transportation</button>
+
       
         </div>
     );
