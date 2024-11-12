@@ -30,7 +30,7 @@ const createTransportation = async (req, res) => {
   newTransportation.save().then((data) => {
     return res.status(201).json(newTransportation);
   }).catch((err) => {
-    return res.status(500).json({message: 'Internal server error'});
+    return res.status(500).json({message: err.message});
   });
 }
 
