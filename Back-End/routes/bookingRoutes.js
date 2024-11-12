@@ -9,7 +9,8 @@ const {
     flightBookings,
     itineraryBookings,
     activityBookings,
-    bookTransportation
+    bookTransportation,
+    transportationBookings
 } = require('../controllers/bookingController'); // Destructure the flightSearch function
 
 const router = express.Router(); // Capitalize Router
@@ -24,6 +25,6 @@ router.get("/activities/:id", activityBookings);
 router.get("/itineraries/:id", itineraryBookings);
 router.get("/flights/:id", flightBookings);
 router.get("/hotels/:id", hotelBookings);
-router.get("/transportations/:id", hotelBookings);
+router.get("/transportations/:id", transportationBookings);
 
 module.exports = router;
