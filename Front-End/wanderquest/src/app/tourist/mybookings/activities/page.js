@@ -42,7 +42,7 @@ function activitypage() {
       if (!response.ok) {
         throw new Error('Booking failed');
       }
-      alert('Booking successful!');
+      alert('Cancel was Successful!');
     } catch (error) {
       console.error('Error booking activity:', error);
       alert('cancel failed');
