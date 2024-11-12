@@ -1,0 +1,79 @@
+/* Container for the entire page */
+.container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    background-color: #f3f4f6;
+  }
+  
+  /* Navbar styling */
+  .navbar {
+    margin-bottom: 30px;
+  }
+  
+  /* Flight card styling */
+  .flight-card {
+    background: linear-gradient(135deg, #ffffff, #f7f9fc);
+    border: 1px solid #e1e4e8;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s ease;
+  }
+  
+  .flight-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Flight details styling */
+  .flight-details p {
+    font-size: 16px;
+    margin: 10px 0;
+    line-height: 1.8;
+  }
+  
+  .flight-details strong {
+    color: #2b8a3e;
+    display: inline-block;
+    width: 180px;
+    font-weight: 700;
+  }
+  
+  /* Highlighted details */
+  .flight-details .highlight {
+    color: #1d72b8;
+    font-weight: 600;
+  }
+  
+  /* Loading spinner styling */
+  .loading {
+    text-align: center;
+    color: #555;
+    font-size: 20px;
+    padding: 20px;
+  }
+  
+  /* Button styles */
+  .book-button {
+    display: inline-block;
+    background-color: #1d72b8;
+    color: #ffffff;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .book-button:hover {
+    background-color: #155a8a;
+  }
+  

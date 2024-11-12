@@ -85,7 +85,7 @@ const bookItinerary = async (req, res) => {
 
     const booking = await Booking.findOne({ userId, itineraryId });
     if(booking && booking.status === 'booked') {
-        return res.status(400).json({ error: 'Activity already booked by this user' });
+        return res.status(400).json({ error: 'Itinerary already booked by this user' });
     }
 
     if (bookingType !== 'itinerary') {
