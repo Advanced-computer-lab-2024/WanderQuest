@@ -297,72 +297,6 @@ const uploadProductPhoto = async (req, res) => {
     });
 };
 
-//correct one
-// const uploadProductPhoto = async (req, res) => {
-//     const { productId } = req.body;
-//      console.log("request body",req.body);
-//     if (!productId) {
-//         return res.status(400).json({ error: 'Product ID is required' });
-//     }
-
-//     if (!req.file) {
-//         return res.status(400).json({ error: 'No file uploaded' });
-//     }
-
-//     try {
-//         // Ensure the product exists in the database
-//         const product = await ProdModel.findById(productId);
-//         if (!product) {
-//             return res.status(404).json({ error: 'Product not found' });
-//         }
-
-//         // Instead of `buffer`, store the `id` of the file in GridFS
-//         const picture = [{
-//             data: req.file.id,  // GridFS file ID
-//             type: req.file.mimetype
-//         }];
-
-//         // Update the product with the new image reference
-//         product.picture = picture;
-//         await product.save();
-
-//         res.status(200).json({ message: 'Product photo uploaded successfully', product });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
-
-// const addProduct = async (req, res) => {
-//     const { name, price, description, seller, ratings, reviews, availableAmount, sales } = req.body;
-
-//     if (!name || !description || !price) {
-//         return res.status(400).json({ error: 'Details and prices fields are required' });
-//     }
-
-//     try {
-//         const existingProduct = await ProdModel.findOne({ name, price });
-//         if (existingProduct) {
-//             return res.status(400).json({ error: 'Product already exists' });
-//         }
-
-//         const product = await ProdModel.create({ 
-//             name, 
-//             picture: [], // Empty array for pictures, to be added later
-//             price, 
-//             description, 
-//             seller, 
-//             ratings: ratings || [], 
-//             reviews: reviews || [], 
-//             availableAmount, 
-//             sales: sales || 0
-//         });
-
-//         res.status(200).json(product);
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// };
-
 
 const editProduct = async (req, res) => {
     const { id } = req.params;
@@ -460,4 +394,4 @@ const viewAllProductSales = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,/*ensureGridFSInitialized ,*/getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
+module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
