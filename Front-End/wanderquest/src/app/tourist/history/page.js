@@ -81,7 +81,7 @@ const TouristHistory = () => {
     useEffect(() => {
         const fetchItineraries = async () => {
             try{
-            const response = await fetch(`http://localhost:4000/tourGuide/myItineraries/${guideID}`);
+            const response = await fetch(`http://localhost:4000/tourGuide/myItineraries/${followedGuides._id}`);
             const data = await response.json();
             setPastItineraries(data);
             }catch(error){
@@ -95,7 +95,7 @@ const TouristHistory = () => {
     useEffect(() => {
         const fetchActivities = async () =>{
             try{
-                const response = await fetch(`http://localhost:4000/activityRoutes/myActivities/${guideID}`);
+                const response = await fetch(`http://localhost:4000/activityRoutes/myActivities/${followedGuides._id}`);
                 const data = await response.json();
                 setAttendedActivities(data);
             }catch(error){

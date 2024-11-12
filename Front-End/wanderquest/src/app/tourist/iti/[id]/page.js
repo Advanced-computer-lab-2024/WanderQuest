@@ -92,7 +92,7 @@
             })
             .catch(error => {
                 console.error('Error booking itinerary:', error);
-                alert('Booking failed. Please try again.'+error);
+                alert('You Already Booked This!');
             });
         };
 
