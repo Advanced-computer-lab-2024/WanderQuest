@@ -24,5 +24,6 @@ router.get("/activities/:id", activityBookings);
 router.get("/itineraries/:id", itineraryBookings);
 router.get("/flights/:id", flightBookings);
 router.get("/hotels/:id", hotelBookings);
+router.get("/transportations/:id", hotelBookings);
 
 module.exports = router;
