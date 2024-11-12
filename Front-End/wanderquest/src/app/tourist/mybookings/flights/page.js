@@ -5,11 +5,11 @@ import styles from "/Styles/Activities.module.css";
 
 function FlightPage() {
   const [flights, setFlights] = useState([]);
-  const [id1, setid] = useState('');
+  const [id1, setid] = useState('67310bdba3280f11a947c86d');
   const [loading, setLoading] = useState(true);
 
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/flights/${id1}`)
+    fetch(`http://localhost:4000/booking/flights/67310bdba3280f11a947c86d`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -27,32 +27,32 @@ function FlightPage() {
   };
   const fetchid = () => {
     fetch(`http://localhost:4000/tourist/touristId`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Error fetching itineraries: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            setid(data);
-            setLoading(false);
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error fetching itineraries: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setid(data);
+        setLoading(false);
 
-            // Fetch details for all activities
+        // Fetch details for all activities
 
-        })
-        .catch(error => {
-            setError(error.message);
-            setLoading(false);
-        });
-};
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(false);
+      });
+  };
   useEffect(() => {
     fetchData();
-    fetchid();
+    // fetchid();
   }, []);
 
   return (<>        <Navbar />
     <div className={styles.container}>
-    <h1>My Flights</h1>
+      <h1>My Flights</h1>
       {loading ? (
         <p className={styles.loading}>Loading...</p>
       ) : (
@@ -79,7 +79,7 @@ function FlightPage() {
         ))
       )}
     </div>
-    </>);
+  </>);
 }
 
 export default FlightPage;

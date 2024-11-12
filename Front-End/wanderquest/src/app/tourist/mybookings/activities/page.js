@@ -8,9 +8,9 @@ import Navbar from "../../../../../components/Navbar";
 function activitypage() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [id1, setid] = useState('');
+  const [id1, setid] = useState('67310bdba3280f11a947c86d');
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/activities/${id1}}`)
+    fetch(`http://localhost:4000/booking/activities/${id1}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -30,31 +30,31 @@ function activitypage() {
 
   const fetchid = () => {
     fetch(`http://localhost:4000/tourist/touristId`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Error fetching itineraries: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            setid(data);
-            setLoading(false);
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error fetching itineraries: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setid(data);
+        setLoading(false);
 
 
-        })
-        .catch(error => {
-            setError(error.message);
-            setLoading(false);
-        });
-};
-  useEffect(() => {
-    fetchid();
-}, []);
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(false);
+      });
+  };
+  // useEffect(() => {
+  //   fetchid();
+  // }, []);
   const handlecancel = async (actid) => {
-    const bookingId=actid;
-    const userId=id1
+    const bookingId = actid;
+    const userId = id1
     const cancel = { userId, bookingId }
-    
+
     try {
       const response = await fetch('http://localhost:4000/booking/cancel', {
         method: 'PATCH',
@@ -73,31 +73,31 @@ function activitypage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
-  
+  }, [id1]);
 
 
-  
+
+
   return (<>
     <Navbar></Navbar>
     <h1>My Activities</h1>
     {activities.map((activity) => (
-        <div key={activity._id} className={styles.activity}>
-            <h3>{activity.details.category}</h3>
-            <p>
-                <strong>Price:</strong> {activity.details.price}<br />
-                <strong>Time:</strong> {activity.details.time}<br />
-                <label><strong>Location:</strong> {activity.details.location}</label><br />
-                <strong>Start Date:</strong> {activity.startDate}<br />
-                <strong>Special Discounts:</strong> {activity.details.specialDiscounts}<br />
-                <strong>status:</strong> {activity.status}<br />
-            </p>
-            {activity.status === "cancelled" ?(<></>):(<button onClick={() => handlecancel(activity._id)}>Cancel Booking</button>)}
-        </div>
+      <div key={activity._id} className={styles.activity}>
+        <h3>{activity.details.category}</h3>
+        <p>
+          <strong>Price:</strong> {activity.details.price}<br />
+          <strong>Time:</strong> {activity.details.time}<br />
+          <label><strong>Location:</strong> {activity.details.location}</label><br />
+          <strong>Start Date:</strong> {activity.startDate}<br />
+          <strong>Special Discounts:</strong> {activity.details.specialDiscounts}<br />
+          <strong>status:</strong> {activity.status}<br />
+        </p>
+        {activity.status === "cancelled" ? (<></>) : (<button onClick={() => handlecancel(activity._id)}>Cancel Booking</button>)}
+      </div>
 
-))}
-{activities.length === 0?(<>YOU have no activities</>):(null)}
-    </>)
+    ))}
+    {activities.length === 0 ? (<>YOU have no activities</>) : (null)}
+  </>)
 }
 
 export default activitypage
