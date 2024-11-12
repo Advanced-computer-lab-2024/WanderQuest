@@ -1,4 +1,5 @@
 const { Seller } = require('../models/userModel');
+const ProdModel = require('../models/objectModel').Product;
 const multer = require('multer');
 const mongoose = require('mongoose');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -35,10 +36,17 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+
 const upload = multer({
     storage,
     fileFilter
 }).array('documents', 1);
+
+//Add a new multer configuration for handling product images
+// const uploadProductImage = multer({
+//     storage,
+//     fileFilter
+// }).single('photo'); // 'photo' will be the key for the product image
 
 // Read Seller profile
 const getProfile = async (req, res) => {
@@ -191,6 +199,46 @@ const getAvailableProducts = async (req, res) => {
     }
 };
 
+const getProductPhoto = async (req, res) => {
+    try {
+        const product = await ProdModel.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'product not found' });
+        }
+
+
+        const photo = product.picture;
+
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //seller addProduct
 const addProduct = async (req, res) => {
     const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales } = req.body;
@@ -215,6 +263,107 @@ const addProduct = async (req, res) => {
     }
 
 };
+
+
+const uploadProductPhoto = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const product = await ProdModel.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ error: 'product not found' });
+            }
+
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+           product.picture = documentMetadata;
+
+            await product.save();
+
+            res.json({ message: 'product photo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+};
+
+//correct one
+// const uploadProductPhoto = async (req, res) => {
+//     const { productId } = req.body;
+//      console.log("request body",req.body);
+//     if (!productId) {
+//         return res.status(400).json({ error: 'Product ID is required' });
+//     }
+
+//     if (!req.file) {
+//         return res.status(400).json({ error: 'No file uploaded' });
+//     }
+
+//     try {
+//         // Ensure the product exists in the database
+//         const product = await ProdModel.findById(productId);
+//         if (!product) {
+//             return res.status(404).json({ error: 'Product not found' });
+//         }
+
+//         // Instead of `buffer`, store the `id` of the file in GridFS
+//         const picture = [{
+//             data: req.file.id,  // GridFS file ID
+//             type: req.file.mimetype
+//         }];
+
+//         // Update the product with the new image reference
+//         product.picture = picture;
+//         await product.save();
+
+//         res.status(200).json({ message: 'Product photo uploaded successfully', product });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+
+// const addProduct = async (req, res) => {
+//     const { name, price, description, seller, ratings, reviews, availableAmount, sales } = req.body;
+
+//     if (!name || !description || !price) {
+//         return res.status(400).json({ error: 'Details and prices fields are required' });
+//     }
+
+//     try {
+//         const existingProduct = await ProdModel.findOne({ name, price });
+//         if (existingProduct) {
+//             return res.status(400).json({ error: 'Product already exists' });
+//         }
+
+//         const product = await ProdModel.create({ 
+//             name, 
+//             picture: [], // Empty array for pictures, to be added later
+//             price, 
+//             description, 
+//             seller, 
+//             ratings: ratings || [], 
+//             reviews: reviews || [], 
+//             availableAmount, 
+//             sales: sales || 0
+//         });
+
+//         res.status(200).json(product);
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
+
+
 const editProduct = async (req, res) => {
     const { id } = req.params;
     let updatedProd = await ProdModel.findById(id)
@@ -229,8 +378,42 @@ const editProduct = async (req, res) => {
         }
     }
 }
+// const editProduct = async (req, res) => {
+//     uploadProductImage(req, res, async (err) => {
+//         if (err) {
+//             return res.status(400).json({ error: err.message });
+//         }
+
+//         const { id } = req.params;
+//         let updatedProd = await ProdModel.findById(id);
+//         if (!updatedProd) {
+//             return res.status(404).json({ error: 'Product not found' });
+//         }
+
+//         try {
+//             const picture = req.file
+//                 ? {
+//                     filename: req.file.filename,
+//                     contentType: req.file.mimetype,
+//                     fileID: req.file.id,
+//                 }
+//                 : updatedProd.picture; // Retain existing picture if no new file is uploaded
+
+//             updatedProd = await ProdModel.findByIdAndUpdate(
+//                 id,
+//                 { ...req.body, picture },
+//                 { new: true }
+//             );
+
+//             res.status(200).json(updatedProd);
+//         } catch (error) {
+//             res.status(400).json({ error: error.message });
+//         }
+//     });
+// };
 
 //seller can archive or unarchive products
+
 const archiveProduct = async (req,res) => {
     try{
         const  productId = req.params.id;
@@ -264,4 +447,17 @@ const viewProductSales = async (req,res) => {
         res.status(400).json({error: error.message});
     }
 }
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales };
+const viewAllProductSales = async (req, res) => {
+    try {
+        // Fetch all products with only the specified fields: name, availableAmount, and sales
+        const products = await ProdModel.find({}, "name availableAmount sales");
+        
+        // Return the list of products
+        return res.status(200).json(products);
+
+    } catch (error) {
+        // If an error occurs, return the error message
+        res.status(400).json({ error: error.message });
+    }
+};
+module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,/*ensureGridFSInitialized ,*/getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };

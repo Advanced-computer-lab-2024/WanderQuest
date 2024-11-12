@@ -18,7 +18,9 @@ function mybookingspage() {
     const handleRedirectflight = () => {
         router.push('/tourist/mybookings/flights');
     };
-   
+    const handleRedirecthotel = () => {
+        router.push('/tourist/mybookings/myhotels');
+    };
 
   return (<>
     <div>mybookingspage</div>
@@ -26,7 +28,7 @@ function mybookingspage() {
     <button onClick={handleRedirecttrans} >transportation</button>
     <button onClick={handleRedirectactivit} >activities</button>
     <button onClick={handleRedirectiti} >itiniraties</button>
-    
+    <button onClick={handleRedirecthotel} >Hotels</button>
   
     </>)
 }

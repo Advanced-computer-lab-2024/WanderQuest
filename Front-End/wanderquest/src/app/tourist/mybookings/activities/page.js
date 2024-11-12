@@ -58,8 +58,9 @@ function activitypage() {
   
   return (<>
     <Navbar></Navbar>
+    <h1>My Activities</h1>
     {activities.map((activity) => (
-        <div key={activity.id} className={styles.activity}>
+        <div key={activity._id} className={styles.activity}>
             <h3>{activity.details.category}</h3>
             <p>
                 <strong>Price:</strong> {activity.details.price}<br />

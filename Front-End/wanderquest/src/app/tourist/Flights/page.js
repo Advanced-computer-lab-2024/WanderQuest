@@ -75,7 +75,7 @@ function BookingsPage() {
 
   const handlebooking=(price1,companyName)=>{
     const bookingType="flight";
-    const userId='672fce1b259054c6c4871c33';
+    const userId='67310bdba3280f11a947c86d';
     const from=departureDate;
     const price=price1;
     const fromAir=originLocationCode;
