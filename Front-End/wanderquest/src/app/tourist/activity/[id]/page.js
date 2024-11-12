@@ -5,12 +5,11 @@ import Navbar from '../../../../../components/Navbar';
 
 function Page({ params }) {
   const id = params.id;
-  const userId='67310bdba3280f11a947c86d';
   const [activity, setActivity] = useState(null);
   const [bookingType, setBookingType] = useState('activity');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [id1,setid]=useState('');
   const share = () => {
     navigator.share({
       url: `http://localhost:3000/tourist/activity/${id}`,
@@ -32,13 +31,32 @@ function Page({ params }) {
       setLoading(false);
     }
   };
+  const fetchid = () => {
+    fetch(`http://localhost:4000/tourist/touristId`)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Error fetching itineraries: ${res.statusText}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            setid(data);
+            setLoading(false);
 
+            // Fetch details for all activitie
+        })
+        .catch(error => {
+            setLoading(false);
+        });
+};
   useEffect(() => {
     fetchData();
+    fetchid();
   }, []);
 
   const handleBooking = async () => {
     const activityId=id;
+    const userId=id1;
     const act = { userId, bookingType, activityId };
     
     try {

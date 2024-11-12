@@ -6,6 +6,7 @@ import Navbar from '../../../../components/Navbar';
 function transportpage() {
   const[transportation,setTransportation]=useState([]);
   const[Loading,setLoading]=useState(true);
+  const [id1, setid] = useState('');
   const fetchData = () => {
     fetch(`http://localhost:4000/advertiser/transportations`)
       .then((response) => {
@@ -23,13 +24,34 @@ function transportpage() {
         setLoading(false);
       });
   };
+  const fetchid = () => {
+    fetch(`http://localhost:4000/tourist/touristId`)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Error fetching itineraries: ${res.statusText}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            setid(data);
+            setLoading(false);
+
+            // Fetch details for all activities
+        })
+        .catch(error => {
+            setError(error.message);
+            setLoading(false);
+        });
+};
+ 
 
   useEffect(() => {
     fetchData();
+    fetchid();
   }, []);
 
   const handleBooking = async (company1,type1,price1,departure1,arrival1,date1,pickUpLocation1,dropOffLocation1) => {
-    const userId='67310bdba3280f11a947c86d'
+    const userId=id1;
     const bookingType='transportation'
     const company=company1;
     const type=type1

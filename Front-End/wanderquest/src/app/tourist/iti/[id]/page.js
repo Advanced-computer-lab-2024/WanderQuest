@@ -5,7 +5,7 @@
 
     const ItinerarydetailsPage = ({ params }) => {
         const id = params.id;
-      
+        const [id1, setid] = useState('');
         const [itinerary, setAllItineraries] = useState({});
         const [activityDetails, setActivityDetails] = useState({});
         const [loading, setLoading] = useState(true);
@@ -36,6 +36,30 @@
                 });
         };
 
+        const fetchid = () => {
+            fetch(`http://localhost:4000/tourist/touristId`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Error fetching itineraries: ${res.statusText}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    setid(data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    setError(error.message);
+                    setLoading(false);
+                });
+        };
+
+
+
+
+
+
+
         const fetchItineraries = () => {
             fetch(`http://localhost:4000/tourist/upcomingItineraries/${id}`)
                 .then(res => {
@@ -63,13 +87,14 @@
 
         useEffect(() => {
             fetchItineraries();
+            fetchid();
         }, []);
 
         if (loading) return <p>Loading itinerary...</p>;
         if (error) return <p>Error: {error}</p>;
 
         const handleBooking = (date) => {
-            const userId='67310bdba3280f11a947c86d';
+            const userId=id1;
             const bookingType='itinerary';
             const startDate=date
             const itineraryId=id;
@@ -143,9 +168,9 @@
                     <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
                     <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                     <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-                    {itinerary.BookingAlreadyMade ?(<button className={styles.addticket} onClick={()=>{handleBooking(itinerary.availableDates[0])}} >
+                    <button className={styles.addticket} onClick={()=>{handleBooking(itinerary.availableDates[0])}} >
                         Book
-                    </button>):(<></>) }
+                    </button>
                     <button onClick={share}>share link</button>
                     
                 </div>

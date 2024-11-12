@@ -8,9 +8,9 @@ import Navbar from "../../../../../components/Navbar";
 function activitypage() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const id ='672fce1b259054c6c4871c33'
+  const [id1, setid] = useState('');
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/activities/67310bdba3280f11a947c86d`)
+    fetch(`http://localhost:4000/booking/activities/${id1}}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -28,9 +28,31 @@ function activitypage() {
       });
   };
 
+  const fetchid = () => {
+    fetch(`http://localhost:4000/tourist/touristId`)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Error fetching itineraries: ${res.statusText}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            setid(data);
+            setLoading(false);
+
+
+        })
+        .catch(error => {
+            setError(error.message);
+            setLoading(false);
+        });
+};
+  useEffect(() => {
+    fetchid();
+}, []);
   const handlecancel = async (actid) => {
     const bookingId=actid;
-    const userId="67310bdba3280f11a947c86d"
+    const userId=id1
     const cancel = { userId, bookingId }
     
     try {
