@@ -150,7 +150,7 @@ TouristSchema.methods.deduceFromWallet = async function (amount) {
         throw error; // Re-throw the error to be handled by the caller
     }
 }
-ouristSchema.methods.refundToWallet = async function (amount) {
+TouristSchema.methods.refundToWallet = async function (amount) {
     try {
         this.wallet += amount;
         let pointsEarned;
