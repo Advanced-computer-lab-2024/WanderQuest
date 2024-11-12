@@ -135,7 +135,7 @@ function BookingsPage() {
             </button>
           </div>
         </div>
-        <h2 className={styles.welcome}>Where to next, Tourist?</h2>
+        <h2 className={styles.welcome}>Where to next, Haslas?</h2>
         <div className={styles.welcome}>
           Wander freely, quest deeply – WanderQuest brings your travel dreams to life.
         </div>

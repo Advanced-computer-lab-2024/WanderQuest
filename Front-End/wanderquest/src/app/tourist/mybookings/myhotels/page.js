@@ -48,7 +48,7 @@ function myhotels() {
                     <strong>Description:</strong> {hotel.details.description}
                   </p>
                   <p>
-                    <strong>Price:</strong> {hotel.details.price}
+                    <strong>Price:</strong> {hotel.details.price ?(<>{hotel.details.price}</>):(<>none</>)}
                   </p>
                   <p>
                     <strong>stars:</strong> {hotel.details.stars}
@@ -59,6 +59,7 @@ function myhotels() {
                   <p>
                     <strong>checkOut Date:</strong> {hotel.details.checkOut}
                   </p>
+                 
                 </div>
               </div>
             ))
