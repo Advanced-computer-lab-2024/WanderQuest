@@ -51,7 +51,7 @@ function transportpage() {
               <strong>Arrival:</strong> {transport.details.arrival}
             </p>
             <p>
-              <strong>Date:</strong> {transport.details.date}
+              <strong>Date:</strong> {transport.details.transportationDate}
             </p>
             <p>
               <strong>Booking AlreadyMade:</strong> {transport.details.bookingAlreadyMade}

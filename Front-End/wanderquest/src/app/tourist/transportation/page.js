@@ -40,7 +40,7 @@ function transportpage() {
     const pickUpLocation=pickUpLocation1
     const dropOffLocation=dropOffLocation1
     const act = { userId, bookingType, company, type, price, departure, arrival, date, pickUpLocation, dropOffLocation };
-    
+    console.log(act);
     try {
       const response = await fetch('http://localhost:4000/booking/transportation', {
         method: 'POST',
@@ -49,10 +49,12 @@ function transportpage() {
       });
       if (!response.ok) {
         throw new Error('Booking failed');
+        console.log(act);
       }
+      console.log(act);
       alert('Booking successful!');
     } catch (error) {
-      console.error('Error booking activity:', error);
+      console.error('Error booking transportation:', error);
       alert('Booking failed, already booked ');
     }
   };
@@ -90,7 +92,7 @@ function transportpage() {
             <p>
               <strong>DropOffLocatione:</strong> {transport.dropOffLocation}
             </p>
-            {transport.bookingAlreadyMade ?(<button onClick={()=>{handleBooking(transport.company,transport.type,transport.price,transport.departure,transport.arrival,transport.date,transport.pickUpLocation,transport.dropOffLocation)}}>Book</button>):(<></>)}
+           <button onClick={()=>{handleBooking(transport.company,transport.type,transport.price,transport.departure,transport.arrival,transport.date,transport.pickUpLocation,transport.dropOffLocation)}}>Book</button>
           </div>
         </div>
     ))}
