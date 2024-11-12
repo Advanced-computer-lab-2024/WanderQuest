@@ -16,7 +16,7 @@ function BookingsPage() {
   const [countryCodes, setcountryCodes] = useState('');
   const [hotels, setHotels] = useState(null); // Changed initial state to null
   const [loading, setLoading] = useState(false);
-
+  const [id1,setid]=useState('');
   const router = useRouter();
 
   const handleChangeColor = (buttonId) => {
@@ -81,11 +81,33 @@ function BookingsPage() {
       setLoading(false);
     }
   };
+  const fetchid = () => {
+    fetch(`http://localhost:4000/tourist/touristId`)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Error fetching itineraries: ${res.statusText}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            setid(data);
+            setLoading(false);
+
+            // Fetch details for all activiti
+        })
+        .catch(error => {
+            setError(error.message);
+            setLoading(false);
+        });
+};
+useEffect(() => {
+  fetchid();
+}, []);
 
   const handlebooking=(hotelName,stars,rating,description,price1,)=>{
     const bookingType="hotel";
     const price=price1;
-    const userId='67310bdba3280f11a947c86d';
+    const userId=id1;
     const checkIn=departureDate;
     const checkOut=returnDate;
     const hotel= { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut }

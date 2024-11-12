@@ -17,7 +17,7 @@ function BookingsPage() {
   const [originSuggestions, setOriginSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [loading, setLoading] = useState(false); // Add loading state
-
+  const [id1,setid]=useState('');
   const router = useRouter();
   const amadeus = new Amadeus({
     clientId: "RvyPDMc2pf3vxqJ37qT61NpI9XzcQIUN",
@@ -43,7 +43,31 @@ function BookingsPage() {
       max: 10,
     };
 
-   
+
+
+
+    const fetchid = () => {
+      fetch(`http://localhost:4000/tourist/touristId`)
+          .then(res => {
+              if (!res.ok) {
+                  throw new Error(`Error fetching itineraries: ${res.statusText}`);
+              }
+              return res.json();
+          })
+          .then(data => {
+              setid(data);
+              setLoading(false);
+
+          })
+          .catch(error => {
+
+              setLoading(false);
+          });
+  };
+  useEffect(() => {
+    fetchid();
+  }, []);
+
 
     amadeus.shopping.flightOffersSearch
       .get(requestParams)
@@ -75,7 +99,7 @@ function BookingsPage() {
 
   const handlebooking=(price1,companyName)=>{
     const bookingType="flight";
-    const userId='67310bdba3280f11a947c86d';
+    const userId=id1;
     const from=departureDate;
     const price=price1;
     const fromAir=originLocationCode;
