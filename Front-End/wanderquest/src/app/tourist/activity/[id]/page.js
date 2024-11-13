@@ -9,7 +9,7 @@ function Page({ params }) {
   const [bookingType, setBookingType] = useState('activity');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [id1,setid]=useState('');
+  const [id1, setid] = useState('');
   const share = () => {
     navigator.share({
       url: `http://localhost:3000/tourist/activity/${id}`,
@@ -33,32 +33,32 @@ function Page({ params }) {
   };
   const fetchid = () => {
     fetch(`http://localhost:4000/tourist/touristId`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Error fetching itineraries: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            setid(data);
-            setLoading(false);
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error fetching itineraries: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setid(data);
+        setLoading(false);
 
-            // Fetch details for all activitie
-        })
-        .catch(error => {
-            setLoading(false);
-        });
-};
+        // Fetch details for all activitie
+      })
+      .catch(error => {
+        setLoading(false);
+      });
+  };
   useEffect(() => {
     fetchData();
     fetchid();
-  }, []);
+  }, [id1]);
 
   const handleBooking = async () => {
-    const activityId=id;
-    const userId=id1;
+    const activityId = id;
+    const userId = id1;
     const act = { userId, bookingType, activityId };
-    
+
     try {
       const response = await fetch('http://localhost:4000/booking/activity', {
         method: 'POST',
@@ -88,7 +88,7 @@ function Page({ params }) {
             <strong>Date:</strong> {activity.date}<br />
             <strong>Time:</strong> {activity.time}<br />
             <strong>Location:</strong>{' '}
-            <a href=''target="_blank" rel="noopener noreferrer">
+            <a href='' target="_blank" rel="noopener noreferrer">
               {activity.location}
             </a><br />
             <strong>Price:</strong> {activity.price}<br />
@@ -96,7 +96,7 @@ function Page({ params }) {
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-            {activity.comments.map((Comment)=>(<div>
+            {activity.comments.map((Comment) => (<div>
               <strong>comment</strong> {Comment.touristId}<br />
               <strong>comment</strong> {Comment.comment}<br />
               <strong>comment</strong> {Comment.createdAt}<br />
@@ -105,7 +105,7 @@ function Page({ params }) {
 
           </p>
           <button onClick={share}>Share Link</button>
-          {activity.bookingIsOpen ?(<button onClick={handleBooking}>Book</button>):(<></>)}
+          {activity.bookingIsOpen ? (<button onClick={handleBooking}>Book</button>) : (<></>)}
         </div>
       )}
     </>

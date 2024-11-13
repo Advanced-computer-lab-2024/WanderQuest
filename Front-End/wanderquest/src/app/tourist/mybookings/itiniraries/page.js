@@ -57,7 +57,7 @@ function ititpage() {
 };
   useEffect(() => {
     fetchid();
-  }, []);
+  }, [id1]);
   const fetchData = () => {
     fetch(`http://localhost:4000/booking/itineraries/${id1}`)
       .then((response) => {

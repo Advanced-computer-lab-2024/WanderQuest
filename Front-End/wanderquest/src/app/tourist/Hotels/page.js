@@ -16,7 +16,7 @@ function BookingsPage() {
   const [countryCodes, setcountryCodes] = useState('');
   const [hotels, setHotels] = useState(null); // Changed initial state to null
   const [loading, setLoading] = useState(false);
-  const [id1,setid]=useState('');
+  const [id1, setid] = useState('');
   const router = useRouter();
 
   const handleChangeColor = (buttonId) => {
@@ -29,7 +29,7 @@ function BookingsPage() {
 
   const handleSearch = async () => {
     setLoading(true);
-  
+
     const options = {
       method: 'GET',
       url: 'https://sky-scrapper.p.rapidapi.com/api/v1/hotels/searchDestinationOrHotel',
@@ -39,15 +39,15 @@ function BookingsPage() {
         'x-rapidapi-host': 'sky-scrapper.p.rapidapi.com'
       }
     };
-  
+
     try {
       // First request to get entityId
       const response = await axios.request(options);
       const entityId = response.data.data[0].entityId;
       console.log('Entity ID:', entityId);
-      
+
       setcountryCodes(entityId);
-  
+
       // Second request to get hotels
       const hotelOptions = {
         method: 'GET',
@@ -69,11 +69,11 @@ function BookingsPage() {
           'x-rapidapi-host': 'sky-scrapper.p.rapidapi.com'
         }
       };
-  
+
       const hotelResponse = await axios.request(hotelOptions);
       console.log('Hotel Response:', hotelResponse.data);
       setHotels(hotelResponse.data); // Store the entire response
-  
+
     } catch (error) {
       console.error('Error fetching data:', error);
       setHotels(null); // Reset hotels on error
@@ -83,52 +83,52 @@ function BookingsPage() {
   };
   const fetchid = () => {
     fetch(`http://localhost:4000/tourist/touristId`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Error fetching itineraries: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            setid(data);
-            setLoading(false);
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error fetching itineraries: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setid(data);
+        setLoading(false);
 
-            // Fetch details for all activiti
-        })
-        .catch(error => {
-            setError(error.message);
-            setLoading(false);
-        });
-};
-useEffect(() => {
-  fetchid();
-}, []);
+        // Fetch details for all activiti
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(false);
+      });
+  };
+  useEffect(() => {
+    fetchid();
+  }, [id1]);
 
-  const handlebooking=(hotelName,stars,rating,description,price1,)=>{
-    const bookingType="hotel";
-    const price=price1;
-    const userId=id1;
-    const checkIn=departureDate;
-    const checkOut=returnDate;
-    const hotel= { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut }
-    console.log('hotel details:',hotel);
-    fetch('http://localhost:4000/booking/hotel',{
-      method:"POST",
-      headers:{ "Content-Type": "application/json" },
+  const handlebooking = (hotelName, stars, rating, description, price1,) => {
+    const bookingType = "hotel";
+    const price = price1;
+    const userId = id1;
+    const checkIn = departureDate;
+    const checkOut = returnDate;
+    const hotel = { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut }
+    console.log('hotel details:', hotel);
+    fetch('http://localhost:4000/booking/hotel', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(hotel)
     }).then(response => {
       if (!response.ok) {
-          throw new Error('Booking failed');
+        throw new Error('Booking failed');
       }
       return response.json();
-  })
-  .then(() => {
-      alert('Booking has been made successfully!');
-  })
-  .catch(error => {
-      console.error('Error booking itinerary:', error);
-      alert('Booking failed. Please try again.');
-  });
+    })
+      .then(() => {
+        alert('Booking has been made successfully!');
+      })
+      .catch(error => {
+        console.error('Error booking itinerary:', error);
+        alert('Booking failed. Please try again.');
+      });
   }
 
 
@@ -149,7 +149,7 @@ useEffect(() => {
               Hotels
             </button>
             <button
-              onClick={() => {handleChangeColor(2);handleRedirect()}}
+              onClick={() => { handleChangeColor(2); handleRedirect() }}
               className={`${styles.navbtn} ${activeButton === 2 ? styles.active : ""}`}
             >
               Flights
@@ -168,14 +168,14 @@ useEffect(() => {
         </div>
       </div>
 
-      <motion.div 
-        className={styles.searchbar} 
-        initial={{ y: -20 }} 
+      <motion.div
+        className={styles.searchbar}
+        initial={{ y: -20 }}
         transition={{ duration: 1 }}
       >
         <input
           className={styles.input}
-          style={{marginLeft: "3px", height: '41px' }}
+          style={{ marginLeft: "3px", height: '41px' }}
           placeholder="To"
           type="text"
           value={destinationLocationCode}
@@ -189,7 +189,7 @@ useEffect(() => {
           value={departureDate}
           onChange={(e) => setDepartureDate(e.target.value)}
         />
-        
+
         <input
           className={styles.input}
           style={{ height: '41px' }}
@@ -231,9 +231,9 @@ useEffect(() => {
           hotels.data.hotels.map((hotel, index) => (
             <div key={index} className={styles.card}>
               {hotel.heroImage && (
-                <img 
-                  src={hotel.heroImage} 
-                  alt={hotel.name || 'Hotel'} 
+                <img
+                  src={hotel.heroImage}
+                  alt={hotel.name || 'Hotel'}
                   className={styles.hotelImage}
                 />
               )}
@@ -253,7 +253,7 @@ useEffect(() => {
               {hotel.priceDescription && (
                 <p><strong>Price Description:</strong> {hotel.priceDescription}</p>
               )}
-              <button className={styles.button} onClick={()=>{handlebooking(hotel.name,hotel.stars,hotel.rating.value,hotel.rating.description,hotel.priceDescription)}}>book</button>
+              <button className={styles.button} onClick={() => { handlebooking(hotel.name, hotel.stars, hotel.rating.value, hotel.rating.description, hotel.priceDescription) }}>book</button>
             </div>
           ))
         ) : (
