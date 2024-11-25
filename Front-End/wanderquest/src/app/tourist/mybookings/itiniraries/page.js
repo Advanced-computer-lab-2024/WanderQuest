@@ -108,7 +108,7 @@ function ititpage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [id1]);
   
 
 

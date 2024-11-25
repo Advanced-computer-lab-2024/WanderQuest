@@ -52,7 +52,7 @@ function Page({ params }) {
   useEffect(() => {
     fetchData();
     fetchid();
-  }, []);
+  }, [id1]);
 
   const handleBooking = async () => {
     const activityId=id;

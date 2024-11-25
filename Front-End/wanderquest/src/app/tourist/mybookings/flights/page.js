@@ -48,7 +48,7 @@ function FlightPage() {
   useEffect(() => {
     fetchData();
     fetchid();
-  }, []);
+  }, [id1]);
 
   return (<>        <Navbar />
     <div className={styles.container}>

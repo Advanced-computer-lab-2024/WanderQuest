@@ -46,7 +46,7 @@ function myhotels() {
     useEffect(() => {
         fetchid();
       fetchData();
-    }, []);
+    }, [id1]);
     
     return (<>  <Navbar></Navbar>
         <div className={styles.container}>

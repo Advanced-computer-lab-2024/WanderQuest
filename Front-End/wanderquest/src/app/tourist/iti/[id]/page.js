@@ -88,7 +88,7 @@
         useEffect(() => {
             fetchItineraries();
             fetchid();
-        }, []);
+        }, [id1]);
 
         if (loading) return <p>Loading itinerary...</p>;
         if (error) return <p>Error: {error}</p>;

@@ -8,7 +8,7 @@ function transportpage() {
   const[Loading,setLoading]=useState(true);
   const [id1, setid] = useState('');
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/transportations/${id1}}`)
+    fetch(`http://localhost:4000/booking/transportations/${id1}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -46,7 +46,7 @@ function transportpage() {
   useEffect(() => {
     fetchData();
     fetchid();
-  }, []);
+  }, [id1]);
 
 
 

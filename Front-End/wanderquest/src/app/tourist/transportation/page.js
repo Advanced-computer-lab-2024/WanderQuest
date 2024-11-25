@@ -48,7 +48,7 @@ function transportpage() {
   useEffect(() => {
     fetchData();
     fetchid();
-  }, []);
+  }, [id1]);
 
   const handleBooking = async (company1,type1,price1,departure1,arrival1,date1,pickUpLocation1,dropOffLocation1) => {
     const userId=id1;

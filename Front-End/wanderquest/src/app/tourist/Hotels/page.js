@@ -102,7 +102,7 @@ function BookingsPage() {
 };
 useEffect(() => {
   fetchid();
-}, []);
+}, [id1]);
 
   const handlebooking=(hotelName,stars,rating,description,price1,)=>{
     const bookingType="hotel";

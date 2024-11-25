@@ -10,7 +10,7 @@ function activitypage() {
   const [loading, setLoading] = useState(true);
   const [id1, setid] = useState('');
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/activities/${id1}}`)
+    fetch(`http://localhost:4000/booking/activities/${id1}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -49,7 +49,7 @@ function activitypage() {
 };
   useEffect(() => {
     fetchid();
-}, []);
+}, [id1]);
   const handlecancel = async (actid) => {
     const bookingId=actid;
     const userId=id1
@@ -73,13 +73,14 @@ function activitypage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [id1]);
   
 
 
   
   return (<>
     <Navbar></Navbar>
+    {id1}
     <h1>My Activities</h1>
     {activities.map((activity) => (
         <div key={activity._id} className={styles.activity}>
