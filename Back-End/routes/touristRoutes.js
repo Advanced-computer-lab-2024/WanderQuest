@@ -11,7 +11,6 @@ const {
     getActivityById,
     getItineraryById,
     getUpcomingItineraries,
-    getTouristId,
     rateProduct,
     changePreferredCurrency,
     redeemPoints,
@@ -32,8 +31,7 @@ router.use(requireAuth({ role: 'tourist' }));
 
 // routes
 router.get('/profile', getProfile);
-router.put('/profile/:id', updateProfile);
-router.get('/touristId', getTouristId);
+router.put('/profile', updateProfile);
 router.get('/availableProducts', getAvailableProducts);
 router.get('/upcomingActivities', getUpcomingActivities);
 
@@ -52,13 +50,13 @@ router.get('/upcomingPlaces/:id', getPlaceById);
 router.post('/rateProduct/:id', rateProduct);
 router.post('/reviewProduct/:id', reviewProduct);
 router.get('/currencies', getAllCurrencies);
-router.patch('/changePreferredCurrency/:id', changePreferredCurrency);
-router.patch('/redeem/:id', redeemPoints);
+router.patch('/changePreferredCurrency', changePreferredCurrency);
+router.patch('/redeem', redeemPoints);
 router.post('/fileComplaint', fileComplaint);
-router.get('/myComplaints/:id', myComplaints);
-router.get('/level/:id', getLevel)
-router.get('/availablePoints/:id', getavailablePoints)
-router.get('/totalPoints/:id', getTotalPoints)
+router.get('/myComplaints', myComplaints);
+router.get('/level', getLevel)
+router.get('/availablePoints', getavailablePoints)
+router.get('/totalPoints', getTotalPoints)
 
 
 module.exports = router;

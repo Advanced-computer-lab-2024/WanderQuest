@@ -35,13 +35,18 @@ const getPlaceById = async(req,res)=>{
 
 // Tourism Governor add Place
 const addPlace = async (req, res) => {
-    const { title, description, pictures, location, openingHours, ticketPrices, tags, createdBy } = req.body;
+    const createdBy = req.user._id;
+    const { title, description, pictures, location, openingHours, ticketPrices, tags } = req.body;
 
     if (!title || !description || !pictures || !location || !openingHours || !ticketPrices) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     try {
+        const tourGovUser = await User.findById(createdBy);
+        if (!tourGovUser) {
+            return res.status(400).json({ error: 'User not found' });
+        }
         // If tags are provided, check if all tags exist in the TagModel
         if (tags && tags.length > 0) {
             const tagTypes = tags.map(tag => tag.type);
@@ -85,12 +90,16 @@ const updatePlace = async (req, res)=> {
 
 //tourism Governor deletePlace
 const deletePlace = async (req,res)=>{
+    const tourGovId = req.user._id;
     const{id} = req.params;
     let deletedPlace = await PlaceModel.findById(id);
     if(!deletedPlace){
         res.status(400).json({error:'Place not found.'});
     }else{
         try {
+            if(deletedPlace.createdBy !== tourGovId){
+                return res.status(400).json({error:'You are not authorized to delete this place.'});
+            }
             deletedPlace = await PlaceModel.findByIdAndDelete(id)
             res.status(200).json({message:'Place was deleted',deletedPlace});
         } catch (error) {
@@ -102,7 +111,7 @@ const deletePlace = async (req,res)=>{
 
 // Tourism Governor myCreatedPlaces
 const myCreatedPlaces = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.user._id;
 
     if (!id) {
         return res.status(400).json({ error: 'UserID is required' });

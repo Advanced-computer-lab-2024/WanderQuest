@@ -22,9 +22,10 @@ const getProfile = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
 const updateProfile = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -35,22 +36,13 @@ const updateProfile = async (req, res) => {
         // Remove dob and username from req.body to prevent updates
         const { dob, username, ...updateData } = req.body;
 
-        const updatedTourist = await Tourist.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        const updatedTourist = await Tourist.findByIdAndUpdate(req.user._id, updateData, { new: true });
         res.json(updatedTourist);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-// get the first tourist id
-const getTouristId = async (req, res) => {
-    try {
-        const tourist = await Tourist.findOne({});
-        res.json(tourist._id);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
 
 const getUpcomingActivities = async (req, res) => {
     try {
@@ -122,7 +114,7 @@ const getAllCurrencies = async (req, res) => {
 
 const changePreferredCurrency = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
 
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
@@ -156,7 +148,7 @@ const changePreferredCurrency = async (req, res) => {
 
 const getavailablePoints = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -172,7 +164,7 @@ const getavailablePoints = async (req, res) => {
 
 const getTotalPoints = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -188,7 +180,7 @@ const getTotalPoints = async (req, res) => {
 
 const getLevel = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -204,7 +196,7 @@ const getLevel = async (req, res) => {
 
 const redeemPoints = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -225,7 +217,8 @@ const redeemPoints = async (req, res) => {
     }
 };
 const fileComplaint = async (req, res) => {
-    const { title, body, status, date, reply, createdBy } = req.body;
+    const createdBy = req.user._id;
+    const { title, body, status, date, reply } = req.body;
     if (!title || !body) {
         return res.status(400).json({ error: 'Title and Body fields are required' });
     }
@@ -245,7 +238,7 @@ const fileComplaint = async (req, res) => {
 const myComplaints = async (req, res) => {
     try {
         if (req.params.id) {
-            const complaints = await ComplaintModel.find({ createdBy: req.params.id });
+            const complaints = await ComplaintModel.find({ createdBy: req.user._id });
             res.status(200).json(complaints);
         } else {
             res.status(400).json({ error: 'UserID is required' })
@@ -366,7 +359,8 @@ const commentOnActivity = async (req, res) => {
 const rateProduct = async (req, res) => {
     try {
         const productId = req.params.id;
-        const { touristId, rating } = req.body;
+        const touristId = req.user._id;
+        const { rating } = req.body;
 
         if (!rating) {
             return res.status(400).json({ error: 'Rating is required' });
@@ -408,7 +402,8 @@ const rateProduct = async (req, res) => {
 const reviewProduct = async (req, res) => {
     try {
         const productId = req.params.id;
-        const { touristId, review } = req.body;
+        const touristId = req.user._id;
+        const { review } = req.body;
         if (!review) {
             return res.status(400).json({ error: 'Review is required' });
         }
@@ -430,7 +425,6 @@ const reviewProduct = async (req, res) => {
 module.exports = {
     getProfile,
     updateProfile,
-    getTouristId,
     getAvailableProducts,
     getUpcomingActivities,
     getActivityById,
