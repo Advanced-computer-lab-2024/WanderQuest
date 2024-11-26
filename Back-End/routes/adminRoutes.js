@@ -1,6 +1,7 @@
 const express = require('express')
 const multer = require('multer');
 const upload = multer();
+const requireAuth = require('../middleware/requireAuth');
 const {
     getAllAdmins,
     getUsers,
@@ -29,12 +30,14 @@ const {
     viewProductSales,
     viewAllProductSales,
     /* uploadProductImage,*/
-     flagActivity,
-     flagItinerary
-     
+    flagActivity,
+    flagItinerary
+
 } = require("../controllers/adminController");
 
 const router = express.Router()
+
+router.use(requireAuth({ role: 'admin' }));
 
 // Get all admins
 router.get("/", getAllAdmins)
@@ -60,7 +63,7 @@ router.get("/products/:id", getProdById)
 router.get('/availableProducts', getAvailableProducts)
 
 //Admin viewProduct Sales
-router.get('/products/sales/:id',viewProductSales)
+router.get('/products/sales/:id', viewProductSales)
 
 // Admin view all product sales
 router.get('/sales', viewAllProductSales);
@@ -96,16 +99,16 @@ router.patch('/editTag/:id', updateTag)
 router.delete('/deleteTag/:id', deleteTag)
 
 //Admin getComplaints
-router.get('/complaints',getAllComplaints)
+router.get('/complaints', getAllComplaints)
 
 //Admin getSpecificComplaint
-router.get('/complaints/:id',specificComplaint)
+router.get('/complaints/:id', specificComplaint)
 
 //Admin markComplaint
-router.patch('/markComplaint/:id',markComplaint)
+router.patch('/markComplaint/:id', markComplaint)
 
 //Admin reply
-router.patch('/reply/:id',reply)
+router.patch('/reply/:id', reply)
 
 //Admin archive a product
 router.patch('/products/archive/:id', archiveProduct);

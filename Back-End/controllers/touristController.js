@@ -260,7 +260,8 @@ const rateAnActivity = async (req, res) => {
 
     try {
         const activityId = req.params.id;
-        const { touristId, rating } = req.body;
+        const { rating } = req.body;
+        const touristId = req.user._id;
         // Check if touristId and rating are provided
         // Debugging log to see if values are correctly parsed
         console.log("Received activityId:", activityId);
@@ -299,7 +300,8 @@ const rateAnActivity = async (req, res) => {
 const commentOnActivity = async (req, res) => {
     try {
         const activityId = req.params.id;
-        const { touristId, comment } = req.body;
+        const { comment } = req.body;
+        const touristId = req.user._id;
         if (!touristId) {
             return res.status(400).json({ error: 'touristId is required' });
         }

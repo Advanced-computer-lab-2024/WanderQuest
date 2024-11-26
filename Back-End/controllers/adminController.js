@@ -86,7 +86,7 @@ const deleteAccount = async (req, res) => {
     }
 
     try {
-        if(adminAccount){
+        if (adminAccount) {
             adminAccount = await AdminModel.findByIdAndDelete(id);
             res.status(200).json({ message: 'Account deleted', adminAccount });
         }
@@ -168,7 +168,7 @@ const getProdById = async (req, res) => {
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/} ,{ availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ }, { availableAmount: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -177,8 +177,9 @@ const getAvailableProducts = async (req, res) => {
 //Admin addProduct
 
 const addProduct = async (req, res) => {
-    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
- //   const picture = req.file;
+    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
+    const seller = req.user._id;
+    //   const picture = req.file;
 
     // Validate input
     if (!name /*|| !picture*/ || !description || !price) {
@@ -205,7 +206,7 @@ const addProduct = async (req, res) => {
             //     data: picture.buffer,
             //     type: picture.mimetype
             // },
-            
+
         });
         res.status(200).json(product)
 
@@ -276,7 +277,7 @@ const uploadProductPhoto = async (req, res) => {
                 fileID: file.id
             };
 
-           product.picture = documentMetadata;
+            product.picture = documentMetadata;
 
             await product.save();
 
@@ -528,39 +529,39 @@ const reply = async (req, res) => {
     }
 };
 //admin can archive or unarchive products
-const archiveProduct = async (req,res) => {
-    try{
-        const  productId = req.params.id;
+const archiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
         const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
-        if (!product){ 
+        if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
         res.status(200).json({ message: 'Product archived successfully', product });
-    }catch(error){
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
-const unarchiveProduct = async (req,res) => {
-    try{
-        const  productId = req.params.id;
+const unarchiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
         const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
-        if (!product){ 
+        if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
         res.status(200).json({ message: 'Product unarchived successfully', product });
-    }catch(error){
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
 
 //view available quantity and sales
-const viewProductSales = async (req,res) => {
-    try{
+const viewProductSales = async (req, res) => {
+    try {
         const { id } = req.params;
-        const products = await ProdModel.findById(id, "name availableAmount sales" );
+        const products = await ProdModel.findById(id, "name availableAmount sales");
         res.status(200).json(products);
-    }catch(error){
-        res.status(400).json({error: error.message});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 }
 
@@ -568,7 +569,7 @@ const viewAllProductSales = async (req, res) => {
     try {
         // Fetch all products with only the specified fields: name, availableAmount, and sales
         const products = await ProdModel.find({}, "name availableAmount sales");
-        
+
         // Return the list of products
         return res.status(200).json(products);
 
@@ -580,30 +581,30 @@ const viewAllProductSales = async (req, res) => {
 
 
 //flag an activity
-const flagActivity = async (req,res) => {
-    try{
+const flagActivity = async (req, res) => {
+    try {
         const activityId = req.params.id;
-        const activity = await Activity.findByIdAndUpdate(activityId,{ flagged: true}, {new: true});
-        if(!activity){
-            return res.status(404).json({error: 'Activity not found'});
+        const activity = await Activity.findByIdAndUpdate(activityId, { flagged: true }, { new: true });
+        if (!activity) {
+            return res.status(404).json({ error: 'Activity not found' });
         }
-        res.status(200).json({message: 'Event flagged successfully',activity});
-    }catch(error){
-        res.status(400).json({error: error.message});
+        res.status(200).json({ message: 'Event flagged successfully', activity });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 }
 
 //flag an itinerary
-const flagItinerary = async (req,res) => {
-    try{
+const flagItinerary = async (req, res) => {
+    try {
         const { id } = req.params;
-        const retItinerary = await itinerary.findByIdAndUpdate(id,{flagged: true},{new: true});
-        if(!retItinerary){
-            return res.status(404).json({error: ' Itinerary with this id not found'});
+        const retItinerary = await itinerary.findByIdAndUpdate(id, { flagged: true }, { new: true });
+        if (!retItinerary) {
+            return res.status(404).json({ error: ' Itinerary with this id not found' });
         }
-        res.status(200).json({message: 'Itinerary flagged successfully',retItinerary});
-    }catch(error){
-        res.status(404).json({error: error.message});
+        res.status(200).json({ message: 'Itinerary flagged successfully', retItinerary });
+    } catch (error) {
+        res.status(404).json({ error: error.message });
     }
 }
 module.exports = {
