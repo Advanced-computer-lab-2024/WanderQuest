@@ -6,7 +6,7 @@ import Navbar from '../../../../components/Navbar';
 const ComplaintsPage = () => {
     return (
         <div>
-            <Navbar/>
+            <Navbar />
             <Complaints role='Admin' />
         </div>
     );

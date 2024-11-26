@@ -10,7 +10,7 @@ const axios = require('axios');
 // functions
 const getProfile = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -22,9 +22,10 @@ const getProfile = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
 const updateProfile = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -35,27 +36,18 @@ const updateProfile = async (req, res) => {
         // Remove dob and username from req.body to prevent updates
         const { dob, username, ...updateData } = req.body;
 
-        const updatedTourist = await Tourist.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        const updatedTourist = await Tourist.findByIdAndUpdate(req.user._id, updateData, { new: true });
         res.json(updatedTourist);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-// get the first tourist id
-const getTouristId = async (req, res) => {
-    try {
-        const tourist = await Tourist.findOne({});
-        res.json(tourist._id);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
 
 const getUpcomingActivities = async (req, res) => {
     try {
         const currentDate = new Date();
-        const activities = await ActivityModel.find({ date: { $gt: currentDate },flagged: false });
+        const activities = await ActivityModel.find({ date: { $gt: currentDate }, flagged: false });
         res.status(200).json(activities);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -65,7 +57,7 @@ const getUpcomingActivities = async (req, res) => {
 const getActivityById = async (req, res) => {
     try {
         const activity = await ActivityModel.findById(req.params.id);
-        if (!activity || activity.flagged ) {
+        if (!activity || activity.flagged) {
             return res.status(404).json({ error: 'Activity not found' });
         }
         res.json(activity);
@@ -78,7 +70,7 @@ const getUpcomingItineraries = async (req, res) => {
     try {
         const currentDate = new Date();
         const itineraries = await ItineraryModel.find({
-            availableDates: { $elemMatch: { $gt: currentDate } }, flagged: false 
+            availableDates: { $elemMatch: { $gt: currentDate } }, flagged: false
         });
         res.status(200).json(itineraries);
     } catch (error) {
@@ -101,7 +93,7 @@ const getItineraryById = async (req, res) => {
 
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } , isArchived: false }, { availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 }, isArchived: false }, { availableAmount: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -109,20 +101,20 @@ const getAvailableProducts = async (req, res) => {
 };
 
 const getAllCurrencies = async (req, res) => {
-    try{
+    try {
         const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/codes`);
-        if(!response){
-            return res.status(404).json({error: 'Error fetching currencies'});
+        if (!response) {
+            return res.status(404).json({ error: 'Error fetching currencies' });
         }
         res.status(200).json(response.data.supported_codes);
-    } catch (error){
-        return res.status(500).json({error: error.message});
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
 };
 
 const changePreferredCurrency = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
 
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
@@ -154,9 +146,9 @@ const changePreferredCurrency = async (req, res) => {
     }
 }
 
-const getavailablePoints = async(req,res)=>{
+const getavailablePoints = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -164,15 +156,15 @@ const getavailablePoints = async(req,res)=>{
             return res.status(403).json({ error: 'Tourist account not yet accepted' });
         }
 
-        res.status(200).json({availablePoints:tourist.availablePoints});
+        res.status(200).json({ availablePoints: tourist.availablePoints });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 }
 
-const getTotalPoints = async(req,res)=>{
+const getTotalPoints = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -180,15 +172,15 @@ const getTotalPoints = async(req,res)=>{
             return res.status(403).json({ error: 'Tourist account not yet accepted' });
         }
 
-        res.status(200).json({totalPoints:tourist.totalPoints});
+        res.status(200).json({ totalPoints: tourist.totalPoints });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 }
 
-const getLevel = async(req,res)=>{
+const getLevel = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -196,7 +188,7 @@ const getLevel = async(req,res)=>{
             return res.status(403).json({ error: 'Tourist account not yet accepted' });
         }
 
-        res.status(200).json({level:tourist.level});
+        res.status(200).json({ level: tourist.level });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -204,7 +196,7 @@ const getLevel = async(req,res)=>{
 
 const redeemPoints = async (req, res) => {
     try {
-        const tourist = await Tourist.findById(req.params.id);
+        const tourist = await Tourist.findById(req.user._id);
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -225,7 +217,8 @@ const redeemPoints = async (req, res) => {
     }
 };
 const fileComplaint = async (req, res) => {
-    const { title, body, status, date, reply, createdBy } = req.body;
+    const createdBy = req.user._id;
+    const { title, body, status, date, reply } = req.body;
     if (!title || !body) {
         return res.status(400).json({ error: 'Title and Body fields are required' });
     }
@@ -244,12 +237,8 @@ const fileComplaint = async (req, res) => {
 }
 const myComplaints = async (req, res) => {
     try {
-        if (req.params.id) {
-            const complaints = await ComplaintModel.find({ createdBy: req.params.id });
-            res.status(200).json(complaints);
-        } else {
-            res.status(400).json({ error: 'UserID is required' })
-        }
+        const complaints = await ComplaintModel.find({ createdBy: req.user._id });
+        res.status(200).json(complaints);
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
@@ -260,7 +249,8 @@ const rateAnActivity = async (req, res) => {
 
     try {
         const activityId = req.params.id;
-        const { touristId, rating } = req.body;
+        const { rating } = req.body;
+        const touristId = req.user._id;
         // Check if touristId and rating are provided
         // Debugging log to see if values are correctly parsed
         console.log("Received activityId:", activityId);
@@ -279,7 +269,7 @@ const rateAnActivity = async (req, res) => {
             return res.status(404).json({ error: 'Activity not found' });
         }
 
-        const existingRating = activity.ratings.findIndex(r => r.touristId.toString() === touristId);
+        const existingRating = activity.ratings.findIndex(r => r.touristId === touristId);
         if (existingRating !== -1) {
             activity.ratings[existingRating].rating = rating;
         } else {
@@ -296,31 +286,32 @@ const rateAnActivity = async (req, res) => {
     }
 }
 //comment an activity
-const commentOnActivity = async (req,res) => {
-  try{
-    const activityId = req.params.id;
-    const { touristId, comment } = req.body;
-    if(!touristId){
-        return res.status(400).json({error: 'touristId is required'});
-    }
-    if(!comment){
-        return res.status(400).json({error: 'comment is required'});
+const commentOnActivity = async (req, res) => {
+    try {
+        const activityId = req.params.id;
+        const { comment } = req.body;
+        const touristId = req.user._id;
+        if (!touristId) {
+            return res.status(400).json({ error: 'touristId is required' });
+        }
+        if (!comment) {
+            return res.status(400).json({ error: 'comment is required' });
 
-    }
-    if (!touristId || !comment) {
-        return res.status(400).json({ message: "touristId and comment are required" });
-    }
-    const activity = await ActivityModel.findById(activityId);
-    if (!activity) {
-        return res.status(404).json({ error: 'Activity not found' });
-    }
-    activity.comments.push({ touristId, comment });
-    await activity.save();
-    return res.status(200).json({ message: 'Comment added successfully', activity });
+        }
+        if (!touristId || !comment) {
+            return res.status(400).json({ message: "touristId and comment are required" });
+        }
+        const activity = await ActivityModel.findById(activityId);
+        if (!activity) {
+            return res.status(404).json({ error: 'Activity not found' });
+        }
+        activity.comments.push({ touristId, comment });
+        await activity.save();
+        return res.status(200).json({ message: 'Comment added successfully', activity });
 
-  }catch(error){
-    res.status(404).json({error: error.message});
-  }
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
 }
 
 //rate a product
@@ -366,7 +357,8 @@ const commentOnActivity = async (req,res) => {
 const rateProduct = async (req, res) => {
     try {
         const productId = req.params.id;
-        const { touristId, rating } = req.body;
+        const touristId = req.user._id;
+        const { rating } = req.body;
 
         if (!rating) {
             return res.status(400).json({ error: 'Rating is required' });
@@ -405,32 +397,32 @@ const rateProduct = async (req, res) => {
 };
 
 //review a product that is purchased
-const reviewProduct = async (req,res) => {
-    try{
-      const  productId  = req.params.id;
-      const { touristId, review } = req.body;
-      if (!review) {
-        return res.status(400).json({ error: 'Review is required' });
-    }
-    if (!touristId) {
-        return res.status(400).json({ error: 'Tourist id is required' });
-    }
-    const product = await ProdModel.findById(productId);
-    if (!product) {
-        return res.status(404).json({ error: 'Product not found' });
-    }
-    // Add the review object to the reviews array
-    product.reviews.push({ touristId, review });
-    await product.save();
-    return res.status(200).json({ message: 'Review added successfully', product });
-    }catch(error){
-        res.status(500).json({error: error.message});
+const reviewProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const touristId = req.user._id;
+        const { review } = req.body;
+        if (!review) {
+            return res.status(400).json({ error: 'Review is required' });
+        }
+        if (!touristId) {
+            return res.status(400).json({ error: 'Tourist id is required' });
+        }
+        const product = await ProdModel.findById(productId);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        // Add the review object to the reviews array
+        product.reviews.push({ touristId, review });
+        await product.save();
+        return res.status(200).json({ message: 'Review added successfully', product });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
 module.exports = {
     getProfile,
     updateProfile,
-    getTouristId,
     getAvailableProducts,
     getUpcomingActivities,
     getActivityById,

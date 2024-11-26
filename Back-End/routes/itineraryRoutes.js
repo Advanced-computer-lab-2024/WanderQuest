@@ -4,14 +4,17 @@ const { createItinerary ,readItinerary,updateItinerary,deleteItinerary,readItine
 
 const router = express.Router();
 
+const requireAuth = require('../middleware/requireAuth');
+
+
 //routes
-router.post('/create', createItinerary);
+router.post('/create', requireAuth({ role: 'tourGuide' }), createItinerary);
 router.get('/itineraries', readItinerary);
 router.get('/myItineraries',myCreatedItineraries);
 router.put('/itineraries/:id',updateItinerary);
 router.delete('/itineraries/:id', deleteItinerary);
 router.get('/itineraries/:id', readItineraryById);
-router.post('/rate/:id', rateItinerary);
-router.post('/comment/:id',commentOnItinerary);
+router.post('/rate/:id', requireAuth({role: "tourist"}), rateItinerary);
+router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnItinerary);
 
 module.exports = router;

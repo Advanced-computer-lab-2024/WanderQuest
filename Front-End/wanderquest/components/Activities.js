@@ -27,6 +27,27 @@ const Activities = (Props) => {
   const [minBudget, setMinBudget] = useState(''); // State for minimum budget
   const [maxBudget, setMaxBudget] = useState(''); // State for maximum budget
 
+
+
+const handleflag = async (actid) => {
+  try {
+    const response = await fetch(`http://localhost:4000/admin/flagActivity/${actid}`, {
+      method: 'PATCH',
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error('flag failed');
+    }
+    alert('flag successful!');
+  } catch (error) {
+    console.error('Error booking activity:', error);
+    alert('flag failed');
+  }
+};
+
+
+
+
   const handleSearch = () => {
     const filteredActivities = allActivities.filter((prod) => {
       return search.toLowerCase() === '' ||
@@ -332,8 +353,12 @@ const handleFeedback = async (e, id) => {
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-          </p>
+            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'} <br />
+            <strong>flagged:</strong> {activity.flagged ? 'Yes' : 'No'} 
+            </p>
+{role === "Admin"?(<button onClick={()=>{handleflag(activity._id)}}>flag</button>):(null)}
+
+
 
           {role === "Tourist" ? (
             <div>

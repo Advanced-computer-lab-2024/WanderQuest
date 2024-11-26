@@ -84,7 +84,7 @@ const uploadDocuments = async (req, res) => {
         }
 
         try {
-            const user = await User.findById(req.params.id);
+            const user = await User.findById(req.user._id);
 
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
@@ -109,7 +109,7 @@ const uploadDocuments = async (req, res) => {
 // retrieve documents
 const getUserDocuments = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.user._id);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -182,14 +182,20 @@ const changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
 
-        let user = await User.findById(req.params.id);
+        const userId = req.user._id;
+
+        console.log(userId);
+
+        let user = await User.findById(userId);
+
+        console.log(user);
 
         if (!user) {
-            user = await Admin.findById(req.params.id);
+            user = await Admin.findById(userId);
         }
 
         if (!user) {
-            user = await TourGoverner.findById(req.params.id);
+            user = await TourGoverner.findById(userId);
         }
 
         if (!user) {
@@ -243,7 +249,7 @@ const acceptUser = async (req, res) => {
 // accept terms and conditions
 const acceptTerms = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.user._id);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -260,7 +266,7 @@ const acceptTerms = async (req, res) => {
 
 async function requestAccountDeletion(req, res) {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.user._id);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });

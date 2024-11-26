@@ -1,4 +1,5 @@
 const express = require("express");
+const requireAuth = require('../middleware/requireAuth');
 const {
     bookActivity,
     bookItinerary,
@@ -8,19 +9,25 @@ const {
     hotelBookings,
     flightBookings,
     itineraryBookings,
-    activityBookings
+    activityBookings,
+    bookTransportation,
+    transportationBookings
 } = require('../controllers/bookingController'); // Destructure the flightSearch function
 
 const router = express.Router(); // Capitalize Router
+
+router.use(requireAuth({ role: "tourist" }));
 
 router.post("/activity", bookActivity);
 router.post("/itinerary", bookItinerary);
 router.patch("/cancel", cancelBooking);
 router.post("/flight", bookFlight);
 router.post("/hotel", bookHotel);
-router.get("/activities/:id", activityBookings);
-router.get("/itineraries/:id", itineraryBookings);
-router.get("/flights/:id", flightBookings);
-router.get("/hotels/:id", hotelBookings);
+router.post("/transportation", bookTransportation);
+router.get("/activities", activityBookings);
+router.get("/itineraries", itineraryBookings);
+router.get("/flights", flightBookings);
+router.get("/hotels", hotelBookings);
+router.get("/transportations", transportationBookings);
 
 module.exports = router;

@@ -6,8 +6,47 @@ const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const ComplaintModel = require('../models/objectModel').complaint;
 const { Activity, itinerary } = require('../models/objectModel');
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 
 const mongoose = require('mongoose');
+
+// Collection name in MongoDB
+const collectionName = 'uploads';
+
+// Initialize GridFS
+let gfs;
+mongoose.connection.once('open', () => {
+    gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    gfs.collection(collectionName);
+});
+
+// Set up GridFS storage
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URI,
+    file: (req, file) => {
+        return {
+            bucketName: collectionName,
+            filename: `${Date.now()}-${file.originalname}`
+        };
+    }
+});
+
+// File filter to allow only photos
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+
+const upload = multer({
+    storage,
+    fileFilter
+}).array('documents', 1);
 
 // Get all admins
 const getAllAdmins = async (req, res) => {
@@ -47,7 +86,7 @@ const deleteAccount = async (req, res) => {
     }
 
     try {
-        if(adminAccount){
+        if (adminAccount) {
             adminAccount = await AdminModel.findByIdAndDelete(id);
             res.status(200).json({ message: 'Account deleted', adminAccount });
         }
@@ -129,7 +168,7 @@ const getProdById = async (req, res) => {
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/} ,{ availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ }, { availableAmount: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -138,8 +177,9 @@ const getAvailableProducts = async (req, res) => {
 //Admin addProduct
 
 const addProduct = async (req, res) => {
-    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
- //   const picture = req.file;
+    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
+    const seller = req.user._id;
+    //   const picture = req.file;
 
     // Validate input
     if (!name /*|| !picture*/ || !description || !price) {
@@ -166,7 +206,7 @@ const addProduct = async (req, res) => {
             //     data: picture.buffer,
             //     type: picture.mimetype
             // },
-            
+
         });
         res.status(200).json(product)
 
@@ -176,10 +216,81 @@ const addProduct = async (req, res) => {
 
 };
 
+const getProductPhoto = async (req, res) => {
+    try {
+        const product = await ProdModel.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'product not found' });
+        }
+
+
+        const photo = product.picture;
+
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+const uploadProductPhoto = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const product = await ProdModel.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ error: 'product not found' });
+            }
+
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+            product.picture = documentMetadata;
+
+            await product.save();
+
+            res.json({ message: 'product photo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+};
 // Admin editProduct
 const editProduct = async (req, res) => {
     const { id } = req.params;
-    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
     const picture = req.file;
 
     try {
@@ -192,15 +303,15 @@ const editProduct = async (req, res) => {
         if (name) updatedProd.name = name;
         if (price) updatedProd.price = price;
         if (description) updatedProd.description = description;
-        if (seller) updatedProd.seller = seller;
         if (ratings) updatedProd.ratings = ratings;
         if (rating) updatedProd.rating = rating;
         if (reviews) updatedProd.reviews = reviews;
         if (availableAmount) updatedProd.availableAmount = availableAmount;
         if (picture) {
             updatedProd.picture = {
-                data: picture.buffer,
-                type: picture.mimetype
+                filename: picture.filename,  // Set filename from the uploaded file
+                contentType: picture.mimetype, // Use file's MIME type
+                fileID: picture.id // Assuming multer-gridfs-storage provides file ID in `picture.id`
             };
         }
 
@@ -417,39 +528,39 @@ const reply = async (req, res) => {
     }
 };
 //admin can archive or unarchive products
-const archiveProduct = async (req,res) => {
-    try{
-        const  productId = req.params.id;
+const archiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
         const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
-        if (!product){ 
+        if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
         res.status(200).json({ message: 'Product archived successfully', product });
-    }catch(error){
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
-const unarchiveProduct = async (req,res) => {
-    try{
-        const  productId = req.params.id;
+const unarchiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
         const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
-        if (!product){ 
+        if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
         res.status(200).json({ message: 'Product unarchived successfully', product });
-    }catch(error){
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
 
 //view available quantity and sales
-const viewProductSales = async (req,res) => {
-    try{
+const viewProductSales = async (req, res) => {
+    try {
         const { id } = req.params;
-        const products = await ProdModel.findById(id, "name availableAmount sales" );
+        const products = await ProdModel.findById(id, "name availableAmount sales");
         res.status(200).json(products);
-    }catch(error){
-        res.status(400).json({error: error.message});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 }
 
@@ -457,7 +568,7 @@ const viewAllProductSales = async (req, res) => {
     try {
         // Fetch all products with only the specified fields: name, availableAmount, and sales
         const products = await ProdModel.find({}, "name availableAmount sales");
-        
+
         // Return the list of products
         return res.status(200).json(products);
 
@@ -469,31 +580,30 @@ const viewAllProductSales = async (req, res) => {
 
 
 //flag an activity
-const flagActivity = async (req,res) => {
-    try{
+const flagActivity = async (req, res) => {
+    try {
         const activityId = req.params.id;
-        const activity = await Activity.findByIdAndUpdate(activityId,{ flagged: true}, {new: true});
-        if(!activity){
-            return res.status(404).json({error: 'Activity not found'});
+        const activity = await Activity.findByIdAndUpdate(activityId, { flagged: true }, { new: true });
+        if (!activity) {
+            return res.status(404).json({ error: 'Activity not found' });
         }
-        res.status(200).json({message: 'Event flagged successfully',activity});
-    }catch(error){
-        res.status(400).json({error: error.message});
+        res.status(200).json({ message: 'Event flagged successfully', activity });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 }
 
 //flag an itinerary
-const flagItinerary = async (req,res) => {
-    try{
-        const {itineraryId} = req.params;
-        const itinerary = await itinerary.findByIdAndUpdate(itineraryId,{flagged: true},{new: true});
-        console.log(itinerary);
-        if(!itinerary){
-            return res.status(404).json({error: ' Itinerary with this id not found'});
+const flagItinerary = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const retItinerary = await itinerary.findByIdAndUpdate(id, { flagged: true }, { new: true });
+        if (!retItinerary) {
+            return res.status(404).json({ error: ' Itinerary with this id not found' });
         }
-        res.status(200).json({message: 'Itinerary flagged successfully',itinerary});
-    }catch(error){
-        res.status(404).json({error: error.message});
+        res.status(200).json({ message: 'Itinerary flagged successfully', retItinerary });
+    } catch (error) {
+        res.status(404).json({ error: error.message });
     }
 }
 module.exports = {
@@ -524,5 +634,7 @@ module.exports = {
     viewProductSales,
     flagActivity,
     flagItinerary,
-    viewAllProductSales
+    viewAllProductSales,
+    uploadProductPhoto,
+    getProductPhoto
 }

@@ -115,9 +115,9 @@ const Museums = (Props) => {
                     <h2 className='museum-name'>{museum.title}</h2>
                     <p className='museum-description'>{museum.description}</p>
                     <div className='museum-pictures'>
-                        {museum?.pictures?.map((pic, index) => (
+                        {/* {museum.pictures.map((pic, index) => (
                             <img key={index} src={pic} alt="Museum" className='museum-image' />
-                        ))}
+                        ))} */}
                     </div>
                     <p className='museum-location'>{museum.location}</p>
                     <div className='opening-hours'>

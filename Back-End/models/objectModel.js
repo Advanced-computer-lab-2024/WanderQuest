@@ -290,4 +290,32 @@ const complaintSchema = new Schema({
 
 const complaint = mongoose.model('complaint', complaintSchema)
 
-module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating }
+const transportationSchema = new Schema({
+    company:
+    { type: String, required: false },
+    type:
+    { type: String, required: true },
+    price:
+    { type: Number, required: true },
+    departure:
+    { type: String, required: true },
+    arrival:
+    { type: String, required: true },
+    date:
+    { type: Date, required: false, default: Date.now },
+    bookingAlreadyMade:
+    { type: Boolean, required: true, default: false },
+    pickUpLocation:
+    { type: String, required: true },
+    dropOffLocation:
+    { type: String, required: true },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: AdvertiserModel,
+        required: false,
+    }
+});
+
+const transportation = mongoose.model('transportation', transportationSchema)
+
+module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating, transportation }

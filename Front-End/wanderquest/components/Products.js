@@ -18,6 +18,9 @@ const Products = (props) => {
     const [comments, setComments] = useState({});  // State to hold comments for each product
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const [productPicture, setProductPicture] = useState(null);
+    
+    const handleProductPictureChange = (e) => setProductPicture(e.target.files[0]);
 
     const onUpdateClick = (id) => {
         router.push(`/editProduct/${id}`); // Programmatically navigate to the edit page
