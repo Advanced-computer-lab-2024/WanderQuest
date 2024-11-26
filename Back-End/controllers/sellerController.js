@@ -51,7 +51,7 @@ const upload = multer({
 // Read Seller profile
 const getProfile = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
@@ -70,7 +70,7 @@ const getProfile = async (req, res) => {
 // Update Seller profile
 const updateProfile = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
@@ -95,7 +95,7 @@ const uploadLogo = async (req, res) => {
         }
 
         try {
-            const seller = await Seller.findById(req.params.id);
+            const seller = await Seller.findById(req.user._id);
             if (!seller) {
                 return res.status(404).json({ error: 'Seller not found' });
             }
@@ -127,7 +127,7 @@ const uploadLogo = async (req, res) => {
 
 const getLogo = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
@@ -165,16 +165,6 @@ const getLogo = async (req, res) => {
         downloadStream.on('end', () => {
             res.end();
         });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
-
-// get the first seller id
-const getSellerId = async (req, res) => {
-    try {
-        const seller = await Seller.findOne({accepted: true});
-        res.json(seller._id);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -241,7 +231,8 @@ const getProductPhoto = async (req, res) => {
 
 //seller addProduct
 const addProduct = async (req, res) => {
-    const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales } = req.body;
+    const seller = req.user._id;
+    const { name, picture, price, description, ratings, rating, reviews, availableAmount,sales } = req.body;
 
     // Validate input
     if (!name || !picture || !description || !price) {
@@ -394,4 +385,4 @@ const viewAllProductSales = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
+module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,getLogo, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };

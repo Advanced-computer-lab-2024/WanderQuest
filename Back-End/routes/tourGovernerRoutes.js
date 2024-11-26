@@ -10,6 +10,8 @@ const {
     myCreatedPlaces
 } = require("../controllers/tourGovernerController")
 
+const requireAuth = require("../middleware/requireAuth")
+
 const router = express.Router()
 
 //Get Places
@@ -17,16 +19,16 @@ router.get("/places",getAllPlaces)
 //Get Place by ID
 router.get("/places/:id",getPlaceById)
 //Get my Places
-router.get("/myPlaces/:id",myCreatedPlaces)
+router.get("/myPlaces", requireAuth({role:"tourGov"}), myCreatedPlaces)
 
 //Tourism Governor create Place
-router.post("/addPlace",addPlace)
+router.post("/addPlace", requireAuth({role:"tourGov"}), addPlace)
 
 //Tourism Governor update Place
 router.patch("/updatePlace/:id",updatePlace)
 
 //Tourism Governor delete Place
-router.delete("/deletePlace/:id",deletePlace)
+router.delete("/deletePlace/:id", requireAuth({role:"tourGov"}), deletePlace)
 
 //Tourism Governor create Tag
 router.post("/addTag",createTag)
