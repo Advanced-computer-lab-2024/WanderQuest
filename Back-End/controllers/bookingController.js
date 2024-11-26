@@ -7,10 +7,11 @@ const mongoose = require('mongoose');
 
 
 const bookActivity = async (req, res) => {
-    const { userId, bookingType, activityId } = req.body;
+    const { bookingType, activityId } = req.body;
+    const userId = req.user._id;
 
     const booking = await Booking.findOne({ userId, activityId });
-    if(booking && booking.status === 'booked') {
+    if (booking && booking.status === 'booked') {
         return res.status(400).json({ error: 'Activity already booked by this user' });
     }
 
@@ -23,7 +24,7 @@ const bookActivity = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ message: "Invalid userId format" });
         }
-        
+
         const retUser = await User.findById(userId);
         if (!retUser) {
             return res.status(404).json({ error: 'User not found' });
@@ -47,7 +48,7 @@ const bookActivity = async (req, res) => {
             startDate: retActivity.date
         });
 
-        if(booking && booking.status === 'cancelled') {
+        if (booking && booking.status === 'cancelled') {
             await Booking.findOneAndDelete({ _id: booking._id });
             console.log("Deleted booking");
         }
@@ -60,31 +61,32 @@ const bookActivity = async (req, res) => {
 };
 
 const activityBookings = async (req, res) => {
-    const { id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    const id = req.user._id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid user id" });
     }
-    try{
+    try {
         const retUser = await User.findById(id);
-        if(!retUser){
+        if (!retUser) {
             return res.status(404).json({ message: "User not found" });
         }
         const bookings = await Booking.find({ userId: id, bookingType: 'activity' });
-        if(bookings.length === 0){
+        if (bookings.length === 0) {
             return res.status(404).json({ message: "User has no activity bookings" });
         }
         res.status(200).json(bookings);
 
-    } catch(error){
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 const bookItinerary = async (req, res) => {
-    const { userId, bookingType, itineraryId, startDate } = req.body;
+    const { bookingType, itineraryId, startDate } = req.body;
+    const userId = req.user._id;
 
     const booking = await Booking.findOne({ userId, itineraryId });
-    if(booking && booking.status === 'booked') {
+    if (booking && booking.status === 'booked') {
         return res.status(400).json({ error: 'Itinerary already booked by this user' });
     }
 
@@ -116,7 +118,7 @@ const bookItinerary = async (req, res) => {
         const startDateISO = new Date(startDate).toISOString().split('T')[0];
 
         // Check if startDate is in availableDates
-        const isDateAvailable = retItinerary.availableDates.some(date => 
+        const isDateAvailable = retItinerary.availableDates.some(date =>
             new Date(date).toISOString().split('T')[0] === startDateISO
         );
 
@@ -132,7 +134,7 @@ const bookItinerary = async (req, res) => {
             paid: true,
             startDate: startDate
         });
-        if(booking && booking.status === 'cancelled') {
+        if (booking && booking.status === 'cancelled') {
             await Booking.findOneAndDelete({ _id: booking._id });
             console.log("Deleted booking");
         }
@@ -146,30 +148,31 @@ const bookItinerary = async (req, res) => {
 }
 
 const itineraryBookings = async (req, res) => {
-    const { id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    const id = req.user._id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid user id" });
     }
-    try{
+    try {
         const retUser = await User.findById(id);
-        if(!retUser){
+        if (!retUser) {
             return res.status(404).json({ message: "User not found" });
         }
         const bookings = await Booking.find({ userId: id, bookingType: 'itinerary' });
-        if(bookings.length === 0){
+        if (bookings.length === 0) {
             return res.status(404).json({ message: "User has no itinerary bookings" });
         }
         res.status(200).json(bookings);
 
-    } catch(error){
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 
 const cancelBooking = async (req, res) => {
-    const { userId, bookingId } = req.body;
-    try{
+    const { bookingId } = req.body;
+    const userId = req.user._id;
+    try {
         // Check if userId is a valid ObjectId
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ message: "Invalid userId format" });
@@ -179,14 +182,14 @@ const cancelBooking = async (req, res) => {
         if (!booking) {
             return res.status(404).json({ error: 'Booking not found' });
         }
-        if(booking.userId != userId) {
+        if (booking.userId != userId) {
             console.log(booking.userId, userId);
             return res.status(403).json({ error: 'Unauthorized action: can not delete the booking of another user' });
         }
-        if(booking.status === 'cancelled') {
+        if (booking.status === 'cancelled') {
             return res.status(400).json({ error: 'Booking already cancelled' });
         }
-        if(booking.startDate < new Date()) {
+        if (booking.startDate < new Date()) {
             return res.status(400).json({ error: 'Cannot cancel this booking' });
         }
         const currentDate = new Date();
@@ -199,28 +202,30 @@ const cancelBooking = async (req, res) => {
         booking.status = 'cancelled';
         await booking.save();
         res.status(200).json({ message: 'Booking successfully cancelled' });
-    } catch(error){
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 const bookFlight = async (req, res) => {
-    const {userId, bookingType, from, fromAir, toAir, price, companyName} = req.body;
-    if(bookingType != "flight"){
-        res.status(400).json({ message : "Can only book a flight" });
+    const { bookingType, from, fromAir, toAir, price, companyName } = req.body;
+    const userId = req.user._id;
+
+    if (bookingType != "flight") {
+        res.status(400).json({ message: "Can only book a flight" });
     }
-    try{
+    try {
         // Check if userId is a valid ObjectId
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ message: "Invalid userId format" });
         }
 
         const retuser = await User.findById(userId);
-        if(!retuser){
-            res.status(404).json({ message : "User not found" });
+        if (!retuser) {
+            res.status(404).json({ message: "User not found" });
         }
-        if(retuser.role != "tourist"){
-            res.status(403).json({ message : "Only tourists can book flights" });
+        if (retuser.role != "tourist") {
+            res.status(403).json({ message: "Only tourists can book flights" });
         }
         const currentDate = new Date();
         const fromDate = new Date(from);
@@ -238,34 +243,36 @@ const bookFlight = async (req, res) => {
         });
         await newBooking.save();
         return res.status(201).json(newBooking);
-    } catch (error){
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 const flightBookings = async (req, res) => {
-    const { id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    const id = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid user id" });
     }
-    try{
+    try {
         const retUser = await User.findById(id);
-        if(!retUser){
+        if (!retUser) {
             return res.status(404).json({ message: "User not found" });
         }
         const bookings = await Booking.find({ userId: id, bookingType: 'flight' });
-        if(bookings.length === 0){
+        if (bookings.length === 0) {
             return res.status(404).json({ message: "User has no flight bookings" });
         }
         res.status(200).json(bookings);
 
-    } catch(error){
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 const bookHotel = async (req, res) => {
-    const { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut } = req.body;
+    const { bookingType, hotelName, rating, description, price, stars, checkIn, checkOut } = req.body;
+    const userId = req.user._id;
 
     if (bookingType !== "hotel") {
         return res.status(400).json({ message: "Can only book a hotel" });
@@ -319,32 +326,35 @@ const bookHotel = async (req, res) => {
 };
 
 const hotelBookings = async (req, res) => {
-    const { id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    const id = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid user id" });
     }
-    try{
+    try {
         const retUser = await User.findById(id);
-        if(!retUser){
+        if (!retUser) {
             return res.status(404).json({ message: "User not found" });
         }
         const bookings = await Booking.find({ userId: id, bookingType: 'hotel' });
-        if(bookings.length === 0){
+        if (bookings.length === 0) {
             return res.status(404).json({ message: "User has no hotel bookings" });
         }
         res.status(200).json(bookings);
 
-    } catch(error){
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 const bookTransportation = async (req, res) => {
-    const { userId, bookingType, company, type, price, departure, arrival, date, pickUpLocation, dropOffLocation } = req.body;
+    const { bookingType, company, type, price, departure, arrival, date, pickUpLocation, dropOffLocation } = req.body;
+    const userId = req.user._id;
+
     if (bookingType !== "transportation") {
         return res.status(400).json({ message: "Can only book transportation" });
     }
-    if(!company || !type || !price || !departure || !arrival || !date || !pickUpLocation || !dropOffLocation){
+    if (!company || !type || !price || !departure || !arrival || !date || !pickUpLocation || !dropOffLocation) {
         return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -386,22 +396,23 @@ const bookTransportation = async (req, res) => {
 }
 
 const transportationBookings = async (req, res) => {
-    const { id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    const id = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid user id" });
     }
-    try{
+    try {
         const retUser = await User.findById(id);
-        if(!retUser){
+        if (!retUser) {
             return res.status(404).json({ message: "User not found" });
         }
         const bookings = await Booking.find({ userId: id, bookingType: 'transportation' });
-        if(bookings.length === 0){
+        if (bookings.length === 0) {
             return res.status(404).json({ message: "User has no transportation bookings" });
         }
         res.status(200).json(bookings);
 
-    } catch(error){
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
