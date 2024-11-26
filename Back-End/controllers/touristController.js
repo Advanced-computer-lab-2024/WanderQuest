@@ -237,12 +237,8 @@ const fileComplaint = async (req, res) => {
 }
 const myComplaints = async (req, res) => {
     try {
-        if (req.params.id) {
-            const complaints = await ComplaintModel.find({ createdBy: req.user._id });
-            res.status(200).json(complaints);
-        } else {
-            res.status(400).json({ error: 'UserID is required' })
-        }
+        const complaints = await ComplaintModel.find({ createdBy: req.user._id });
+        res.status(200).json(complaints);
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
