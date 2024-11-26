@@ -290,7 +290,7 @@ const uploadProductPhoto = async (req, res) => {
 // Admin editProduct
 const editProduct = async (req, res) => {
     const { id } = req.params;
-    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
     const picture = req.file;
 
     try {
@@ -303,7 +303,6 @@ const editProduct = async (req, res) => {
         if (name) updatedProd.name = name;
         if (price) updatedProd.price = price;
         if (description) updatedProd.description = description;
-        if (seller) updatedProd.seller = seller;
         if (ratings) updatedProd.ratings = ratings;
         if (rating) updatedProd.rating = rating;
         if (reviews) updatedProd.reviews = reviews;
