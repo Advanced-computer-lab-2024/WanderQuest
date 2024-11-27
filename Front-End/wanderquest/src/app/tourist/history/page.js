@@ -8,9 +8,9 @@ import AddRating from '../../../../components/AddRating';
 
 const TouristHistory = () => {
     const [followedGuides, setFollowedGuides] = useState(null);
-    const [tourGuideData, setTourGuideData] = useState([]);
-    const [pastItineraries, setPastItineraries] = useState([]);
-    const [attendedActivities, setAttendedActivities] = useState([]);
+    const [tourGuideData, setTourGuideData] = useState(null);
+    const [pastItineraries, setPastItineraries] = useState(null);
+    const [attendedActivities, setAttendedActivities] = useState(null);
     const [touristID, setTouristID] = useState("");
 
     const [showMessage, setShowMessage] = useState(false);
@@ -23,8 +23,10 @@ const TouristHistory = () => {
 
     const [activityFeedback, setActivityFeedback] = useState({});
 
+    const [activeButton, setActiveButton] = useState('Rate');
 
-    const guideID = "672e33ac93c8d93da59e6f4d"; // Hardcoded for now, will be dynamic in the future
+
+    //const guideID = "672e33ac93c8d93da59e6f4d"; // Hardcoded for now, will be dynamic in the future
 
 
     useEffect(() => {
@@ -232,31 +234,53 @@ const TouristHistory = () => {
     return (
         <div>
             <Navbar />
+            <h2 className={styles.histTitle}>History</h2>
             <div className={styles.histContainer}>
-                <h2 className={styles.histTitle}>History</h2>
-                <div className={styles.innerContainer}>
-                    <h2 className={styles.innerTitle}>Followed Tour Guides</h2>
+            <div className={styles.tabContainer}>
+              <button className={`${styles.tabButton} ${activeButton === 'Rate' ? styles.activeTab : ''}`} onClick={() => setActiveButton('Rate')}>
+                 Rate
+             </button>
+             <button className={`${styles.tabButton} ${activeButton === 'Orders' ? styles.activeTab : ''}`} onClick={() => setActiveButton('Orders')}>
+                    Orders
+             </button>
+                <button className={`${styles.tabButton} ${activeButton === 'Events' ? styles.activeTab : ''}`}onClick={() => setActiveButton('Events')}>
+                    Events
+              </button>
+            </div>
+            <div>
+    {activeButton === 'Rate' && (
+        <div>
+            <h2 className={styles.innerTitle}>Rating</h2>
+            {/* Followed Tour Guides Section */}
+            <div className={styles.innerContainer}>
+                <h2 className={styles.innerTitle}>Followed Tour Guides</h2>
 
-                    {tourGuideData ? (
-                        <div>
-                            <p>Username: {tourGuideData.username}</p>
-                            <p>Email: {tourGuideData.email}</p>
-                            <AddRating rating={rating} setRating={setRating} />
-                            <AddComment comment={comment} setComment={setComment} />
-                            <button className={styles.btnFeedback} onClick={handleFeedback} >Send</button>
-                            <div>
-                                {showMessage && lastUpdated === tourGuideData._id ? <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>Feedback sent successfully</p> : null}
-                            </div>
-                        </div>
-                    )
-                        :
-                        (<p> No Followed Tour Guides</p>)}
-                </div>
-
-                <div className={styles.innerContainer}>
-                    <h2 className={styles.innerTitle}>List of Itineraries</h2>
+                {tourGuideData ? (
                     <div>
-                        {pastItineraries ? (pastItineraries.map((itinerary) => (
+                        <p>Username: {tourGuideData.username}</p>
+                        <p>Email: {tourGuideData.email}</p>
+                        <AddRating rating={rating} setRating={setRating} />
+                        <AddComment comment={comment} setComment={setComment} />
+                        <button className={styles.btnFeedback} onClick={handleFeedback}>Send</button>
+                        <div>
+                            {showMessage && lastUpdated === tourGuideData._id ? (
+                                <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
+                                    Feedback sent successfully
+                                </p>
+                            ) : null}
+                        </div>
+                    </div>
+                ) : (
+                    <p>No Followed Tour Guides</p>
+                )}
+            </div>
+
+            {/* List of Itineraries Section */}
+            <div className={styles.innerContainer}>
+                <h2 className={styles.innerTitle}>List of Itineraries</h2>
+                <div>
+                    {pastItineraries ? (
+                        pastItineraries.map((itinerary) => (
                             <div key={itinerary._id} className={styles.innerBox}>
                                 <p><strong>Title: {itinerary.title}</strong></p>
                                 <p><strong>Available Dates:</strong> {itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</p>
@@ -266,51 +290,104 @@ const TouristHistory = () => {
                                 <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                                 <p><strong>Price:</strong> {itinerary.price}</p>
                                 <p><strong>Rating:</strong> {itinerary.rating}</p>
-                                <AddRating rating={itiFeedback[itinerary._id]?.rating || ''}
-                                    setRating={(value) => handleItiFeedbackChange(itinerary._id, 'rating', value)} />
-                                <AddComment comment={itiFeedback[itinerary._id]?.comment || ''}
-                                    setComment={(value) => handleItiFeedbackChange(itinerary._id, 'comment', value)} />
-                                <button className={styles.btnFeedback}
-                                    onClick={(e) => handleItiFeedback(e, itinerary._id)}>
-                                    Send </button>
+                                <AddRating 
+                                    rating={itiFeedback[itinerary._id]?.rating || ''} 
+                                    setRating={(value) => handleItiFeedbackChange(itinerary._id, 'rating', value)} 
+                                />
+                                <AddComment 
+                                    comment={itiFeedback[itinerary._id]?.comment || ''} 
+                                    setComment={(value) => handleItiFeedbackChange(itinerary._id, 'comment', value)} 
+                                />
+                                <button 
+                                    className={styles.btnFeedback} 
+                                    onClick={(e) => handleItiFeedback(e, itinerary._id)}
+                                >
+                                    Send
+                                </button>
                                 <div>
-                                    {showMessage && lastUpdated === itinerary._id ? <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>Feedback sent successfully</p> : null}
-                                </div>
-                            </div>
-
-                        ))) : (<p>No itineraries available</p>)}
-                    </div>
-                </div>
-
-
-                <div className={styles.innerContainer}>
-                    <h2 className={styles.innerTitle}>Attended Activities</h2>
-                    {attendedActivities.length > 0 ? (
-                        attendedActivities.map((activity, index) => (
-                            <div key={index} className={styles.innerBox}>
-                                <p><strong>Activity:</strong> {activity.title}</p>
-                                <p><strong>ID:</strong> {activity._id}</p>
-                                <p><strong>Date:</strong> {activity.date}</p>
-                                <p><strong>Price:</strong> {activity.price}</p>
-                                <p><strong>Location:</strong> {activity.location}</p>
-                                <p><strong>Category:</strong> {activity.category}</p>
-                                <p><strong>Rating:</strong> {activity.rating} </p>
-                                <AddRating rating={activityFeedback[activity._id]?.rating || ''}
-                                    setRating={(value) => handleActivityFeedbackChange(activity._id, 'rating', value)} />
-                                <AddComment comment={activityFeedback[activity._id]?.comment || ''}
-                                    setComment={(value) => handleActivityFeedbackChange(activity._id, 'comment', value)} />
-                                <button className={styles.btnFeedback}
-                                    onClick={(e) => handleActivityFeedback(e, activity._id)}> Send </button>
-                                <div>
-                                    {showMessage && lastUpdated === activity._id ? <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>Feedback sent successfully</p> : null}
-
+                                    {showMessage && lastUpdated === itinerary._id ? (
+                                        <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
+                                            Feedback sent successfully
+                                        </p>
+                                    ) : null}
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p>No attended activities available.</p>
+                        <p>No Itineraries Available</p>
                     )}
                 </div>
+            </div>
+
+            {/* Attended Activities Section */}
+            <div className={styles.innerContainer}>
+                <h2 className={styles.innerTitle}>Attended Activities</h2>
+                <div>
+                    {attendedActivities ? (
+                        attendedActivities.map((activity) => (
+                            <div key={activity._id} className={styles.innerBox}>
+                                <p><strong>Activity Name:</strong> {activity.name}</p>
+                                <p><strong>Date:</strong> {new Date(activity.date).toLocaleDateString()}</p>
+                                <p><strong>Location:</strong> {activity.location}</p>
+                                <p><strong>Rating:</strong> {activity.rating}</p>
+                                <AddRating 
+                                    rating={activityFeedback[activity._id]?.rating || ''} 
+                                    setRating={(value) => handleActivityFeedbackChange(activity._id, 'rating', value)} 
+                                />
+                                <AddComment 
+                                    comment={activityFeedback[activity._id]?.comment || ''} 
+                                    setComment={(value) => handleActivityFeedbackChange(activity._id, 'comment', value)} 
+                                />
+                                <button 
+                                    className={styles.btnFeedback} 
+                                    onClick={(e) => handleActivityFeedback(e, activity._id)}
+                                >
+                                    Send
+                                </button>
+                                <div>
+                                    {showMessage && lastUpdated === activity._id ? (
+                                        <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
+                                            Feedback sent successfully
+                                        </p>
+                                    ) : null}
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No Attended Activities</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    )}
+</div>
+
+<div>
+    {activeButton === 'Orders' && (
+        <div>
+            <h2 className={styles.innerTitle}>Orders</h2>
+            <div>
+                <p>Order 1</p>
+                <p>Order 2</p>
+                <p>Order 3</p>
+            </div>
+        </div>
+    )}
+</div>
+
+<div>
+    {activeButton === 'Events' && (
+        <div>
+            <h2 className={styles.innerTitle}>Events</h2>
+            <div>
+                <p>Event 1</p>
+                <p>Event 2</p>
+                <p>Event 3</p>
+            </div>
+        </div>
+    )}
+</div>
+
             </div>
         </div>
     );

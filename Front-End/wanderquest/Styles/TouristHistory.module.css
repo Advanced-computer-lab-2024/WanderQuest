@@ -8,7 +8,6 @@
     max-width: 900px;
     margin: 20px auto;
     display:block;
-    
     align-items: center;
   }
 
@@ -133,4 +132,34 @@
     margin-top: 10px;
     color: #dc3545;
     animation: fadeOut 3s forwards;
+}
+
+.tabContainer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #122c34;
+  border-color: #122c34;
+  color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-size: 16px;
+}
+
+.tabButton:hover {
+  background-color: #f0f0f0;
+  color: #1A6187;
+}
+
+.activeTab {
+  background-color: #1A6187;
+  color: white;
+  cursor: default;
 }
