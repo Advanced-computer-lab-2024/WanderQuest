@@ -10,7 +10,7 @@ const router = express.Router();
 router.post('/register', registerUser);
 router.post('/login', login);
 router.post('/changePassword', requireAuth(), changePassword);
-router.post('/uploadDocuments', requireAuth(), uploadDocuments);
+router.post('/uploadDocuments', uploadDocuments);
 router.get('/getDocuments', requireAuth(), getUserDocuments);
 router.get('/getUsersRequestingAcceptance', requireAuth({ role: 'admin' }), getUsersRequestingAcceptance);
 router.get('/getDocumentByFileID/:id', requireAuth(), getDocumentByFileID);
