@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
+import DeleteAccount from "../components/DeleteAccount";
+import ChangePassword from "./ChangePassword";
 
 const TouristInfo = () => {
     const [userId, setUserId] = useState(''); // State for storing the tourist ID
@@ -11,8 +13,21 @@ const TouristInfo = () => {
     const [dob, setDob] = useState('');
     const [job, setOccupation] = useState('');
     const [wallet, setWallet] = useState('');
+    const [availablePoints, setAvailablePoints] = useState('');
+    const[preferredCurrency,setPreferredCurrency]= useState('');
+    const [currencies, setCurrencies] = useState([]);
+    const [redeemAmount, setRedeemAmount] = useState(0); // State for redeem amount
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [badgeUrl, setBadgeUrl] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    
+
+    // Picture states
+    const [pic, setPic] = useState(null); // For the selected logo file
+    const [picPreview, setPicPreview] = useState(''); // For the preview before upload
+    const [picURL, setPicURL] = useState(''); // For the uploaded logo URL
 
     // Fetch the tourist ID first
     useEffect(() => {
@@ -55,7 +70,9 @@ const TouristInfo = () => {
                 setNationality(data.nationality || '');
                 setDob(data.dob.split("T")[0] || '');
                 setOccupation(data.job || '');
-                setWallet(data.wallet || '');
+                setWallet(data.wallet || 0);
+                setAvailablePoints(data.availablePoints || 0);
+                setPreferredCurrency(data.preferredCurrency || '');
             } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
@@ -64,6 +81,40 @@ const TouristInfo = () => {
 
         fetchProfile();
     }, [userId]);
+
+    // Fetch the level based on the tourist ID
+    useEffect(() => {
+        const fetchLevel = async () => {
+            if (!userId) return;
+            try {
+                const response = await fetch(`http://localhost:4000/tourist/level/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch tourist level');
+                const data = await response.json();
+                setBadgeUrl(`/level${data.level}.png`);
+            } catch (error) {
+                console.error("Error fetching tourist level:", error);
+                setError("Error fetching tourist level");
+            }
+        };
+        fetchLevel();
+    }, [userId]);
+
+    useEffect(() => {
+        const fetchCurrencies = async () => {
+            try {
+                const response = await fetch("http://localhost:4000/tourist/currencies");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch currencies");
+                }
+                const data = await response.json();
+                setCurrencies(data); // Set the fetched currencies
+            } catch (error) {
+                console.error("Error fetching currencies:", error);
+            }
+        };
+
+        fetchCurrencies();
+    }, []);
 
     // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
@@ -94,6 +145,7 @@ const TouristInfo = () => {
             if (response.ok) {
                 const data = await response.json();
                 setSuccessMessage("Profile updated successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000);
                 setError(''); // Clear any error message
             } else {
                 const errorData = await response.json();
@@ -105,11 +157,77 @@ const TouristInfo = () => {
         }
     };
 
+
+
+    const handleRedeem = async () => {
+      
+        try {
+          const response = await fetch(`http://localhost:4000/tourist/redeem/${userId}`, {
+            method: "PATCH",  // Updated to PATCH to match backend route
+            headers: {
+              "Content-Type": "application/json",
+            }
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+            setWallet(data.wallet); // Update wallet with new amount
+            setAvailablePoints(data.availablePoints); // Update available points
+            setSuccessMessage("Successfully redeemed 100 EGP for 10,000 points!");
+            setTimeout(() => setSuccessMessage(""), 3000);
+            setError(''); // Clear any error message
+          } else {
+            const errorData = await response.json();
+            setError(errorData.error || "Failed to redeem points");
+            setTimeout(() => setError(""), 3000);
+          }
+        } catch (err) {
+          console.error("Error redeeming points:", err);
+          setError("An error occurred while redeeming the points");
+        }
+    };
+
+    const handleDeleteSuccess = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => setSuccessMessage(""), 3000);
+    };
+
+
+
+    const handleCurrencyChange = async (e) => {
+        const selectedCurrency = e.target.value;
+        setPreferredCurrency(selectedCurrency);
+        console.log(selectedCurrency);
+
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/changePreferredCurrency/${userId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ preferredCurrency: selectedCurrency }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setWallet(data.wallet); // Update wallet with converted amount
+                setSuccessMessage("Currency updated successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000);
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to update currency");
+            }
+        } catch (error) {
+            console.error("Error updating currency:", error);
+            setError("An error occurred while updating the currency");
+        }
+    };
+    
+
     return (
+        <div>
         <form className={styles.Profile} onSubmit={handleSubmit}>
-            <h3 className={styles.h1}>My Profile</h3>
-            {error && <p className={styles.error}>{error}</p>}
-            {successMessage && <p className={styles.success}>{successMessage}</p>}
+            <h3 className={styles.h1}>My Profile  {badgeUrl && <img src={badgeUrl} alt="Badge" className={styles.badge} />}</h3>
             <label>Username: </label>
             <input type="text" value={username} required readOnly />
 
@@ -153,9 +271,39 @@ const TouristInfo = () => {
                 value={wallet}
                 required readOnly
             />
+            <label>Available Points: </label>
+            <input
+                type="number"
+                value={availablePoints}
+                required readOnly
+            />
+            <label>Preferred Currency: </label>
+            <select value={preferredCurrency} onChange={handleCurrencyChange} required>
+                {currencies.map(([code, name]) => (
+                    <option key={code} value={code}>
+                        {name} ({code})
+                    </option>
+                ))}
+            </select>
 
-            <button type="submit">Save Changes</button>
+
+<div>
+    {/* Redeem section */}
+    <label>Redeem Points (10,000 points = 100 EGP): </label>
+    <button type="button" onClick={handleRedeem}>Redeem</button>
+    
+    
+    <button type="submit">Save Changes</button>
+  </div>
+
+    {/* Display success or error messages */}
+    {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+    {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
+        <ChangePassword userId={userId}/>
+        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+    </div>
+    
     );
 };
 

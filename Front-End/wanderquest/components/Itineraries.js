@@ -1,7 +1,14 @@
+'use client'
 import { useEffect, useState } from 'react';
 import styles from '../styles/Itineraries.module.css';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import AddRating from './AddRating';
+import AddComment from './AddComment';
 
 const ItineraryList = (Props) => {
+
+
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const role=Props.role;
   const [activityDetails, setActivityDetails] = useState({});
@@ -9,7 +16,9 @@ const ItineraryList = (Props) => {
   const [displayedItineraries, setDisplayedItineraries] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+  const router = useRouter();
+
+
   const [search, setSearch] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [minBudget, setMinBudget] = useState('');
@@ -18,6 +27,9 @@ const ItineraryList = (Props) => {
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
   const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Japanese", "Russian"];
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
   const fetchActivityDetails = (activityId) => {
     if (activityDetails[activityId]) return; // Avoid refetching
@@ -40,6 +52,25 @@ const ItineraryList = (Props) => {
       });
   };
 
+  const handleflag = async (actid) => {
+    try {
+      const response = await fetch(`http://localhost:4000/admin/flagItinerary/${actid}`, {
+        method: 'PATCH',
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        throw new Error('flag failed');
+      }
+      alert('flag successful!');
+    } catch (error) {
+      console.error('Error booking activity:', error);
+      alert('flag failed');
+    }
+  };
+  
+
+
+
   const fetchItineraries = () => {
     fetch('http://localhost:4000/tourist/upcomingItineraries')
       .then(res => {
@@ -51,6 +82,7 @@ const ItineraryList = (Props) => {
       .then(data => {
         setAllItineraries(data);
         setDisplayedItineraries(data);
+        setTimeout(() => console.log("First"), 10000)
         setLoading(false);
         
         // Fetch details for all activities
@@ -62,13 +94,15 @@ const ItineraryList = (Props) => {
       })
       .catch(error => {
         setError(error.message);
+        setTimeout(() => console.log("First"), 10000)
         setLoading(false);
       });
   };
 
   useEffect(() => {
     fetchItineraries();
-  }, []);
+  }, [search]);
+
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
         return search.toLowerCase() === '' || 
@@ -77,6 +111,30 @@ const ItineraryList = (Props) => {
     });
     setDisplayedItineraries(newprod);  // Set the filtered museums based on search
 };
+
+const handleFeedback = async (e) => {
+  e.preventDefault();
+    const ratingFeedback = await fetch('http://localhost:4000/bagarab7aga', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rating }),
+    });
+    const commentFeedback = await fetch('http://localhost:4000/bagarab7agtein', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ comment }),
+    });
+    console.log('Rating:', rating);
+    console.log('Comment:', comment);
+    if (commentFeedback.ok && ratingFeedback.ok) {
+      console.log('Feedback sent successfully');
+      feedbackFlag = true;
+    }
+}
 const clearsearch=()=>{
   setDisplayedItineraries(allItineraries);
 }
@@ -157,9 +215,18 @@ const clearsearch=()=>{
     setDisplayedItineraries(allItineraries);
   };
 
-  if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
+  if (loading) {return<>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+    <dotlottie-player style={{
+  width: '300px',
+  height: '300px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  margin: 'auto'
+}}
+  src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+    </>}
 
   if (error) {
     return <div className={styles.error}>Error: {error}</div>;
@@ -167,6 +234,7 @@ const clearsearch=()=>{
 
   return (
     <div className={styles.container}>
+      
       <h1 className={styles.title}>Itinerary List</h1>
       {role==="Tourist"?(
       <div className={styles.searchcom}>
@@ -240,7 +308,6 @@ const clearsearch=()=>{
     ))}
   </select>
 </div>
-
         <div className={styles.filterButtons}>
           <button onClick={handleApplyFilters}>Apply Filters</button>
           <button onClick={handleClearFilters}>Clear Filters</button>
@@ -253,9 +320,10 @@ const clearsearch=()=>{
         <button onClick={handleSortRatingAsc}>Sort on Rating Asc</button>
         <button onClick={handleSortRatingDesc}>Sort on Rating Desc</button>
       </div>
+      <br/>
 
       {displayedItineraries.map((itinerary) => (
-        <div key={itinerary.id} className={styles.itinerary}>
+        <div id={itinerary.id} key={itinerary.id} className={styles.itinerary}>
           <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
           <div className={styles.activities}>
             {itinerary.activities.map((activityId) => (
@@ -298,8 +366,22 @@ const clearsearch=()=>{
           <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
           <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
           <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
+          { role === "Tourist" ? (
+          <div>
+              <AddRating rating={rating} setRating={setRating} />
+              <AddComment comment={comment} setComment={setComment} />
+              <button className={styles.btnFeedback} onClick={handleFeedback} >Send Feedback</button> 
+          </div>) : (null)
+          }
+          <p>this{itinerary._id}</p>
+{role === "Admin"?(<button onClick={()=>{handleflag(itinerary._id)}}>flag</button>):(null)}
+          
+
+          
         </div>
+        
       ))}
+      
     </div>
   );
 };

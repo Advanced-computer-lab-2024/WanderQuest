@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from '../styles/Activities.module.css';
+import AddRating from './AddRating';
+import AddComment from './AddComment';
 
 const Activities = (Props) => {
   const cc = [
@@ -10,6 +12,8 @@ const Activities = (Props) => {
     "Family",
     "Luxury"
   ];
+
+  var feedbackFlag = false;
   const role=Props.role;
   const [category, setCategory] = useState([]);
   const [selecttedfilters, setSelectedfilers] = useState([]);
@@ -22,6 +26,27 @@ const Activities = (Props) => {
   const [dateFilter, setDateFilter] = useState(''); // State for the selected date
   const [minBudget, setMinBudget] = useState(''); // State for minimum budget
   const [maxBudget, setMaxBudget] = useState(''); // State for maximum budget
+
+
+
+const handleflag = async (actid) => {
+  try {
+    const response = await fetch(`http://localhost:4000/admin/flagActivity/${actid}`, {
+      method: 'PATCH',
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error('flag failed');
+    }
+    alert('flag successful!');
+  } catch (error) {
+    console.error('Error booking activity:', error);
+    alert('flag failed');
+  }
+};
+
+
+
 
   const handleSearch = () => {
     const filteredActivities = allActivities.filter((prod) => {
@@ -39,6 +64,9 @@ const Activities = (Props) => {
     setRatingFilter(ratingFilter === rating ? null : rating);
   };
 
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+
   const handleRatings = () => {
     let updatedActivities = allActivities;
     if (ratingFilter !== null) {
@@ -53,6 +81,18 @@ const Activities = (Props) => {
       updatedActivities = updatedActivities.filter((activity) => activity.date === dateFilter);
     }
     setActivities(updatedActivities);
+  };
+
+  const [activityFeedback, setActivityFeedback] = useState({}); // State to hold rating and comments per activity
+
+  const handleFeedbackChange = (id, type, value) => {
+    setActivityFeedback(prevState => ({
+      ...prevState,
+      [id]: {
+        ...prevState[id],
+        [type]: value
+      }
+    }));
   };
 
   const filterByBudget = () => {
@@ -105,6 +145,30 @@ const Activities = (Props) => {
 //         setFilteredtags([...filteredtags, tag]);
 //     }
 // };
+const handleFeedback = async (e, id) => {
+  e.preventDefault();
+  const { rating = '', comment = '' } = activityFeedback[id] || {};
+
+  const ratingFeedback = await fetch('http://localhost:4000/bagarab7aga', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ rating }),
+  });
+
+  const commentFeedback = await fetch('http://localhost:4000/bagarab7agtein', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ comment }),
+  });
+
+  if (commentFeedback.ok && ratingFeedback.ok) {
+    console.log('Feedback sent successfully for activity ID:', id);
+  }
+};
 
   const filteritemscat = () => {
     if (selecttedfilters.length > 0) {
@@ -274,7 +338,7 @@ const Activities = (Props) => {
           />
         </label>
       </div>
-
+      <br/>
       {activities.map((activity) => (
         <div key={activity.id} className={styles.activity}>
           <h3>{activity.title}</h3>
@@ -289,8 +353,32 @@ const Activities = (Props) => {
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-          </p>
+            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'} <br />
+            <strong>flagged:</strong> {activity.flagged ? 'Yes' : 'No'} 
+            </p>
+{role === "Admin"?(<button onClick={()=>{handleflag(activity._id)}}>flag</button>):(null)}
+
+
+
+          {role === "Tourist" ? (
+            <div>
+              <AddRating 
+                rating={activityFeedback[activity.id]?.rating || ''} 
+                setRating={(value) => handleFeedbackChange(activity.id, 'rating', value)} 
+              />
+              <AddComment 
+                comment={activityFeedback[activity.id]?.comment || ''} 
+                setComment={(value) => handleFeedbackChange(activity.id, 'comment', value)} 
+              />
+              <button 
+                className={styles.btnFeedback} 
+                onClick={(e) => handleFeedback(e, activity.id)}
+              >
+                Send Feedback
+              </button>
+            </div>
+          ) : null}
+        
         </div>
       ))}
     </div>

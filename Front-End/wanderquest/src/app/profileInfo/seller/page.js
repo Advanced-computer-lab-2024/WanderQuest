@@ -1,3 +1,4 @@
+import ChangePassword from "../../../../components/ChangePassword";
 import Navbar from "../../../../components/Navbar";
 import SellerInfo from "../../../../components/SellerInfo";
 

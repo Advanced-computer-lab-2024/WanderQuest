@@ -1,0 +1,144 @@
+.all{
+    font-family:Arial, Helvetica, sans-serif ;
+}
+.top{
+    width: 100%;
+    height:250px;
+    background-color: #003580	;
+    color: white;
+}
+.container{
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    padding-top: 1%;
+}
+.navbtns{
+    display: flex;
+    height: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 62%;
+
+
+}
+.navbtn{
+    margin-left: 20px;
+    border-radius: 10px;
+    background-color: transparent;
+    color: white;
+    border: none;
+    width: 140px;
+    height: 30px;
+    font-size: 20px;
+}
+.navbtn:hover {
+    opacity: 0.9;
+    cursor: pointer;
+  }
+.active {
+    background-color: #0a4ca7;
+    border: 1px solid white;
+  }
+.searchbar{
+    padding: 3px;
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    background-color: #ffb700;
+    height: 45px;
+    border-radius: 8px;
+
+}
+.input{
+    width: 220px;
+    height: 95%;
+    margin-left: 3px;
+    border-radius: 6px;
+    border: none;
+}
+.search{
+    width: 6.8%;
+    height: 95%;
+    margin-left: 5px;
+    background-color: #0579cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-right: 0;
+    font-size: 15px;
+}
+.search:hover{
+    background-color: #0f4288;
+}
+.search:active{
+    opacity: 0.9;
+}
+.form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Create 5 equal columns */
+    gap: 20px; /* Space between the cards */
+    margin: 20px; /* Optional: adds margin around the grid */
+  }
+  
+  .card {
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    height: 250px; /* Optional: adds padding inside the card */
+  }
+  
+  .card:hover {
+    transform: translateY(-10px);
+  }
+  .welcome{
+    margin-left:auto ;
+    margin-right: auto;
+    /* border: 1px solid black; */
+    width: 50%;
+  }
+  .suggestions {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 5px; /* Space between the input and suggestions */
+    z-index: 999;
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .suggestions li {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .suggestions li:hover {
+    background-color: #f0f0f0; /* Hover effect */
+  }
+  
+  .suggestions li:active {
+    background-color: #e0e0e0; /* Active effect */
+  }
+  .button{
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 25px;
+    margin-top : 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+    /* Added that to remove the underline feature of the Link tag in Next */
+    text-decoration: none;
+  }
+  

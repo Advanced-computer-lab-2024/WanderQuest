@@ -7,6 +7,7 @@ import useUserList from '../hooks/useUserList'; // Import list custom hook
 import Link from 'next/link';
 import PrefTag from './PrefTag';
 import ActivityCategory from './ActivityCategory';
+import Pending from '../src/app/admin/Requests/page';
 
 export default function AdminPage() {
   const [search, setSearch] = useState('');
@@ -23,19 +24,8 @@ export default function AdminPage() {
     confirmDelete
   } = useDeleteUser(users, setUsers); // Pass setUsers here
 
-  const totalUsers = users.length; // Display total users from the fetched array
-
   if (loading) return <p>Loading users...</p>; // Show loading state
   if (error) return <p>{error}</p>; // Show error state if any
-
-  const fetchUserData = async () => {
-    const data = await fetch('/api/users'); // Adjust the API endpoint
-    const json = await data.json();
-    setTotalUsers(json.totalUsers);
-    setActiveUsers(json.activeUsers);
-    setInactiveUsers(json.inactiveUsers);
-    setUsers(json.users); 
-  }; 
 
 
   const generatePassword = (length = 10) => {
@@ -50,17 +40,15 @@ export default function AdminPage() {
 
   const handleCreateGovernor = async (e) => {
     e.preventDefault();
-
+  
     const generatedPassword = generatePassword();
     setGovPassword(generatedPassword); // Update state with generated password
-
-
+  
     const newGovernorData = {
       username: govUsername,
       password: generatedPassword,
     };
-    console.log(generatePassword);
-
+  
     try {
       const response = await fetch('http://localhost:4000/admin/governor', {
         method: 'POST',
@@ -69,27 +57,26 @@ export default function AdminPage() {
         },
         body: JSON.stringify(newGovernorData),
       });
-
+  
       if (response.ok) {
         alert('Governor created successfully!');
-        fetchUserData(); // Refresh the user data
+        window.location.reload(); // Refresh the page
       } else {
         alert('Failed to create governor.');
       }
     } catch (error) {
-      console.error('Error creating governor:', error);
+      console.log('Error creating governor:', error);
     }
   };
-
+  
   const handleAddAdmin = async (e) => {
-    e.preventDefault(); 
-
-
+    e.preventDefault();
+  
     const newAdminData = {
       username: adminUsername,
       password: adminPassword,
     };
-
+  
     try {
       const response = await fetch('http://localhost:4000/admin/', { // Adjust endpoint
         method: 'POST',
@@ -98,15 +85,15 @@ export default function AdminPage() {
         },
         body: JSON.stringify(newAdminData),
       });
-
+  
       if (response.ok) {
         alert('Admin added successfully!');
-        fetchUserData(); // Refresh the user data
+        window.location.reload(); // Refresh the page
       } else {
         alert('Failed to add admin.');
       }
     } catch (error) {
-      console.error('Error adding admin:', error);
+      console.log('Error adding admin:', error);
     }
   };
 
@@ -114,26 +101,13 @@ export default function AdminPage() {
     <div className={styles.container}>
       {/* Header Section */}
       <h1>Admin Dashboard</h1>
-      <nav>
-        <button>Add New</button>
-        <button>Manage Users</button>
-        <button>Logs</button>
-        <button>Settings</button>
-      </nav>
-
+      <div className={styles.basic}>
+      <Link href="/admin/Requests">
+      <button>Manage Pending Requests</button>
+      </Link>
+      </div>
       {/* Main Section */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-
-        {/* User Accounts Section */}
-        <div className={styles.userAccounts}>
-          <h2>User Accounts</h2>
-          <p>Total Users: {totalUsers !== null ? totalUsers : 'Loading Users...'}</p>
-          {/* <p>Active: {activeUsers == null ? activeUsers : 'Loading Active Users...'}</p>
-          <p>Inactive: {inactiveUsers == null ? inactiveUsers : 'Loading Inactive Users...'}</p> */}
-          <div>
-            <button>View Details</button>
-          </div>
-        </div>
 
         {/* Add Tourism Governor Section */}
         <div className={styles.tourismGovernor}>
@@ -197,16 +171,14 @@ export default function AdminPage() {
             <tr>
               <th>Username</th>
               <th>Role</th>
-              <th>Email</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.filter(user => user.username.includes(search)).map((user) => (
-              <tr key={user._id}> {/* Change key to user._id */}
+            {users.users.filter(user => user.username.includes(search)).map((user) => (
+              <tr key={user._id}>{/* Change key to user._id */}
                 <td>{user.username}</td>
                 <td>{user.role}</td>
-                <td>{user.email}</td>
                 <td>
                   <button
                     className={styles.deleteButton}

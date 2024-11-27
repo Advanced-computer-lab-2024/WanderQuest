@@ -46,12 +46,15 @@ const upload = multer({
 // functions
 const getProfile = async (req, res) => {
     try {
-        const advertiser = await Advertiser.findById(req.params.id);
+        const advertiser = await Advertiser.findById(req.user._id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
         }
         if (!advertiser.accepted) {
             return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
         }
         res.json({ advertiser });
     } catch (err) {
@@ -61,12 +64,15 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const advertiser = await Advertiser.findById(req.params.id);
+        const advertiser = await Advertiser.findById(req.user._id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
         }
         if (!advertiser.accepted) {
             return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
         }
         const updatedAdvertiser = await Advertiser.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedAdvertiser);
@@ -93,9 +99,15 @@ const uploadLogo = async (req, res) => {
         }
 
         try {
-            const advertiser = await Advertiser.findById(req.params.id);
+            const advertiser = await Advertiser.findById(req.user._id);
             if (!advertiser) {
                 return res.status(404).json({ error: 'Advertiser not found' });
+            }
+            if (!advertiser.accepted) {
+                return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+            }
+            if (!advertiser.isTermsAccepted) {
+                return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
             }
 
             const file = req.files[0];
@@ -119,9 +131,15 @@ const uploadLogo = async (req, res) => {
 
 const getLogo = async (req, res) => {
     try {
-        const advertiser = await Advertiser.findById(req.params.id);
+        const advertiser = await Advertiser.findById(req.user._id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
+        }
+        if (!advertiser.accepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted' });
+        }
+        if (!advertiser.isTermsAccepted) {
+            return res.status(403).json({ error: 'Advertiser account not yet accepted terms and conditions' });
         }
 
         const logo = advertiser.logo;
@@ -158,8 +176,10 @@ const getLogo = async (req, res) => {
 
 //create activity
 const createActivity = async (req, res) => {
+    const { title, date, time, location, price, priceRange, category, tags, specialDiscounts, bookingIsOpen, ratings, comments } = req.body;
+    const createdBy = req.user._id;
+
     try {
-        const { title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy } = req.body;
         // If tags are provided, check if all tags exist in the TagModel
         if (tags && tags.length > 0) {
             // Extract the types of the tags from the request
@@ -187,7 +207,7 @@ const createActivity = async (req, res) => {
     }
     try {
         const newActivity = await ActivityModel.create({
-            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy
+            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy, comments
 
         });
         res.status(200).json(newActivity);
@@ -258,7 +278,7 @@ const readActivities = async (req, res) => {
 }
 //get myCreatedActivities
 const myCreatedActivities = async (req, res) => {
-    const myID = req.params.id;
+    const myID = req.user._id;
     if (myID) {
         const myActivities = await ActivityModel.find({ createdBy: myID });
         res.status(200).json(myActivities);
@@ -328,4 +348,3 @@ const getAllAdvertisers = async (req, res) => {
 };
 
 module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
-

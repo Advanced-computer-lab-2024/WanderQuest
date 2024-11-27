@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "../Styles/Profiles.module.css";
+import DeleteAccount from "../components/DeleteAccount";
+import ChangePassword from "./ChangePassword";
 
 const SellerInfo = () => {
     const [userId, setUserId] = useState(''); // State for storing the seller ID
@@ -10,6 +12,13 @@ const SellerInfo = () => {
     const [sellerDescription, setDescription] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+
+    
+
+    // Logo states
+    const [logo, setLogo] = useState(null); // For the selected logo file
+    const [logoPreview, setLogoPreview] = useState(''); // For the preview before upload
+    const [logoURL, setLogoURL] = useState(''); // For the uploaded logo URL
 
     // Fetch the seller ID first
     useEffect(() => {
@@ -23,7 +32,7 @@ const SellerInfo = () => {
                 console.log("Fetched seller ID:", sellerId); // Debugging line
                 setUserId(sellerId); // Assuming sellerId is returned as a string
             } catch (error) {
-                console.error("Error fetching seller ID:", error);
+                console.log("Error fetching seller ID:", error);
                 setError("Error fetching seller ID");
             }
         };
@@ -50,8 +59,11 @@ const SellerInfo = () => {
                 setEmail(data.email || '');
                 setName(data.sellerName || '');
                 setDescription(data.sellerDescription || '');
+                if(data.logo){
+                    setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
+                }
             } catch (error) {
-                console.error("Error fetching profile:", error);
+                console.log("Error fetching profile:", error);
                 setError("Error fetching profile data");
             }
         };
@@ -96,11 +108,61 @@ const SellerInfo = () => {
         }
     };
 
+    
+    // Handle logo file selection
+    const handleLogoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setLogo(file);
+            setLogoPreview(URL.createObjectURL(file)); // Show preview of the logo
+        }
+    };
+
+    const handleLogoUpload = async () => {
+        if (!logo) {
+            setError("Please select a logo to upload.");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("documents", logo);
+    
+        try {
+            const response = await fetch(`http://localhost:4000/seller/uploadLogo/${userId}`, {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
+                setLogoPreview("");
+                setError("");
+                setSuccessMessage("Logo uploaded successfully!");
+                setTimeout(() => setSuccessMessage(""), 3000); // Clears after 3 seconds
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || "Failed to upload logo");
+            }
+        } catch (err) {
+            console.error("Error uploading logo:", err);
+            setError("An error occurred while uploading the logo");
+        }
+    };
+
+    const handleDeleteSuccess = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => setSuccessMessage(""), 3000);
+    };
+    
+
     return (
+        <div>
         <form className={styles.Profile} onSubmit={handleSubmit}>
+            <div className={styles.profileHeader}>
             <h3 className={styles.h1}>My Profile</h3>
-            {error && <p className={styles.error}>{error}</p>}
-            {successMessage && <p className={styles.success}>{successMessage}</p>}
+            {logoURL && <img src={logoURL} alt="Company Logo" className={styles.logoDisplay} />}
+        </div>
             <label>Username: </label>
             <input
                 type="text"
@@ -132,7 +194,24 @@ const SellerInfo = () => {
             />
 
             <button type="submit">Save Changes</button>
+
+        {/* Logo Upload Section */}
+        <div className={styles.logoUploadSection}>
+            <label>Upload Logo:</label>
+            <input type="file" onChange={handleLogoChange} />
+            {logoPreview && <img src={logoPreview} alt="Logo Preview" className={styles.logoPreview} />}
+            <button type="button" onClick={handleLogoUpload} className={styles.uploadButton}>
+                Upload
+            </button>
+            {error && <p className={styles.error}>{error}</p>}
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
+        </div>
+
+            
         </form>
+        <ChangePassword userId={userId}/>
+        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+    </div>
     );
 };
 

@@ -99,3 +99,88 @@
 .searchcom{
     display: inline;
 }
+.priceFilter {
+  background-color: #f9f9f9; /* Light background for contrast */
+  border: 1px solid #ddd; /* Light border for definition */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding around the content */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  max-width: 400px; /* Limit the width */
+  margin: 20px auto; /* Center align on the page */
+}
+
+.priceFilter h3 {
+  font-size: 1.5rem; /* Increase font size for the header */
+  margin-bottom: 15px; /* Space below the header */
+  color: #333; /* Darker color for better readability */
+}
+
+.priceFilter label {
+  display: block; /* Each label in a new line */
+  margin-bottom: 10px; /* Space between labels */
+  font-weight: 600; /* Bold font for emphasis */
+  color: #555; /* Slightly lighter color for labels */
+}
+
+.priceFilter input[type="number"],
+.priceFilter input[type="range"] {
+  width: 100%; /* Full width inputs */
+  padding: 8px; /* Padding inside inputs */
+  margin-top: 5px; /* Space above inputs */
+  border: 1px solid #ccc; /* Light border for inputs */
+  border-radius: 4px; /* Rounded corners for inputs */
+  font-size: 1rem; /* Font size */
+}
+
+.priceFilter .slider {
+  display: flex; /* Flexbox for range inputs */
+  justify-content: space-between; /* Space between sliders */
+  margin: 20px 0; /* Margin around the slider */
+}
+
+.priceFilter button {
+  background-color: #28a745; /* Green button */
+  color: white; /* White text */
+  padding: 10px 15px; /* Padding for the button */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners for button */
+  font-size: 1rem; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+.priceFilter button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.productArchive{
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #031A29;
+    color:white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+
+.productArchive:hover {
+    background-color: #042335;
+    color:white;
+}
+
+.uploadButton {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #031A29;
+    color:white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.uploadButton input[type="file"] {
+  display: none;
+}

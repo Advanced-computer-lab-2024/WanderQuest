@@ -5,12 +5,11 @@
     margin: 0 auto; 
     margin-top: 100px;
     padding: 30px;
-    background-color: #f9f9f9; 
+    background-color: #FAFAF8; /* Light off-white for a soft background */
     border-radius: 10px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     font-family: Arial, sans-serif;
 }
-
 
 .Profile input[type="text"],
 .Profile input[type="date"],
@@ -18,10 +17,10 @@
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #D1D5DB; /* Subtle gray border for a clean look */
     border-radius: 5px;
     font-size: 16px;
-    background-color: #fff;
+    background-color: #FFFFFF; /* White background for inputs */
     box-sizing: border-box; /* Ensures padding doesn't affect the element's width */
 }
 
@@ -30,32 +29,121 @@
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #122c34; 
+    color: #6B7280; /* Soft grayish color for labels */
 }
 
 
 .h1 {
+    display: flex;
     text-align: center;
-    color: #17455c;
-    margin-bottom: 20px; /* Adjust as needed */
+    justify-content: space-between;
+    color: #4B5563; /* Darker gray for a more prominent heading */
+    margin-bottom: 40px; /* Adjust as needed */
+    width: 100%;
 }
 
 /* Button styling */
-.Profile button { /* Changed from .Registration button to .Profile button */
+.Profile button {
     width: 100%;
     padding: 12px;
-    background-color: #042335; 
+    background-color:#60A5FA ; /* Soft blue for buttons */
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px; /* Add space below the save changes button */
+}
+
+.Profile button:hover {
+    background-color: #93C5FD; /* Slightly darker blue on hover */
+}
+
+.profileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.h1 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logoDisplay {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-left: 20px;
+}
+
+/* Logo Upload Section */
+.logoUploadSection {
+    margin-top: 20px;
+}
+
+.logoUploadSection label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.logoPreview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.uploadButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
-.Profile button:hover { /* Changed from .Registration button:hover to .Profile button:hover */
-    background-color: #1a6187; 
+.uploadButton:hover {
+    background-color: #45a049;
 }
+
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.success {
+    color: green;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.badge {
+    margin-left: 8px; /* Adjust space between the text and badge */
+    width: 50px; /* Adjust the badge size */
+    height: 70px; /* Adjust the badge size */
+    object-fit: cover; /* Makes sure the image fits within the dimensions */
+    
+}
+
+
+
+
+
+
+
 
 /* Responsive Design for Mobile Devices */
 @media (max-width: 600px) {
@@ -63,7 +151,7 @@
         padding: 15px;
     }
 
-    .Profile button { /* Changed from .Registration button to .Profile button */
+    .Profile button {
         font-size: 14px;
     }
 }

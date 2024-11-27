@@ -2,6 +2,7 @@
 import styles from '../Styles/RegistrationForm.module.css';
 import { useState } from "react";
 import { getNames } from 'country-list';
+import UploadDocuments from '../components/UploadDocuments';
 
 
 const RegistrationForm = () => {
@@ -15,6 +16,10 @@ const RegistrationForm = () => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [occupation, setOccupation] = useState('');
     const [error, setError] = useState('');
+    //const [documents, setDocuments] = useState([]);
+    const [userId,setUserId]=useState(null);
+
+    const [message, setMessage] = useState(null);
 
     const countries = getNames();
 
@@ -42,7 +47,7 @@ const RegistrationForm = () => {
         setError(""); 
     
         // Make the API call to the backend
-        fetch('http://localhost:4000/register/', { 
+        fetch('http://localhost:4000/authentication/register/', { 
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -55,6 +60,8 @@ const RegistrationForm = () => {
                 // Handle server errors (e.g., validation issues)
                 setError(data.error);
             } else {
+                setUserId(data.id);
+                console.log(data.id);
                 // Handle success (e.g., redirect to login or another page)
                 console.log("Registration successful:", data);
             }
@@ -65,61 +72,63 @@ const RegistrationForm = () => {
             console.error("Error:", err);
         });
     };
+
     
-
-
-
+    
+    
+    
     return (
-        
         <form className={styles.Registration} onSubmit={handleSubmit}>
-            <h1 className={styles.h1}>Sign Up</h1>
-            
-            <label>Email: </label>
-            <input
-                type="text"
-                required
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-            />
+    <h1 className={styles.h1}>Sign Up</h1>
+    
+    <label>Email: </label>
+    <input
+        type="text"
+        required
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
+    />
 
-            <label>Username: </label>
-            <input
-                type="text"
-                required
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-            />
+    <label>Username: </label>
+    <input
+        type="text"
+        required
+        onChange={(e) => setUsername(e.target.value)}
+        value={username}
+    />
 
-            <label>Password: </label>
-            <input
-                type="password"
-                required
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-            />
+    <label>Password: </label>
+    <input
+        type="password"
+        required
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
+    />
 
-            <label>Confirm Password: </label>
-            <input
-                type="password"
-                required
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                value={confirmPassword}
-            />
+    <label>Confirm Password: </label>
+    <input
+        type="password"
+        required
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        value={confirmPassword}
+    />
 
-            <label>You are a: </label>
-            <select
-                required
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-            >
-                <option value="">Select</option>
-                <option value="tourist">Tourist</option>
-                <option value="tourGuide">Tour Guide</option>
-                <option value="advertiser">Advertiser</option>
-                <option value="seller">Seller</option>
-            </select>
 
-            {userType === 'tourist' && (
+
+    <label>You are a/an: </label>
+    <select
+        required
+        value={userType}
+        onChange={(e) => setUserType(e.target.value)}
+    >
+        <option value="">Select</option>
+        <option value="tourist">Tourist</option>
+        <option value="tourGuide">Tour Guide</option>
+        <option value="advertiser">Advertiser</option>
+        <option value="seller">Seller</option>
+    </select>
+
+    {userType === 'tourist' && (
                 <>
                     <label>Mobile Number: </label>
                     <input
@@ -163,10 +172,20 @@ const RegistrationForm = () => {
                     </select>
                 </>
             )}
-            {error && <p className={styles.error}>{error}</p>}
-            <button type="submit">Submit</button>
-        </form>
-    );
+
+        
+
+    
+
+    {error && <p className={styles.error}>{error}</p>}
+
+    {/* Form Submit Button */}
+    <button type="submit">Submit</button>
+    {userId && <UploadDocuments userId={userId} userType={userType} />}
+</form>
+
+    )
+
 };
 
 export default RegistrationForm;

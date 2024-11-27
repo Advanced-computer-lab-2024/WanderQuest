@@ -1,4 +1,5 @@
 const { Seller } = require('../models/userModel');
+const ProdModel = require('../models/objectModel').Product;
 const multer = require('multer');
 const mongoose = require('mongoose');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -35,20 +36,30 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+
 const upload = multer({
     storage,
     fileFilter
 }).array('documents', 1);
 
+//Add a new multer configuration for handling product images
+// const uploadProductImage = multer({
+//     storage,
+//     fileFilter
+// }).single('photo'); // 'photo' will be the key for the product image
+
 // Read Seller profile
 const getProfile = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
         if (!seller.accepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        if (!seller.isTermsAccepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
         res.json(seller);
     } catch (err) {
@@ -59,14 +70,17 @@ const getProfile = async (req, res) => {
 // Update Seller profile
 const updateProfile = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
         if (!seller.accepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted' });
         }
-        const updatedSeller = await Seller.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!seller.isTermsAccepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
+        }
+        const updatedSeller = await Seller.findByIdAndUpdate(req.user._id, req.body, { new: true });
         res.json(updatedSeller);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -81,9 +95,15 @@ const uploadLogo = async (req, res) => {
         }
 
         try {
-            const seller = await Seller.findById(req.params.id);
+            const seller = await Seller.findById(req.user._id);
             if (!seller) {
                 return res.status(404).json({ error: 'Seller not found' });
+            }
+            if (!seller.accepted) {
+                return res.status(403).json({ error: 'Seller account not yet accepted' });
+            }
+            if (!seller.isTermsAccepted) {
+                return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
             }
 
             const file = req.files[0];
@@ -107,9 +127,15 @@ const uploadLogo = async (req, res) => {
 
 const getLogo = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
+        }
+        if (!seller.accepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted' });
+        }
+        if (!seller.isTermsAccepted) {
+            return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
 
         const logo = seller.logo;
@@ -144,16 +170,6 @@ const getLogo = async (req, res) => {
     }
 }
 
-// get the first seller id
-const getSellerId = async (req, res) => {
-    try {
-        const seller = await Seller.findOne({});
-        res.json(seller._id);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
-
 //seller getProducts
 const getProducts = async (req, res) => {
     try {
@@ -173,9 +189,50 @@ const getAvailableProducts = async (req, res) => {
     }
 };
 
+const getProductPhoto = async (req, res) => {
+    try {
+        const product = await ProdModel.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'product not found' });
+        }
+
+
+        const photo = product.picture;
+
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //seller addProduct
 const addProduct = async (req, res) => {
-    const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const seller = req.user._id;
+    const { name, picture, price, description, ratings, rating, reviews, availableAmount, sales } = req.body;
 
     // Validate input
     if (!name || !picture || !description || !price) {
@@ -189,7 +246,7 @@ const addProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount })
+        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount, sales })
         res.status(200).json(product)
 
     } catch (error) {
@@ -197,6 +254,41 @@ const addProduct = async (req, res) => {
     }
 
 };
+
+
+const uploadProductPhoto = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const product = await ProdModel.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ error: 'product not found' });
+            }
+
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+            product.picture = documentMetadata;
+
+            await product.save();
+
+            res.json({ message: 'product photo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+};
+
+
 const editProduct = async (req, res) => {
     const { id } = req.params;
     let updatedProd = await ProdModel.findById(id)
@@ -211,5 +303,86 @@ const editProduct = async (req, res) => {
         }
     }
 }
+// const editProduct = async (req, res) => {
+//     uploadProductImage(req, res, async (err) => {
+//         if (err) {
+//             return res.status(400).json({ error: err.message });
+//         }
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts };
+//         const { id } = req.params;
+//         let updatedProd = await ProdModel.findById(id);
+//         if (!updatedProd) {
+//             return res.status(404).json({ error: 'Product not found' });
+//         }
+
+//         try {
+//             const picture = req.file
+//                 ? {
+//                     filename: req.file.filename,
+//                     contentType: req.file.mimetype,
+//                     fileID: req.file.id,
+//                 }
+//                 : updatedProd.picture; // Retain existing picture if no new file is uploaded
+
+//             updatedProd = await ProdModel.findByIdAndUpdate(
+//                 id,
+//                 { ...req.body, picture },
+//                 { new: true }
+//             );
+
+//             res.status(200).json(updatedProd);
+//         } catch (error) {
+//             res.status(400).json({ error: error.message });
+//         }
+//     });
+// };
+
+//seller can archive or unarchive products
+
+const archiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product archived successfully', product });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+const unarchiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product unarchived successfully', product });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+//view available quantity and sales
+const viewProductSales = async (req, res) => {
+    try {
+        const products = await ProdModel.find({}, "name availableAmount sales");
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+const viewAllProductSales = async (req, res) => {
+    try {
+        // Fetch all products with only the specified fields: name, availableAmount, and sales
+        const products = await ProdModel.find({}, "name availableAmount sales");
+
+        // Return the list of products
+        return res.status(200).json(products);
+
+    } catch (error) {
+        // If an error occurs, return the error message
+        res.status(400).json({ error: error.message });
+    }
+};
+module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales, uploadProductPhoto };

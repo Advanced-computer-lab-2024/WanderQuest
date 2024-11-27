@@ -1,17 +1,21 @@
 const express = require('express');
+const requireAuth = require('../middleware/requireAuth');
 
 // controller functions
-const { registerUser, uploadDocuments, getUserDocuments, getDocumentByFileID, changePassword, acceptUser, acceptTerms } = require('../controllers/authenticationController');
+const { registerUser, login, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, acceptUser, acceptTerms, requestAccountDeletion } = require('../controllers/authenticationController');
 
 const router = express.Router();
 
 // routes
 router.post('/register', registerUser);
-router.post('/changePassword/:id', changePassword);
-router.post('/uploadDocuments/:id', uploadDocuments);
-router.get('/getDocuments/:id', getUserDocuments);
-router.get('/getDocumentByFilename/:id', getDocumentByFileID);
-router.patch('/acceptUser/:id', acceptUser);
-router.patch('/acceptTerms/:id', acceptTerms);
+router.post('/login', login);
+router.post('/changePassword', requireAuth(), changePassword);
+router.post('/uploadDocuments', uploadDocuments);
+router.get('/getDocuments', requireAuth(), getUserDocuments);
+router.get('/getUsersRequestingAcceptance', requireAuth({ role: 'Admin' }), getUsersRequestingAcceptance);
+router.get('/getDocumentByFileID/:id', requireAuth(), getDocumentByFileID);
+router.patch('/acceptUser/:id', requireAuth({ role: 'Admin' }), acceptUser);
+router.patch('/acceptTerms', requireAuth(), acceptTerms);
+router.patch('/requestAccountDeletion', requireAuth(), requestAccountDeletion);
 
 module.exports = router;

@@ -4,7 +4,51 @@ const tourGovModel = require('../models/tourGovernerModel');
 const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
+const ComplaintModel = require('../models/objectModel').complaint;
+const { Activity, itinerary } = require('../models/objectModel');
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const validator = require('validator');
+const bcrypt = require('bcrypt');
+
 const mongoose = require('mongoose');
+
+// Collection name in MongoDB
+const collectionName = 'uploads';
+
+// Initialize GridFS
+let gfs;
+mongoose.connection.once('open', () => {
+    gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    gfs.collection(collectionName);
+});
+
+// Set up GridFS storage
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URI,
+    file: (req, file) => {
+        return {
+            bucketName: collectionName,
+            filename: `${Date.now()}-${file.originalname}`
+        };
+    }
+});
+
+// File filter to allow only photos
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+
+const upload = multer({
+    storage,
+    fileFilter
+}).array('documents', 1);
 
 // Get all admins
 const getAllAdmins = async (req, res) => {
@@ -18,26 +62,37 @@ const getAllAdmins = async (req, res) => {
 //getAllUsers
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find({})
-        res.status(200).json(users)
+        const users = await User.find({ accepted: true });
+        const admins = await AdminModel.find({});
+        const tourG = await tourGovModel.find({});
+
+        const allUsers = [...users, ...admins, ...tourG];
+
+        res.status(200).json({ users: allUsers });
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message });
     }
-}
+};
+
 // Delete account off system
 const deleteAccount = async (req, res) => {
     const { id } = req.params;
 
     // Validate input
     let userAccount = await User.findOne({ _id: id });
+    let adminAccount = await AdminModel.findOne({ _id: id });
     let tourGovAccount = await tourGovModel.findOne({ _id: id });
 
-    if (!userAccount && !tourGovAccount) {
+    if (!userAccount && !tourGovAccount && !adminAccount) {
         return res.status(400).json({ error: 'Account not found' });
     }
 
     try {
-        if (userAccount) {
+        if (adminAccount) {
+            adminAccount = await AdminModel.findByIdAndDelete(id);
+            res.status(200).json({ message: 'Account deleted', adminAccount });
+        }
+        else if (userAccount) {
             userAccount = await User.findByIdAndDelete(id);
             res.status(200).json({ message: 'Account deleted', userAccount });
         }
@@ -64,8 +119,8 @@ const addAdmin = async (req, res) => {
         return res.status(400).json({ error: 'Username must be at least 3 characters long' });
     }
 
-    if (password.length < 5) {
-        return res.status(400).json({ error: 'Password must be at least 5 characters long' });
+    if (!validator.isStrongPassword(password)) {
+        throw new Error('Password must be strong, must contain uppercase, number, and special character');
     }
 
     try {
@@ -76,7 +131,11 @@ const addAdmin = async (req, res) => {
             return res.status(400).json({ error: 'Username already exists' });
         }
 
-        const admin = await AdminModel.create({ username, password })
+        // hash the password
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const admin = await AdminModel.create({ username, password: hashedPassword });
         res.status(200).json(admin)
 
     } catch (error) {
@@ -115,7 +174,7 @@ const getProdById = async (req, res) => {
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ }, { availableAmount: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -124,11 +183,12 @@ const getAvailableProducts = async (req, res) => {
 //Admin addProduct
 
 const addProduct = async (req, res) => {
-    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
-    const picture = req.file;
+    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
+    const seller = req.user._id;
+    //   const picture = req.file;
 
     // Validate input
-    if (!name || !picture || !description || !price) {
+    if (!name /*|| !picture*/ || !description || !price) {
         return res.status(400).json({ error: 'Details and prices fields are required' });
     }
     try {
@@ -148,10 +208,11 @@ const addProduct = async (req, res) => {
             rating,
             reviews,
             availableAmount,
-            picture: {
-                data: picture.buffer,
-                type: picture.mimetype
-            }
+            // picture: {
+            //     data: picture.buffer,
+            //     type: picture.mimetype
+            // },
+
         });
         res.status(200).json(product)
 
@@ -161,10 +222,81 @@ const addProduct = async (req, res) => {
 
 };
 
+const getProductPhoto = async (req, res) => {
+    try {
+        const product = await ProdModel.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'product not found' });
+        }
+
+
+        const photo = product.picture;
+
+        const fileID = new Types.ObjectId(photo.fileID);
+
+        // Stream the file from MongoDB GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: collectionName,
+        });
+
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        // Set headers for displaying the image
+        downloadStream.on('file', (file) => {
+            res.set('Content-Type', file.contentType);
+        });
+
+        // Pipe the download stream to the response
+        downloadStream.pipe(res);
+
+        downloadStream.on('error', (err) => {
+            console.error('Download Stream Error:', err);
+            res.status(500).json({ error: err.message });
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+const uploadProductPhoto = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+
+        try {
+            const product = await ProdModel.findById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ error: 'product not found' });
+            }
+
+
+            const file = req.files[0];
+
+            const documentMetadata = {
+                filename: file.filename,
+                contentType: file.contentType,
+                fileID: file.id
+            };
+
+            product.picture = documentMetadata;
+
+            await product.save();
+
+            res.json({ message: 'product photo uploaded' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+};
 // Admin editProduct
 const editProduct = async (req, res) => {
     const { id } = req.params;
-    const { name, price, description, seller, ratings, rating, reviews, availableAmount } = req.body;
+    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
     const picture = req.file;
 
     try {
@@ -177,15 +309,15 @@ const editProduct = async (req, res) => {
         if (name) updatedProd.name = name;
         if (price) updatedProd.price = price;
         if (description) updatedProd.description = description;
-        if (seller) updatedProd.seller = seller;
         if (ratings) updatedProd.ratings = ratings;
         if (rating) updatedProd.rating = rating;
         if (reviews) updatedProd.reviews = reviews;
         if (availableAmount) updatedProd.availableAmount = availableAmount;
         if (picture) {
             updatedProd.picture = {
-                data: picture.buffer,
-                type: picture.mimetype
+                filename: picture.filename,  // Set filename from the uploaded file
+                contentType: picture.mimetype, // Use file's MIME type
+                fileID: picture.id // Assuming multer-gridfs-storage provides file ID in `picture.id`
             };
         }
 
@@ -252,7 +384,7 @@ const deleteCategory = async (req, res) => {
 
 
 
-// Add a Tourism Governer
+// Add a Tourism Governor
 const addTourGov = async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -262,9 +394,10 @@ const addTourGov = async (req, res) => {
         return res.status(400).json({ error: 'Username must be at least 3 characters long' });
     }
 
-    if (password.length < 5) {
-        return res.status(400).json({ error: 'Password must be at least 5 characters long' });
+    if (!validator.isStrongPassword(password)) {
+        throw new Error('Password must be strong, must contain uppercase, number, and special character');
     }
+
     try {
         // Checking if the username already exists
         let tourGov = await tourGovModel.findOne({ username });
@@ -273,7 +406,11 @@ const addTourGov = async (req, res) => {
             return res.status(400).json({ error: 'Username already exists' });
         }
 
-        tourGov = await tourGovModel.create({ username, password })
+        // hash the password
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        tourGov = await tourGovModel.create({ username, password: hashedPassword });
         res.status(200).json(tourGov)
 
     } catch (error) {
@@ -343,7 +480,143 @@ const deleteTag = async (req, res) => {
         }
     }
 };
+const getAllComplaints = async (req, res) => {
+    try {
+        const complaints = await ComplaintModel.find({}) // Sort by date in descending order
+        res.status(200).json(complaints);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
 
+const specificComplaint = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid complaint ID' });
+    }
+
+    try {
+
+        const complaint = await ComplaintModel.findById(id);
+
+        if (!complaint) {
+            return res.status(404).json({ message: 'Complaint not found' });
+        }
+
+        res.status(200).json(complaint);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+const markComplaint = async (req, res) => {
+    const { id } = req.params;
+    if (!req.body.status || (req.body.status !== 'Resolved' && req.body.status !== 'Pending')) {
+        return res.status(400).json({ error: 'Status must be either "Resolved" or "Pending"' });
+    }
+
+    try {
+        const updatedComplaint = await ComplaintModel.findByIdAndUpdate
+            (id, { status: req.body.status }, { new: true });
+        if (!updatedComplaint) {
+            return res.status(404).json({ error: 'Complaint not found' });
+        }
+        res.status(200).json(updatedComplaint);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+const reply = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updatedComplaint = await ComplaintModel.findByIdAndUpdate
+            (id, { reply: req.body.reply }, { new: true });
+        if (!updatedComplaint) {
+            return res.status(404).json({ error: 'Complaint not found' });
+        }
+        res.status(200).json(updatedComplaint);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+//admin can archive or unarchive products
+const archiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product archived successfully', product });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+const unarchiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product unarchived successfully', product });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+//view available quantity and sales
+const viewProductSales = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const products = await ProdModel.findById(id, "name availableAmount sales");
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+const viewAllProductSales = async (req, res) => {
+    try {
+        // Fetch all products with only the specified fields: name, availableAmount, and sales
+        const products = await ProdModel.find({}, "name availableAmount sales");
+
+        // Return the list of products
+        return res.status(200).json(products);
+
+    } catch (error) {
+        // If an error occurs, return the error message
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
+//flag an activity
+const flagActivity = async (req, res) => {
+    try {
+        const activityId = req.params.id;
+        const activity = await Activity.findByIdAndUpdate(activityId, { flagged: true }, { new: true });
+        if (!activity) {
+            return res.status(404).json({ error: 'Activity not found' });
+        }
+        res.status(200).json({ message: 'Event flagged successfully', activity });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+//flag an itinerary
+const flagItinerary = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const retItinerary = await itinerary.findByIdAndUpdate(id, { flagged: true }, { new: true });
+        if (!retItinerary) {
+            return res.status(404).json({ error: ' Itinerary with this id not found' });
+        }
+        res.status(200).json({ message: 'Itinerary flagged successfully', retItinerary });
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+}
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -362,5 +635,17 @@ module.exports = {
     getAllTags,
     createTag,
     updateTag,
-    deleteTag
+    deleteTag,
+    getAllComplaints,
+    specificComplaint,
+    markComplaint,
+    reply,
+    archiveProduct,
+    unarchiveProduct,
+    viewProductSales,
+    flagActivity,
+    flagItinerary,
+    viewAllProductSales,
+    uploadProductPhoto,
+    getProductPhoto
 }

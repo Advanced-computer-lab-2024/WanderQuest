@@ -1,47 +1,433 @@
 const Booking = require('../models/bookingModel');
 const axios = require('axios');
+const { User } = require('../models/userModel');
+const Activity = require('../models/objectModel').Activity;
+const Itinerary = require('../models/objectModel').itinerary;
+const mongoose = require('mongoose');
 
-// Flight search
-const flightSearch = async (req, res) => {
-    const { fromId, toId, departDate, returnDate, adults = '1', children = '0', sort = 'BEST', cabinClass = 'ECONOMY', currency_code = 'USD' } = req.query;
 
-    // Validate input dates
-    const now = new Date();
-    const outboundDate = new Date(departDate);
-    const returnDateObj = new Date(returnDate);
+const bookActivity = async (req, res) => {
+    const { bookingType, activityId } = req.body;
+    const userId = req.user._id;
 
-    if (outboundDate < now || returnDateObj < now) {
-        return res.status(400).json({ error: '`departDate` and `returnDate` must be in the future.' });
+    const booking = await Booking.findOne({ userId, activityId });
+    if (booking && booking.status === 'booked') {
+        return res.status(400).json({ error: 'Activity already booked by this user' });
     }
 
-    const options = {
-        method: 'GET',
-        url: 'https://booking-com15.p.rapidapi.com/api/v1/flights/searchFlights',
-        params: {
-            fromId,
-            toId,
-            departDate,
-            returnDate,
-            pageNo: '1',
-            adults,
-            children,
-            sort,
-            cabinClass,
-            currency_code
-        },
-        headers: {
-            'x-rapidapi-key': '6c33650851msh45e5c5726fd40fap186e97jsnd692a76b08c6',
-            'x-rapidapi-host': 'booking-com15.p.rapidapi.com'
-        }
-    };
+    if (bookingType !== 'activity') {
+        return res.status(400).json({ error: 'Can only book an activity' });
+    }
 
     try {
-        const response = await axios.request(options);
-        res.status(200).json(response.data);
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
+        const retUser = await User.findById(userId);
+        if (!retUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (retUser.role !== 'tourist') {
+            return res.status(403).json({ error: 'Only tourists can book activities' });
+        }
+
+        const retActivity = await Activity.findById(activityId);
+        if (!retActivity) {
+            return res.status(404).json({ error: 'Activity not found' });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            activityId,
+            details: retActivity,
+            paid: true,
+            startDate: retActivity.date
+        });
+
+        if (booking && booking.status === 'cancelled') {
+            await Booking.findOneAndDelete({ _id: booking._id });
+            console.log("Deleted booking");
+        }
+        const savedBooking = await newBooking.save();
+        retUser.deduceFromWallet(retActivity.price);
+        res.status(201).json(savedBooking);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
 
-module.exports = { flightSearch };
+const activityBookings = async (req, res) => {
+    const id = req.user._id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try {
+        const retUser = await User.findById(id);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'activity' });
+        if (bookings.length === 0) {
+            return res.status(404).json({ message: "User has no activity bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const bookItinerary = async (req, res) => {
+    const { bookingType, itineraryId, startDate } = req.body;
+    const userId = req.user._id;
+
+    const booking = await Booking.findOne({ userId, itineraryId });
+    if (booking && booking.status === 'booked') {
+        return res.status(400).json({ error: 'Itinerary already booked by this user' });
+    }
+
+    if (bookingType !== 'itinerary') {
+        return res.status(400).json({ error: 'Can only book an itinerary' });
+    }
+
+    try {
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
+        const retUser = await User.findById(userId);
+        if (!retUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (retUser.role !== 'tourist') {
+            return res.status(403).json({ error: 'Only tourists can book itineraries' });
+        }
+
+        const retItinerary = await Itinerary.findById(itineraryId);
+        if (!retItinerary) {
+            return res.status(404).json({ error: 'Itinerary not found' });
+        }
+
+        // Convert startDate to ISO string without time part
+        const startDateISO = new Date(startDate).toISOString().split('T')[0];
+
+        // Check if startDate is in availableDates
+        const isDateAvailable = retItinerary.availableDates.some(date =>
+            new Date(date).toISOString().split('T')[0] === startDateISO
+        );
+
+        if (!isDateAvailable) {
+            return res.status(400).json({ error: 'Itinerary not available on this date' });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            itineraryId,
+            details: retItinerary,
+            paid: true,
+            startDate: startDate
+        });
+        if (booking && booking.status === 'cancelled') {
+            await Booking.findOneAndDelete({ _id: booking._id });
+            console.log("Deleted booking");
+        }
+        retUser.deduceFromWallet(retItinerary.price);
+        const savedBooking = await newBooking.save();
+        res.status(201).json(savedBooking);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+
+}
+
+const itineraryBookings = async (req, res) => {
+    const id = req.user._id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try {
+        const retUser = await User.findById(id);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'itinerary' });
+        if (bookings.length === 0) {
+            return res.status(404).json({ message: "User has no itinerary bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
+const cancelBooking = async (req, res) => {
+    const { bookingId } = req.body;
+    const userId = req.user._id;
+    try {
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
+        const booking = await Booking.findById(bookingId);
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        if (booking.userId != userId) {
+            console.log(booking.userId, userId);
+            return res.status(403).json({ error: 'Unauthorized action: can not delete the booking of another user' });
+        }
+        if (booking.status === 'cancelled') {
+            return res.status(400).json({ error: 'Booking already cancelled' });
+        }
+        if (booking.startDate < new Date()) {
+            return res.status(400).json({ error: 'Cannot cancel this booking' });
+        }
+        const currentDate = new Date();
+        const startDate = new Date(booking.startDate);
+        const hoursDifference = (startDate - currentDate) / (1000 * 60 * 60);
+
+        if (hoursDifference < 48) {
+            return res.status(400).json({ error: 'Cannot cancel a booking within 48 hours of the start date' });
+        }
+        booking.status = 'cancelled';
+        await booking.save();
+        res.status(200).json({ message: 'Booking successfully cancelled' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const bookFlight = async (req, res) => {
+    const { bookingType, from, fromAir, toAir, price, companyName } = req.body;
+    const userId = req.user._id;
+
+    if (bookingType != "flight") {
+        res.status(400).json({ message: "Can only book a flight" });
+    }
+    try {
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
+        const retuser = await User.findById(userId);
+        if (!retuser) {
+            res.status(404).json({ message: "User not found" });
+        }
+        if (retuser.role != "tourist") {
+            res.status(403).json({ message: "Only tourists can book flights" });
+        }
+        const currentDate = new Date();
+        const fromDate = new Date(from);
+
+        if (fromDate <= currentDate) {
+            return res.status(400).json({ message: "From date must be a future date" });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            details: { from, fromAir, toAir, price, companyName },
+            paid: true,
+            startDate: fromDate
+        });
+        await newBooking.save();
+        return res.status(201).json(newBooking);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const flightBookings = async (req, res) => {
+    const id = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try {
+        const retUser = await User.findById(id);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'flight' });
+        if (bookings.length === 0) {
+            return res.status(404).json({ message: "User has no flight bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const bookHotel = async (req, res) => {
+    const { bookingType, hotelName, rating, description, price, stars, checkIn, checkOut } = req.body;
+    const userId = req.user._id;
+
+    if (bookingType !== "hotel") {
+        return res.status(400).json({ message: "Can only book a hotel" });
+    }
+
+    try {
+
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
+        const retUser = await User.findById(userId);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (retUser.role !== "tourist") {
+            return res.status(403).json({ message: "Only tourists can book hotels" });
+        }
+
+        if (checkIn >= checkOut) {
+            return res.status(400).json({ message: "Check-in date must be before check-out date" });
+        }
+
+        const currentDate = new Date();
+        const checkInDate = new Date(checkIn);
+        const checkOutDate = new Date(checkOut);
+
+        if (checkInDate <= currentDate) {
+            return res.status(400).json({ message: "Check-in date must be a future date" });
+        }
+
+        if (checkOutDate <= currentDate) {
+            return res.status(400).json({ message: "Check-out date must be a future date" });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            details: { hotelName, rating, description, price, stars, checkIn, checkOut },
+            paid: true,
+            startDate: checkInDate
+        });
+
+        await newBooking.save();
+        return res.status(201).json(newBooking);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const hotelBookings = async (req, res) => {
+    const id = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try {
+        const retUser = await User.findById(id);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'hotel' });
+        if (bookings.length === 0) {
+            return res.status(404).json({ message: "User has no hotel bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const bookTransportation = async (req, res) => {
+    const { bookingType, company, type, price, departure, arrival, date, pickUpLocation, dropOffLocation } = req.body;
+    const userId = req.user._id;
+
+    if (bookingType !== "transportation") {
+        return res.status(400).json({ message: "Can only book transportation" });
+    }
+    if (!company || !type || !price || !departure || !arrival || !date || !pickUpLocation || !dropOffLocation) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+        // Check if userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid userId format" });
+        }
+
+        const retUser = await User.findById(userId);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (retUser.role !== "tourist") {
+            return res.status(403).json({ message: "Only tourists can book transportation" });
+        }
+
+        const currentDate = new Date();
+        const transportationDate = new Date(date);
+
+        if (transportationDate <= currentDate) {
+            return res.status(400).json({ message: "From date must be a future date" });
+        }
+
+        const newBooking = new Booking({
+            userId,
+            bookingType,
+            details: { company, type, price, departure, arrival, transportationDate, bookingAlreadyMade: true, pickUpLocation, dropOffLocation },
+            paid: true,
+            startDate: transportationDate
+        });
+
+        await newBooking.save();
+        return res.status(201).json(newBooking);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const transportationBookings = async (req, res) => {
+    const id = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid user id" });
+    }
+    try {
+        const retUser = await User.findById(id);
+        if (!retUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const bookings = await Booking.find({ userId: id, bookingType: 'transportation' });
+        if (bookings.length === 0) {
+            return res.status(404).json({ message: "User has no transportation bookings" });
+        }
+        res.status(200).json(bookings);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
+module.exports = {
+    bookActivity,
+    bookItinerary,
+    cancelBooking,
+    bookFlight,
+    bookHotel,
+    hotelBookings,
+    flightBookings,
+    itineraryBookings,
+    activityBookings,
+    bookTransportation,
+    transportationBookings
+};

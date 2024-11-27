@@ -45,12 +45,15 @@ const upload = multer({
 // functions
 const getProfile = async (req, res) => {
     try {
-        const tourGuide = await TourGuide.findById(req.params.id);
+        const tourGuide = await TourGuide.findById(req.user._id);
         if (!tourGuide) {
             return res.status(404).json({ error: 'Tour guide not found' });
         }
         if (!tourGuide.accepted) {
             return res.status(403).json({ error: 'Tour guide account not yet accepted' });
+        }
+        if (!tourGuide.isTermsAccepted) {
+            return res.status(403).json({ error: 'Tour guide account not yet accepted terms and conditions' });
         }
         res.json(tourGuide);
     } catch (err) {
@@ -60,14 +63,17 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const tourGuide = await TourGuide.findById(req.params.id);
+        const tourGuide = await TourGuide.findById(req.user._id);
         if (!tourGuide) {
             return res.status(404).json({ error: 'Tour guide not found' });
         }
         if (!tourGuide.accepted) {
             return res.status(403).json({ error: 'Tour guide account not yet accepted' });
         }
-        const updatedTourGuide = await TourGuide.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!tourGuide.isTermsAccepted) {
+            return res.status(403).json({ error: 'Tour guide account not yet accepted terms and conditions' });
+        }
+        const updatedTourGuide = await TourGuide.findByIdAndUpdate(req.user._id, req.body, { new: true });
         res.json(updatedTourGuide);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -82,9 +88,15 @@ const uploadPhoto = async (req, res) => {
         }
 
         try {
-            const tourGuide = await TourGuide.findById(req.params.id);
+            const tourGuide = await TourGuide.findById(req.user._id);
             if (!tourGuide) {
                 return res.status(404).json({ error: 'TourGuide not found' });
+            }
+            if (!tourGuide.accepted) {
+                return res.status(403).json({ error: 'Tour guide account not yet accepted' });
+            }
+            if (!tourGuide.isTermsAccepted) {
+                return res.status(403).json({ error: 'Tour guide account not yet accepted terms and conditions' });
             }
 
             const file = req.files[0];
@@ -108,9 +120,15 @@ const uploadPhoto = async (req, res) => {
 
 const getPhoto = async (req, res) => {
     try {
-        const tourGuide = await TourGuide.findById(req.params.id);
+        const tourGuide = await TourGuide.findById(req.user._id);
         if (!tourGuide) {
             return res.status(404).json({ error: 'TourGuide not found' });
+        }
+        if (!tourGuide.accepted) {
+            return res.status(403).json({ error: 'Tour guide account not yet accepted' });
+        }
+        if (!tourGuide.isTermsAccepted) {
+            return res.status(403).json({ error: 'Tour guide account not yet accepted terms and conditions' });
         }
 
         const photo = tourGuide.photo;
@@ -153,23 +171,23 @@ const getTourGuideId = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-}
+};
 
 
 // myCreatedItineraries
 const myCreatedItineraries = async (req, res) => {
-    const { id } = req.params;
+    const { _id } = req.user._id;
 
-    if (!id) {
+    if (!_id) {
         return res.status(400).json({ error: 'UserID is required' });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
         return res.status(400).json({ error: 'Invalid UserID format' });
     }
 
     try {
-        const myItineraries = await Itinerary.find({ createdBy: id });
+        const myItineraries = await Itinerary.find({ createdBy: _id });
         res.status(200).json(myItineraries);
     } catch (error) {
         console.error(error);
@@ -180,6 +198,7 @@ const myCreatedItineraries = async (req, res) => {
 
 //create an itinerary 
 const createItinerary = async (req, res) => {
+    const createdBy = req.user._id;
     const {
         title,
         activities,
@@ -195,8 +214,9 @@ const createItinerary = async (req, res) => {
         pickUpLocation,
         dropOffLocation,
         tags,
+        comments,
         BookingAlreadyMade,
-        createdBy } = req.body;
+    } = req.body;
 
     try {
 
@@ -222,6 +242,7 @@ const createItinerary = async (req, res) => {
             pickUpLocation,
             dropOffLocation,
             tags,
+            comments,
             BookingAlreadyMade,
             createdBy
         });
@@ -243,7 +264,7 @@ const readItineraryById = async (req, res) => {
         const itinerary = await Itinerary.findById(id).populate({
             path: 'activities',
             model: 'Activity',
-            select: 'title date time location price priceRange category tags specialDiscounts bookingIsOpen -_id',
+            select: 'title date time location price priceRange category tags specialDiscounts ratings comments bookingIsOpen -_id',
         });
 
         // If itinerary is not found, return an error
@@ -266,7 +287,7 @@ const readItinerary = async (req, res) => {
             .populate({
                 path: 'activities',
                 model: 'Activity',
-                select: 'title date time location price priceRange category tags specialDiscounts bookingIsOpen -_id',
+                select: 'title date time location price priceRange category tags specialDiscounts ratings comments bookingIsOpen -_id',
             }).sort({ createdAt: -1 });
         if (!itineraries.length) {
             // Debugging statement
@@ -284,6 +305,7 @@ const readItinerary = async (req, res) => {
 //update an itinerary
 const updateItinerary = async (req, res) => {
     const { id } = req.params;
+    const createdBy = req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ error: 'Wrong ID format' });
@@ -293,6 +315,9 @@ const updateItinerary = async (req, res) => {
         const updatedItinerary = await Itinerary.findByIdAndUpdate(id, req.body, { new: true }).populate('activities');
         if (!updatedItinerary) {
             return res.status(404).json({ error: 'No such itinerary' });
+        }
+        if(updatedItinerary.createdBy.toString() !== createdBy.toString()){
+            return res.status(403).json({ error: 'You are not authorized to update this itinerary' });
         }
         res.status(200).json(updatedItinerary);
 
@@ -304,6 +329,7 @@ const updateItinerary = async (req, res) => {
 //delete an itinerary
 const deleteItinerary = async (req, res) => {
     const { id } = req.params;
+    const createdBy = req.user._id;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ error: 'No such itinerary' });
     }
@@ -318,6 +344,9 @@ const deleteItinerary = async (req, res) => {
         if (itinerary.BookingAlreadyMade) {
             return res.status(400).json({ error: "Itinerary can't be deleted, bookings already made." });
         }
+        if(itinerary.createdBy.toString() !== createdBy.toString()){
+            return res.status(403).json({ error: 'You are not authorized to delete this itinerary' });
+        }
         itinerary = await Itinerary.findByIdAndDelete({ _id: id });
         res.status(200).json({ message: 'Itinerary deleted successfully.', itinerary });
     } catch (error) {
@@ -327,6 +356,7 @@ const deleteItinerary = async (req, res) => {
 
 const activateItinerary = async (req, res) => {
     const id = req.params.id;
+    const createdBy = req.user._id;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ error: 'Wrong ID format' });
     }
@@ -340,7 +370,9 @@ const activateItinerary = async (req, res) => {
         if (itinerary.bookingIsOpen) {
             return res.status(400).json({ error: 'Booking is already open' });
         }
-
+        if(itinerary.createdBy.toString() !== createdBy.toString()){
+            return res.status(403).json({ error: 'You are not authorized to activate this itinerary' });
+        }
         itinerary.bookingIsOpen = true;
         await itinerary.save();
         res.status(200).json(itinerary);
@@ -352,6 +384,7 @@ const activateItinerary = async (req, res) => {
 
 const deactivateItinerary = async (req, res) => {
     const id = req.params.id;
+    const createdBy = req.user._id;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ error: 'Wrong ID format' });
     }
@@ -366,6 +399,9 @@ const deactivateItinerary = async (req, res) => {
             return res.status(400).json({ error: 'Booking is already closed' });
         }
 
+        if(itinerary.createdBy.toString() !== createdBy.toString()){
+            return res.status(403).json({ error: 'You are not authorized to deactivate this itinerary' });
+        }
         itinerary.bookingIsOpen = false;
         await itinerary.save();
         res.status(200).json(itinerary);
@@ -374,6 +410,131 @@ const deactivateItinerary = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+//Rate a tourGuide
+const rateTourGuide = async (req, res) => {
+    const  {tourGuideId}  = req.params;
+    const touristId = req.user._id;
+    const { rating } = req.body;
+
+    if (rating < 1 || rating > 5) {
+        return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+    }
+
+    try {
+        const tourGuide = await TourGuide.findById(tourGuideId);
+        console.log(tourGuide);
+        if (!tourGuide) {
+            return res.status(404).json({ error: 'Tour guide not found' });
+        }
+
+        //V.I check if tourist has already rated this tour guide
+        const existingRating = tourGuide.ratings.findIndex(r => r.touristId === touristId);
+
+        if (existingRating !== -1) {
+            tourGuide.ratings[existingRating].rating = rating;
+        } else {
+            tourGuide.ratings.push({ touristId, rating });
+        }
+        // Update the average rating *********
+        const totalRatings = tourGuide.ratings.reduce((acc, r) => acc + r.rating, 0);
+        tourGuide.rating = totalRatings / tourGuide.ratings.length;
+        await tourGuide.save();
+        res.status(200).json({ message: 'Rating submitted successfully', tourGuide });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+//to add a comment on  a tourGuide
+const commentOnTourGuide = async (req, res) => {
+    const tourGuideId = req.params.id;
+    const touristId = req.user._id;
+    const { comment } = req.body;
+
+    if (!comment) {
+        return res.status(400).json({ error: 'Comment is required' });
+    }
+    if (!touristId) {
+        return res.status(400).json({ error: 'TouristId is required' });
+    }
+    if (!comment && !touristId) {
+        return res.status(400).json({ error: 'TouristId and comment  is required' });
+    }
+
+    try {
+        const tourGuide = await TourGuide.findById(tourGuideId);
+
+        if (!tourGuide) {
+            return res.status(404).json({ error: 'Tour guide not found' });
+        }
+
+        tourGuide.comments.push({ touristId, comment });
+        //this line saves the updated tourGuide document(with new comment) back to database 
+        await tourGuide.save();
+        res.status(200).json({ message: ' Comment added successfully', tourGuide });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+//rate an Itinerary made by the tourGuide i followed
+const rateItinerary = async (req, res) => {
+    const itineraryId = req.params.id;
+    const touristId = req.user._id;
+    const { rating } = req.body;
+
+    if (rating < 1 || rating > 5) {
+        return res.status(400).json({ error: 'Ratings must be between 1 and 5' });
+    }
+    try {
+        const itinerary = await Itinerary.findById(itineraryId);
+        if (!itinerary) {
+            return res.status(404).json({ error: 'Itinerary not found' });
+
+        }
+        const existingRating = itinerary.ratings.findIndex(r => r.touristId === touristId);
+        if (existingRating !== -1) {
+            itinerary.ratings[existingRating].rating = rating;
+        } else {
+            itinerary.ratings.push({ touristId, rating });
+        }
+        // Update the average rating *********
+        const totalRatings = itinerary.ratings.reduce((acc, r) => acc + r.rating, 0);
+        itinerary.rating = totalRatings / itinerary.ratings.length;
+
+        await itinerary.save();
+        res.status(200).json({ message: 'Rating submitted successfully', itinerary });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+
+}
+//comment on an itinerary
+const commentOnItinerary = async (req, res) => {
+    const itineraryId = req.params.id;
+    const touristId = req.user._id;
+    const { comment } = req.body;
+
+    if (!comment) {
+        res.status(400).json({ error: 'Comment is required' });
+    }
+
+    try {
+        const itinerary = await Itinerary.findById(itineraryId);
+
+        if (!itinerary) {
+            res.status(404).json({ error: 'no itinerary found by this id' });
+        }
+        itinerary.comments.push({ touristId, comment });
+        await itinerary.save();
+        res.status(200).json({ message: 'Comment added successfully', itinerary });
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+}
 
 module.exports = {
     getProfile,
@@ -388,5 +549,9 @@ module.exports = {
     readItineraryById,
     myCreatedItineraries,
     activateItinerary,
-    deactivateItinerary
+    deactivateItinerary,
+    rateTourGuide,
+    commentOnTourGuide,
+    rateItinerary,
+    commentOnItinerary
 };
