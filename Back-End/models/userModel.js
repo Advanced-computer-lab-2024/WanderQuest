@@ -27,6 +27,38 @@ const UserSchema = new Schema({
     documents: [documentSchema],
 }, options);
 
+<<<<<<< Updated upstream
+=======
+// // Middleware to exclude users with requestToBeDeleted set to true
+// UserSchema.pre('find', function (next) {
+//     if (!this.getQuery().includeDeleted) {
+//         this.where({ requestToBeDeleted: { $ne: true } });
+//     } else {
+//         delete this.getQuery().includeDeleted;
+//     }
+//     next();
+// });
+
+// UserSchema.pre('findOne', function (next) {
+//     if (!this.getQuery().includeDeleted) {
+//         this.where({ requestToBeDeleted: { $ne: true } });
+//     } else {
+//         delete this.getQuery().includeDeleted;
+//     }
+//     next();
+// });
+
+// UserSchema.pre('findById', function (next) {
+//     if (!this.getQuery().includeDeleted) {
+//         this.where({ requestToBeDeleted: { $ne: true } });
+//     } else {
+//         delete this.getQuery().includeDeleted;
+//     }
+//     next();
+// });
+
+
+>>>>>>> Stashed changes
 UserSchema.statics.signup = async function (username, email, password, role) {
 
     // validation
