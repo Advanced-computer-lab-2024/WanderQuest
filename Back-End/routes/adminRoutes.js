@@ -37,7 +37,7 @@ const {
 
 const router = express.Router()
 
-router.use(requireAuth({ role: 'admin' }));
+router.use(requireAuth({ role: 'Admin' }));
 
 // Get all admins
 router.get("/", getAllAdmins)
