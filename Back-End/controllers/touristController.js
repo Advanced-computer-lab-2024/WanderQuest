@@ -1,3 +1,4 @@
+const { Product } = require('../models/objectModel');
 const { TourGuide } = require('../models/userModel');
 const ProdModel = require('../models/objectModel').Product;
 const Tourist = require('../models/userModel').Tourist;
@@ -420,6 +421,114 @@ const reviewProduct = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+const saveEvent = async (req, res) => {
+    const touristId = req.user._id;
+    const {eventType, eventId} = req.body;
+    if(!eventType || !eventId){
+        return res.status(400).json({ error: 'Missing event type or id'})
+    }
+    if(eventType != "Activity" && eventType != "itinerary"){
+        return res.status(400).json({ error: 'Event must be an activity or itinerary'})
+    }
+    try{
+        const touristProf = await Tourist.findById(touristId);
+        if(!touristProf){
+            return res.status(400).json({ error: 'Could not find tourist with this ID'})
+        }
+        touristProf.savedEvents.push({eventType, eventId})
+        await touristProf.save();
+        return res.status(200).json({ message: 'Event saved successfully' });
+    } catch (error){
+        res.status(500).json({ error: error.message})
+    }
+}
+
+const viewSavedEvents = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const touristProf = await Tourist.findById(touristId);
+        if(!touristProf){
+            return res.status(404).json({error: 'Could not find the tourist'})
+        }
+        return res.status(200).json(touristProf.savedEvents);
+    } catch(error){
+        return res.status(500).json({ error: error.message})
+    }
+}
+
+const removeSavedEvents = async (req, res) => {
+    const touristId = req.user._id;
+    const { eventId } = req.body;
+
+    try {
+        if (!eventId) {
+            return res.status(400).json({ error: 'Missing event ID' });
+        }
+
+        const touristProf = await Tourist.findById(touristId);
+
+        touristProf.savedEvents = touristProf.savedEvents.filter(event => !event.eventId.equals(eventId));
+        await touristProf.save();
+
+        res.status(200).json({ message: 'Event removed successfully', savedEvents: touristProf.savedEvents });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const addToWishlist = async (req, res) => {
+    const touristId = req.user._id;
+    const { productId } = req.body;
+    if(!productId){
+        return res.status(400).json({ error: 'Missing product Id'})
+    }
+    try{
+        const productDet = await Product.findById(productId);
+        if(!productDet){
+            return res.status(400).json({ error: 'Could not find the product'})
+        }
+        const touristProf = await Tourist.findById(touristId);
+        touristProf.wishlist.push({productId});
+        return res.status(200).json({ message: 'Added to wishlist'});
+    } catch (error){
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const viewWishlist = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const touristProf = await Tourist.findById(touristId);
+        if(!touristProf){
+            return res.status(404).json({error: 'Could not find the tourist'})
+        }
+        return res.status(200).json(touristProf.wishlist);
+    } catch(error){
+        return res.status(500).json({ error: error.message})
+    }
+}
+
+const removeFromWishlist = async (req, res) => {
+    const touristId = req.user._id;
+    const { productId } = req.body;
+
+    try {
+        if (!productId) {
+            return res.status(400).json({ error: 'Missing product ID' });
+        }
+
+        const touristProf = await Tourist.findById(touristId);
+
+        touristProf.wishlist = touristProf.wishlist.filter(product => !product.equals(productId));
+        await touristProf.save();
+
+        res.status(200).json({ message: 'Event removed successfully', wishlist: touristProf.wishlist });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -439,5 +548,11 @@ module.exports = {
     getLevel,
     getavailablePoints,
     getTotalPoints,
-    getAllCurrencies
+    getAllCurrencies,
+    saveEvent,
+    viewSavedEvents,
+    removeSavedEvents,
+    addToWishlist,
+    viewWishlist,
+    removeFromWishlist
 };
