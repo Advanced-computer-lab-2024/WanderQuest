@@ -5,7 +5,7 @@ const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const ComplaintModel = require('../models/objectModel').complaint;
-const { Activity, itinerary } = require('../models/objectModel');
+const { Activity, itinerary, PromoCode } = require('../models/objectModel');
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
@@ -606,6 +606,9 @@ const flagItinerary = async (req, res) => {
         res.status(404).json({ error: error.message });
     }
 }
+
+// const addPromoCode = async (req, res) => {
+// }
 module.exports = {
     getAllAdmins,
     getUsers,
