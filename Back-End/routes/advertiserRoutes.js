@@ -25,7 +25,7 @@ router.get('/profile', requireAuth({ role: 'advertiser' }), getProfile);
 router.put('/profile', requireAuth({ role: 'advertiser' }), updateProfile);
 router.post('/uploadLogo', requireAuth({ role: 'advertiser' }), uploadLogo);
 router.get('/logo', requireAuth({ role: 'advertiser' }), getLogo);
-router.get('/allAdvertisers', requireAuth({ role: 'admin' }), getAllAdvertisers);
+router.get('/allAdvertisers', requireAuth({ role: 'Admin' }), getAllAdvertisers);
 router.post('/activity', requireAuth({ role: 'advertiser' }), createActivity);
 router.get('/activities', readActivities);
 router.put('/activity/:id', requireAuth({ role: 'advertiser' }), updateActivity);
