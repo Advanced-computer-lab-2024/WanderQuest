@@ -7,17 +7,48 @@ const AcceptTerms = () => {
     const [accepted, setAccepted] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [viewMore, setViewMore] = useState(false);
+    const [role, setRole] = useState("");  // State to store the role
 
     useEffect(() => {
-        // Check if the user has accepted the terms (cookie check)
-        const userAccepted = Cookies.get('isTermsAccepted');
-        if (userAccepted) {
-            setShowModal(false); // Don't show the modal if the user has accepted
-        }
-        else{
-            setShowModal(true);
+        // Get the role from the cookie
+        const userRole = Cookies.get('role');
+        if (userRole) {
+            setRole(userRole);
+            fetchProfile(userRole);
+        } else {
+            // If no role is found in cookies, we can handle this case as needed
+            console.log('No role found in cookies');
         }
     }, []);
+
+    const fetchProfile = async (role) => {
+        try {
+            // Make a GET request to the corresponding profile endpoint based on the role
+            const response = await fetch(`http://localhost:4000/${role}/profile`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: "include", // Ensure the request includes the user's session cookies
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user profile');
+            }
+
+            const data = await response.json();
+
+            if (data?.termsAccepted) {
+                setShowModal(false);  // Don't show modal if terms have been accepted
+                Cookies.set('isTermsAccepted', 'true', { expires: 365 });
+            } else {
+                setShowModal(true);  // Show modal if terms have not been accepted
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+            setShowModal(true);  // Show modal if there's an error
+        }
+    };
 
     const handleAccept = async () => {
         try {
