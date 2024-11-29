@@ -17,109 +17,100 @@ const ItinerarydetailsPage = ({ params }) => {
     }
     const fetchActivityDetails = (activityId) => {
         if (activityDetails[activityId]) return; // Avoid refetching
-
-        fetch(`http://localhost:4000/advertiser/activity/${activityId}`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                setActivityDetails(prevDetails => ({
-                    ...prevDetails,
-                    [activityId]: data,
-                }));
-            })
-            .catch(error => {
-                setError(error.message);
-            });
+    
+        fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
+            method: 'GET',
+            credentials: 'include', // Include cookies
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            setActivityDetails(prevDetails => ({
+                ...prevDetails,
+                [activityId]: data,
+            }));
+        })
+        .catch(error => {
+            setError(error.message);
+        });
     };
-
-    const fetchid = () => {
-        fetch(`http://localhost:4000/tourist/touristId`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Error fetching itineraries: ${res.statusText}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                setid(data);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError(error.message);
-                setLoading(false);
-            });
-    };
-
-
-
-
-
-
-
+  
     const fetchItineraries = () => {
-        fetch(`http://localhost:4000/tourist/upcomingItineraries/${id}`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Error fetching itineraries: ${res.statusText}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                setAllItineraries(data);
-                setLoading(false);
-
-                // Fetch details for all activities
-                if (data.activities) {
-                    data.activities.forEach(activityId => {
-                        fetchActivityDetails(activityId);
-                    });
-                }
-            })
-            .catch(error => {
-                setError(error.message);
-                setLoading(false);
-            });
+        fetch(`http://localhost:4000/tourist/upcomingItineraries/${id}`, {
+            method: 'GET',
+            credentials: 'include', // Include cookies
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Error fetching itineraries: ${res.statusText}`);
+            }
+            return res.json();
+        })
+        .then(data => {
+            setAllItineraries(data);
+            setLoading(false);
+    
+            // Fetch details for all activities
+            if (data.activities) {
+                data.activities.forEach(activityId => {
+                    fetchActivityDetails(activityId);
+                });
+            }
+        })
+        .catch(error => {
+            setError(error.message);
+            setLoading(false);
+        });
     };
-
+    
     useEffect(() => {
         fetchItineraries();
-        fetchid();
     }, [id1]);
-
+    
     if (loading) return <p>Loading itinerary...</p>;
     if (error) return <p>Error: {error}</p>;
-
+    
     const handleBooking = (date) => {
         const userId = id1;
         const bookingType = 'itinerary';
-        const startDate = date
+        const startDate = date;
         const itineraryId = id;
         const iti = { userId, bookingType, itineraryId, startDate };
         console.log(iti);
-
+    
         fetch('http://localhost:4000/booking/itinerary', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(iti)
+            credentials: 'include', // Include cookies
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(iti),
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Booking failed');
-                }
-                return response.json();
-            })
-            .then(() => {
-                alert('Booking has been made successfully!');
-            })
-            .catch(error => {
-                console.error('Error booking itinerary:', error);
-                alert('You Already Booked This!');
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Booking failed');
+            }
+            return response.json();
+        })
+        .then(() => {
+            alert('Booking has been made successfully!');
+        })
+        .catch(error => {
+            console.error('Error booking itinerary:', error);
+            alert('You Already Booked This!');
+        });
     };
+    
 
     return (
         <>

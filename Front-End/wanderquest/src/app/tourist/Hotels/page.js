@@ -81,47 +81,58 @@ function BookingsPage() {
       setLoading(false);
     }
   };
-  const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setid(data);
-        setLoading(false);
 
-        // Fetch details for all activiti
-      })
-      .catch(error => {
-        setError(error.message);
-        setLoading(false);
-      });
-  };
-  useEffect(() => {
-    fetchid();
-  }, [id1]);
-
-  const handlebooking = (hotelName, stars, rating, description, price1,) => {
+  // const handlebooking = (hotelName, stars, rating, description, price1,) => {
+  //   const bookingType = "hotel";
+  //   const price = price1;
+  //   const userId = id1;
+  //   const checkIn = departureDate;
+  //   const checkOut = returnDate;
+  //   const hotel = { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut }
+  //   console.log('hotel details:', hotel);
+  //   fetch('http://localhost:4000/booking/hotel', {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(hotel)
+  //   }).then(response => {
+  //     if (!response.ok) {
+  //       throw new Error('Booking failed');
+  //     }
+  //     return response.json();
+  //   })
+  //     .then(() => {
+  //       alert('Booking has been made successfully!');
+  //     })
+  //     .catch(error => {
+  //       console.error('Error booking itinerary:', error);
+  //       alert('Booking failed. Please try again.');
+  //     });
+  // }
+  const handlebooking = (hotelName, stars, rating, description, price1) => {
     const bookingType = "hotel";
     const price = price1;
-    const userId = id1;
     const checkIn = departureDate;
     const checkOut = returnDate;
-    const hotel = { userId, bookingType, hotelName, rating, description, price, stars, checkIn, checkOut }
+    
+    // The user ID will be retrieved from the authenticated user's token, no need to pass it manually
+    const hotel = {bookingType, hotelName, rating, description, price, stars, checkIn, checkOut };
+  
     console.log('hotel details:', hotel);
+  
     fetch('http://localhost:4000/booking/hotel', {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(hotel)
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error('Booking failed');
-      }
-      return response.json();
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include', // Include credentials (cookies) in the request
+      body: JSON.stringify(hotel),
     })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Booking failed');
+        }
+        return response.json();
+      })
       .then(() => {
         alert('Booking has been made successfully!');
       })
@@ -129,8 +140,8 @@ function BookingsPage() {
         console.error('Error booking itinerary:', error);
         alert('Booking failed. Please try again.');
       });
-  }
-
+  };
+  
 
 
   return (
