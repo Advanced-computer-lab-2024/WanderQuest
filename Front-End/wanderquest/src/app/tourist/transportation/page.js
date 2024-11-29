@@ -27,29 +27,9 @@ function transportpage() {
       });
   };
   
-  const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`, {
-      credentials: 'include', // Include credentials to identify the user automatically
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error fetching tourist ID: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setid(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error('Error fetching tourist ID:', error);
-      });
-  };
-  
   useEffect(() => {
     fetchData();
-    fetchid();
+
   }, []); // No need for `id1` as a dependency, credentials will handle identification
   
   const handleBooking = async (company1, type1, price1, departure1, arrival1, date1, pickUpLocation1, dropOffLocation1) => {
@@ -64,24 +44,40 @@ function transportpage() {
     const pickUpLocation = pickUpLocation1;
     const dropOffLocation = dropOffLocation1;
     
-    const act = { bookingType, company, type, price, departure, arrival, date, pickUpLocation, dropOffLocation };
+    const act = {
+      bookingType: 'transportation',
+      company: company1,
+      type: type1,
+      price: parseFloat(price1), // Ensure price is a number
+      departure: departure1,
+      arrival: arrival1,
+      date: new Date(date1).toISOString(), // Convert to ISO string if required
+      pickUpLocation: pickUpLocation1,
+      dropOffLocation: dropOffLocation1,
+    };
+    
+    console.log('Sending act:', act);
     
     try {
       const response = await fetch('http://localhost:4000/booking/transportation', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(act),
-        credentials: 'include', // Include credentials for booking
+        credentials: 'include',
       });
+    
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server response:', errorData);
         throw new Error('Booking failed');
-        console.log(response);
       }
+    
       alert('Booking successful!');
     } catch (error) {
       console.error('Error booking transportation:', error);
       alert('Booking failed, already booked');
     }
+    
   };
   
 
