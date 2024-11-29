@@ -30,59 +30,71 @@ const ItineraryListpage = (Props) => {
         })
     }
 
-  const fetchActivityDetails = (activityId) => {
-    if (activityDetails[activityId]) return; // Avoid refetching
-
-    fetch(`http://localhost:4000/advertiser/activity/${activityId}`)
+    const fetchActivityDetails = (activityId) => {
+      if (activityDetails[activityId]) return; // Avoid refetching
+  
+      fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
+          method: 'GET',
+          credentials: 'include', // Include credentials (cookies)
+          headers: {
+              "Content-Type": "application/json", // Ensure headers are set correctly
+          },
+      })
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
-        }
-        return res.json();
+          if (!res.ok) {
+              throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
+          }
+          return res.json();
       })
       .then(data => {
-        setActivityDetails(prevDetails => ({
-          ...prevDetails,
-          [activityId]: data,
-        }));
+          setActivityDetails(prevDetails => ({
+              ...prevDetails,
+              [activityId]: data,
+          }));
       })
       .catch(error => {
-        setError(error.message);
+          setError(error.message);
       });
   };
-
+  
   const fetchItineraries = () => {
-    fetch('http://localhost:4000/tourist/upcomingItineraries')
+      fetch('http://localhost:4000/tourist/upcomingItineraries', {
+          method: 'GET',
+          credentials: 'include', // Include credentials (cookies)
+          headers: {
+              "Content-Type": "application/json", // Ensure headers are set correctly
+          },
+      })
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
+          if (!res.ok) {
+              throw new Error(`Error fetching itineraries: ${res.statusText}`);
+          }
+          return res.json();
       })
       .then(data => {
-        setAllItineraries(data);
-        setDisplayedItineraries(data);
-        setTimeout(() => console.log("First"), 10000)
-        setLoading(false);
-        
-        // Fetch details for all activities
-        data.forEach(itinerary => {
-          itinerary.activities.forEach(activityId => {
-            fetchActivityDetails(activityId);
+          setAllItineraries(data);
+          setDisplayedItineraries(data);
+          setTimeout(() => console.log("First"), 10000);
+          setLoading(false);
+  
+          // Fetch details for all activities
+          data.forEach(itinerary => {
+              itinerary.activities.forEach(activityId => {
+                  fetchActivityDetails(activityId);
+              });
           });
-        });
       })
       .catch(error => {
-        setError(error.message);
-        setTimeout(() => console.log("First"), 10000)
-        setLoading(false);
+          setError(error.message);
+          setTimeout(() => console.log("First"), 10000);
+          setLoading(false);
       });
   };
-
+  
   useEffect(() => {
-    fetchItineraries();
+      fetchItineraries();
   }, [search]);
-
+  
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
         return search.toLowerCase() === '' || 
