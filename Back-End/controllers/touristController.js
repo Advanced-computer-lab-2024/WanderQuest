@@ -480,21 +480,38 @@ const removeSavedEvents = async (req, res) => {
 const addToWishlist = async (req, res) => {
     const touristId = req.user._id;
     const { productId } = req.body;
-    if(!productId){
-        return res.status(400).json({ error: 'Missing product Id'})
+
+    if (!productId) {
+        return res.status(400).json({ error: 'Missing product ID' });
     }
-    try{
+
+    try {
+        // Find the product by ID
         const productDet = await Product.findById(productId);
-        if(!productDet){
-            return res.status(400).json({ error: 'Could not find the product'})
+        if (!productDet) {
+            return res.status(400).json({ error: 'Could not find the product' });
         }
+
+        // Find the tourist profile by ID
         const touristProf = await Tourist.findById(touristId);
-        touristProf.wishlist.push({productId});
-        return res.status(200).json({ message: 'Added to wishlist'});
-    } catch (error){
+        if (!touristProf) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+
+        // Check if the product is already in the wishlist
+        if (touristProf.wishlist.includes(productId)) {
+            return res.status(400).json({ error: 'Product already in wishlist' });
+        }
+
+        // Add the product to the wishlist
+        touristProf.wishlist.push(productId);
+        await touristProf.save();
+
+        return res.status(200).json({ message: 'Added to wishlist', wishlist: touristProf.wishlist });
+    } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-}
+};
 
 const viewWishlist = async (req, res) => {
     const touristId = req.user._id;
@@ -503,7 +520,9 @@ const viewWishlist = async (req, res) => {
         if(!touristProf){
             return res.status(404).json({error: 'Could not find the tourist'})
         }
-        return res.status(200).json(touristProf.wishlist);
+        const wishlistProducts = await Product.find({ _id: { $in: touristProf.wishlist } });
+
+        return res.status(200).json(wishlistProducts);
     } catch(error){
         return res.status(500).json({ error: error.message})
     }

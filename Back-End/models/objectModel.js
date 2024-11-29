@@ -318,25 +318,27 @@ const transportationSchema = new Schema({
 
 const transportation = mongoose.model('transportation', transportationSchema)
 
-const promoCodeSchema = new Schema({
-    code: { type: String, required: true, unique: true },
-    type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
-    discount: { type: Number, required: true },
-    expiryDate: { type: Date, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
-    birthday: { type: Boolean, required: true },
-    touristId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tourist",
-        validate: {
-            validator: function(value) {
-                return !this.birthday || (this.birthday && value);
-            },
-            message: 'touristId is required to create a birthday promocode'
-        }
-    }
-}, { timestamps: true });
+// const promoCodeSchema = new Schema({
+//     code: { type: String, required: true, unique: true },
+//     type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
+//     discount: { type: Number, required: true },
+//     expiryDate: { type: Date, required: true },
+//     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
+//     birthday: { type: Boolean, required: true },
+//     touristId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Tourist",
+//         validate: {
+//             validator: function(value) {
+//                 return !this.birthday || (this.birthday && value);
+//             },
+//             message: 'touristId is required to create a birthday promocode'
+//         }
+//     }
+// }, { timestamps: true });
 
-const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
+// const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
-module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating, transportation, PromoCode }
+module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating, transportation
+    // , PromoCode
+ }
