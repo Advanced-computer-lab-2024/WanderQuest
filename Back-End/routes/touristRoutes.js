@@ -20,7 +20,13 @@ const {
     getLevel,
     getavailablePoints,
     getTotalPoints,
-    getAllCurrencies
+    getAllCurrencies,
+    saveEvent,
+    viewSavedEvents,
+    removeSavedEvents,
+    addToWishlist,
+    viewWishlist,
+    removeFromWishlist
 } = require('../controllers/touristController');
 const requireAuth = require('../middleware/requireAuth');
 
@@ -57,6 +63,15 @@ router.get('/myComplaints', myComplaints);
 router.get('/level', getLevel)
 router.get('/availablePoints', getavailablePoints)
 router.get('/totalPoints', getTotalPoints)
+
+router.post('/saveEvent', saveEvent);
+router.get('/viewSavedEvents', viewSavedEvents);
+router.delete('/removeSavedEvents', removeSavedEvents);
+router.post('/addToWishlist', addToWishlist);
+router.get('/viewWishlist', viewWishlist);
+router.delete('/removeFromWishlist', removeFromWishlist);
+
+
 
 
 module.exports = router;
