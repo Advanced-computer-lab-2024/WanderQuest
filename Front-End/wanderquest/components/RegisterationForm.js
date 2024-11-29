@@ -64,6 +64,8 @@ const RegistrationForm = () => {
                 console.log(data.id);
                 // Handle success (e.g., redirect to login or another page)
                 console.log("Registration successful:", data);
+                
+                
             }
         })
         .catch(err => {
@@ -78,6 +80,7 @@ const RegistrationForm = () => {
     
     
     return (
+        <div>
         <form className={styles.Registration} onSubmit={handleSubmit}>
     <h1 className={styles.h1}>Sign Up</h1>
     
@@ -179,8 +182,11 @@ const RegistrationForm = () => {
 
     {/* Form Submit Button */}
     <button type="submit">Submit</button>
-    {userId && <UploadDocuments userId={userId} userType={userType} />}
+    
 </form>
+{userId && <UploadDocuments userType={userType} userId={userId} />}
+</div>
+
 
     )
 

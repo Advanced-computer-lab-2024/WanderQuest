@@ -13,7 +13,9 @@ const AdminReviewRequests = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch('http://localhost:4000/authentication/getUsersRequestingAcceptance');
+        const response = await fetch('http://localhost:4000/authentication/getUsersRequestingAcceptance',{
+          credentials:"include"
+        });
         if (!response.ok) throw new Error("Failed to fetch requests");
         const users = await response.json();
         setRequests(users);
