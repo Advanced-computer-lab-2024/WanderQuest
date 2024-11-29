@@ -24,9 +24,12 @@ const Complaints = (props) => {
    
 
     useEffect(() => {
-        fetch('http://localhost:4000/admin/complaints')
+        fetch('http://localhost:4000/admin/complaints', {
+            credentials: 'include' 
+        })
             .then((res) => {
                 if (!res.ok) {
+                    console.log(res);
                     throw new Error('Network response was not ok');
                 }
                 return res.json();
@@ -34,14 +37,15 @@ const Complaints = (props) => {
             .then((data) => {
                 setComplaints(data);
                 console.log(data);
-                setLoading(false);// Initialize filtered complaints with fetched data
+                setLoading(false); 
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                setComplaints([]); 
-                setLoading(false); // Reset filtered complaints on error
+                setComplaints([]);
+                setLoading(false); 
             });
     }, []);
+    
 
     const sortComplaintsByDate = (order) => {
         const sortedComplaints = [...complaints].sort((a, b) => {
