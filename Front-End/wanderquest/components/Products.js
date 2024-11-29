@@ -71,16 +71,16 @@ const Products = (props) => {
     };
 
     const updateRating = async (productId, newRating) => {
-        const touristId = '6730b1a173c9606ee0aaddf6';  // Get the tourist ID from props
-        console.log(`Product ID: ${productId}, New Rating: ${newRating}`);  // Check if the correct product ID is passed
-        
+        console.log(`Product ID: ${productId}, New Rating: ${newRating}`);
+    
         try {
             const response = await fetch(`http://localhost:4000/tourist/rateProduct/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ touristId:touristId, rating: newRating }),  // Include touristId and rating
+                body: JSON.stringify({ rating: newRating }),  // touristId will be inferred from credentials
+                credentials: 'include', // Automatically include tourist ID from session/cookie
             });
     
             if (response.ok) {
@@ -98,9 +98,10 @@ const Products = (props) => {
             alert(`Error: ${error.message}`);
         }
     };
-
+    
     const addComment = async (productId, comment) => {
         console.log("comments", comments);
+    
         try {
             const response = await fetch(`http://localhost:4000/tourist/reviewProduct/${productId}`, {
                 method: 'POST',
@@ -108,16 +109,16 @@ const Products = (props) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    touristId: '6730b1a173c9606ee0aaddf6', // Replace with the actual touristId
-                    review: comment,
+                    review: comment, // touristId will be inferred from credentials
                 }),
+                credentials: 'include', // Automatically include tourist ID from session/cookie
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
                 alert(result.message);
                 // Optionally: Update product list to reflect new comment
-                const updatedProducts = products.map(product => 
+                const updatedProducts = products.map(product =>
                     product._id === productId ? result.product : product
                 );
                 setProduct(updatedProducts);
@@ -130,7 +131,6 @@ const Products = (props) => {
         }
     };
     
-
     const onArchiveClick = async (productId) => {
         try {
             const response = await fetch(`http://localhost:4000/admin/products/archive/${productId}`, {
@@ -138,6 +138,7 @@ const Products = (props) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include', // Automatically include credentials (admin session)
             });
     
             if (response.ok) {
@@ -154,9 +155,10 @@ const Products = (props) => {
         }
     };
     
-
     useEffect(() => {
-        fetch('http://localhost:4000/admin/products')
+        fetch('http://localhost:4000/tourist/products', {
+            credentials: 'include', // Include admin credentials
+        })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('Network response was not ok');
@@ -166,16 +168,17 @@ const Products = (props) => {
             .then((data) => {
                 setProduct(data);
                 console.log(data);
-                setFilteredProducts(data); 
-                setLoading(false);// Initialize filtered products with fetched data
+                setFilteredProducts(data);
+                setLoading(false); // Initialize filtered products with fetched data
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                setProduct([]); 
+                setProduct([]);
                 setFilteredProducts([]);
                 setLoading(false); // Reset filtered products on error
             });
     }, []);
+    
     if (loading) {return<>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
         <dotlottie-player style={{

@@ -58,5 +58,5 @@ router.get('/level', getLevel)
 router.get('/availablePoints', getavailablePoints)
 router.get('/totalPoints', getTotalPoints)
 
-
+router.get("/products", getProducts)
 module.exports = router;

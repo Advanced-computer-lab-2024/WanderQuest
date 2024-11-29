@@ -41,31 +41,7 @@ const ItinerarydetailsPage = ({ params }) => {
             setError(error.message);
         });
     };
-    
-    const fetchid = () => {
-        fetch(`http://localhost:4000/tourist/touristId`, {
-            method: 'GET',
-            credentials: 'include', // Include cookies
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Error fetching tourist ID: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            setid(data);
-            setLoading(false);
-        })
-        .catch(error => {
-            setError(error.message);
-            setLoading(false);
-        });
-    };
-    
+  
     const fetchItineraries = () => {
         fetch(`http://localhost:4000/tourist/upcomingItineraries/${id}`, {
             method: 'GET',
@@ -99,7 +75,6 @@ const ItinerarydetailsPage = ({ params }) => {
     
     useEffect(() => {
         fetchItineraries();
-        fetchid();
     }, [id1]);
     
     if (loading) return <p>Loading itinerary...</p>;

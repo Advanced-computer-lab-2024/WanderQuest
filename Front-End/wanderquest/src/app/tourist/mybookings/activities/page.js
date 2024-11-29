@@ -10,7 +10,9 @@ function activitypage() {
   const [loading, setLoading] = useState(true);
   const [id1, setid] = useState('67310bdba3280f11a947c86d');
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/activities/${id1}`)
+    fetch(`http://localhost:4000/booking/activities`, {
+      credentials: 'include', // Include credentials in the request
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -27,39 +29,18 @@ function activitypage() {
         setLoading(false);
       });
   };
-
-  const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setid(data);
-        setLoading(false);
-
-
-      })
-      .catch(error => {
-        setError(error.message);
-        setLoading(false);
-      });
-  };
-  // useEffect(() => {
-  //   fetchid();
-  // }, []);
+  
   const handlecancel = async (actid) => {
     const bookingId = actid;
-    const userId = id1
-    const cancel = { userId, bookingId }
-
+    // `id1` is no longer needed, the backend will use the credentials from the request.
+    const cancel = { bookingId };
+  
     try {
       const response = await fetch('http://localhost:4000/booking/cancel', {
         method: 'PATCH',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cancel),
+        credentials: 'include', // Include credentials in the request
       });
       if (!response.ok) {
         throw new Error('Booking failed');
@@ -67,20 +48,18 @@ function activitypage() {
       alert('Cancel was Successful!');
     } catch (error) {
       console.error('Error booking activity:', error);
-      alert('cancel failed');
+      alert('Cancel failed');
     }
   };
-
+  
   useEffect(() => {
     fetchData();
-  }, [id1]);
-
-
+  }, []);  // You don't need `id1` to be a dependency anymore
+  
 
 
   return (<>
     <Navbar></Navbar>
-    {id1}
     <h1>My Activities</h1>
     {activities.map((activity) => (
       <div key={activity._id} className={styles.activity}>
