@@ -22,30 +22,7 @@ export default function Home() {
 
       <Navbar></Navbar>
 
-    
-
-      <Link href="/admin">
-         <button className='admin'>Admin</button>
-      </Link>
-
-      <Link href="/guest">
-         <button className='guest'>Guest</button>
-      </Link>
-      <Link href="/seller">
-         <button className='seller'>Seller</button>
-      </Link>
-      <Link href="/advertiser">
-         <button className='advertiser'>Advertiser</button>
-      </Link>
-      <Link href="/governer">
-         <button className='governer'>Tourism Governer</button>
-      </Link>
-      <Link href="/tourguide">
-         <button className='tour-guide'>Tour Guide</button>
-      </Link>
-      <Link href="/tourist">
-         <button className='tourist'>Tourist</button>
-      </Link>
+   
       <motion.h1
          initial={{ opacity: 0, x: 10, y: 150 }}
          animate={{ scale: 1, opacity: 1, x: 20 }}
