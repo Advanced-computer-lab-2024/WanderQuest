@@ -19,7 +19,7 @@ function Signin() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Include cookies for the JWT
+        credentials: "include", 
         body: JSON.stringify({ username, password }),
       });
 
@@ -115,6 +115,7 @@ function Signin() {
       </div>
       <div className={styles.createaccount}>
         <button className={styles.btn}>Sign in</button>
+        <p className={styles.error}>{error}</p>
       </div>
       </form>
       <div className={styles.createaccountInline}>
