@@ -429,17 +429,14 @@ const getAllTags = async (req, res) => {
 
 // admin createTag
 const createTag = async (req, res) => {
-    const { type } = req.body;
-    const validTypes = ["historic areas", "beaches", "family-friendly", "shopping", "budget-friendly"];
+    let { type } = req.body;
 
     if (!type) {
         return res.status(400).json({ error: 'Type is required' });
     }
-    if (!validTypes.includes(type.toLowerCase())) {
-        return res.status(400).json({ error: 'Type is not valid', "Valid Types": validTypes });
-    }
     else {
         try {
+            type = type.toLowerCase();
             const existingTag = await TagModel.findOne({ type }); // Correct model usage
             if (existingTag) {
                 return res.status(400).json({ error: 'Tag already exists' });
