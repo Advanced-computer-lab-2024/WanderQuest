@@ -9,31 +9,16 @@ const AcceptTerms = () => {
     const [showModal, setShowModal] = useState(true);
     const [viewMore, setViewMore] = useState(false); // State to toggle "View More" section
 
-    useEffect(() => {
-        const fetchAdvertiserId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/advertiser/advertiserId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch advertiser ID');
-                }
-                const advertiserId = await response.json(); // Assuming the backend sends the ID directly
-                setUserId(advertiserId);  // Store the fetched ID
-            } catch (error) {
-                console.error("Error fetching advertiser ID:", error);
-                setError("Error fetching advertiser ID");
-            }
-        };
-
-        fetchAdvertiserId();
-    }, []);
+    
 
     const handleAccept = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/authentication/acceptTerms/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/acceptTerms/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials:"include",
             });
             if (response.ok) {
                 setShowModal(false);

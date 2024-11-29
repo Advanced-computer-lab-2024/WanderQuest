@@ -3,17 +3,18 @@ import { useState, useEffect } from "react";
 import styles from "../Styles/DeleteAccount.module.css"
 
 
-const DeleteAcc = ({ userId, onDeleteSuccess }) => {
+const DeleteAcc = ({onDeleteSuccess }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [error, setError] = useState('');
 
     const handleAccountDeletion = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/authentication/requestAccountDeletion/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/requestAccountDeletion`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials:"include",
             });
 
             if (response.ok) {

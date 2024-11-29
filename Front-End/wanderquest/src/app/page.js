@@ -25,10 +25,7 @@ export default function Home() {
 
       <Navbar></Navbar>
 
-
-      <Link href="/profileInfo">
-         <button className='navbar-profile'>Profile</button>
-      </Link>
+    
 
       <Link href="/admin">
          <button className='admin'>Admin</button>

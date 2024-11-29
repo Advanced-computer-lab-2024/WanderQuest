@@ -29,7 +29,7 @@ const UploadDocuments = ({ userId , userType}) => {
         if (certificate) formData.append('documents', certificate);
         if (taxRegistry) formData.append('documents', taxRegistry);
 
-        console.log(`Uploading to: http://localhost:4000/authentication/uploadDocuments/${userId}`);
+        
 
         try {
             const response = await fetch(`http://localhost:4000/authentication/uploadDocuments/${userId}`, {
