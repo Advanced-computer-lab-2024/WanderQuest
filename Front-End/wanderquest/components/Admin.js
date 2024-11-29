@@ -56,7 +56,7 @@ export default function AdminPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newGovernorData),
-        credentials: 'include',
+        credentials:"include"
       });
   
       if (response.ok) {
@@ -85,6 +85,7 @@ export default function AdminPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newAdminData),
+        credentials:"include"
       });
   
       if (response.ok) {
@@ -176,21 +177,22 @@ export default function AdminPage() {
             </tr>
           </thead>
           <tbody>
-            {users.users.filter(user => user.username.includes(search)).map((user) => (
-              <tr key={user._id}>{/* Change key to user._id */}
-                <td>{user.username}</td>
-                <td>{user.role}</td>
-                <td>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => showDeleteConfirmation(user)} // Pass the full user object
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {Array.isArray(users) && users.filter(user => user.username.includes(search)).map((user) => (
+    <tr key={user._id}>
+      <td>{user.username}</td>
+      <td>{user.role}</td>
+      <td>
+        <button
+          className={styles.deleteButton}
+          onClick={() => showDeleteConfirmation(user)} // Pass the full user object
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
       <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
