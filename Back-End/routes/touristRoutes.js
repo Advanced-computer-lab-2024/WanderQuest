@@ -26,8 +26,9 @@ const {
     removeSavedEvents,
     addToWishlist,
     viewWishlist,
-    removeFromWishlist
+    removeFromWishlist,
 } = require('../controllers/touristController');
+const {getProducts} = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
@@ -71,6 +72,8 @@ router.delete('/removeSavedEvents', removeSavedEvents);
 router.post('/wishlist/add', addToWishlist);
 router.get('/wishlist', viewWishlist);
 router.delete('/wishlist/remove', removeFromWishlist);
+
+router.get("/products", getProducts)
 
 
 
