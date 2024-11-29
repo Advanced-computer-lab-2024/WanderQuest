@@ -110,6 +110,30 @@ const login = async (req, res) => {
     }
 }
 
+// get user
+const getUser = async (req, res) => {
+    const id = req.user._id;
+
+    try {
+        let user = await User.findById(id);
+
+        if (!user) {
+            user = await Admin.findById(id);
+        }
+        if (!user) {
+            user = await TourGoverner.findById(id);
+        }
+        if (!user) {
+            return res.status(400).json({ error: "User not found" });
+        }
+
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ error: err.message });
+    }
+
+}
+
 // upload required documents for acceptance
 const uploadDocuments = async (req, res) => {
     upload(req, res, async (err) => {
@@ -344,4 +368,4 @@ async function requestAccountDeletion(req, res) {
     }
 }
 
-module.exports = { uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion, login };
+module.exports = { getUser, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion, login };
