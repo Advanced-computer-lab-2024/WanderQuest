@@ -25,8 +25,8 @@ const Navbar = () => {
                 <button className="navbar-button">Historical Places</button>
             </div>
             <div className='navbar-rightside'>
-            <Link href="/register">
-               <button className='navbar-signup'>Signup</button>
+            <Link href="/signin">
+               <button className='navbar-signup'>Sign In</button>
             </Link>
             
             </div>
