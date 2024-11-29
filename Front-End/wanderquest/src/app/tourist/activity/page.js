@@ -121,9 +121,10 @@ const Activitiespage = (Props) => {
     }
   };
 
-  
   useEffect(() => {
-    fetch('http://localhost:4000/admin/categories')
+    fetch('http://localhost:4000/admin/categories', {
+      credentials: 'include', // Include credentials (cookies) in the request
+    })
       .then(res => res.json())
       .then(data => {
         setCategory(data); // Set the categories fetched from the API
@@ -133,13 +134,15 @@ const Activitiespage = (Props) => {
         setCategory([]); // Set to an empty array on error
       });
   }, []);
-
+  
   useEffect(() => {
     filteritemscat();
   }, [selecttedfilters]);
-
+  
   const fetchData = () => {
-    fetch('http://localhost:4000/tourist/upcomingActivities')
+    fetch('http://localhost:4000/tourist/upcomingActivities', {
+      credentials: 'include', // Include credentials (cookies) in the request
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -157,6 +160,7 @@ const Activitiespage = (Props) => {
         setLoading(false);
       });
   };
+  
 
   useEffect(() => {
     fetchData();

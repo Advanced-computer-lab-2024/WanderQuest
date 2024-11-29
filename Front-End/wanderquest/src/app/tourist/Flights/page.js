@@ -62,24 +62,7 @@ function BookingsPage() {
       });
   };
 
-  const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setid(data);
-        setLoading(false);
 
-      })
-      .catch(error => {
-
-        setLoading(false);
-      });
-  };
 
 
   // useEffect(() => {
@@ -101,26 +84,60 @@ function BookingsPage() {
       });
   };
 
+  // const handlebooking = (price1, companyName) => {
+  //   const bookingType = "flight";
+  //   const userId = '67310bdba3280f11a947c86d';
+  //   const from = departureDate;
+  //   const price = price1;
+  //   const fromAir = originLocationCode;
+  //   const toAir = destinationLocationCode;
+  //   const flight = { userId, bookingType, from, fromAir, toAir, price, companyName };
+  //   console.log('flight details:', flight);
+  //   fetch('http://localhost:4000/booking/flight', {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(flight)
+  //   }).then(response => {
+  //     if (!response.ok) {
+
+  //       throw new Error(response.statusText);
+  //     }
+  //     return response.json();
+  //   })
+  //     .then(() => {
+  //       alert('Booking has been made successfully!');
+  //     })
+  //     .catch(error => {
+  //       console.error('Error booking itinerary:', error);
+  //       alert('Booking failed. Please try again.');
+  //     });
+  // }
   const handlebooking = (price1, companyName) => {
     const bookingType = "flight";
-    const userId = '67310bdba3280f11a947c86d';
     const from = departureDate;
     const price = price1;
     const fromAir = originLocationCode;
     const toAir = destinationLocationCode;
-    const flight = { userId, bookingType, from, fromAir, toAir, price, companyName };
+    
+    // Remove hardcoded userId and rely on backend to extract it from the JWT token or session
+    const flight = { bookingType, from, fromAir, toAir, price, companyName };
+  
     console.log('flight details:', flight);
+  
     fetch('http://localhost:4000/booking/flight', {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(flight)
-    }).then(response => {
-      if (!response.ok) {
-
-        throw new Error(response.statusText);
-      }
-      return response.json();
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include', // Include credentials (cookies) in the request
+      body: JSON.stringify(flight),
     })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
       .then(() => {
         alert('Booking has been made successfully!');
       })
@@ -128,8 +145,8 @@ function BookingsPage() {
         console.error('Error booking itinerary:', error);
         alert('Booking failed. Please try again.');
       });
-  }
-
+  };
+  
 
   return (
     <div className={styles.all}>

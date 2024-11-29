@@ -1,10 +1,11 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #f5f5f5;
-  }
+/* .container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;  
+  padding: 20px; 
+  background-color: #f5f5f5;
+} */
+
   
   .productCard {
     background-color: white;
@@ -183,4 +184,78 @@
 
 .uploadButton input[type="file"] {
   display: none;
+}
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+.filterSection {
+  margin-bottom: 20px;
+}
+
+.filterSection h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.filterSection label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.filterSection input[type="text"],
+.filterSection input[type="date"],
+.filterSection input[type="number"],
+.filterSection select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.filterSection input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.filterSection button {
+  width: 100%;
+  padding: 10px;
+  background-color: #1a6187;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filterSection button:hover {
+  background-color: black;
+}
+.pageLayout {
+  margin: 0; /* Removes top margin */
+  display: flex;
+  margin-top: -25px;
+  flex-direction: row; /* Ensures sidebar and itineraries are side-by-side */
+   /* Full viewport height for a consistent layout */
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  padding: 20px;
+  border-right: 2px solid #ddd;
+  font-family: 'Arial', sans-serif;
+  overflow-y: auto; 
+  height: 100%;/* Make sidebar scrollable if content overflows */
 }
