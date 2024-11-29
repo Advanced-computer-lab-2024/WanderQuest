@@ -81,7 +81,15 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ username });
+        let user = await User.findOne({ username });
+
+        if (!user) {
+            user = await Admin.findOne({ username });
+        }
+
+        if (!user) {
+            user = await TourGoverner.findOne({ username });
+        }
 
         if (!user) {
             return res.status(400).json({ error: 'Invalid username or password' });

@@ -5,10 +5,12 @@ const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const ComplaintModel = require('../models/objectModel').complaint;
-const { Activity, itinerary } = require('../models/objectModel');
+const { Activity, itinerary, PromoCode } = require('../models/objectModel');
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
+const validator = require('validator');
+const bcrypt = require('bcrypt');
 
 const mongoose = require('mongoose');
 
@@ -117,8 +119,8 @@ const addAdmin = async (req, res) => {
         return res.status(400).json({ error: 'Username must be at least 3 characters long' });
     }
 
-    if (password.length < 5) {
-        return res.status(400).json({ error: 'Password must be at least 5 characters long' });
+    if (!validator.isStrongPassword(password)) {
+        throw new Error('Password must be strong, must contain uppercase, number, and special character');
     }
 
     try {
@@ -129,7 +131,11 @@ const addAdmin = async (req, res) => {
             return res.status(400).json({ error: 'Username already exists' });
         }
 
-        const admin = await AdminModel.create({ username, password })
+        // hash the password
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const admin = await AdminModel.create({ username, password: hashedPassword });
         res.status(200).json(admin)
 
     } catch (error) {
@@ -388,9 +394,10 @@ const addTourGov = async (req, res) => {
         return res.status(400).json({ error: 'Username must be at least 3 characters long' });
     }
 
-    if (password.length < 5) {
-        return res.status(400).json({ error: 'Password must be at least 5 characters long' });
+    if (!validator.isStrongPassword(password)) {
+        throw new Error('Password must be strong, must contain uppercase, number, and special character');
     }
+
     try {
         // Checking if the username already exists
         let tourGov = await tourGovModel.findOne({ username });
@@ -399,7 +406,11 @@ const addTourGov = async (req, res) => {
             return res.status(400).json({ error: 'Username already exists' });
         }
 
-        tourGov = await tourGovModel.create({ username, password })
+        // hash the password
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        tourGov = await tourGovModel.create({ username, password: hashedPassword });
         res.status(200).json(tourGov)
 
     } catch (error) {
@@ -606,6 +617,9 @@ const flagItinerary = async (req, res) => {
         res.status(404).json({ error: error.message });
     }
 }
+
+// const addPromoCode = async (req, res) => {
+// }
 module.exports = {
     getAllAdmins,
     getUsers,

@@ -15,7 +15,7 @@ const router = express.Router()
 
 router.get('/activity/:id', readOneActivity);
 router.get('/myActivities', requireAuth({ role: 'advertiser' }), myCreatedActivities);
-router.get('/allAdvertisers', requireAuth({ role: 'admin' }), getAllAdvertisers);
+router.get('/allAdvertisers', requireAuth({ role: 'Admin' }), getAllAdvertisers);
 router.post('/activity', requireAuth({ role: 'advertiser' }), createActivity);
 router.get('/activities', readActivities);
 router.put('/activity/:id', updateActivity);
