@@ -7,48 +7,37 @@ const AcceptTerms = () => {
     const [accepted, setAccepted] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [viewMore, setViewMore] = useState(false);
-    const [role, setRole] = useState("");  // State to store the role
+    
 
     useEffect(() => {
-        // Get the role from the cookie
-        const userRole = Cookies.get('role');
-        if (userRole) {
-            setRole(userRole);
-            fetchProfile(userRole);
-        } else {
-            // If no role is found in cookies, we can handle this case as needed
-            console.log('No role found in cookies');
-        }
+        // Fetch the logged-in user's data from the backend
+        fetch('http://localhost:4000/authentication/user', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: "include", // Ensure the cookie is sent with the request
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if user data contains isTermsAccepted and if it's true
+            if (data.isTermsAccepted) {
+                console.log(data.isTermsAccepted);
+                // Hide the modal if the terms are already accepted
+                setShowModal(false);
+            } else {
+                // Show the modal if the terms are not accepted
+                console.log(data.isTermsAccepted);
+                setShowModal(true);
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching user data:', err);
+            // Handle errors appropriately (e.g., show an error message)
+        });
     }, []);
 
-    const fetchProfile = async (role) => {
-        try {
-            // Make a GET request to the corresponding profile endpoint based on the role
-            const response = await fetch(`http://localhost:4000/${role}/profile`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: "include", // Ensure the request includes the user's session cookies
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch user profile');
-            }
-
-            const data = await response.json();
-
-            if (data?.termsAccepted) {
-                setShowModal(false);  // Don't show modal if terms have been accepted
-                Cookies.set('isTermsAccepted', 'true', { expires: 365 });
-            } else {
-                setShowModal(true);  // Show modal if terms have not been accepted
-            }
-        } catch (error) {
-            console.error('Error fetching user profile:', error);
-            setShowModal(true);  // Show modal if there's an error
-        }
-    };
+    
 
     const handleAccept = async () => {
         try {
