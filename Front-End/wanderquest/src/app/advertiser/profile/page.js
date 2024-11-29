@@ -1,6 +1,6 @@
-import ChangePassword from "../../../../components/ChangePassword";
+import CompanyInfo from "../../../../components/CompanyInfo";
 import Navbar from "../../../../components/Navbar";
-import TourGuideInfo from "../../../../components/TourGuideInfo";
+
 
 
 const ProfileInfo = () => {
@@ -10,7 +10,7 @@ const ProfileInfo = () => {
     <div>
         <Navbar />
         <div>
-            <TourGuideInfo/>
+            <CompanyInfo/>
         </div>
     </div>
   );

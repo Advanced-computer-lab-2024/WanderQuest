@@ -17,7 +17,7 @@ export default function governer() {
         <div>
             <Navbar />
             <h1>governer Page</h1>
-            <p>Welcome to the Tourist page!</p>
+            <p>Welcome to the Governor page!</p>
             <button onClick={handleRedirect}>View a list of all my created activities/ itineraries / museums and historical places</button>
             <button onClick={handleRedirectp}>tag Manager</button>
       

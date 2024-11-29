@@ -23,36 +23,26 @@ const CompanyInfo = () => {
     const [logoPreview, setLogoPreview] = useState(''); // For the preview before upload
     const [logoURL, setLogoURL] = useState(''); // For the uploaded logo URL
 
-    // Fetch the advertiser ID first
-    useEffect(() => {
-        const fetchAdvertiserId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/advertiser/advertiserId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch advertiser ID');
-                }
-                const advertiserId = await response.json(); // Assuming the backend sends the ID directly
-                setUserId(advertiserId);  // Store the fetched ID
-            } catch (error) {
-                console.error("Error fetching advertiser ID:", error);
-                setError("Error fetching advertiser ID");
-            }
-        };
+    
 
-        fetchAdvertiserId();
-    }, []);
-
-    // Fetch the full profile using the advertiser's userId
     useEffect(() => {
         const fetchProfile = async () => {
-            if (!userId) return; // Don't fetch profile if userId is not available
-
             try {
-                const response = await fetch(`http://localhost:4000/advertiser/profile/${userId}`);
+                // Reset error state before fetching
+                setError(null);
+    
+                const response = await fetch(`http://localhost:4000/advertiser/profile`, {
+                    method: 'GET',
+                    credentials: 'include', // Include cookies
+                });
+    
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
+    
                 const data = await response.json();
+    
+                // Update state with the fetched data
                 setUsername(data.advertiser.username || "");
                 setEmail(data.advertiser.email || "");
                 setWebsiteLink(data.advertiser.websiteLink || "");
@@ -60,23 +50,24 @@ const CompanyInfo = () => {
                 setCompanyName(data.advertiser.companyName || "");
                 setCompanyAddress(data.advertiser.companyAddress || "");
                 setCompanyDescription(data.advertiser.companyDescription || "");
-
-                if(data.advertiser.logo){
-                    setLogoURL(`http://localhost:4000/advertiser/logo/${userId}?timestamp=${new Date().getTime()}`);
+    
+                // Update logo URL if it exists
+                if (data.advertiser.logo) {
+                    setLogoURL(`http://localhost:4000/advertiser/logo?timestamp=${new Date().getTime()}`);
                 }
             } catch (error) {
                 console.error("Error fetching profile:", error);
                 setError("Error fetching profile data");
             }
         };
-
+    
         fetchProfile();
-    }, [userId]);
+    }, []); 
+    
 
-    // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const updatedData = {
             username,
             email,
@@ -86,19 +77,20 @@ const CompanyInfo = () => {
             companyAddress,
             companyDescription,
         };
-
+    
         try {
             const response = await fetch(
-                `http://localhost:4000/advertiser/profile/${userId}`,
+                `http://localhost:4000/advertiser/profile`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    credentials: "include", // Include cookies in the request
                     body: JSON.stringify(updatedData),
                 }
             );
-
+    
             if (response.ok) {
                 const data = await response.json();
                 setSuccessMessage("Profile updated successfully!");
@@ -112,6 +104,7 @@ const CompanyInfo = () => {
             setError("An error occurred while updating the profile");
         }
     };
+    
 
     
 
@@ -134,14 +127,15 @@ const CompanyInfo = () => {
         formData.append("documents", logo);
     
         try {
-            const response = await fetch(`http://localhost:4000/advertiser/uploadLogo/${userId}`, {
+            const response = await fetch(`http://localhost:4000/advertiser/uploadLogo`, {
                 method: "POST",
                 body: formData,
+                credentials: "include",
             });
     
             if (response.ok) {
                 const result = await response.json();
-                setLogoURL(`http://localhost:4000/advertiser/logo/${userId}?timestamp=${new Date().getTime()}`);
+                setLogoURL(`http://localhost:4000/advertiser/logo?timestamp=${new Date().getTime()}`);
                 setLogoPreview("");
                 setError("");
                 setSuccessMessage("Logo uploaded successfully!");
@@ -228,8 +222,8 @@ const CompanyInfo = () => {
             
         
         </form>
-        <ChangePassword userId={userId}/>
-        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+        <ChangePassword />
+        <DeleteAccount onDeleteSuccess={handleDeleteSuccess} />
     </div>
     );
 
