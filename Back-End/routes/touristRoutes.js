@@ -67,9 +67,10 @@ router.get('/totalPoints', getTotalPoints)
 router.post('/saveEvent', saveEvent);
 router.get('/viewSavedEvents', viewSavedEvents);
 router.delete('/removeSavedEvents', removeSavedEvents);
-router.post('/addToWishlist', addToWishlist);
-router.get('/viewWishlist', viewWishlist);
-router.delete('/removeFromWishlist', removeFromWishlist);
+
+router.post('/wishlist/add', addToWishlist);
+router.get('/wishlist', viewWishlist);
+router.delete('/wishlist/remove', removeFromWishlist);
 
 
 
