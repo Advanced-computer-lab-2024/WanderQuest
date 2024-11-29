@@ -18,63 +18,38 @@ import Signin from "../../components/Signin";
 import { motion } from 'framer-motion';
 
 export default function Home() {
-  return (<>
-    <Navbar></Navbar>
+   return (<>
 
-    
-    <Link href="/profileInfo">
-               <button className='navbar-profile'>Profile</button>
-            </Link>
+      <Navbar></Navbar>
 
-            <Link href="/admin">
-               <button className='admin'>Admin</button>
-            </Link>
-
-            <Link href="/guest">
-               <button className='guest'>Guest</button>
-            </Link>
-            <Link href="/seller">
-               <button className='seller'>Seller</button>
-            </Link>
-            <Link href="/advertiser">
-               <button className='advertiser'>Advertiser</button>
-            </Link>
-            <Link href="/governer">
-               <button className='governer'>Tourism Governer</button>
-            </Link>
-            <Link href="/tourguide">
-               <button className='tour-guide'>Tour Guide</button>
-            </Link>
-            <Link href="/tourist">
-               <button className='tourist'>Tourist</button>
-            </Link>
-            <motion.h1
-      initial={{opacity:0,x:10,y:150}}
-      animate={{scale:1,opacity:1,x:20}}
-      transition={{duration:1}}
-      style={{ border: '0px solid black' ,width:800}}
+   
+      <motion.h1
+         initial={{ opacity: 0, x: 10, y: 150 }}
+         animate={{ scale: 1, opacity: 1, x: 20 }}
+         transition={{ duration: 1 }}
+         style={{ border: '0px solid black', width: 800 }}
       >
          Welcome to WanderQuest
 
       </motion.h1>
-            {/* </div> */}
-    {/* <TagManager/>
+      {/* </div> */}
+      {/* <TagManager/>
     <PrefTag/> */}
-    {/* <ActivityCategory /> */}
-    {/* <Itineraries></Itineraries> */}
-    {/* <Products></Products> */}
-    {/* <Museums></Museums> */}
-    {/* <Activities></Activities> */}
-    {/* <Creatprod></Creatprod> */}
+      {/* <ActivityCategory /> */}
+      {/* <Itineraries></Itineraries> */}
+      {/* <Products></Products> */}
+      {/* <Museums></Museums> */}
+      {/* <Activities></Activities> */}
+      {/* <Creatprod></Creatprod> */}
 
-    {/* <Cruditinerary></Cruditinerary> */}
+      {/* <Cruditinerary></Cruditinerary> */}
       {/* <Activity></Activity> */}
-         {/* <Historicalplaces></Historicalplaces> */}
+      {/* <Historicalplaces></Historicalplaces> */}
 
 
-        {/* <Itineraries/> */}
-        {/* <h1>Welcome to WanderQuest</h1>
+      {/* <Itineraries/> */}
+      {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
-  </>
-  );
+   </>
+   );
 }

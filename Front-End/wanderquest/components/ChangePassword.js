@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import styles from "../Styles/ChangePass.module.css"
 
-const ChangePassword = ({userId}) => {
+const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,13 +22,14 @@ const ChangePassword = ({userId}) => {
         }
     
         try {
-            const response = await fetch(`http://localhost:4000/authentication/changePassword/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/changePassword`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     oldPassword: currentPassword,
                     newPassword,
                 }),
+                credentials:"include",
             });
     
             if (response.ok) {

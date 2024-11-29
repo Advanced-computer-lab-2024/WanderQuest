@@ -40,9 +40,15 @@ export default function Tourist() {
     const handleRedirectransport = () => {
         router.push('/tourist/transportation');
     };
+    const handleRedirectProfile = () => {
+        router.push('/tourist/profile');
+    };
+    
+
     return (
         <div>
             <Navbar />
+            
             <h1>Tourist Page</h1>
             <p>Welcome to the Tourist page!</p>
             <button onClick={handleRedirect}>Go to Itinerary</button>
@@ -56,6 +62,7 @@ export default function Tourist() {
             <button onClick={handleRedirechotel}>Hotels</button>
             <button onClick={handleRedirecflight}>Flights</button>
             <button onClick={handleRedirectransport}>Transportaiton</button>
+            <button onClick={handleRedirectProfile}>Profile</button>
 
         </div>
     );

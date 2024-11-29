@@ -1,42 +1,36 @@
 "use client";
 import { useState, useEffect } from "react";
-import jwt from "jsonwebtoken";
 import styles from '../Styles/AcceptTerms.module.css';
+import Cookies from 'js-cookie';
 
 const AcceptTerms = () => {
     const [accepted, setAccepted] = useState(false);
-    const [userId, setUserId] = useState(null);
-    const [showModal, setShowModal] = useState(true);
-    const [viewMore, setViewMore] = useState(false); // State to toggle "View More" section
+    const [showModal, setShowModal] = useState(false);
+    const [viewMore, setViewMore] = useState(false);
 
     useEffect(() => {
-        const fetchAdvertiserId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/advertiser/advertiserId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch advertiser ID');
-                }
-                const advertiserId = await response.json(); // Assuming the backend sends the ID directly
-                setUserId(advertiserId);  // Store the fetched ID
-            } catch (error) {
-                console.error("Error fetching advertiser ID:", error);
-                setError("Error fetching advertiser ID");
-            }
-        };
-
-        fetchAdvertiserId();
+        // Check if the user has accepted the terms (cookie check)
+        const userAccepted = Cookies.get('isTermsAccepted');
+        if (userAccepted) {
+            setShowModal(false); // Don't show the modal if the user has accepted
+        }
+        else{
+            setShowModal(true);
+        }
     }, []);
 
     const handleAccept = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/authentication/acceptTerms/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/acceptTerms/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: "include",
             });
             if (response.ok) {
                 setShowModal(false);
+                Cookies.set('isTermsAccepted', 'true', { expires: 365 });
             } else {
                 const errorData = await response.json();
                 alert(`Error: ${errorData.error}`);
@@ -46,6 +40,7 @@ const AcceptTerms = () => {
             alert("An error occurred while accepting the terms. Please try again.");
         }
     };
+    
 
     return (
         showModal && (
