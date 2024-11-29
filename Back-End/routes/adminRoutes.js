@@ -73,7 +73,6 @@ router.post('/addProduct', upload.single('picture'), addProduct);
 
 // Use multer middleware to handle file upload
 router.patch('/editProduct/:id', upload.single('picture'), editProduct);
-
 //Admin addActivityCategory
 router.post('/addCategory', addCategory)
 

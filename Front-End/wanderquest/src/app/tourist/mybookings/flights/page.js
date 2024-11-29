@@ -7,9 +7,10 @@ function FlightPage() {
   const [flights, setFlights] = useState([]);
   const [id1, setid] = useState('67310bdba3280f11a947c86d');
   const [loading, setLoading] = useState(true);
-
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/flights/67310bdba3280f11a947c86d`)
+    fetch(`http://localhost:4000/booking/flights`, {
+      credentials: 'include', // Include credentials in the request
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -25,8 +26,11 @@ function FlightPage() {
         setLoading(false);
       });
   };
+  
   const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
+    fetch(`http://localhost:4000/tourist/touristId`, {
+      credentials: 'include', // Include credentials in the request
+    })
       .then(res => {
         if (!res.ok) {
           throw new Error(`Error fetching itineraries: ${res.statusText}`);
@@ -36,19 +40,20 @@ function FlightPage() {
       .then(data => {
         setid(data);
         setLoading(false);
-
+  
         // Fetch details for all activities
-
       })
       .catch(error => {
         setError(error.message);
         setLoading(false);
       });
   };
+  
   useEffect(() => {
     fetchData();
-    // fetchid();
+    // fetchid(); // If you need to fetch the tourist ID, uncomment this line
   }, []);
+  
 
   return (<>        <Navbar />
     <div className={styles.container}>

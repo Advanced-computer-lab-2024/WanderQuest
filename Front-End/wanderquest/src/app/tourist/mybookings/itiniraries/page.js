@@ -14,11 +14,12 @@ function ititpage() {
   const [loading, setLoading] = useState(true);
   const [id1, setid] = useState('');
 
-
   const fetchActivityDetails = (activityId) => {
     if (activityDetails[activityId]) return; // Avoid refetching
-
-    fetch(`http://localhost:4000/advertiser/activity/${activityId}`)
+  
+    fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
+      credentials: 'include', // Include credentials in the request
+    })
       .then(res => {
         if (!res.ok) {
           throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
@@ -35,31 +36,37 @@ function ititpage() {
         setError(error.message);
       });
   };
+  
   const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Error fetching itineraries: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            setid(data);
-            setLoading(false);
-
-            // Fetch details for all activities
-
-        })
-        .catch(error => {
-            setError(error.message);
-            setLoading(false);
-        });
-};
+    fetch(`http://localhost:4000/tourist/touristId`, {
+      credentials: 'include', // Include credentials in the request
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error fetching itineraries: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setid(data);
+        setLoading(false);
+  
+        // Fetch details for all activities
+      })
+      .catch(error => {
+        setError(error.message);
+        setLoading(false);
+      });
+  };
+  
   useEffect(() => {
     fetchid();
   }, [id1]);
+  
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/itineraries/${id1}`)
+    fetch(`http://localhost:4000/booking/itineraries/${id1}`, {
+      credentials: 'include', // Include credentials in the request
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -84,33 +91,33 @@ function ititpage() {
         setLoading(false);
       });
   };
-
+  
   const handlecancel = async (actid) => {
-    const bookingId=actid;
-    const userId=id1;
-    const cancel = { userId, bookingId }
-    
+    const bookingId = actid;
+  
+    const cancel = { bookingId };
+  
     try {
       const response = await fetch('http://localhost:4000/booking/cancel', {
         method: 'PATCH',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cancel),
+        credentials: 'include', // Include credentials in the request
       });
       if (!response.ok) {
         throw new Error('Booking failed');
       }
-      alert('cancel successful!');
+      alert('Cancel successful!');
     } catch (error) {
-      console.error('Error booking activity:', error);
-      alert('cancel failed,Cannot cancel a booking within 48 hours of the start date ');
+      console.error('Error canceling activity:', error);
+      alert('Cancel failed. Cannot cancel a booking within 48 hours of the start date.');
     }
   };
-
+  
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [id1]);
   
-
 
 
 

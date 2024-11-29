@@ -8,7 +8,9 @@ function transportpage() {
   const [Loading, setLoading] = useState(true);
   const [id1, setid] = useState('');
   const fetchData = () => {
-    fetch(`http://localhost:4000/booking/transportations/${id1}`)
+    fetch(`http://localhost:4000/booking/transportations`, {
+      credentials: 'include', // Automatically include user credentials
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -17,37 +19,22 @@ function transportpage() {
       })
       .then((data) => {
         setTransportation(data);
+        console.log(data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching flights:', error);
+        console.error('Error fetching transportations:', error);
         setLoading(false);
       });
   };
-  const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setid(data);
-        setLoading(false);
+  
 
-        // Fetch details for all activities
-      })
-      .catch(error => {
-        setError(error.message);
-        setLoading(false);
-      });
-  };
+  
   useEffect(() => {
     fetchData();
-    fetchid();
-  }, [id1]);
 
+  }, []); // No need for `id1` as a dependency, credentials will handle identification
+  
 
 
   return (<> <Navbar></Navbar>
