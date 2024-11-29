@@ -52,7 +52,7 @@ const RegistrationForm = () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(userData)  // Send userData as the request body
+            body: JSON.stringify(userData),
         })
         .then(response => response.json())  // Parse the response
         .then(data => {
@@ -173,9 +173,7 @@ const RegistrationForm = () => {
                 </>
             )}
 
-        
-
-    
+            
 
     {error && <p className={styles.error}>{error}</p>}
 

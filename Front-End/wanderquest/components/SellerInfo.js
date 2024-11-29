@@ -20,36 +20,16 @@ const SellerInfo = () => {
     const [logoPreview, setLogoPreview] = useState(''); // For the preview before upload
     const [logoURL, setLogoURL] = useState(''); // For the uploaded logo URL
 
-    // Fetch the seller ID first
-    useEffect(() => {
-        const fetchSellerId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/seller/sellerId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch seller ID');
-                }
-                const sellerId = await response.json(); // Ensure we get the ID correctly
-                console.log("Fetched seller ID:", sellerId); // Debugging line
-                setUserId(sellerId); // Assuming sellerId is returned as a string
-            } catch (error) {
-                console.log("Error fetching seller ID:", error);
-                setError("Error fetching seller ID");
-            }
-        };
-
-        fetchSellerId();
-    }, []);
+    
 
     // Fetch the seller profile data (GET request)
     useEffect(() => {
         const fetchProfile = async () => {
-            if (!userId) {
-                console.log("User ID is not available."); // Debugging line
-                return; // Exit if userId is not provided
-            }
 
             try {
-                const response = await fetch(`http://localhost:4000/seller/profile/${userId}`);
+                const response = await fetch(`http://localhost:4000/seller/profile`,{
+                    credentials:"include",
+                });
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
@@ -60,7 +40,7 @@ const SellerInfo = () => {
                 setName(data.sellerName || '');
                 setDescription(data.sellerDescription || '');
                 if(data.logo){
-                    setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
+                    setLogoURL(`http://localhost:4000/seller/logo?timestamp=${new Date().getTime()}`);
                 }
             } catch (error) {
                 console.log("Error fetching profile:", error);
@@ -69,7 +49,7 @@ const SellerInfo = () => {
         };
 
         fetchProfile();
-    }, [userId]);
+    }, []);
 
     // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
@@ -84,13 +64,14 @@ const SellerInfo = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/seller/profile/${userId}`,
+                `http://localhost:4000/seller/profile`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(updatedData),
+                    credentials:"include",
                 }
             );
 
@@ -128,14 +109,15 @@ const SellerInfo = () => {
         formData.append("documents", logo);
     
         try {
-            const response = await fetch(`http://localhost:4000/seller/uploadLogo/${userId}`, {
+            const response = await fetch(`http://localhost:4000/seller/uploadLogo`, {
                 method: "POST",
                 body: formData,
+                credentials:"include",
             });
     
             if (response.ok) {
                 const result = await response.json();
-                setLogoURL(`http://localhost:4000/seller/logo/${userId}?timestamp=${new Date().getTime()}`);
+                setLogoURL(`http://localhost:4000/seller/logo?timestamp=${new Date().getTime()}`);
                 setLogoPreview("");
                 setError("");
                 setSuccessMessage("Logo uploaded successfully!");
@@ -209,8 +191,8 @@ const SellerInfo = () => {
 
             
         </form>
-        <ChangePassword userId={userId}/>
-        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+        <ChangePassword />
+        <DeleteAccount onDeleteSuccess={handleDeleteSuccess} />
     </div>
     );
 };

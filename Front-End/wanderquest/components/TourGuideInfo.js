@@ -20,39 +20,17 @@ const TourGuideInfo = () => {
     const [picPreview, setPicPreview] = useState(''); // For the preview before upload
     const [picURL, setPicURL] = useState(''); // For the uploaded logo URL
 
-    // Fetch the tour guide ID first
-    useEffect(() => {
-        const fetchTourGuideId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/tourGuide/tourGuideId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tour guide ID');
-                }
-                const tourGuideId = await response.json(); // Adjust based on response structure
-                console.log("Fetched tour guide ID:", tourGuideId); // Debugging line
-
-                // If the response is an object with an ID property
-                // If the response is just the ID (string), this will set it correctly.
-                setUserId(tourGuideId); 
-            } catch (error) {
-                console.error("Error fetching tour guide ID:", error);
-                setError("Error fetching tour guide ID");
-            }
-        };
-
-        fetchTourGuideId();
-    }, []);
+    
 
     // Fetch the tour guide profile data (GET request)
     useEffect(() => {
         const fetchProfile = async () => {
-            if (!userId) {
-                console.log("User ID is not available."); // Debugging line
-                return; // Exit if userId is not provided
-            }
+            
 
             try {
-                const response = await fetch(`http://localhost:4000/tourGuide/profile/${userId}`); // Correct URL
+                const response = await fetch(`http://localhost:4000/tourGuide/profile`,{
+                    credentials:"include",
+                }); // Correct URL
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
@@ -64,7 +42,7 @@ const TourGuideInfo = () => {
                 setYearsOfExperience(data.yearsOfExperience || '');
                 setPreviousWork(data.previousWork || '');
                 if(data.photo){
-                    setPicURL(`http://localhost:4000/tourGuide/photo/${userId}?timestamp=${new Date().getTime()}`);
+                    setPicURL(`http://localhost:4000/tourGuide/photo?timestamp=${new Date().getTime()}`);
                 }
     
             } catch (error) {
@@ -74,7 +52,7 @@ const TourGuideInfo = () => {
         };
 
         fetchProfile();
-    }, [userId]); // This useEffect depends on userId
+    }, []); 
 
     // Handle form submission (PUT request)
     const handleSubmit = async (e) => {
@@ -90,13 +68,14 @@ const TourGuideInfo = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tourGuide/profile/${userId}`, // Correct URL
+                `http://localhost:4000/tourGuide/profile`, // Correct URL
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(updatedData),
+                    credentials:"include",
                 }
             );
 
@@ -133,14 +112,15 @@ const TourGuideInfo = () => {
         formData.append("documents", pic);
     
         try {
-            const response = await fetch(`http://localhost:4000/tourGuide/uploadPhoto/${userId}`, {
+            const response = await fetch(`http://localhost:4000/tourGuide/uploadPhoto`, {
                 method: "POST",
                 body: formData,
+                credentials:"include",
             });
     
             if (response.ok) {
                 const result = await response.json();
-                setPicURL(`http://localhost:4000/tourGuide/photo/${userId}?timestamp=${new Date().getTime()}`);
+                setPicURL(`http://localhost:4000/tourGuide/photo?timestamp=${new Date().getTime()}`);
                 setPicPreview("");
                 setError("");
                 setSuccessMessage("Picture uploaded successfully!");
@@ -221,8 +201,8 @@ const TourGuideInfo = () => {
         
 
         </form>
-        <ChangePassword userId={userId}/>
-        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+        <ChangePassword />
+        <DeleteAccount onDeleteSuccess={handleDeleteSuccess} />
 
 
         </div>
