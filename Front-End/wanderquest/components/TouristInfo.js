@@ -83,7 +83,9 @@ const TouristInfo = () => {
     useEffect(() => {
         const fetchCurrencies = async () => {
             try {
-                const response = await fetch("http://localhost:4000/tourist/currencies");
+                const response = await fetch("http://localhost:4000/tourist/currencies",{
+                    credentials:"include",
+                });
                 if (!response.ok) {
                     throw new Error("Failed to fetch currencies");
                 }

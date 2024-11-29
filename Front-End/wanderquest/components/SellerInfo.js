@@ -25,13 +25,9 @@ const SellerInfo = () => {
     // Fetch the seller profile data (GET request)
     useEffect(() => {
         const fetchProfile = async () => {
-            if (!userId) {
-                console.log("User ID is not available."); // Debugging line
-                return; // Exit if userId is not provided
-            }
 
             try {
-                const response = await fetch(`http://localhost:4000/seller/profile/`,{
+                const response = await fetch(`http://localhost:4000/seller/profile`,{
                     credentials:"include",
                 });
                 if (!response.ok) {
