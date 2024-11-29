@@ -43,10 +43,12 @@ export default function Tourist() {
     const handleRedirectProfile = () => {
         router.push('/tourist/profile');
     };
+    
 
     return (
         <div>
             <Navbar />
+            
             <h1>Tourist Page</h1>
             <p>Welcome to the Tourist page!</p>
             <button onClick={handleRedirect}>Go to Itinerary</button>

@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation';
 import Navbar from '../../../components/Navbar';
+import AcceptTerms from '../../../components/AcceptTerms';
 
 export default function advertiser() {
     const router = useRouter();
@@ -22,6 +23,7 @@ export default function advertiser() {
     return (
         <div>
             <Navbar />
+            <AcceptTerms/>
             <h1>Advertiser Page</h1>
             <p>Welcome to the Advertiser page!</p>
             <button onClick={handleRedirect}>View a list of all my created activities/ itineraries / museums and historical places</button>

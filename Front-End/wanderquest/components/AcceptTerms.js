@@ -1,15 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
-import jwt from "jsonwebtoken";
 import styles from '../Styles/AcceptTerms.module.css';
+import Cookies from 'js-cookie';
 
 const AcceptTerms = () => {
     const [accepted, setAccepted] = useState(false);
-    const [userId, setUserId] = useState(null);
-    const [showModal, setShowModal] = useState(true);
-    const [viewMore, setViewMore] = useState(false); // State to toggle "View More" section
+    const [showModal, setShowModal] = useState(false);
+    const [viewMore, setViewMore] = useState(false);
 
-    
+    useEffect(() => {
+        // Check if the user has accepted the terms (cookie check)
+        const userAccepted = Cookies.get('isTermsAccepted');
+        if (userAccepted) {
+            setShowModal(false); // Don't show the modal if the user has accepted
+        }
+        else{
+            setShowModal(true);
+        }
+    }, []);
 
     const handleAccept = async () => {
         try {
@@ -18,10 +26,11 @@ const AcceptTerms = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials:"include",
+                credentials: "include",
             });
             if (response.ok) {
                 setShowModal(false);
+                Cookies.set('isTermsAccepted', 'true', { expires: 365 });
             } else {
                 const errorData = await response.json();
                 alert(`Error: ${errorData.error}`);
@@ -31,6 +40,7 @@ const AcceptTerms = () => {
             alert("An error occurred while accepting the terms. Please try again.");
         }
     };
+    
 
     return (
         showModal && (
