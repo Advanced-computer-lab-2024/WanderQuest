@@ -15,12 +15,14 @@ import Link from 'next/link';
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
 import Signin from "../../components/Signin";
+import report from "../../components/rep";
 import { motion } from 'framer-motion';
+
 
 export default function Home() {
   return (<>
     <Navbar></Navbar>
-
+      <Signin></Signin>
     
     <Link href="/profileInfo">
                <button className='navbar-profile'>Profile</button>
@@ -48,6 +50,7 @@ export default function Home() {
             <Link href="/tourist">
                <button className='tourist'>Tourist</button>
             </Link>
+         
             <motion.h1
       initial={{opacity:0,x:10,y:150}}
       animate={{scale:1,opacity:1,x:20}}
@@ -57,6 +60,7 @@ export default function Home() {
          Welcome to WanderQuest
 
       </motion.h1>
+      <report></report>
             {/* </div> */}
     {/* <TagManager/>
     <PrefTag/> */}
