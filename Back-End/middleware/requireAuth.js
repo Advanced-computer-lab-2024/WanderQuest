@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
+const Admin = require('../models/adminModel');
 const User = require('../models/userModel').User;
+const TourGov = require('../models/tourGovernerModel');
 
 const requireAuth = (config = {}) => {
     return async (req, res, next) => {
@@ -19,6 +21,12 @@ const requireAuth = (config = {}) => {
 
                 // Select both _id and role from the database
                 req.user = await User.findById(extractedID).select('_id role');
+                if (!req.user) {
+                    req.user = await Admin.findById(extractedID).select('_id role');
+                }
+                if (!req.user) {
+                    req.user = await TourGov.findById(extractedID).select('_id role');
+                }
                 if (!req.user) {
                     return res.status(401).json({ error: 'User not found' });
                 }

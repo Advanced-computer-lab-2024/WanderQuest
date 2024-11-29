@@ -76,6 +76,40 @@ const registerUser = async (req, res) => {
     }
 }
 
+// login
+const login = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        let user = await User.findOne({ username });
+
+        if (!user) {
+            user = await Admin.findOne({ username });
+        }
+
+        if (!user) {
+            user = await TourGoverner.findOne({ username });
+        }
+
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid username or password' });
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ error: 'Invalid username or password' });
+        }
+
+        // Create a token
+        const token = createToken({ _id: user._id });
+        res.cookie('jwt', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+        res.json({ role: user.role, email: user.email, id: user._id });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+}
+
 // upload required documents for acceptance
 const uploadDocuments = async (req, res) => {
     upload(req, res, async (err) => {
@@ -310,4 +344,4 @@ async function requestAccountDeletion(req, res) {
     }
 }
 
-module.exports = { uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion };
+module.exports = { uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion, login };
