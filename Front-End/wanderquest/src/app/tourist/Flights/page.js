@@ -10,14 +10,14 @@ function BookingsPage() {
   const [activeButton, setActiveButton] = useState(2);
   const [originLocationCode, setOriginLocationCode] = useState('');
   const [destinationLocationCode, setDestinationLocationCode] = useState('');
-  const [departureDate, setDepartureDate] = useState(null);
-  const [returnDate, setReturnDate] = useState(null);
+  const [departureDate, setDepartureDate] = useState('');
+  const [returnDate, setReturnDate] = useState('');
   const [adults, setAdults] = useState('');
   const [flightOffers, setFlightOffers] = useState([]);
   const [originSuggestions, setOriginSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [loading, setLoading] = useState(false); // Add loading state
-  const [id1,setid]=useState('');
+  const [id1, setid] = useState('');
   const router = useRouter();
   const amadeus = new Amadeus({
     clientId: "RvyPDMc2pf3vxqJ37qT61NpI9XzcQIUN",
@@ -46,27 +46,7 @@ function BookingsPage() {
 
 
 
-    const fetchid = () => {
-      fetch(`http://localhost:4000/tourist/touristId`)
-          .then(res => {
-              if (!res.ok) {
-                  throw new Error(`Error fetching itineraries: ${res.statusText}`);
-              }
-              return res.json();
-          })
-          .then(data => {
-              setid(data);
-              setLoading(false);
 
-          })
-          .catch(error => {
-
-              setLoading(false);
-          });
-  };
-  useEffect(() => {
-    fetchid();
-  }, []);
 
 
     amadeus.shopping.flightOffersSearch
@@ -81,6 +61,30 @@ function BookingsPage() {
         console.log(responseError.code);
       });
   };
+
+  const fetchid = () => {
+    fetch(`http://localhost:4000/tourist/touristId`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error fetching itineraries: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setid(data);
+        setLoading(false);
+
+      })
+      .catch(error => {
+
+        setLoading(false);
+      });
+  };
+
+
+  // useEffect(() => {
+  //   fetchid();
+  // }, [id1]);
 
   const fetchSuggestions = (keyword, type) => {
     amadeus.referenceData.locations
@@ -97,32 +101,33 @@ function BookingsPage() {
       });
   };
 
-  const handlebooking=(price1,companyName)=>{
-    const bookingType="flight";
-    const userId=id1;
-    const from=departureDate;
-    const price=price1;
-    const fromAir=originLocationCode;
-    const toAir=destinationLocationCode;
-    const flight= {userId, bookingType, from,fromAir, toAir, price, companyName};
-    console.log('flight details:',flight);
-    fetch('http://localhost:4000/booking/flight',{
-      method:"POST",
-      headers:{ "Content-Type": "application/json" },
+  const handlebooking = (price1, companyName) => {
+    const bookingType = "flight";
+    const userId = '67310bdba3280f11a947c86d';
+    const from = departureDate;
+    const price = price1;
+    const fromAir = originLocationCode;
+    const toAir = destinationLocationCode;
+    const flight = { userId, bookingType, from, fromAir, toAir, price, companyName };
+    console.log('flight details:', flight);
+    fetch('http://localhost:4000/booking/flight', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(flight)
     }).then(response => {
       if (!response.ok) {
-          throw new Error('Booking failed');
+
+        throw new Error(response.statusText);
       }
       return response.json();
-  })
-  .then(() => {
-      alert('Booking has been made successfully!');
-  })
-  .catch(error => {
-      console.error('Error booking itinerary:', error);
-      alert('Booking failed. Please try again.');
-  });
+    })
+      .then(() => {
+        alert('Booking has been made successfully!');
+      })
+      .catch(error => {
+        console.error('Error booking itinerary:', error);
+        alert('Booking failed. Please try again.');
+      });
   }
 
 
@@ -281,7 +286,7 @@ function BookingsPage() {
           const arrivalMinutes = String(arrivalDate.getMinutes()).padStart(2, '0');
           const formattedArrivalDate = `${arrivalDay}/${arrivalMonth}/${arrivalYear}`;
           const formattedArrivalTime = `${arrivalHours}:${arrivalMinutes}`;
-          const pricetotal=`${price.grandTotal}`
+          const pricetotal = `${price.grandTotal}`
           return (
             <div key={index} className={styles.card}>
               <p>
@@ -296,7 +301,7 @@ function BookingsPage() {
               <p>
                 <strong>Airline:</strong> {Airline}
               </p>
-              <button className={styles.button} onClick={()=>{handlebooking(pricetotal,Airline)}}>book</button>
+              <button className={styles.button} onClick={() => { handlebooking(pricetotal, Airline) }}>book</button>
             </div>
           );
         })}

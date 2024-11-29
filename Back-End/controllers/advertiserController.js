@@ -46,7 +46,7 @@ const upload = multer({
 // functions
 const getProfile = async (req, res) => {
     try {
-        const advertiser = await Advertiser.findById(req.params.id);
+        const advertiser = await Advertiser.findById(req.user._id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
         }
@@ -64,7 +64,7 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const advertiser = await Advertiser.findById(req.params.id);
+        const advertiser = await Advertiser.findById(req.user._id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
         }
@@ -99,7 +99,7 @@ const uploadLogo = async (req, res) => {
         }
 
         try {
-            const advertiser = await Advertiser.findById(req.params.id);
+            const advertiser = await Advertiser.findById(req.user._id);
             if (!advertiser) {
                 return res.status(404).json({ error: 'Advertiser not found' });
             }
@@ -131,7 +131,7 @@ const uploadLogo = async (req, res) => {
 
 const getLogo = async (req, res) => {
     try {
-        const advertiser = await Advertiser.findById(req.params.id);
+        const advertiser = await Advertiser.findById(req.user._id);
         if (!advertiser) {
             return res.status(404).json({ error: 'Advertiser not found' });
         }
@@ -176,7 +176,8 @@ const getLogo = async (req, res) => {
 
 //create activity
 const createActivity = async (req, res) => {
-    const { title, date, time, location, price, priceRange,  category, tags, specialDiscounts, bookingIsOpen,ratings,comments,createdBy } = req.body;
+    const { title, date, time, location, price, priceRange, category, tags, specialDiscounts, bookingIsOpen, ratings, comments } = req.body;
+    const createdBy = req.user._id;
 
     try {
         // If tags are provided, check if all tags exist in the TagModel
@@ -206,7 +207,7 @@ const createActivity = async (req, res) => {
     }
     try {
         const newActivity = await ActivityModel.create({
-            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy,comments
+            title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy, comments
 
         });
         res.status(200).json(newActivity);
@@ -277,7 +278,7 @@ const readActivities = async (req, res) => {
 }
 //get myCreatedActivities
 const myCreatedActivities = async (req, res) => {
-    const myID = req.params.id;
+    const myID = req.user._id;
     if (myID) {
         const myActivities = await ActivityModel.find({ createdBy: myID });
         res.status(200).json(myActivities);

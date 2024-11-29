@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile, uploadLogo, getLogo, getSellerId,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto,getProductPhoto } = require('../controllers/sellerController');
+const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto,getProductPhoto } = require('../controllers/sellerController');
 const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
@@ -9,11 +9,10 @@ const router = express.Router();
 
 // routes
 //Change these routes when we apply the authentication
-router.get('/profile/:id', getProfile);
-router.put('/profile/:id', updateProfile);
-router.post('/uploadLogo/:id', uploadLogo);
-router.get('/logo/:id', getLogo);
-router.get('/sellerId', getSellerId);
+router.get('/profile', requireAuth({role: "seller"}), getProfile);
+router.put('/profile', requireAuth({role: "seller"}), updateProfile);
+router.post('/uploadLogo', requireAuth({role: "seller"}), uploadLogo);
+router.get('/logo', requireAuth({role: "seller"}), getLogo);
 
 router.get('/products', getProducts);
 //Seller viewProduct Sales

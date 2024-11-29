@@ -51,14 +51,14 @@ const upload = multer({
 // Read Seller profile
 const getProfile = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
         if (!seller.accepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted' });
         }
-        if(!seller.isTermsAccepted){
+        if (!seller.isTermsAccepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
         res.json(seller);
@@ -70,7 +70,7 @@ const getProfile = async (req, res) => {
 // Update Seller profile
 const updateProfile = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
@@ -80,7 +80,7 @@ const updateProfile = async (req, res) => {
         if (!seller.isTermsAccepted) {
             return res.status(403).json({ error: 'Seller account not yet accepted terms and conditions' });
         }
-        const updatedSeller = await Seller.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedSeller = await Seller.findByIdAndUpdate(req.user._id, req.body, { new: true });
         res.json(updatedSeller);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -95,7 +95,7 @@ const uploadLogo = async (req, res) => {
         }
 
         try {
-            const seller = await Seller.findById(req.params.id);
+            const seller = await Seller.findById(req.user._id);
             if (!seller) {
                 return res.status(404).json({ error: 'Seller not found' });
             }
@@ -127,7 +127,7 @@ const uploadLogo = async (req, res) => {
 
 const getLogo = async (req, res) => {
     try {
-        const seller = await Seller.findById(req.params.id);
+        const seller = await Seller.findById(req.user._id);
         if (!seller) {
             return res.status(404).json({ error: 'Seller not found' });
         }
@@ -165,16 +165,6 @@ const getLogo = async (req, res) => {
         downloadStream.on('end', () => {
             res.end();
         });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
-
-// get the first seller id
-const getSellerId = async (req, res) => {
-    try {
-        const seller = await Seller.findOne({accepted: true});
-        res.json(seller._id);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -241,7 +231,8 @@ const getProductPhoto = async (req, res) => {
 
 //seller addProduct
 const addProduct = async (req, res) => {
-    const { name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales } = req.body;
+    const seller = req.user._id;
+    const { name, picture, price, description, ratings, rating, reviews, availableAmount, sales } = req.body;
 
     // Validate input
     if (!name || !picture || !description || !price) {
@@ -255,7 +246,7 @@ const addProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount,sales })
+        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount, sales })
         res.status(200).json(product)
 
     } catch (error) {
@@ -286,7 +277,7 @@ const uploadProductPhoto = async (req, res) => {
                 fileID: file.id
             };
 
-           product.picture = documentMetadata;
+            product.picture = documentMetadata;
 
             await product.save();
 
@@ -348,44 +339,44 @@ const editProduct = async (req, res) => {
 
 //seller can archive or unarchive products
 
-const archiveProduct = async (req,res) => {
-    try{
-        const  productId = req.params.id;
+const archiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
         const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: true }, { new: true });
-        if (!product){ 
+        if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
         res.status(200).json({ message: 'Product archived successfully', product });
-    }catch(error){
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
-const unarchiveProduct = async (req,res) => {
-    try{
-        const  productId = req.params.id;
+const unarchiveProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
         const product = await ProdModel.findByIdAndUpdate(productId, { isArchived: false }, { new: true });
-        if (!product){ 
+        if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
         res.status(200).json({ message: 'Product unarchived successfully', product });
-    }catch(error){
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
 //view available quantity and sales
-const viewProductSales = async (req,res) => {
-    try{
-        const products = await ProdModel.find({}, "name availableAmount sales" );
+const viewProductSales = async (req, res) => {
+    try {
+        const products = await ProdModel.find({}, "name availableAmount sales");
         res.status(200).json(products);
-    }catch(error){
-        res.status(400).json({error: error.message});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 }
 const viewAllProductSales = async (req, res) => {
     try {
         // Fetch all products with only the specified fields: name, availableAmount, and sales
         const products = await ProdModel.find({}, "name availableAmount sales");
-        
+
         // Return the list of products
         return res.status(200).json(products);
 
@@ -394,4 +385,4 @@ const viewAllProductSales = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, getProductPhoto,uploadLogo,getLogo, getSellerId, getProducts, addProduct, editProduct, getAvailableProducts,archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto };
+module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales, uploadProductPhoto };

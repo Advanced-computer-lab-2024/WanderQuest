@@ -22,25 +22,23 @@ const {
 , rateTourGuide,commentOnTourGuide} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
+const requireAuth = require('../middleware/requireAuth');
 
-// // require auth for all tour guide routes
-// router.use(requireAuth({ role: 'tourGuide' }));
 
 // routes
-router.get('/profile/:id', getProfile);
-router.put('/profile/:id', updateProfile);
-router.post('/uploadPhoto/:id', uploadPhoto);
-router.get('/photo/:id', getPhoto);
-router.get('/tourGuideId', getTourGuideId);
-router.post('/create', createItinerary);
+router.get('/profile', requireAuth({role: "tourGuide"}), getProfile);
+router.put('/profile', requireAuth({role: "tourGuide"}), updateProfile);
+router.post('/uploadPhoto', requireAuth({role: "tourGuide"}), uploadPhoto);
+router.get('/photo', requireAuth({role: "tourGuide"}), getPhoto);
+router.post('/create', requireAuth({role: "tourGuide"}), createItinerary);
 router.get('/itineraries', readItinerary);
 router.get('/itineraries/:id', readItineraryById);
-router.get('/myItineraries/:id', myCreatedItineraries);
-router.put('/itineraries/:id', updateItinerary);
-router.delete('/itineraries/:id', deleteItinerary);
-router.patch('/itinerary/activate/:id', activateItinerary);
-router.patch('/itinerary/deactivate/:id', deactivateItinerary);
-router.post('/rate/:tourGuideId', rateTourGuide);
-router.post('/comment/:id',commentOnTourGuide);
+router.get('/myItineraries', requireAuth({role: "tourGuide"}), myCreatedItineraries);
+router.put('/itineraries/:id', requireAuth({role: "tourGuide"}), updateItinerary);
+router.delete('/itineraries/:id', requireAuth({role: "tourGuide"}), deleteItinerary);
+router.patch('/itinerary/activate/:id', requireAuth({role: "tourGuide"}), activateItinerary);
+router.patch('/itinerary/deactivate/:id', requireAuth({role: "tourGuide"}), deactivateItinerary);
+router.post('/rate/:tourGuideId', requireAuth({role: "tourist"}), rateTourGuide);
+router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnTourGuide);
 
 module.exports = router;
