@@ -56,6 +56,7 @@ export default function AdminPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newGovernorData),
+        credentials: 'include',
       });
   
       if (response.ok) {

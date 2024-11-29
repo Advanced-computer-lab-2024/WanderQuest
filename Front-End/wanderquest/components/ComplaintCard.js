@@ -32,7 +32,7 @@ const ComplaintCard = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ title, body, date }),
-            credentials: 'include'
+            credentials: 'include',
             });
     
             if (!response.ok) {
