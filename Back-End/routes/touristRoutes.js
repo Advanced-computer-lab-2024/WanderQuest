@@ -27,6 +27,9 @@ const {
     addToWishlist,
     viewWishlist,
     removeFromWishlist,
+    issueAnOrder,
+    viewOrders,
+    cancelOrder
 } = require('../controllers/touristController');
 const {getProducts} = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
@@ -74,6 +77,10 @@ router.get('/wishlist', viewWishlist);
 router.delete('/wishlist/remove', removeFromWishlist);
 
 router.get("/products", getProducts)
+
+router.get("/orders", viewOrders)
+router.post("/orders/issue", issueAnOrder)
+router.patch("/orders/cancel/:id", cancelOrder)
 
 
 
