@@ -7,17 +7,37 @@ const AcceptTerms = () => {
     const [accepted, setAccepted] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [viewMore, setViewMore] = useState(false);
+    
 
     useEffect(() => {
-        // Check if the user has accepted the terms (cookie check)
-        const userAccepted = Cookies.get('isTermsAccepted');
-        if (userAccepted) {
-            setShowModal(false); // Don't show the modal if the user has accepted
-        }
-        else{
-            setShowModal(true);
-        }
+        // Fetch the logged-in user's data from the backend
+        fetch('http://localhost:4000/authentication/user', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: "include", // Ensure the cookie is sent with the request
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if user data contains isTermsAccepted and if it's true
+            if (data.isTermsAccepted) {
+                console.log(data.isTermsAccepted);
+                // Hide the modal if the terms are already accepted
+                setShowModal(false);
+            } else {
+                // Show the modal if the terms are not accepted
+                console.log(data.isTermsAccepted);
+                setShowModal(true);
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching user data:', err);
+            // Handle errors appropriately (e.g., show an error message)
+        });
     }, []);
+
+    
 
     const handleAccept = async () => {
         try {
