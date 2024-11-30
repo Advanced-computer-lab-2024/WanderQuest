@@ -7,7 +7,7 @@ import AddRating from '../../../../components/AddRating';
 
 
 const TouristHistory = () => {
-    const [followedGuides, setFollowedGuides] = useState(null);
+    //const [followedGuides, setFollowedGuides] = useState([]);
     const [tourGuideData, setTourGuideData] = useState(null);
     const [pastItineraries, setPastItineraries] = useState(null);
     const [attendedActivities, setAttendedActivities] = useState(null);
@@ -32,31 +32,36 @@ const TouristHistory = () => {
     const [selectedGuide, setSelectedGuide] = useState(null);
 
 
-    const guideID = "672e33ac93c8d93da59e6f4d"; // Hardcoded for now, will be dynamic in the future
+    //const guideID = "672e33ac93c8d93da59e6f4d"; // Hardcoded for now, will be dynamic in the future
 
 
-    useEffect(() => {
-        const fetchGuide = async () => {
-            try {
-                const response = await fetch("http://localhost:4000/tourGuide/tourGuideId");
-                const data = await response.json();
-                setFollowedGuides(data);
-                console.log('Guide ID:', data);
-            } catch (error) {
-                console.error('Error fetching guide:', error);
-            }
-        };
-        fetchGuide();
-    }, []);
+    // useEffect(() => {
+    //     const fetchGuide = async () => {
+    //         try {
+    //             const response = await fetch("http://localhost:4000/tourGuide/tourGuideId",{
+    //                 credentials: 'include',
+    //             });
+    //             const data = await response.json();
+    //             setFollowedGuides(data);
+    //             console.log('Guide ID:', data);
+    //         } catch (error) {
+    //             console.error('Error fetching guide:', error);
+    //         }
+    //     };
+    //     fetchGuide();
+    // }, []);
 
     // Fetch tourist ID
     useEffect(() => {
         const fetchTourist = async () => {
             try {
-                const response = await fetch('http://localhost:4000/tourist/touristId');
+                const response = await fetch('http://localhost:4000/tourist/profile',{
+                    credentials: 'include',
+                });
                 const data = await response.json();
-                setTouristID(data);
-                console.log('Tourist ID:', data);
+                const touristID = data._id;
+                setTouristID(touristID);
+                console.log('Tourist ID:', touristID);
             } catch (error) {
                 console.error('Error fetching tourist:', error);
             }
@@ -65,32 +70,37 @@ const TouristHistory = () => {
     }, []);
 
     // Fetch profile once followedGuides is available
-    useEffect(() => {
-        const fetchProfile = async () => {
-            if (!followedGuides || followedGuides.length === 0) {
-                // Ensuring followedGuides is set and not empty
-                console.log("Guide ID is not available or empty."); // Debugging line
-                return;
-            }
-            try {
-                console.log('Guide new ID:', followedGuides);
-                const response = await fetch(`http://localhost:4000/tourGuide/profile/${followedGuides}`);
-                const data = await response.json();
-                setTourGuideData(data);
-                console.log('Profile:', data);
-            } catch (error) {
-                console.error('Error fetching profile:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchProfile = async () => {
+    //         if (!followedGuides || followedGuides.length === 0) {
+    //             // Ensuring followedGuides is set and not empty
+    //             console.log("Guide ID is not available or empty."); // Debugging line
+    //             return;
+    //         }
+    //         try {
+    //             console.log('Guide new ID:', followedGuides);
+    //             const response = await fetch(`http://localhost:4000/tourGuide/profile/${followedGuides}`,{
+    //                 credentials: 'include',
+    //             });
+    //             const data = await response.json();
+    //             setTourGuideData(data);
+    //             console.log('Profile:', data);
+    //         } catch (error) {
+    //             console.error('Error fetching profile:', error);
+    //         }
+    //     };
 
-        fetchProfile();
-    }, [followedGuides]);
+    //     fetchProfile();
+    // }, [followedGuides]);
 
     useEffect(() => {
         const fetchItineraries = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/tourGuide/myItineraries/${guideID}`);
+                const response = await fetch(`http://localhost:4000/itinerary/myItineraries/${tourGuideData._id}`,{
+                    credentials: 'include',
+                });
                 const data = await response.json();
+                //const guideID = data.map(itinerary => itinerary.createdBy);
                 setPastItineraries(data);
             } catch (error) {
                 console.error('Error fetching itineraries:', error);
@@ -103,9 +113,13 @@ const TouristHistory = () => {
     useEffect(() => {
         const fetchActivities = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/activityRoutes/myActivities/${guideID}`);
+                const response = await fetch('http://localhost:4000/tourist/upcomingActivities',{
+                    credentials: 'include',
+                });
                 const data = await response.json();
-                setAttendedActivities(data);
+                if(data.length !== 0){
+                    setAttendedActivities(data);
+                }
             } catch (error) {
                 console.error('Error fetching activities:', error);
             }
@@ -148,16 +162,23 @@ const TouristHistory = () => {
             }
         }
     },[lastUpdated]);
+
     useEffect(() => {
-        const fetchOngoingEvents = async () => {
+        const fetchUpcomingEvents = async () => {
             try {
-                const response = await fetch('');
+                const response = await fetch('http://localhost:4000/tourist/upcomingActivities',{
+                    credentials: 'include',
+                });
                 const data = await response.json();
-                setOngoingEvents(data);
+                if(data.length !== 0){
+                    setOngoingEvents(data);
+                }
+                
             } catch (err){
                 console.error("API Problem", error);
             }
         }
+        fetchUpcomingEvents();
     },[lastUpdated]);
 
     const handleFeedback = async () => {
@@ -170,6 +191,7 @@ const TouristHistory = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ touristId: touristID, rating: rating })
             });
             const commentResp = await fetch(`http://localhost:4000/tourGuide/comment/${tourGuideData._id}`, {
@@ -177,6 +199,7 @@ const TouristHistory = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ touristId: touristID, comment })
             });
             if (ratingResp.ok && commentResp.ok) {
@@ -194,6 +217,17 @@ const TouristHistory = () => {
         }
 
     }
+    const handleGuidePopup = async (guideId) => {
+        try {
+            const response = await fetch(`http://localhost:4000/tourGuide/profile/${guideId}`);
+            const data = await response.json();
+            setSelectedGuide(data); // Store guide details in state
+            setShowGuidePopup(true); // Open the popup
+        } catch (error) {
+            console.error('Error fetching guide details:', error);
+        }
+    };
+    
 
     const handleItiFeedbackChange = (id, type, value) => {
         setItiFeedback(prevState => ({
@@ -226,6 +260,7 @@ const TouristHistory = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({ touristID, rating: rating }),
         });
 
@@ -234,6 +269,7 @@ const TouristHistory = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({ touristID, comment }),
         });
 
@@ -259,6 +295,7 @@ const TouristHistory = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({ touristId: touristID, rating: rating }),
         });
         const commentFeedback = await fetch(`http://localhost:4000/activityRoutes/comment/${id}`, {
@@ -266,6 +303,7 @@ const TouristHistory = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({ touristId: touristID, comment }),
         });
         if (ratingFeedback.ok && commentFeedback.ok) {
@@ -297,7 +335,7 @@ const TouristHistory = () => {
                     Events
               </button>
               <button className={`${styles.tabButton} ${activeButton === 'Rate' ? styles.activeTab : ''}`} onClick={() => setActiveButton('Rate')}>
-                 Tour Guide
+                    Itineraries
              </button>
             </div>
             <div>
@@ -342,6 +380,9 @@ const TouristHistory = () => {
                                 <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
                                 <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                                 <p><strong>Price:</strong> {itinerary.price}</p>
+                                <button className={styles.linkButton} onClick={() => handleGuidePopup(itinerary.createdBy)}>
+                                    View Tour Guide
+                                </button>
                                 <p><strong>Rating:</strong> {itinerary.rating}</p>
                                 <AddRating 
                                     rating={itiFeedback[itinerary._id]?.rating || ''} 
@@ -541,6 +582,30 @@ const TouristHistory = () => {
 </div> 
 
             </div>
+            {showGuidePopup && selectedGuide && (
+    <div className={styles.popupOverlay}>
+        <div className={styles.popupWindow}>
+            <button 
+                className={styles.closeButton} 
+                onClick={() => setShowGuidePopup(false)}
+            >
+                Close
+            </button>
+            <h2>Tour Guide Details</h2>
+            <p><strong>Username:</strong> {selectedGuide.username}</p>
+            <p><strong>Email:</strong> {selectedGuide.email}</p>
+            <h3>Rate This Guide</h3>
+            <AddRating rating={rating} setRating={setRating} />
+            <AddComment comment={comment} setComment={setComment} />
+            <button 
+                className={styles.btnFeedback} 
+                onClick={handleFeedback}
+            >
+                Submit Feedback
+            </button>
+        </div>
+    </div>
+)}
         </div>
     );
 };
