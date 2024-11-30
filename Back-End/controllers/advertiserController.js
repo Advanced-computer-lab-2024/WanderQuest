@@ -183,7 +183,7 @@ const createActivity = async (req, res) => {
         // If tags are provided, check if all tags exist in the TagModel
         if (tags && tags.length > 0) {
             // Extract the types of the tags from the request
-            const tagTypes = tags.map(tag => tag.type);
+            const tagTypes = tags.map(tag => tag.type.toLowerCase());
 
             // Fetch existing tags from the database
             const existingTags = await TagModel.find({ type: { $in: tagTypes } });

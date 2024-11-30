@@ -18,7 +18,9 @@ function Page({ params }) {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/advertiser/activity/${id}`);
+      const response = await fetch(`http://localhost:4000/advertiser/activity/${id}`, {
+        credentials: 'include', // Include credentials in the request
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -31,8 +33,11 @@ function Page({ params }) {
       setLoading(false);
     }
   };
+  
   const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
+    fetch(`http://localhost:4000/tourist/touristId`, {
+      credentials: 'include', // Include credentials in the request
+    })
       .then(res => {
         if (!res.ok) {
           throw new Error(`Error fetching itineraries: ${res.statusText}`);
@@ -42,28 +47,31 @@ function Page({ params }) {
       .then(data => {
         setid(data);
         setLoading(false);
-
-        // Fetch details for all activitie
+  
+        // Fetch details for all activities
       })
       .catch(error => {
         setLoading(false);
       });
   };
+  
   useEffect(() => {
     fetchData();
     fetchid();
   }, [id1]);
-
+  
   const handleBooking = async () => {
     const activityId = id;
-    const userId = id1;
-    const act = { userId, bookingType, activityId };
-
+  
+    // User ID is fetched from the credentials in the cookies (handled by the backend)
+    const act = { bookingType, activityId };
+  
     try {
       const response = await fetch('http://localhost:4000/booking/activity', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(act),
+        credentials: 'include', // Include credentials (cookies) in the request
       });
       if (!response.ok) {
         throw new Error('Booking failed');
@@ -71,10 +79,10 @@ function Page({ params }) {
       alert('Booking successful!');
     } catch (error) {
       console.error('Error booking activity:', error);
-      alert('Booking failed, already booked ');
+      alert('Booking failed, already booked');
     }
   };
-
+  
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 

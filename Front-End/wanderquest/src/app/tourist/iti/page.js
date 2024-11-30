@@ -4,7 +4,7 @@ import styles from '/Styles/Itineraries.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../../../components/Navbar';
-
+import { motion } from "framer-motion";
 
 const ItineraryListpage = (Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
@@ -30,59 +30,71 @@ const ItineraryListpage = (Props) => {
         })
     }
 
-  const fetchActivityDetails = (activityId) => {
-    if (activityDetails[activityId]) return; // Avoid refetching
-
-    fetch(`http://localhost:4000/advertiser/activity/${activityId}`)
+    const fetchActivityDetails = (activityId) => {
+      if (activityDetails[activityId]) return; // Avoid refetching
+  
+      fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
+          method: 'GET',
+          credentials: 'include', // Include credentials (cookies)
+          headers: {
+              "Content-Type": "application/json", // Ensure headers are set correctly
+          },
+      })
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
-        }
-        return res.json();
+          if (!res.ok) {
+              throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
+          }
+          return res.json();
       })
       .then(data => {
-        setActivityDetails(prevDetails => ({
-          ...prevDetails,
-          [activityId]: data,
-        }));
+          setActivityDetails(prevDetails => ({
+              ...prevDetails,
+              [activityId]: data,
+          }));
       })
       .catch(error => {
-        setError(error.message);
+          setError(error.message);
       });
   };
-
+  
   const fetchItineraries = () => {
-    fetch('http://localhost:4000/tourist/upcomingItineraries')
+      fetch('http://localhost:4000/tourist/upcomingItineraries', {
+          method: 'GET',
+          credentials: 'include', // Include credentials (cookies)
+          headers: {
+              "Content-Type": "application/json", // Ensure headers are set correctly
+          },
+      })
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
+          if (!res.ok) {
+              throw new Error(`Error fetching itineraries: ${res.statusText}`);
+          }
+          return res.json();
       })
       .then(data => {
-        setAllItineraries(data);
-        setDisplayedItineraries(data);
-        setTimeout(() => console.log("First"), 10000)
-        setLoading(false);
-        
-        // Fetch details for all activities
-        data.forEach(itinerary => {
-          itinerary.activities.forEach(activityId => {
-            fetchActivityDetails(activityId);
+          setAllItineraries(data);
+          setDisplayedItineraries(data);
+          setTimeout(() => console.log("First"), 10000);
+          setLoading(false);
+  
+          // Fetch details for all activities
+          data.forEach(itinerary => {
+              itinerary.activities.forEach(activityId => {
+                  fetchActivityDetails(activityId);
+              });
           });
-        });
       })
       .catch(error => {
-        setError(error.message);
-        setTimeout(() => console.log("First"), 10000)
-        setLoading(false);
+          setError(error.message);
+          setTimeout(() => console.log("First"), 10000);
+          setLoading(false);
       });
   };
-
+  
   useEffect(() => {
-    fetchItineraries();
+      fetchItineraries();
   }, [search]);
-
+  
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
         return search.toLowerCase() === '' || 
@@ -189,11 +201,12 @@ const clearsearch=()=>{
   }
 
   return (<>      <Navbar></Navbar>
+      <img src="/1.png" className={styles.travelplan} alt="iti" />
     <div className={styles.container}>
 
-      <h1 className={styles.title}>Itinerary List</h1>
+      
       {role==="Tourist"?(
-      <div className={styles.searchcom}>
+      <motion.div className={styles.searchcom} initial={{ y: -170 }} transition={{ duration: 1 }}>
         <input 
           className={styles.productsearch} 
           value={search}
@@ -202,83 +215,83 @@ const clearsearch=()=>{
           placeholder='Enter your text' 
         />
         <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
-        <button onClick={clearsearch}>clearsearch</button>
-      </div>):(<></>)}
+        {/* <button className={styles.searchbtn} onClick={clearsearch}>clearsearch</button> */}
+      </motion.div>):(<></>)}
+      <div className={styles.pageLayout}>
+      <div className={styles.sidebar}>
+  <div className={styles.filterSection}>
+    <h3>Date</h3>
+    <input 
+      type="date" 
+      value={dateFilter} 
+      onChange={(e) => setDateFilter(e.target.value)} 
+    />
+  </div>
 
-      <div className={styles.filterContainer}>
-        <div className={styles.dateFilter}>
-          <label htmlFor="date-filter">Date:</label>
-          <input 
-            type="date" 
-            id="date-filter"
-            value={dateFilter} 
-            onChange={(e) => setDateFilter(e.target.value)} 
-          />
-        </div>
+  <div className={styles.filterSection}>
+    <h3>Budget</h3>
+    <label htmlFor="min-budget">Min:</label>
+    <input 
+      type="number" 
+      id="min-budget" 
+      placeholder="Min Budget" 
+      value={minBudget} 
+      onChange={(e) => setMinBudget(e.target.value)} 
+    />
+    <label htmlFor="max-budget">Max:</label>
+    <input 
+      type="number" 
+      id="max-budget" 
+      placeholder="Max Budget" 
+      value={maxBudget} 
+      onChange={(e) => setMaxBudget(e.target.value)} 
+    />
 
-        <div className={styles.budgetFilter}>
-          <label htmlFor="min-budget">Min Budget:</label>
-          <input 
-            type="number" 
-            id="min-budget"
-            placeholder="Min Budget" 
-            value={minBudget} 
-            onChange={(e) => setMinBudget(e.target.value)} 
-          />
-          
-          <label htmlFor="max-budget">Max Budget:</label>
-          <input 
-            type="number" 
-            id="max-budget"
-            placeholder="Max Budget" 
-            value={maxBudget} 
-            onChange={(e) => setMaxBudget(e.target.value)} 
-          />
-        </div>
+  </div>
 
-        <div className={styles.preferenceFilter}>
-          <h3>Preferences:</h3>
-          {preferences.map((pref) => (
-            <div key={pref}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedPreferences.includes(pref)}
-                  onChange={() => handlePreferenceChange(pref)}
-                />
-                {pref}
-              </label>
-            </div>
-          ))}
-        </div>
-        <div className={styles.languageFilter}>
-  <label htmlFor="language-filter">Language:</label>
-  <select 
-    id="language-filter"
-    value={selectedLanguage}
-    onChange={(e) => setSelectedLanguage(e.target.value)}
-  >
-    <option value="">All Languages</option>
-    {languages.map((language) => (
-      <option key={language} value={language}>{language}</option>
+  <div className={styles.filterSection}>
+    <h3>Preferences</h3>
+    {preferences.map((pref) => (
+      <div key={pref}>
+        <label>
+          <input
+            type="checkbox"
+            checked={selectedPreferences.includes(pref)}
+            onChange={() => handlePreferenceChange(pref)}
+          />
+          {pref}
+        </label>
+      </div>
     ))}
-  </select>
-</div>
-        <div className={styles.filterButtons}>
-          <button onClick={handleApplyFilters}>Apply Filters</button>
-          <button onClick={handleClearFilters}>Clear Filters</button>
-        </div>
-      </div>
+  </div>
 
-      <div className={styles.sortButtons}>
-        <button onClick={handleSortAsc}>Sort on Price Asc</button>
-        <button onClick={handleSortDesc}>Sort on Price Desc</button>
-        <button onClick={handleSortRatingAsc}>Sort on Rating Asc</button>
-        <button onClick={handleSortRatingDesc}>Sort on Rating Desc</button>
-      </div>
+  <div className={styles.filterSection}>
+    <h3>Language</h3>
+    <select 
+      value={selectedLanguage}
+      onChange={(e) => setSelectedLanguage(e.target.value)}
+    >
+      <option value="">All Languages</option>
+      {languages.map((language) => (
+        <option key={language} value={language}>{language}</option>
+      ))}
+    </select>
+    <button onClick={handleApplyFilters}>Apply</button>
+  </div>
+
+  <div className={styles.filterSection}>
+    <h3>Sorting</h3>
+    <button onClick={handleSortAsc}>Price: Low to High</button>
+    <button onClick={handleSortDesc}>Price: High to Low</button>
+    <button onClick={handleSortRatingAsc}>Rating: Low to High</button>
+    <button onClick={handleSortRatingDesc}>Rating: High to Low</button>
+  </div>
+</div>
+
+      <div className={styles.itineraries} >
 
       {displayedItineraries.map((itinerary) => (
-        <div id={itinerary.id} key={itinerary.id} className={styles.itinerary}>
+        <div  id={itinerary.id} key={itinerary.id} className={styles.itinerary}>
           <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
           <div className={styles.activities}>
             {itinerary.activities.map((activityId) => (
@@ -331,7 +344,8 @@ const clearsearch=()=>{
         </div>
         
       ))}
-      
+      </div>
+    </div>
     </div>
     </>);
 };
