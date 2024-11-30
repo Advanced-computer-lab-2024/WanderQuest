@@ -93,8 +93,13 @@ const ItineraryListpage = (Props) => {
   
   useEffect(() => {
       fetchItineraries();
-  }, [search]);
-  
+      
+  }, []);
+
+  useEffect(() => {
+
+    handleSearch();
+}, [search]);
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
         return search.toLowerCase() === '' || 
@@ -212,9 +217,9 @@ const clearsearch=()=>{
           value={search}
           onChange={(e) => setSearch(e.target.value)} 
           type="text" 
-          placeholder='Enter your text' 
+          placeholder='Sarch for your next journey' 
         />
-        <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
+        {/* <button className={styles.searchbtn} onClick={handleSearch}>Search</button> */}
         {/* <button className={styles.searchbtn} onClick={clearsearch}>clearsearch</button> */}
       </motion.div>):(<></>)}
       <div className={styles.pageLayout}>
@@ -334,9 +339,12 @@ const clearsearch=()=>{
           <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
           <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
           <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-          <Link href={`iti/${itinerary._id}`} className={styles.addticket}>
-              view
-          </Link>
+          <Link href={`iti/${itinerary._id}`} passHref>
+  <button className={styles.searchbtn}>
+    View
+  </button>
+</Link>
+
           <p>{itinerary.id}</p>
           
           

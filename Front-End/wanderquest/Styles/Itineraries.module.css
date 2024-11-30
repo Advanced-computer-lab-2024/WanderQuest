@@ -122,6 +122,20 @@
   height: 40px;
 
 }
+.searchbtn{
+  background-color: #007BFF;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 25px;
+  margin-top : 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+  /* Added that to remove the underline feature of the Link tag in Next */
+  text-decoration: none;
+}
 /* Itineraries.module.css */
 
 .sidebar {

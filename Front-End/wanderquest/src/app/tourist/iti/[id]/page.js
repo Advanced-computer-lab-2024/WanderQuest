@@ -159,10 +159,10 @@ const ItinerarydetailsPage = ({ params }) => {
                 <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
                 <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                 <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-                <button className={styles.addticket} onClick={() => { handleBooking(itinerary.availableDates[0]) }} >
+                <button className={styles.searchbtn} onClick={() => { handleBooking(itinerary.availableDates[0]) }} >
                     Book
                 </button>
-                <button onClick={share}>share link</button>
+                <button className={styles.searchbtn} onClick={share}>share link</button>
 
             </div>
         </>

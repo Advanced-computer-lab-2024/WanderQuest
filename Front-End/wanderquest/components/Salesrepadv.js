@@ -10,12 +10,12 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useSpring, animated } from "@react-spring/web";
-import styles from '../styles/Report.module.css';
+import styles from '../styles/Reporttour.module.css';
 
 // Register necessary components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const Salesrep = () => {
+const Salesrepadv = () => {
   const [productFilter, setProductFilter] = useState("All");
   const [itineraryFilter, setItineraryFilter] = useState("All");
   const [activityFilter, setActivityFilter] = useState("All");
@@ -123,34 +123,27 @@ const Salesrep = () => {
           <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
         </div>
         <div className={styles.total}>
-          <p className={styles.text}>Products sales</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total}>
           <p className={styles.text}>Total users</p>
           <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
         </div>
         <div className={styles.total}>
-          <p className={styles.text}>New users</p>
+          <p className={styles.text}>Itineraries sales</p>
           <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
         </div>
         <div className={styles.total}>
-          <p className={styles.text}>Itineraries Sales</p>
-          <animated.span className={styles.nums}>{itineraryNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total}>
-          <p className={styles.text}>Activity Sales</p>
-          <animated.span className={styles.nums}>{activityNumber.to((n) => n.toFixed(0))}</animated.span>
+          <p className={styles.text}>Activities sales</p>
+          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
         </div>
       </div>
 
       <div className={styles.graphscontainer}>
+
         <div>
           <label>
-            Product Filter:
+            Itinerary Filter:
             <select
-              value={productFilter}
-              onChange={(e) => setProductFilter(e.target.value)}
+              value={itineraryFilter}
+              onChange={(e) => setItineraryFilter(e.target.value)}
             >
               <option value="All">All</option>
               <option value="A">A</option>
@@ -160,14 +153,14 @@ const Salesrep = () => {
             </select>
           </label>
           <div className={styles.graph}>
-            <h2>Products</h2>
+          <h2>Itiniraries</h2>
             <Bar
-              data={filterData(productFilter)}
+              data={filterData(itineraryFilter)}
               options={{
                 ...chartOptions,
                 plugins: {
                   ...chartOptions.plugins,
-                  title: { text: "Products Chart" },
+                  title: { text: "Itinerary Chart" },
                 },
               }}
             />
@@ -175,6 +168,38 @@ const Salesrep = () => {
         </div>
 
         <div>
+          <label>
+            Activities Filter:
+            <select
+              value={itineraryFilter}
+              onChange={(e) => setItineraryFilter(e.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </label>
+          <div className={styles.graph}>
+          <h2>Activities</h2>
+            <Bar
+              data={filterData(itineraryFilter)}
+              options={{
+                ...chartOptions,
+                plugins: {
+                  ...chartOptions.plugins,
+                  title: { text: "Itinerary Chart" },
+                },
+              }}
+            />
+          </div>
+        </div>
+
+
+      </div>
+      <div className={styles.graphscontainer}>
+      <div>
           <label>
             Itinerary Filter:
             <select
@@ -232,9 +257,9 @@ const Salesrep = () => {
             />
           </div>
         </div>
-      </div>
+        </div>
     </div>
   );
 };
 
-export default Salesrep;
+export default Salesrepadv;
