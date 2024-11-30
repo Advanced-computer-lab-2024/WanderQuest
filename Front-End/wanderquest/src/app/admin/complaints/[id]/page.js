@@ -7,7 +7,7 @@ const ViewComplaintsPage = ({ params }) => {
     return (
         <div>
             <Navbar />
-            <ViewComplaints id={params.id} role='Admin' />
+            <ViewComplaints id={React.use(params).id} role='Admin' />
         </div>
     );
 };

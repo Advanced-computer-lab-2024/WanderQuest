@@ -28,6 +28,7 @@ const ViewComplaints = (props) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ reply: replyText }),
+            credentials: 'include',
         })
             .then(response => response.json())
             .then(data => {
@@ -39,7 +40,7 @@ const ViewComplaints = (props) => {
     };
 
     useEffect(() => {
-        fetch(`http://localhost:4000/admin/complaints/${id}`)
+        fetch(`http://localhost:4000/admin/complaints/${id}`,{credentials: 'include'})
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('Network response was not ok');
@@ -70,6 +71,8 @@ const ViewComplaints = (props) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ status: newStatus }),
+            credentials: 'include',
+
         })
             .then(response => response.json())
             .then(data => setStatus(data.status))
