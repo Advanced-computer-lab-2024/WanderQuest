@@ -106,7 +106,7 @@ const activitySchema = new mongoose.Schema({
     title: { type: String, required: true },
     date: { type: Date, required: true },
     time: { type: String, required: true },
-    location: { type: String, required: true },
+    location: { type: String, required: true }, //Google maps??
     price: { type: Number, required: true },
     priceRange: { type: String, required: false },
     category: { type: String, ref: 'ActivityCategory', required: true },
