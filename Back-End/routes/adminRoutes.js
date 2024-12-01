@@ -31,9 +31,7 @@ const {
     viewAllProductSales,
     /* uploadProductImage,*/
     flagActivity,
-    flagItinerary,
-    flagNotifItinerary,
-    flagNotifActivity
+    flagItinerary
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -117,12 +115,8 @@ router.patch('/products/unarchive/:id', unarchiveProduct);
 
 //flag an activity
 router.patch('/flagActivity/:id', flagActivity);
-//Create notification for said Flagged Activity
-router.post('/flagNotifActiv/:id',flagNotifActivity)
 //flag an itinerary
 router.patch('/flagItinerary/:id', flagItinerary);
-//Create notification for said Flagged Itinerary
-router.post('/flagNotifItin/:id',flagNotifItinerary);
 
 //Admin filterByStatus
 module.exports = router
