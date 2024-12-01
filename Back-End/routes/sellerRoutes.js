@@ -26,8 +26,8 @@ router.get("/products/:id", getProdById);
 // router.post('/uploadProductPhoto', ensureGridFSInitialized,uploadProductPhoto);
 router.post('/uploadProductPhoto/:id', uploadProductPhoto);
 
-router.post('/addProduct', addProduct);
-router.patch('/editProduct/:id', editProduct);
+router.post('/addProduct', requireAuth({role: "seller"}), addProduct);
+router.patch('/editProduct/:id', requireAuth({role: "seller"}), editProduct);
 router.get('/availableProducts', getAvailableProducts)
 //seller archive and unarchive products
 router.patch('/archiveProduct/:id', archiveProduct);
