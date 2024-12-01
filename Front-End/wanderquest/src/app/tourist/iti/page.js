@@ -291,11 +291,12 @@ const clearsearch=()=>{
             </div>
   
             <div className={styles.filterSection}>
-              <h3>Sorting</h3>
-              <button onClick={handleSortAsc}>Price: Low to High</button>
-              <button onClick={handleSortDesc}>Price: High to Low</button>
-              <button onClick={handleSortRatingAsc}>Rating: Low to High</button>
-              <button onClick={handleSortRatingDesc}>Rating: High to Low</button>
+              <h3 style={{ marginBottom: '5px' }}>Sorting</h3>
+              <button onClick={handleSortAsc} style={{ margin: '5px' }}>Price: Low to High</button>
+              <button onClick={handleSortDesc} style={{ margin: '5px' }}>Price: High to Low</button>
+              <button onClick={handleSortRatingAsc} style={{ margin: '5px' }}>Rating: Low to High</button>
+              <button onClick={handleSortRatingDesc} style={{ margin: '5px' }}>Rating: High to Low</button>
+
             </div>
           </div>
   
@@ -336,16 +337,32 @@ const clearsearch=()=>{
                     </div>
                   ))}
                 </div>
-                <div className={styles.locations}>
-                  {itinerary.locations.map((location, idx) => (
-                    <p key={idx}>
-                      <strong>Location:</strong> {location}
-                    </p>
-                  ))}
-                </div>
-                <p>
-                  <strong>Timeline:</strong> {itinerary.timeline}
-                </p>
+                <div className={styles.locationsContainer}>
+                    <strong className={styles.locationsLabel}>Available locations:</strong>
+                    <div className={styles.locations}>
+                        {itinerary.locations && itinerary.locations.length > 0 ? (
+                        <select className={styles.locationSelect}>
+                            {itinerary.locations.map((location, idx) => (
+                            <option key={idx} value={location}>
+                                {location}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available locations</p>
+                        )}
+                    </div>
+                 </div>
+                <div className={styles.timelineCard}>
+  <h3 className={styles.timelineTitle}>Timeline</h3>
+  <div className={styles.timelineList}>
+    {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
+      <div key={idx} className={styles.timelineEntry}>
+        <strong>Day {idx + 1}:</strong> {entry.trim()}
+      </div>
+    ))}
+  </div>
+</div>
                 <p>
                   <strong>Duration:</strong> {itinerary.duration}
                 </p>
@@ -355,24 +372,40 @@ const clearsearch=()=>{
                 <p>
                   <strong>Price:</strong> ${itinerary.price}
                 </p>
-                <p>
-                  <strong>Rating:</strong> {itinerary.rating}
-                </p>
-                <div className={styles.dates}>
-                  {itinerary.availableDates.map((date, idx) => (
-                    <p key={idx}>
-                      <strong>Date:</strong> {date}
-                    </p>
-                  ))}
+           
+                <div className={styles.datesContainer}>
+                    <strong className={styles.datesLabel}>Available dates:</strong>
+                    <div className={styles.dates}>
+                        {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
+                        <select className={styles.dateSelect}>
+                            {itinerary.availableDates.map((date, idx) => (
+                            <option key={idx} value={date}>
+                                {new Date(date).toLocaleDateString()}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available dates</p>
+                        )}
+                    </div>
+                 </div>
+                 <div className={styles.timesContainer}>
+                  <strong className={styles.timesLabel}>Available times:</strong>
+                  <div className={styles.times}>
+                    {itinerary.time && itinerary.time.length > 0 ? (
+                      <select className={styles.timeSelect}>
+                        {itinerary.time.map((time, idx) => (
+                          <option key={idx} value={time}>
+                            {time}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <p>No available times</p>
+                    )}
+                  </div>
                 </div>
-                <div className={styles.times}>
-                  {itinerary.time.map((time, idx) => (
-                    <p key={idx}>
-                      <strong>Time:</strong> {time}
-                    </p>
-                  ))}
-                </div>
-                <p>
+                                <p>
                   <strong>Accessibility:</strong>{" "}
                   {itinerary.accessibility ? "Yes" : "No"}
                 </p>
@@ -386,10 +419,13 @@ const clearsearch=()=>{
                   <strong>Booking Already Made:</strong>{" "}
                   {itinerary.BookingAlreadyMade ? "Yes" : "No"}
                 </p>
+                <p className={styles.productRating}>
+                        {itinerary.rating && itinerary.rating > 0 ? `Rating: ${itinerary.rating}/5` : "No rating yet"}
+                    </p>
                 <Link href={`iti/${itinerary._id}`} passHref>
                   <button className={styles.searchbtn}>View</button>
                 </Link>
-                <p>{itinerary.id}</p>
+             
               </div>
             ))}
           </div>
