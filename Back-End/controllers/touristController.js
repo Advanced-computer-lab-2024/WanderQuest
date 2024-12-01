@@ -6,6 +6,7 @@ const PlaceModel = require('../models/objectModel').Places;
 const ActivityModel = require('../models/objectModel').Activity;
 const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
+const orderModel = require('../models/objectModel').Order;
 const axios = require('axios');
 
 // functions
@@ -548,6 +549,73 @@ const removeFromWishlist = async (req, res) => {
     }
 };
 
+const issueAnOrder = async (req, res) => {
+    const touristId = req.user._id;
+    const { products } = req.body;
+
+    if (!products) {
+        return res.status(400).json({ error: 'No products ordered' });
+    }
+
+    try {
+        let totalPrice = 0;
+        for(const product of products){
+            const productDet = await Product.findById(product.productId);
+            if(!productDet){
+                return res.status(404).json({ error: 'Could not find product with ID: ' + product.productId });
+            }
+            if(productDet.availableAmount < product.quantity){
+                return res.status(400).json({ error: 'Not enough stock for product: ' + productDet.name });
+            }
+            totalPrice += productDet.price * product.quantity;
+        }
+        const order = await orderModel.create({ orderedBy: touristId, products: products, totalPrice: totalPrice, date: new Date(), status: 'pending'});
+        return res.status(200).json({ message: 'Order placed successfully', order });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const viewOrders = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const orders = await orderModel.find({ orderedBy: touristId });
+        if(!orders){
+            return res.status(404).json({ error: 'No orders found' });
+        }
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const cancelOrder = async (req, res) => {
+    const touristId = req.user._id;
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ error: 'Missing order ID' });
+    }
+
+    try {
+        const order = await orderModel.findById(id);
+        if(!order){
+            return res.status(404).json({ error: 'Could not find order with ID: ' + id });
+        }
+        if(order.orderedBy.toString() !== touristId.toString()){
+            return res.status(403).json({ error: 'You are not authorized to cancel this order' });
+        }
+        if(order.status == 'cancelled'){
+            return res.status(400).json({ error: 'Order already cancelled' });
+        }
+        order.status = 'cancelled';
+        await order.save();
+        return res.status(200).json({ message: 'Order cancelled successfully', order });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -573,5 +641,8 @@ module.exports = {
     removeSavedEvents,
     addToWishlist,
     viewWishlist,
-    removeFromWishlist
+    removeFromWishlist,
+    issueAnOrder,
+    viewOrders,
+    cancelOrder
 };
