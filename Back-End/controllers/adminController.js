@@ -3,6 +3,7 @@ const { User } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
+const ActivityModel = require('../models/objectModel').Activity;
 const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
@@ -632,7 +633,7 @@ const flagNotifItinerary = async (req, res) => {
         const notification = await NotificationModel.create({
             userID: itinerary.createdBy, // Assuming createdBy is an ObjectId referencing the User
             message: "Your Itinerary has been flagged as inappropriate.",
-            reason: 'Inappropriate content flagged',
+            reason: 'Inappropriate content',
             ReasonID: itineraryId // Set the ReasonID to the Itinerary ID
         });
 
@@ -643,7 +644,32 @@ const flagNotifItinerary = async (req, res) => {
         return res.status(500).json({ message: 'An error occurred while creating the notification.' });
     }
 };
+const flagNotifActivity = async (req, res) => {
+    const activityId = req.params.id;
 
+    try {
+        // Step 1: Find the activity by its ID
+        const activity = await ActivityModel.findById(activityId);
+        
+        if (!activity) {
+            return res.status(404).json({ message: 'Activity not found.' });
+        }
+
+        // Step 2: Create and save the notification
+        const notification = await NotificationModel.create({
+            userID: activity.createdBy, // Assuming createdBy is an ObjectId referencing the User
+            message: "Your Activity has been flagged as inappropriate.",
+            reason: 'Inappropriate content',
+            ReasonID: activityId // Set the ReasonID to the Itinerary ID
+        });
+
+        // Respond with success
+        return res.status(201).json({ message: 'Notification created successfully.', notification });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'An error occurred while creating the notification.' });
+    }
+};
 // const addPromoCode = async (req, res) => {
 // }
 module.exports = {
@@ -677,5 +703,6 @@ module.exports = {
     viewAllProductSales,
     uploadProductPhoto,
     getProductPhoto,
-    flagNotifItinerary
+    flagNotifItinerary,
+    flagNotifActivity
 }
