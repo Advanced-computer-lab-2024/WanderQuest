@@ -9,6 +9,7 @@ const UploadDocuments = ({ userType, userId }) => {
     const [taxRegistry,setTax]=useState('');
     const [message, setMessage] = useState(null);
     const [id, setID] = useState('');
+    const [loading, setLoading] = useState(false);
 
 
     const handleFileChange = (event, type) => {
@@ -19,6 +20,7 @@ const UploadDocuments = ({ userType, userId }) => {
     };
     
     const handleUpload = async () => {
+        setLoading(true);
 
         const formData = new FormData();
         if (id) formData.append('documents', id);
@@ -40,9 +42,12 @@ const UploadDocuments = ({ userType, userId }) => {
                 const data = await response.json();
                 setMessage(data.message);
                 setTimeout(() => setMessage(""), 3000);
+                window.location.href = "/signin";
             }
         } catch (error) {
             setMessage('An error occurred');
+        }finally {
+            setLoading(false); // Hide loading spinner
         }
     };
     return (
@@ -87,7 +92,13 @@ const UploadDocuments = ({ userType, userId }) => {
                 )}
 
                 {/* Use type="button" to prevent form submission */}
-                <button type="button" onClick={handleUpload}>Upload</button>
+                <button type="button" onClick={handleUpload} disabled={loading}>
+                    {loading ? (
+                        <div className={styles.spinner}></div>
+                    ) : (
+                        "Upload"
+                    )}
+                </button>
                 {message && <p className={styles.message}>{message}</p>}
             </div>
         )

@@ -64,6 +64,9 @@ const RegistrationForm = () => {
                 console.log(data.id);
                 // Handle success (e.g., redirect to login or another page)
                 console.log("Registration successful:", data);
+                if(userType === "tourist"){
+                    window.location.href = "/signin";
+                }
                 
                 
             }
