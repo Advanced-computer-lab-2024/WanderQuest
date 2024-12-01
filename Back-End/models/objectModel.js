@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const UserModel = require('../models/userModel').User;
 const TouristModel = require('../models/userModel').Tourist;
 const SellerModel = require('../models/userModel').Seller;
 const AdvertiserModel = require('../models/userModel').Advertiser;
@@ -318,6 +319,21 @@ const transportationSchema = new Schema({
 
 const transportation = mongoose.model('transportation', transportationSchema)
 
+const notificationSchema = new Schema({
+    userID:{type: mongoose.Schema.Types.ObjectId,
+        ref: UserModel,
+        required: true},
+    message:{type:String,required:false},
+    reason: {type:String,required:false},
+    ReasonID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+    },
+    seen:{type:Boolean,required:false,default:false},
+    createdAt: { type: Date, default: Date.now }   
+});
+const notification = mongoose.model('notification', notificationSchema);
+
 // const promoCodeSchema = new Schema({
 //     code: { type: String, required: true, unique: true },
 //     type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
@@ -339,6 +355,6 @@ const transportation = mongoose.model('transportation', transportationSchema)
 
 // const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
-module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating, transportation
+module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating, transportation, notification
     // , PromoCode
  }
