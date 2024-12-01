@@ -31,9 +31,10 @@ const {
     viewAllProductSales,
     /* uploadProductImage,*/
     flagActivity,
-    flagItinerary
-
+    flagItinerary,
+    flagNotifItinerary
 } = require("../controllers/adminController");
+const { flaggedNotif } = require('../controllers/tourGuideController');
 
 const router = express.Router()
 
@@ -119,6 +120,8 @@ router.patch('/flagActivity/:id', flagActivity);
 
 //flag an itinerary
 router.patch('/flagItinerary/:id', flagItinerary);
+
+router.post('/flagNotifItin/:id',flagNotifItinerary);
 
 //Admin filterByStatus
 module.exports = router

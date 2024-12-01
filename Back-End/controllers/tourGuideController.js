@@ -6,6 +6,7 @@ const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const { Types } = require('mongoose');
+const NotificationModel = require('../models/objectModel').notification;
 
 // Collection name in MongoDB
 const collectionName = 'uploads';
@@ -553,5 +554,4 @@ module.exports = {
     rateTourGuide,
     commentOnTourGuide,
     rateItinerary,
-    commentOnItinerary
-};
+    commentOnItinerary};
