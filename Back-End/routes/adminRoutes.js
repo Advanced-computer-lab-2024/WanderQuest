@@ -32,9 +32,9 @@ const {
     /* uploadProductImage,*/
     flagActivity,
     flagItinerary,
-    flagNotifItinerary
+    flagNotifItinerary,
+    flagNotifActivity
 } = require("../controllers/adminController");
-const { flaggedNotif } = require('../controllers/tourGuideController');
 
 const router = express.Router()
 
@@ -117,10 +117,11 @@ router.patch('/products/unarchive/:id', unarchiveProduct);
 
 //flag an activity
 router.patch('/flagActivity/:id', flagActivity);
-
+//Create notification for said Flagged Activity
+router.post('/flagNotifActiv/:id',flagNotifActivity)
 //flag an itinerary
 router.patch('/flagItinerary/:id', flagItinerary);
-
+//Create notification for said Flagged Itinerary
 router.post('/flagNotifItin/:id',flagNotifItinerary);
 
 //Admin filterByStatus
