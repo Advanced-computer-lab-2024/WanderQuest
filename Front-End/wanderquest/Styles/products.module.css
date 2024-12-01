@@ -1,20 +1,31 @@
-/* .container {
+.cardscontainer {
+  flex: 1; /* Take up remaining space */
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;  
-  padding: 20px; 
-  background-color: #f5f5f5;
+  grid-template-columns: repeat(3, 1fr); /* 2-column grid */
+/* Space between grid items */
+  padding: 20px;
+
+  overflow-y: auto;
+
+
+}
+/* .container{
+  margin: 0;
+  display: flex;
+  margin-top: -25px;
+  flex-direction: row;
 } */
 
-  
   .productCard {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
+    /* margin: 5px; */
     padding: 20px;
     width: 350px;
     transition: transform 0.2s ease-in-out;
+    margin-bottom: 10px;
+
   }
   
   .productCard:hover {
@@ -31,7 +42,7 @@
   
   .productInfo {
     padding: 15px;
-    text-align: center;
+    text-align: left;
   }
   
   .productPrice {
@@ -43,7 +54,7 @@
   
   .productRating {
     color: #ff9800;
-    font-size: 14px;
+    font-size: 20px;
     margin-bottom: 10px;
   }
   
@@ -244,7 +255,7 @@
 .pageLayout {
   margin: 0; /* Removes top margin */
   display: flex;
-  margin-top: -25px;
+  margin-top: 25px;
   flex-direction: row; /* Ensures sidebar and itineraries are side-by-side */
    /* Full viewport height for a consistent layout */
 }
@@ -258,4 +269,17 @@
   font-family: 'Arial', sans-serif;
   overflow-y: auto; 
   height: 100%;/* Make sidebar scrollable if content overflows */
+}.travelplan {
+  width: 100%;
+  height: 550px;
+/* Removes padding if any */
+  display: block; /* Ensures it behaves like a block element */
+}.searchcom{
+  display: block;
+  margin-left: 33%;
+}.productsearch{
+  border-radius:20px ;
+  width: 500px;
+  height: 40px;
+
 }

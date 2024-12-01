@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import styles from '../styles/products.module.css';
 import AddRating from './AddRating';
 import AddComment from './AddComment';
-
+import { motion } from "framer-motion";
 const Products = (props) => {
     
     const [products, setProduct] = useState([]);
@@ -58,7 +58,10 @@ const Products = (props) => {
     }
     
 
-   
+    useEffect(() => {
+
+        handlesearch();
+    }, [search]);
     const handlePriceFilter = () => {
         const filtered = products.filter((product) => {
             const price = product.price;
@@ -182,151 +185,212 @@ const Products = (props) => {
     if (loading) {return<>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
         <dotlottie-player style={{
-      width: '300px',
-      height: '300px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: 'auto'
+    width: '300px',
+    height: '300px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 'auto'
     }}
-      src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+    src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
         </>}
-    return (<>
-         <div className={styles.filterSection}>
-         <div className={styles.sidebar}>
-            <h1>Products</h1>
-            <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
-            <button className={styles.productArchive} onClick={clearsearch}>clearsearch</button>
-            <button className={styles.productArchive} onClick={ClearFilters}>ClearFilters</button>
-            <button className={styles.productArchive} onClick={handleratingfilterasc}>sort by rating asc</button>
-            <button className={styles.productArchive} onClick={handleratingdsc}>sort by rating dsc</button>
-            <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
-            <div className={styles.container}>
-      <div className={styles.priceFilter}>
-        
-        <h3>Price Filter</h3>
-        <div>
-          <label>
-            Min Price:
+return (
+    <>
+    <img src="/1.png" className={styles.travelplan} alt="iti" />
+    <motion.div
+            className={styles.searchcom}
+            initial={{ y: -170 }}
+            transition={{ duration: 1 }}
+          >
             <input
-              type="number"
-              className={styles.min}
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              placeholder="0"
-            />
-          </label>
-        </div>
-        <div>
+                        className={styles.productsearch}
+                        onChange={(e) => setSearch(e.target.value)}
+                        type="text"
+                        placeholder="Enter your text"
+                    />
+          </motion.div>
         <div className={styles.filterSection}>
-          <label>
-            Max Price:
-            <input
-              type="number"
-              className={styles.max}
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              placeholder="1000"
-            />
-          </label>
-        </div>  </div>
-        <div className={styles.filterSection}>
-        <div className={styles.slider}><label>min</label>
-          <input
-            type="range"
-            className={styles.rangeMin}
-            min="0"
-            max="10000"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            step="100"
-          /><label>max</label>
-          <input
-            type="range"
-            className={styles.rangeMax}
-            min="0"
-            max="10000"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            step="100"
-          /></div>
-        </div>
-        <button onClick={handlePriceFilter}>Apply Filter</button>
-      </div>
-    </div>
-            <div className={styles.searchcom}>
-                <input 
-                    className={styles.productsearch} 
-                    onChange={(e) => setSearch(e.target.value)} 
-                    type="text" 
-                    placeholder='Enter your text' 
+            <div className={styles.pageLayout}>
+                <div className={styles.sidebar}>
+                    <h1>Products</h1>
+                    <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
+                    <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
+                    <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
+                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
+
+                    <div className={styles.priceFilter}>
+                        <h3>Price Filter</h3>
+                        <div>
+                            <label>
+                                Min Price:
+                                <input
+                                    type="number"
+                                    className={styles.min}
+                                    value={minPrice}
+                                    onChange={(e) => setMinPrice(e.target.value)}
+                                    placeholder="0"
+                                />
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Max Price:
+                                <input
+                                    type="number"
+                                    className={styles.max}
+                                    value={maxPrice}
+                                    onChange={(e) => setMaxPrice(e.target.value)}
+                                    placeholder="1000"
+                                />
+                            </label>
+                        </div>
+                        <div className={styles.slider}>
+                            <label>Min</label>
+                            <input
+                                type="range"
+                                className={styles.rangeMin}
+                                min="0"
+                                max="10000"
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(e.target.value)}
+                                step="100"
+                            />
+                            <label>Max</label>
+                            <input
+                                type="range"
+                                className={styles.rangeMax}
+                                min="0"
+                                max="10000"
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(e.target.value)}
+                                step="100"
+                            />
+                        </div>
+                        <button onClick={handlePriceFilter}>Apply Filter</button>
+                        <button className={styles.productArchive} onClick={ClearFilters}>Clear Filters</button>
+                    </div>
+                </div>
+
+                {/* <div className={styles.searchcom}>
+                    <input
+                        className={styles.productsearch}
+                        onChange={(e) => setSearch(e.target.value)}
+                        type="text"
+                        placeholder="Enter your text"
+                    />
+                </div> */}
+                <div className={styles.cardscontainer}>
+                {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
+    filteredProducts
+        .filter(product => !product.isArchived)
+        .map((product) => (
+            <div className={styles.productCard} key={product._id}>
+                <img
+                    src={product.picture}
+                    alt={product.name}
+                    className={styles.productImage}
                 />
-                <button className={styles.searchbtn} onClick={handlesearch}>Search</button>
-            </div>
-            </div>
-            </div>
-            <div className={styles.container}>
-            {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-                filteredProducts.filter(product => !product.isArchived).map((product) => (
-                    <div className={styles.productCard} key={product._id}>
-                        <img src={product.picture} alt={product.name} className={styles.productImage} />
-                        <div className={styles.productInfo}>
-                            <h2>{product.name}</h2>
-                            <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
-                            <p>{product.description}</p>
-                            <p>Seller: {product.seller}</p>
-                            <p>Available Quantity: {product.availableAmount}</p>
-                            {role === "Admin" && (
-                            <p>Sales: {product.sales}</p>
-                            )}
-                            <div className={styles.productRating}>
-                                <strong>Rating: </strong>{product.rating} / 5
-                            </div>
-                            <div className={styles.reviews}>
-                                
-                                {role === "Admin" && (
-                                    <button onClick={() => onUpdateClick(product._id)} className={styles.productArchive}>
-                                        Update
-                                    </button>
-                                )}
-                                {role === "Admin" && (
+                <div className={styles.productInfo}>
+                    <h2>{product.name}</h2>
+                    <p className={styles.productPrice}>
+                        ${product.price.toFixed(2)}
+                    </p>
+                    <p>{product.description}</p>
+                    <p>Seller: {product.seller}</p>
+                   
+                    <p>Available Quantity: {product.availableAmount}</p>
+                    <p className={styles.productRating}>
+                        {product.rating && product.rating > 0 ? `Rating: ${product.rating}/5` : "No rating yet"}
+                    </p>
+
+                    {/* Render reviews */}
+                    <div className={styles.reviews}>
+                        <h3>Reviews:</h3>
+                        {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
+                            product.reviews.map((review, index) => (
+                                <div key={index} className={styles.review}>
+             
+                                    <p>
+                                        <strong>{review.touristId}</strong> {review.review}
+                                    </p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No reviews yet.</p>
+                        )}
+                    </div>
+
+                    {/* Admin-specific actions */}
+                    {role === "Admin" && <p>Sales: {product.sales}</p>}
+                    <div className={styles.actions}>
+                        {role === "Admin" && (
+                            <>
+                                <button
+                                    onClick={() => onUpdateClick(product._id)}
+                                    className={styles.productArchive}
+                                >
+                                    Update
+                                </button>
                                 <label className={styles.uploadButton}>
                                     Upload Picture
-                                    <input type="file" onChange={(e) => onUploadClick(e, product._id)} />
+                                    <input
+                                        type="file"
+                                        onChange={(e) =>
+                                            onUploadClick(e, product._id)
+                                        }
+                                    />
                                 </label>
-                                )}
-                                {role === "Admin" && (
-                                <button 
-                                    onClick={() => onArchiveClick(product._id)} 
-                                    className={styles.productArchive}>
+                                <button
+                                    onClick={() => onArchiveClick(product._id)}
+                                    className={styles.productArchive}
+                                >
                                     Archive
                                 </button>
-                                )}
-                                {role === "Tourist"&&(
-                                    <>
+                            </>
+                        )}
+
+                        {/* Tourist-specific actions */}
+                        {/* {role === "Tourist" && (
+                            <>
                                 <AddRating
                                     rating={ratings[product._id] || product.rating}
-                                    setRating={(newRating) => updateRating(product._id, newRating)}
+                                    setRating={(newRating) =>
+                                        updateRating(product._id, newRating)
+                                    }
                                 />
-                                
                                 <AddComment
-                                    comment={comments[product._id] || ''} 
-                                    setComment={(newComment) => setComments(prev => ({ ...prev, [product._id]: newComment }))}
+                                    comment={comments[product._id] || ""}
+                                    setComment={(newComment) =>
+                                        setComments((prev) => ({
+                                            ...prev,
+                                            [product._id]: newComment,
+                                        }))
+                                    }
                                 />
-                                <button className={styles.productArchive} onClick={() => addComment(product._id, comments[product._id])}>
+                                <button
+                                    className={styles.productArchive}
+                                    onClick={() =>
+                                        addComment(product._id, comments[product._id])
+                                    }
+                                >
                                     Add a Comment
                                 </button>
-                                </>
-                                )}
-                            </div>
-                        </div>
+                            </>
+                        )} */}
                     </div>
-                ))
-            ) : (
-                <p>No products available.</p>
-            )}
+                </div>
+            </div>
+        ))
+) : (
+    <p>No products available.</p>
+)}
+
+                </div>
+            </div>
         </div>
-        </>);
+    </>
+);
+
 };
 
 export default Products;
