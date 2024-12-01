@@ -6,6 +6,7 @@ const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const { Types } = require('mongoose');
+const NotificationModel = require('../models/objectModel').notification;
 
 // Collection name in MongoDB
 const collectionName = 'uploads';
@@ -194,6 +195,25 @@ const myCreatedItineraries = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+const myNotifications = async(req,res)=>{
+    const { _id } = req.user._id;
+
+    if (!_id) {
+        return res.status(400).json({ error: 'UserID is required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const myNotification = await NotificationModel.find({ userID: _id });
+        res.status(200).json(myNotification);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
 
 
 //create an itinerary 
@@ -553,5 +573,5 @@ module.exports = {
     rateTourGuide,
     commentOnTourGuide,
     rateItinerary,
-    commentOnItinerary
-};
+    commentOnItinerary,
+    myNotifications};

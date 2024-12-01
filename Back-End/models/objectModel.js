@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const UserModel = require('../models/userModel').User;
 const TouristModel = require('../models/userModel').Tourist;
 const SellerModel = require('../models/userModel').Seller;
 const AdvertiserModel = require('../models/userModel').Advertiser;
@@ -354,6 +355,21 @@ orderSchema.pre('save', async function (next) {
 
 const Order = mongoose.model('Order', orderSchema);
 
+const notificationSchema = new Schema({
+    userID:{type: mongoose.Schema.Types.ObjectId,
+        ref: UserModel,
+        required: true},
+    message:{type:String,required:false},
+    reason: {type:String,required:false},
+    ReasonID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+    },
+    seen:{type:Boolean,required:false,default:false},
+    createdAt: { type: Date, default: Date.now }   
+});
+const notification = mongoose.model('notification', notificationSchema);
+
 // const promoCodeSchema = new Schema({
 //     code: { type: String, required: true, unique: true },
 //     type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
@@ -386,6 +402,7 @@ module.exports = {
     complaint,
     rating,
     transportation,
-    Order
+    Order,
+    notification
     // , PromoCode
  }
