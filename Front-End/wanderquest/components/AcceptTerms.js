@@ -1,42 +1,56 @@
 "use client";
 import { useState, useEffect } from "react";
-import jwt from "jsonwebtoken";
 import styles from '../Styles/AcceptTerms.module.css';
+import Cookies from 'js-cookie';
 
 const AcceptTerms = () => {
     const [accepted, setAccepted] = useState(false);
-    const [userId, setUserId] = useState(null);
-    const [showModal, setShowModal] = useState(true);
-    const [viewMore, setViewMore] = useState(false); // State to toggle "View More" section
+    const [showModal, setShowModal] = useState(false);
+    const [viewMore, setViewMore] = useState(false);
+    
 
     useEffect(() => {
-        const fetchAdvertiserId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/advertiser/advertiserId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch advertiser ID');
-                }
-                const advertiserId = await response.json(); // Assuming the backend sends the ID directly
-                setUserId(advertiserId);  // Store the fetched ID
-            } catch (error) {
-                console.error("Error fetching advertiser ID:", error);
-                setError("Error fetching advertiser ID");
+        // Fetch the logged-in user's data from the backend
+        fetch('http://localhost:4000/authentication/user', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: "include", // Ensure the cookie is sent with the request
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if user data contains isTermsAccepted and if it's true
+            if (data.isTermsAccepted) {
+                console.log(data.isTermsAccepted);
+                // Hide the modal if the terms are already accepted
+                setShowModal(false);
+            } else {
+                // Show the modal if the terms are not accepted
+                console.log(data.isTermsAccepted);
+                setShowModal(true);
             }
-        };
-
-        fetchAdvertiserId();
+        })
+        .catch(err => {
+            console.error('Error fetching user data:', err);
+            // Handle errors appropriately (e.g., show an error message)
+        });
     }, []);
+
+    
 
     const handleAccept = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/authentication/acceptTerms/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/acceptTerms/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: "include",
             });
             if (response.ok) {
                 setShowModal(false);
+                Cookies.set('isTermsAccepted', 'true', { expires: 365 });
             } else {
                 const errorData = await response.json();
                 alert(`Error: ${errorData.error}`);
@@ -46,6 +60,7 @@ const AcceptTerms = () => {
             alert("An error occurred while accepting the terms. Please try again.");
         }
     };
+    
 
     return (
         showModal && (

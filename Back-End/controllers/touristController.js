@@ -1,3 +1,4 @@
+const { Product } = require('../models/objectModel');
 const { TourGuide } = require('../models/userModel');
 const ProdModel = require('../models/objectModel').Product;
 const Tourist = require('../models/userModel').Tourist;
@@ -5,6 +6,7 @@ const PlaceModel = require('../models/objectModel').Places;
 const ActivityModel = require('../models/objectModel').Activity;
 const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
+const orderModel = require('../models/objectModel').Order;
 const axios = require('axios');
 
 // functions
@@ -420,6 +422,200 @@ const reviewProduct = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+const saveEvent = async (req, res) => {
+    const touristId = req.user._id;
+    const {eventType, eventId} = req.body;
+    if(!eventType || !eventId){
+        return res.status(400).json({ error: 'Missing event type or id'})
+    }
+    if(eventType != "Activity" && eventType != "itinerary"){
+        return res.status(400).json({ error: 'Event must be an activity or itinerary'})
+    }
+    try{
+        const touristProf = await Tourist.findById(touristId);
+        if(!touristProf){
+            return res.status(400).json({ error: 'Could not find tourist with this ID'})
+        }
+        touristProf.savedEvents.push({eventType, eventId})
+        await touristProf.save();
+        return res.status(200).json({ message: 'Event saved successfully' });
+    } catch (error){
+        res.status(500).json({ error: error.message})
+    }
+}
+
+const viewSavedEvents = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const touristProf = await Tourist.findById(touristId);
+        if(!touristProf){
+            return res.status(404).json({error: 'Could not find the tourist'})
+        }
+        return res.status(200).json(touristProf.savedEvents);
+    } catch(error){
+        return res.status(500).json({ error: error.message})
+    }
+}
+
+const removeSavedEvents = async (req, res) => {
+    const touristId = req.user._id;
+    const { eventId } = req.body;
+
+    try {
+        if (!eventId) {
+            return res.status(400).json({ error: 'Missing event ID' });
+        }
+
+        const touristProf = await Tourist.findById(touristId);
+
+        touristProf.savedEvents = touristProf.savedEvents.filter(event => !event.eventId.equals(eventId));
+        await touristProf.save();
+
+        res.status(200).json({ message: 'Event removed successfully', savedEvents: touristProf.savedEvents });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const addToWishlist = async (req, res) => {
+    const touristId = req.user._id;
+    const { productId } = req.body;
+
+    if (!productId) {
+        return res.status(400).json({ error: 'Missing product ID' });
+    }
+
+    try {
+        // Find the product by ID
+        const productDet = await Product.findById(productId);
+        if (!productDet) {
+            return res.status(400).json({ error: 'Could not find the product' });
+        }
+
+        // Find the tourist profile by ID
+        const touristProf = await Tourist.findById(touristId);
+        if (!touristProf) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+
+        // Check if the product is already in the wishlist
+        if (touristProf.wishlist.includes(productId)) {
+            return res.status(400).json({ error: 'Product already in wishlist' });
+        }
+
+        // Add the product to the wishlist
+        touristProf.wishlist.push(productId);
+        await touristProf.save();
+
+        return res.status(200).json({ message: 'Added to wishlist', wishlist: touristProf.wishlist });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const viewWishlist = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const touristProf = await Tourist.findById(touristId);
+        if(!touristProf){
+            return res.status(404).json({error: 'Could not find the tourist'})
+        }
+        const wishlistProducts = await Product.find({ _id: { $in: touristProf.wishlist } });
+
+        return res.status(200).json(wishlistProducts);
+    } catch(error){
+        return res.status(500).json({ error: error.message})
+    }
+}
+
+const removeFromWishlist = async (req, res) => {
+    const touristId = req.user._id;
+    const { productId } = req.body;
+
+    try {
+        if (!productId) {
+            return res.status(400).json({ error: 'Missing product ID' });
+        }
+
+        const touristProf = await Tourist.findById(touristId);
+
+        touristProf.wishlist = touristProf.wishlist.filter(product => !product.equals(productId));
+        await touristProf.save();
+
+        res.status(200).json({ message: 'Event removed successfully', wishlist: touristProf.wishlist });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const issueAnOrder = async (req, res) => {
+    const touristId = req.user._id;
+    const { products } = req.body;
+
+    if (!products) {
+        return res.status(400).json({ error: 'No products ordered' });
+    }
+
+    try {
+        let totalPrice = 0;
+        for(const product of products){
+            const productDet = await Product.findById(product.productId);
+            if(!productDet){
+                return res.status(404).json({ error: 'Could not find product with ID: ' + product.productId });
+            }
+            if(productDet.availableAmount < product.quantity){
+                return res.status(400).json({ error: 'Not enough stock for product: ' + productDet.name });
+            }
+            totalPrice += productDet.price * product.quantity;
+        }
+        const order = await orderModel.create({ orderedBy: touristId, products: products, totalPrice: totalPrice, date: new Date(), status: 'pending'});
+        return res.status(200).json({ message: 'Order placed successfully', order });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const viewOrders = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const orders = await orderModel.find({ orderedBy: touristId });
+        if(!orders){
+            return res.status(404).json({ error: 'No orders found' });
+        }
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const cancelOrder = async (req, res) => {
+    const touristId = req.user._id;
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ error: 'Missing order ID' });
+    }
+
+    try {
+        const order = await orderModel.findById(id);
+        if(!order){
+            return res.status(404).json({ error: 'Could not find order with ID: ' + id });
+        }
+        if(order.orderedBy.toString() !== touristId.toString()){
+            return res.status(403).json({ error: 'You are not authorized to cancel this order' });
+        }
+        if(order.status == 'cancelled'){
+            return res.status(400).json({ error: 'Order already cancelled' });
+        }
+        order.status = 'cancelled';
+        await order.save();
+        return res.status(200).json({ message: 'Order cancelled successfully', order });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -439,5 +635,14 @@ module.exports = {
     getLevel,
     getavailablePoints,
     getTotalPoints,
-    getAllCurrencies
+    getAllCurrencies,
+    saveEvent,
+    viewSavedEvents,
+    removeSavedEvents,
+    addToWishlist,
+    viewWishlist,
+    removeFromWishlist,
+    issueAnOrder,
+    viewOrders,
+    cancelOrder
 };

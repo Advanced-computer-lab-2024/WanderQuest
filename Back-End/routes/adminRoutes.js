@@ -32,7 +32,6 @@ const {
     /* uploadProductImage,*/
     flagActivity,
     flagItinerary
-
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -73,7 +72,6 @@ router.post('/addProduct', upload.single('picture'), addProduct);
 
 // Use multer middleware to handle file upload
 router.patch('/editProduct/:id', upload.single('picture'), editProduct);
-
 //Admin addActivityCategory
 router.post('/addCategory', addCategory)
 
@@ -117,7 +115,6 @@ router.patch('/products/unarchive/:id', unarchiveProduct);
 
 //flag an activity
 router.patch('/flagActivity/:id', flagActivity);
-
 //flag an itinerary
 router.patch('/flagItinerary/:id', flagItinerary);
 

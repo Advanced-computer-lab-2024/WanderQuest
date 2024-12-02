@@ -110,35 +110,36 @@ const Museums = (Props) => {
 
             )}
             
-            {filteredmuseums.map((museum) => (
-                <div className='museum-card' key={museum.id}>
-                    <h2 className='museum-name'>{museum.title}</h2>
-                    <p className='museum-description'>{museum.description}</p>
-                    <div className='museum-pictures'>
-                        {/* {museum.pictures.map((pic, index) => (
-                            <img key={index} src={pic} alt="Museum" className='museum-image' />
-                        ))} */}
+            {Array.isArray(filteredmuseums) && filteredmuseums.length > 0 ? (
+    filteredmuseums.map((museum) => (
+        <div className='museum-card' key={museum.id}>
+            <h2 className='museum-name'>{museum.title}</h2>
+            <p className='museum-description'>{museum.description}</p>
+            <div className='museum-pictures'>
+                {/* {museum.pictures.map((pic, index) => (
+                    <img key={index} src={pic} alt="Museum" className='museum-image' />
+                ))} */}
+            </div>
+            <p className='museum-location'>{museum.location}</p>
+            <div className='opening-hours'>
+                <h3>Opening Hours:</h3>
+                {museum.openingHours}
+            </div>
+            <div className='ticket-prices'>
+                <h3>Ticket Prices:</h3>
+                {museum.ticketPrices.map((cat, price) => (
+                    <div key={cat}>
+                        <p>{cat}: ${price}</p>
                     </div>
-                    <p className='museum-location'>{museum.location}</p>
-                    <div className='opening-hours'>
-                        <h3>Opening Hours:</h3>
-                        {museum.openingHours}
-                        
-                    </div>
-                    <div className='ticket-prices'>
-                        <h3>Ticket Prices:</h3>
-                        {museum.ticketPrices.map((cat, price) => (
-                            <div key={cat}>
-                                <p>{cat}: ${price}</p>
-                                
-                            </div>
-                        ))}
-                    </div>
-                    <Link href={`musuem/${museum._id}`}>view</Link>
-                    
-                     </div> 
-                    
-            ))}
+                ))}
+            </div>
+            <Link href={`museum/${museum._id}`}>view</Link>
+        </div>
+    ))
+) : (
+    <p>No museums found</p>
+)}
+
         </div>
         </>);
 }

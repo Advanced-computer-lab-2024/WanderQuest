@@ -8,7 +8,9 @@ function transportpage() {
   const [Loading, setLoading] = useState(true);
   const [id1, setid] = useState('');
   const fetchData = () => {
-    fetch(`http://localhost:4000/advertiser/transportations`)
+    fetch(`http://localhost:4000/advertiser/transportations`, {
+      credentials: 'include', // Automatically include user credentials
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -20,66 +22,64 @@ function transportpage() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching flights:', error);
+        console.error('Error fetching transportations:', error);
         setLoading(false);
       });
   };
-  const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setid(data);
-        setLoading(false);
-
-        // Fetch details for all activities
-      })
-      .catch(error => {
-        setError(error.message);
-        setLoading(false);
-      });
-  };
-
-
+  
   useEffect(() => {
     fetchData();
-    fetchid();
-  }, [id1]);
 
+  }, []); // No need for `id1` as a dependency, credentials will handle identification
+  
   const handleBooking = async (company1, type1, price1, departure1, arrival1, date1, pickUpLocation1, dropOffLocation1) => {
-    const userId = id1;
-    const bookingType = 'transportation'
+    const userId = id1; // Credentials will determine the user automatically
+    const bookingType = 'transportation';
     const company = company1;
-    const type = type1
-    const price = price1
-    const departure = departure1
-    const arrival = arrival1
-    const date = date1
-    const pickUpLocation = pickUpLocation1
-    const dropOffLocation = dropOffLocation1
-    const act = { userId, bookingType, company, type, price, departure, arrival, date, pickUpLocation, dropOffLocation };
-    console.log(act);
+    const type = type1;
+    const price = price1;
+    const departure = departure1;
+    const arrival = arrival1;
+    const date = date1;
+    const pickUpLocation = pickUpLocation1;
+    const dropOffLocation = dropOffLocation1;
+    
+    const act = {
+      bookingType: 'transportation',
+      company: company1,
+      type: type1,
+      price: parseFloat(price1), // Ensure price is a number
+      departure: departure1,
+      arrival: arrival1,
+      date: new Date(date1).toISOString(), // Convert to ISO string if required
+      pickUpLocation: pickUpLocation1,
+      dropOffLocation: dropOffLocation1,
+    };
+    
+    console.log('Sending act:', act);
+    
     try {
       const response = await fetch('http://localhost:4000/booking/transportation', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(act),
+        credentials: 'include',
       });
+    
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server response:', errorData);
         throw new Error('Booking failed');
       }
-      console.log(act);
+    
       alert('Booking successful!');
     } catch (error) {
       console.error('Error booking transportation:', error);
-      alert('Booking failed, already booked ');
+      alert('Booking failed, already booked');
     }
+    
   };
-
+  
 
   return (<><Navbar></Navbar>
     <div>transportpage</div>

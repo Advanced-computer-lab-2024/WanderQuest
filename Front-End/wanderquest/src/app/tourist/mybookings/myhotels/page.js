@@ -4,11 +4,11 @@ import Navbar from '../../../../../components/Navbar';
 import styles from "/Styles/Activities.module.css";
 function myhotels() {
     const [hotels, sethotels] = useState([]);
-    const [id1, setid] = useState('');
     const [loading, setLoading] = useState(true);
-  
     const fetchData = () => {
-      fetch(`http://localhost:4000/booking/hotels/${id1}`)
+      fetch(`http://localhost:4000/booking/hotels`, {
+        credentials: 'include', // Automatically include user credentials
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -16,37 +16,22 @@ function myhotels() {
           return response.json();
         })
         .then((data) => {
-            sethotels(data);
+          sethotels(data);
           setLoading(false);
         })
         .catch((error) => {
-          console.error('Error fetching flights:', error);
+          console.error('Error fetching hotels:', error);
           setLoading(false);
         });
     };
-    const fetchid = () => {
-        fetch(`http://localhost:4000/tourist/touristId`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Error fetching itineraries: ${res.statusText}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                setid(data);
-                setLoading(false);
     
-                // Fetch details for all activitie
-            })
-            .catch(error => {
-                setError(error.message);
-                setLoading(false);
-            });
-    };
+
+    
     useEffect(() => {
-        fetchid();
+  
       fetchData();
-    }, [id1]);
+    }, []); // No need for `id1` as a dependency, credentials will handle identification
+    
     
     return (<>  <Navbar></Navbar>
         <div className={styles.container}>

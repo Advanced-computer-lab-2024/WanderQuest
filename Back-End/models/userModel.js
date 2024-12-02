@@ -109,8 +109,14 @@ const TouristSchema = new Schema({
     preferredCurrency: { type: String, default: 'USD' },
     totalPoints: { type: Number, required: false, default: 0 },
     availablePoints: { type: Number, required: false, default: 0 },
-    level: { type: Number, required: false, default: 0 }
+    level: { type: Number, required: false, default: 0 },
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref:'Product', required: true, default: []}],
+    savedEvents: [{
+        eventType: { type: String, enum: ['Activity', 'itinerary'], required: true },
+        eventId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'savedEvents.eventType' }
+    }]
 });
+
 TouristSchema.pre('save', function (next) {
     if (this.totalPoints <= 100000) {
         this.level = 1;

@@ -10,17 +10,26 @@ const useUserList = () => {
   // Fetch all users from the API (replace with actual API call)
   const fetchUsers = async () => {
     try {
-      setLoading(true);
-      // Simulating an API call
-      const response = await fetch('http://localhost:4000/admin/users'); // Replace with your API endpoint
-      const data = await response.json();
-      setUsers(data); // Set fetched users to state
+        setLoading(true);
+        const response = await fetch('http://localhost:4000/admin/users', {
+            credentials: "include", // Ensure cookies are sent
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`, // Example of using a token
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Failed to fetch users');
+        }
+        const data = await response.json();
+        setUsers(data.users); // Match backend structure: { users: [...] }
     } catch (err) {
-      setError('Error fetching users');
+        setError('Error fetching users');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   useEffect(() => {
     fetchUsers(); // Fetch users on component mount

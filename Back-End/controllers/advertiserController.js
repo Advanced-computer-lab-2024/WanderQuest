@@ -3,6 +3,7 @@ const Advertiser = require('../models/userModel').Advertiser;
 const ActivityModel = require('../models/objectModel').Activity;
 const TagModel = require('../models/objectModel').PrefTag;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
+const NotificationModel = require('../models/objectModel').notification;
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
@@ -183,7 +184,7 @@ const createActivity = async (req, res) => {
         // If tags are provided, check if all tags exist in the TagModel
         if (tags && tags.length > 0) {
             // Extract the types of the tags from the request
-            const tagTypes = tags.map(tag => tag.type);
+            const tagTypes = tags.map(tag => tag.type.toLowerCase());
 
             // Fetch existing tags from the database
             const existingTags = await TagModel.find({ type: { $in: tagTypes } });
@@ -346,5 +347,23 @@ const getAllAdvertisers = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+const myNotifications = async(req,res)=>{
+    const { _id } = req.user._id;
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
+    if (!_id) {
+        return res.status(400).json({ error: 'UserID is required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const myNotification = await NotificationModel.find({ userID: _id });
+        res.status(200).json(myNotification);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,myNotifications };

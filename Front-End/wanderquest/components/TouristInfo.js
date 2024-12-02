@@ -29,36 +29,17 @@ const TouristInfo = () => {
     const [picPreview, setPicPreview] = useState(''); // For the preview before upload
     const [picURL, setPicURL] = useState(''); // For the uploaded logo URL
 
-    // Fetch the tourist ID first
-    useEffect(() => {
-        const fetchTouristId = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/tourist/touristId`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tourist ID');
-                }
-                const touristId = await response.json(); // Assuming the backend sends the ID directly
-                console.log("Fetched tourist ID:", touristId); // Debugging line
-                setUserId(touristId); // Set the fetched ID
-            } catch (error) {
-                console.error("Error fetching tourist ID:", error);
-                setError("Error fetching tourist ID");
-            }
-        };
-
-        fetchTouristId();
-    }, []);
+    
 
     // Fetch the tourist profile data (GET request)
     useEffect(() => {
         const fetchProfile = async () => {
-            if (!userId) {
-                console.log("User ID is not available."); // Debugging line
-                return; // Exit if userId is not provided
-            }
+            
 
             try {
-                const response = await fetch(`http://localhost:4000/tourist/profile/${userId}`);
+                const response = await fetch(`http://localhost:4000/tourist/profile`,{
+                    credentials:"include",
+                });
                 if (!response.ok) {
                     throw new Error('Failed to fetch profile data');
                 }
@@ -80,14 +61,14 @@ const TouristInfo = () => {
         };
 
         fetchProfile();
-    }, [userId]);
+    }, []);
 
     // Fetch the level based on the tourist ID
     useEffect(() => {
         const fetchLevel = async () => {
             if (!userId) return;
             try {
-                const response = await fetch(`http://localhost:4000/tourist/level/${userId}`);
+                const response = await fetch(`http://localhost:4000/tourist/level`);
                 if (!response.ok) throw new Error('Failed to fetch tourist level');
                 const data = await response.json();
                 setBadgeUrl(`/level${data.level}.png`);
@@ -97,12 +78,14 @@ const TouristInfo = () => {
             }
         };
         fetchLevel();
-    }, [userId]);
+    }, []);
 
     useEffect(() => {
         const fetchCurrencies = async () => {
             try {
-                const response = await fetch("http://localhost:4000/tourist/currencies");
+                const response = await fetch("http://localhost:4000/tourist/currencies",{
+                    credentials:"include",
+                });
                 if (!response.ok) {
                     throw new Error("Failed to fetch currencies");
                 }
@@ -132,13 +115,14 @@ const TouristInfo = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/tourist/profile/${userId}`,
+                `http://localhost:4000/tourist/profile`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(updatedData),
+                    credentials:"include",
                 }
             );
 
@@ -162,11 +146,12 @@ const TouristInfo = () => {
     const handleRedeem = async () => {
       
         try {
-          const response = await fetch(`http://localhost:4000/tourist/redeem/${userId}`, {
-            method: "PATCH",  // Updated to PATCH to match backend route
+          const response = await fetch(`http://localhost:4000/tourist/redeem`, {
+            method: "PATCH",  
             headers: {
               "Content-Type": "application/json",
-            }
+            },
+            credentials:"include",
           });
       
           if (response.ok) {
@@ -200,12 +185,13 @@ const TouristInfo = () => {
         console.log(selectedCurrency);
 
         try {
-            const response = await fetch(`http://localhost:4000/tourist/changePreferredCurrency/${userId}`, {
+            const response = await fetch(`http://localhost:4000/tourist/changePreferredCurrency`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ preferredCurrency: selectedCurrency }),
+                credentials:"include",
             });
 
             if (response.ok) {
@@ -300,8 +286,8 @@ const TouristInfo = () => {
     {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
     {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
-        <ChangePassword userId={userId}/>
-        <DeleteAccount userId={userId} onDeleteSuccess={handleDeleteSuccess} />
+        <ChangePassword />
+        <DeleteAccount onDeleteSuccess={handleDeleteSuccess} />
     </div>
     
     );

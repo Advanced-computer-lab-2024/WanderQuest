@@ -71,16 +71,16 @@ const Products = (props) => {
     };
 
     const updateRating = async (productId, newRating) => {
-        const touristId = '6730b1a173c9606ee0aaddf6';  // Get the tourist ID from props
-        console.log(`Product ID: ${productId}, New Rating: ${newRating}`);  // Check if the correct product ID is passed
-        
+        console.log(`Product ID: ${productId}, New Rating: ${newRating}`);
+    
         try {
             const response = await fetch(`http://localhost:4000/tourist/rateProduct/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ touristId:touristId, rating: newRating }),  // Include touristId and rating
+                body: JSON.stringify({ rating: newRating }),  // touristId will be inferred from credentials
+                credentials: 'include', // Automatically include tourist ID from session/cookie
             });
     
             if (response.ok) {
@@ -98,9 +98,10 @@ const Products = (props) => {
             alert(`Error: ${error.message}`);
         }
     };
-
+    
     const addComment = async (productId, comment) => {
         console.log("comments", comments);
+    
         try {
             const response = await fetch(`http://localhost:4000/tourist/reviewProduct/${productId}`, {
                 method: 'POST',
@@ -108,16 +109,16 @@ const Products = (props) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    touristId: '6730b1a173c9606ee0aaddf6', // Replace with the actual touristId
-                    review: comment,
+                    review: comment, // touristId will be inferred from credentials
                 }),
+                credentials: 'include', // Automatically include tourist ID from session/cookie
             });
-
+    
             if (response.ok) {
                 const result = await response.json();
                 alert(result.message);
                 // Optionally: Update product list to reflect new comment
-                const updatedProducts = products.map(product => 
+                const updatedProducts = products.map(product =>
                     product._id === productId ? result.product : product
                 );
                 setProduct(updatedProducts);
@@ -130,7 +131,6 @@ const Products = (props) => {
         }
     };
     
-
     const onArchiveClick = async (productId) => {
         try {
             const response = await fetch(`http://localhost:4000/admin/products/archive/${productId}`, {
@@ -138,6 +138,7 @@ const Products = (props) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include', // Automatically include credentials (admin session)
             });
     
             if (response.ok) {
@@ -154,9 +155,10 @@ const Products = (props) => {
         }
     };
     
-
     useEffect(() => {
-        fetch('http://localhost:4000/admin/products')
+        fetch('http://localhost:4000/tourist/products', {
+            credentials: 'include', // Include admin credentials
+        })
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('Network response was not ok');
@@ -166,16 +168,17 @@ const Products = (props) => {
             .then((data) => {
                 setProduct(data);
                 console.log(data);
-                setFilteredProducts(data); 
-                setLoading(false);// Initialize filtered products with fetched data
+                setFilteredProducts(data);
+                setLoading(false); // Initialize filtered products with fetched data
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
-                setProduct([]); 
+                setProduct([]);
                 setFilteredProducts([]);
                 setLoading(false); // Reset filtered products on error
             });
     }, []);
+    
     if (loading) {return<>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
         <dotlottie-player style={{
@@ -188,8 +191,9 @@ const Products = (props) => {
     }}
       src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
         </>}
-    return (
-        <div className={styles.container}>
+    return (<>
+         <div className={styles.filterSection}>
+         <div className={styles.sidebar}>
             <h1>Products</h1>
             <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
             <button className={styles.productArchive} onClick={clearsearch}>clearsearch</button>
@@ -199,6 +203,7 @@ const Products = (props) => {
             <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
             <div className={styles.container}>
       <div className={styles.priceFilter}>
+        
         <h3>Price Filter</h3>
         <div>
           <label>
@@ -213,6 +218,7 @@ const Products = (props) => {
           </label>
         </div>
         <div>
+        <div className={styles.filterSection}>
           <label>
             Max Price:
             <input
@@ -223,7 +229,8 @@ const Products = (props) => {
               placeholder="1000"
             />
           </label>
-        </div>
+        </div>  </div>
+        <div className={styles.filterSection}>
         <div className={styles.slider}><label>min</label>
           <input
             type="range"
@@ -242,7 +249,7 @@ const Products = (props) => {
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
             step="100"
-          />
+          /></div>
         </div>
         <button onClick={handlePriceFilter}>Apply Filter</button>
       </div>
@@ -256,6 +263,9 @@ const Products = (props) => {
                 />
                 <button className={styles.searchbtn} onClick={handlesearch}>Search</button>
             </div>
+            </div>
+            </div>
+            <div className={styles.container}>
             {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
                 filteredProducts.filter(product => !product.isArchived).map((product) => (
                     <div className={styles.productCard} key={product._id}>
@@ -316,7 +326,7 @@ const Products = (props) => {
                 <p>No products available.</p>
             )}
         </div>
-    );
+        </>);
 };
 
 export default Products;
