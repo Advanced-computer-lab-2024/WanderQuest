@@ -13,7 +13,8 @@ const {
     myCreatedActivities,
     readOneActivity,
     readOneActivityByName,
-    myNotifications }
+    myNotifications,
+    seenNotifications }
     = require('../controllers/advertiserController');
 const { createTransportation, getAllTransportations } = require('../controllers/transportationController');
 
@@ -35,5 +36,5 @@ router.get('/myActivities', requireAuth({ role: 'advertiser' }), myCreatedActivi
 router.post('/transportation/create', requireAuth({ role: 'advertiser' }), createTransportation);
 router.get('/transportations', getAllTransportations);
 router.get('/notifs/:id',requireAuth({role: "advertiser"}),myNotifications);
-
+router.patch('/notifs/:id',requireAuth({role: "advertiser"}),seenNotifications)
 module.exports = router;
