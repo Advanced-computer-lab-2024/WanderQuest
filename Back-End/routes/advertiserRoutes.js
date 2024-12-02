@@ -13,7 +13,8 @@ const {
     myCreatedActivities,
     readOneActivity,
     readOneActivityByName,
-    myNotifications,viewSalesReport }
+    myNotifications,
+    viewSalesReport }
     = require('../controllers/advertiserController');
 const { createTransportation, getAllTransportations } = require('../controllers/transportationController');
 
