@@ -16,6 +16,7 @@ const activityRoutes = require('./routes/activityRoutes')
 // const { itinerary } = require('./models/objectModel')
 const itineraryRoutes = require('./routes/itineraryRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 const app = express()
 
@@ -47,6 +48,7 @@ app.use('/tourismGovernor', tourGovernerRoutes)
 app.use('/activityRoutes', activityRoutes)
 app.use('/itinerary', itineraryRoutes);
 app.use('/booking', bookingRoutes);
+app.use('/payment', paymentRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
