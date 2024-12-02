@@ -579,15 +579,26 @@ const issueAnOrder = async (req, res) => {
 const viewOrders = async (req, res) => {
     const touristId = req.user._id;
     try {
-        const orders = await orderModel.find({ orderedBy: touristId });
-        if(!orders){
+        const orders = await orderModel.find({ orderedBy: touristId }).populate('products.productId', 'name price');
+        if (!orders || orders.length === 0) {
             return res.status(404).json({ error: 'No orders found' });
         }
-        return res.status(200).json(orders);
+
+        // Transform the orders to include product names, prices, and quantities
+        const transformedOrders = orders.map(order => ({
+            ...order.toObject(),
+            products: order.products.map(product => ({
+                name: product.productId.name,
+                price: product.productId.price,
+                quantity: product.quantity
+            }))
+        }));
+
+        return res.status(200).json(transformedOrders);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-}
+};
 
 const cancelOrder = async (req, res) => {
     const touristId = req.user._id;
