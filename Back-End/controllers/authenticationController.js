@@ -15,6 +15,8 @@ const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const { Types } = require('mongoose');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 // Collection name in MongoDB
 const collectionName = 'uploads';
@@ -22,6 +24,10 @@ const collectionName = 'uploads';
 // Create a token
 const createToken = (_id) => {
     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '3d' });
+}
+
+function generateOTP() {
+    return crypto.randomBytes(3).toString('hex'); // Generates a 6-digit OTP
 }
 
 // Initialize GridFS
@@ -368,4 +374,82 @@ async function requestAccountDeletion(req, res) {
     }
 }
 
-module.exports = { getUser, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion, login };
+async function sendEmail(to, subject, text) {
+    let transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        secure: false,
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+        },
+    });
+
+    let mailOptions = {
+        from: process.env.SMTP_USER,
+        to: to,
+        subject: subject,
+        text: text
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+
+async function requestForgetPasswordEmail(req, res) {
+    try {
+        let user = await User.findById(req.user._id);
+
+        user = user || await Admin.findById(req.user._id);
+
+        user = user || await TourGoverner.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        const otp = generateOTP();
+        user.otp = { otp: otp, expiry: Date.now() + 600000 }; // OTP expires in 10 minutes
+        await user.save();
+
+        await sendEmail(user.email, 'Password Reset Request', `Your OTP for password reset is ${otp}. It will expire in 10 minutes.`);
+
+        return res.status(200).json({ message: 'OTP sent to your email.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while processing your request.' });
+    }
+}
+
+async function resetPassword(req, res) {
+    try {
+        const { otp, newPassword } = req.body;
+
+        let user = await User.findById(req.user._id);
+
+        user = user || await Admin.findById(req.user._id);
+
+        user = user || await TourGoverner.findById(req.user._id);
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        if (user.otp.otp !== otp || user.otp.expiry < Date.now()) {
+            return res.status(400).json({ message: 'Invalid or expired OTP.' });
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        user.otp = undefined;
+        await user.save();
+
+        return res.status(200).json({ message: 'Password reset successfully.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while processing your request.' });
+    }
+}
+
+module.exports = { getUser, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion, login, requestForgetPasswordEmail, resetPassword };
