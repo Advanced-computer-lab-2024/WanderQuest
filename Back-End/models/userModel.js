@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const { reject } = require('bcrypt/promises');
+const nodemailer = require('nodemailer');
 
 const Schema = mongoose.Schema;
 
