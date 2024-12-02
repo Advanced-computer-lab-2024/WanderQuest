@@ -11,6 +11,12 @@ const documentSchema = new mongoose.Schema({
     fileID: String,
 });
 
+// otp schema
+const otpSchema = new mongoose.Schema({
+    otp: { type: String, required: true },
+    expiry: { type: Date, required: true }
+});
+
 // Base schema
 const options = { discriminatorKey: 'role', collection: 'users' };
 
@@ -28,6 +34,7 @@ const UserSchema = new Schema({
     isTermsAccepted: { type: Boolean, default: function () { return this.role == 'tourist'; } },
     requestToBeDeleted: { type: Boolean, default: false },
     documents: [documentSchema],
+    otp: { type: otpSchema, default: undefined }
 }, options);
 
 // Middleware to exclude users with requestToBeDeleted set to true
@@ -110,7 +117,7 @@ const TouristSchema = new Schema({
     totalPoints: { type: Number, required: false, default: 0 },
     availablePoints: { type: Number, required: false, default: 0 },
     level: { type: Number, required: false, default: 0 },
-    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref:'Product', required: true, default: []}],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true, default: [] }],
     savedEvents: [{
         eventType: { type: String, enum: ['Activity', 'itinerary'], required: true },
         eventId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'savedEvents.eventType' }
@@ -246,7 +253,7 @@ const TourGuideSchema = new Schema({
             touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
             rating: { type: Number, min: 1, max: 5 },
         }],
-    
+
     comments: [
         {
             touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
@@ -258,16 +265,16 @@ const TourGuideSchema = new Schema({
 
 });
 // Middleware to calculate average rating before saving
-TourGuideSchema.pre('save', function(next) {
+TourGuideSchema.pre('save', function (next) {
     // Calculate average rating if ratings exist
     if (this.ratings.length > 0) {
-      const totalRatings = this.ratings.reduce((sum, rating) => sum + rating.rating, 0);
-      this.averageRating = totalRatings / this.ratings.length;
+        const totalRatings = this.ratings.reduce((sum, rating) => sum + rating.rating, 0);
+        this.averageRating = totalRatings / this.ratings.length;
     } else {
-      this.averageRating = 0;  // Set to 0 if no ratings
+        this.averageRating = 0;  // Set to 0 if no ratings
     }
     next();
-  });
+});
 
 const TourGuide = User.discriminator('tourGuide', TourGuideSchema);
 

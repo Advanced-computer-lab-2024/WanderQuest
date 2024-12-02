@@ -2,7 +2,7 @@ const express = require('express');
 const requireAuth = require('../middleware/requireAuth');
 
 // controller functions
-const { getUser, registerUser, login, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, acceptUser, acceptTerms, requestAccountDeletion } = require('../controllers/authenticationController');
+const { getUser, registerUser, login, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, acceptUser, acceptTerms, requestAccountDeletion, requestForgetPasswordEmail, resetPassword } = require('../controllers/authenticationController');
 
 const router = express.Router();
 
@@ -18,5 +18,7 @@ router.get('/getDocumentByFileID/:id', requireAuth(), getDocumentByFileID);
 router.patch('/acceptUser/:id', requireAuth({ role: 'Admin' }), acceptUser);
 router.patch('/acceptTerms', requireAuth(), acceptTerms);
 router.patch('/requestAccountDeletion', requireAuth(), requestAccountDeletion);
+router.post('/requestForgetPasswordEmail', requireAuth(), requestForgetPasswordEmail);
+router.post('/resetPassword', requireAuth(), resetPassword);
 
 module.exports = router;
