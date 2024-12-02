@@ -158,7 +158,7 @@ TouristSchema.methods.deduceFromWallet = async function (amount) {
         }
         this.totalPoints += pointsEarned;
         this.availablePoints += pointsEarned;
-        await sendEmail(this.email,'Payment regarding WanderQuest',`${amount} has been deducted from your wallet`)
+        await sendEmail(this.email,'Payment regarding WanderQuest',`${amount} has been deducted from your wallet`);
         await this.save();
     } catch (error) {
         console.error('Error deducting from wallet:', error);
