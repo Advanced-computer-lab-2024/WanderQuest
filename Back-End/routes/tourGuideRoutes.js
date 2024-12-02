@@ -21,7 +21,8 @@ const {
     deactivateItinerary,
     rateTourGuide,
     commentOnTourGuide,
-    myNotifications} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
+    myNotifications,
+    seenNotifications} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
 const requireAuth = require('../middleware/requireAuth');
@@ -43,4 +44,5 @@ router.patch('/itinerary/deactivate/:id', requireAuth({role: "tourGuide"}), deac
 router.post('/rate/:tourGuideId', requireAuth({role: "tourist"}), rateTourGuide);
 router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnTourGuide);
 router.get('/notifs/:id',requireAuth({role: "tourGuide"}),myNotifications);
+router.patch('/notifs/:id',requireAuth({role: "tourGuide"}),seenNotifications);
 module.exports = router;
