@@ -140,7 +140,7 @@ const TouristHistory = () => {
                     for(let counter = 0; counter < data.length; counter++){
                         console.log(data[counter]);
                         console.log(data[counter].status);
-                        if(data[counter].status === 'delivered' || data[counter].status === 'sent to delivery' || data[counter].status === 'pending'){
+                        if(data[counter].status === 'sent to delivery' || data[counter].status === 'pending'){
                             setOnOrders(prev => [...prev, data[counter]]);
                         }else{
                             setPastOrders(prev => [...prev, data[counter]]);
@@ -459,12 +459,13 @@ const TouristHistory = () => {
         <div>
             <h2 className={styles.innerTitle}>Your Orders</h2>
         <div className={styles.innerBox}>
-        <h2 className={styles.innerTitle}>Ongoing Orders</h2>
+        <h2 className={styles.innerTitle}>Active Orders</h2>
             <div className={styles.tabInBox}>
                 <div>
                     {onOrders ? (
                         onOrders.map((order) => (
                             <div key={order._id} className={styles.innerBox}>
+                                <h2 className={styles.innerTitle}>Order</h2>
                                 {/* <img src={order.picture} alt="Order Image" /> */}
                                 {/*<p><strong>Product(s):</strong></p>*/}{order.products.map((prod) => (
                                     <div key={prod._id} className={styles.innerBox}>
@@ -482,13 +483,15 @@ const TouristHistory = () => {
                     )}
                 </div>
             </div>
+            
             <div>
-            <h2 className={styles.innerTitle}>Past Orders</h2>
+            <h2 className={styles.innerTitle}>Previous Orders</h2>
             <div className={styles.tabInBox}>
                 <div>
                     {pastOrders ? (
                         pastOrders.map((order)=>(
                             <div key={order._id} className={styles.innerBox}>
+                                <h2 className={styles.innerTitle}>Order</h2>
                                 {/* <img src={order.picture} alt="Order Image" /> */}
                                 {/*<p><strong>Product(s):</strong></p>*/}{order.products.map((prod) => (
                                     <div key={prod._id} className={styles.innerBox}>
