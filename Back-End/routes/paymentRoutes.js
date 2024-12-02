@@ -7,6 +7,6 @@ const { handlePayment } = require('../controllers/paymentController');
 const router = express.Router();
 
 // routes
-router.post('/pay', requireAuth(), handlePayment);
+router.post('/pay', requireAuth({ role: 'tourist' }), handlePayment);
 
 module.exports = router;
