@@ -33,7 +33,6 @@ const {
     flagActivity,
     flagItinerary,
     viewSalesReport
-
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -117,7 +116,6 @@ router.patch('/products/unarchive/:id', unarchiveProduct);
 
 //flag an activity
 router.patch('/flagActivity/:id', flagActivity);
-
 //flag an itinerary
 router.patch('/flagItinerary/:id', flagItinerary);
 

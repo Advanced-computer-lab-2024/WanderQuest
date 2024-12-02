@@ -1,6 +1,9 @@
 const AdminModel = require('../models/adminModel');
 const { User } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
+const NotificationModel = require('../models/objectModel').notification;
+const ItineraryModel = require('../models/objectModel').itinerary;
+const ActivityModel = require('../models/objectModel').Activity;
 const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
@@ -595,7 +598,30 @@ const flagActivity = async (req, res) => {
         if (!activity) {
             return res.status(404).json({ error: 'Activity not found' });
         }
-        res.status(200).json({ message: 'Event flagged successfully', activity });
+        try {
+            // Step 1: Find the activity by its ID
+            const activity = await ActivityModel.findById(activityId);
+            
+            if (!activity) {
+                return res.status(404).json({ message: 'Activity not found.' });
+            }
+    
+            // Step 2: Create and save the notification
+            const notification = await NotificationModel.create({
+                userID: activity.createdBy, // Assuming createdBy is an ObjectId referencing the User
+                message: "Your Activity has been flagged as inappropriate.",
+                reason: 'Inappropriate content',
+                ReasonID: activityId // Set the ReasonID to the Itinerary ID
+            });
+    
+            // Respond with success
+            return res.status(201).json({  message: 'Event flagged successfully', activity ,
+                                        message: 'Notification created successfully.', notification });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'An error occurred while creating the notification.' });
+        }
+        res.status(200).json({});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -609,7 +635,29 @@ const flagItinerary = async (req, res) => {
         if (!retItinerary) {
             return res.status(404).json({ error: ' Itinerary with this id not found' });
         }
-        res.status(200).json({ message: 'Itinerary flagged successfully', retItinerary });
+        try {
+            // Step 1: Find the itinerary by its ID
+            const itinerary = await ItineraryModel.findById(id);
+            
+            if (!itinerary) {
+                return res.status(404).json({ message: 'Itinerary not found.' });
+            }
+    
+            // Step 2: Create and save the notification
+            const notification = await NotificationModel.create({
+                userID: itinerary.createdBy, // Assuming createdBy is an ObjectId referencing the User
+                message: "Your Itinerary has been flagged as inappropriate.",
+                reason: 'Inappropriate content',
+                ReasonID: id // Set the ReasonID to the Itinerary ID
+            });
+    
+            // Respond with success
+            return res.status(201).json({ message: 'Itinerary flagged successfully', retItinerary,
+                message: 'Notification created successfully.', notification });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'An error occurred while creating the notification.' });
+        }
     } catch (error) {
         res.status(404).json({ error: error.message });
     }

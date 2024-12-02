@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const UserModel = require('../models/userModel').User;
 const TouristModel = require('../models/userModel').Tourist;
 const SellerModel = require('../models/userModel').Seller;
 const AdvertiserModel = require('../models/userModel').Advertiser;
@@ -54,8 +55,8 @@ const documentSchema = new mongoose.Schema({
 const productSchema = new Schema({
     name:
         { type: String, required: true },
-    // picture:
-    //     [{ data: Buffer, type: String, required: false }],
+    picture:
+        [{ data: Buffer, type: String, required: false }],
     picture:
     { type: documentSchema, default: undefined },
     price:
@@ -83,7 +84,7 @@ const productSchema = new Schema({
     sales: { type: Number, required: true,default: 0},
     revenueOfThisProduct: { type: Number, required: true, default: 0}
 
-});
+}, { timestamps: true });
 
 //middleware to calculate the average ratings
 productSchema.pre('save', function (next) {
@@ -361,6 +362,57 @@ const transportationSchema = new Schema({
 
 const transportation = mongoose.model('transportation', transportationSchema)
 
+// Define a sub-schema for the products in the order
+const orderProductSchema = new Schema({
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, min: 1 }
+});
+
+const orderSchema = new Schema({
+    orderedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist', required: true },
+    products: [orderProductSchema], // Use the sub-schema for products
+    totalPrice: { type: Number, required: true },
+    date: { type: Date, required: true, default: Date.now },
+    status: { 
+        type: String, 
+        required: true, 
+        default: 'pending', 
+        enum: ['pending', 'cancelled', 'sent to delivery', 'delivered'] 
+    }
+});
+
+// Pre-save middleware to calculate totalPrice
+orderSchema.pre('save', async function (next) {
+    try {
+        const productIds = this.products.map(p => p.productId);
+        const products = await Product.find({ _id: { $in: productIds } });
+        this.totalPrice = this.products.reduce((acc, p) => {
+            const product = products.find(prod => prod._id.equals(p.productId));
+            return acc + (product.price * p.quantity);
+        }, 0);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
+const Order = mongoose.model('Order', orderSchema);
+
+const notificationSchema = new Schema({
+    userID:{type: mongoose.Schema.Types.ObjectId,
+        ref: UserModel,
+        required: true},
+    message:{type:String,required:false},
+    reason: {type:String,required:false},
+    ReasonID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+    },
+    seen:{type:Boolean,required:false,default:false},
+    createdAt: { type: Date, default: Date.now }   
+});
+const notification = mongoose.model('notification', notificationSchema);
+
 // const promoCodeSchema = new Schema({
 //     code: { type: String, required: true, unique: true },
 //     type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
@@ -382,6 +434,18 @@ const transportation = mongoose.model('transportation', transportationSchema)
 
 // const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
-module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating, transportation
+module.exports = {
+    Places,
+    Tags,
+    Product,
+    Activity,
+    itinerary,
+    ActivityCategory,
+    PrefTag,
+    complaint,
+    rating,
+    transportation,
+    Order,
+    notification
     // , PromoCode
  }
