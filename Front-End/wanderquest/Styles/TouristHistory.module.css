@@ -208,7 +208,7 @@
   font-size: 1.5em;
   cursor: pointer;
 }
-
+/* 
 .subBox{
   padding: 30px;
   background-color: #122c34;
@@ -222,4 +222,20 @@
 
 .inStyle{
   color: #f0f0f0;
+} */
+
+.cancelButton{
+  padding: 5px 10px;
+  font-size: 1rem;
+  width: 150px;
+  background-color: #ff0000; 
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor for button */
+  transition: background-color 0.3s; /* Smooth transition */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.cancelButton:hover {
+  background-color: #fa3737; 
 }

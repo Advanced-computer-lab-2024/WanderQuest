@@ -93,21 +93,23 @@ const TouristHistory = () => {
     //     fetchProfile();
     // }, [followedGuides]);
 
-    useEffect(() => {
-        const fetchItineraries = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/itinerary/myItineraries/${tourGuideData._id}`,{
-                    credentials: 'include',
-                });
-                const data = await response.json();
-                //const guideID = data.map(itinerary => itinerary.createdBy);
-                setPastItineraries(data);
-            } catch (error) {
-                console.error('Error fetching itineraries:', error);
-            }
-        };
-        fetchItineraries();
-    }, [lastUpdated]);
+
+
+    // useEffect(() => {
+    //     const fetchItineraries = async () => {
+    //         try {
+    //             const response = await fetch(`http://localhost:4000/itinerary/myItineraries/${tourGuideData._id}`,{
+    //                 credentials: 'include',
+    //             });
+    //             const data = await response.json();
+    //             //const guideID = data.map(itinerary => itinerary.createdBy);
+    //             setPastItineraries(data);
+    //         } catch (error) {
+    //             console.error('Error fetching itineraries:', error);
+    //         }
+    //     };
+    //     fetchItineraries();
+    // }, [lastUpdated]);
 
 
     useEffect(() => {
@@ -138,8 +140,6 @@ const TouristHistory = () => {
                 const data = await response.json();
                 if(data.length !== 0){
                     for(let counter = 0; counter < data.length; counter++){
-                        console.log(data[counter]);
-                        console.log(data[counter].status);
                         if(data[counter].status === 'sent to delivery' || data[counter].status === 'pending'){
                             setOnOrders(prev => [...prev, data[counter]]);
                         }else{
@@ -148,10 +148,10 @@ const TouristHistory = () => {
                     }
                 }
                 if(onOrders.length === null){
-                    setOnOrders(null);
+                    setOnOrders([]);
                 }
                 if(pastOrders.length === null){
-                    setPastOrders(null);
+                    setPastOrders([]);
                 }
             }catch(error){
                 console.error("API Problem", error);
@@ -317,7 +317,24 @@ const TouristHistory = () => {
         }
     };
 
-
+    const handleOrderCancel = async (e, id) => {
+        e.preventDefault();
+        const response = await fetch(`http://localhost:4000/tourist/orders/cancel/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
+        if(response.ok){
+            setLastUpdated(id);
+            setOnOrders(prev => prev.filter(order => order._id !== id));
+            setPastOrders(prev => [...prev, { ...orderToCancel, status: 'canceled' }]);
+        }
+        else{
+            console.log('Error cancelling order');
+        }
+    }
 
 
     return (
@@ -462,7 +479,7 @@ const TouristHistory = () => {
         <h2 className={styles.innerTitle}>Active Orders</h2>
             <div className={styles.tabInBox}>
                 <div>
-                    {onOrders ? (
+                    {onOrders.length > 0 ? (
                         onOrders.map((order) => (
                             <div key={order._id} className={styles.innerBox}>
                                 <h2 className={styles.innerTitle}>Order</h2>
@@ -476,6 +493,7 @@ const TouristHistory = () => {
                             <p><strong>Date of Order:</strong> {new Date(order.date).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'})}</p>
                             <p><strong>Total Price:</strong>{order.totalPrice}</p>
                             <p><strong>Status:</strong>{order.status}</p>
+                            <button className={styles.cancelButton} onClick={(e)=>handleOrderCancel(e, order._id)}>Cancel</button>
                             </div>
                         ))
                     ) : (
@@ -488,7 +506,7 @@ const TouristHistory = () => {
             <h2 className={styles.innerTitle}>Previous Orders</h2>
             <div className={styles.tabInBox}>
                 <div>
-                    {pastOrders ? (
+                    {pastOrders.length > 0 ? (
                         pastOrders.map((order)=>(
                             <div key={order._id} className={styles.innerBox}>
                                 <h2 className={styles.innerTitle}>Order</h2>
@@ -502,27 +520,6 @@ const TouristHistory = () => {
                                 <p><strong>Date of Order:</strong> {new Date(order.date).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'})}</p>
                                 <p><strong>Total Price:</strong>{order.totalPrice}</p>
                                 <p><strong>Status:</strong>{order.status}</p>
-                                {/* <AddRating 
-                                    rating={activityFeedback[order._id]?.rating || ''} 
-                                    setRating={(value) => handleActivityFeedbackChange(order._id, 'rating', value)} 
-                                />
-                                <AddComment 
-                                    comment={activityFeedback[order._id]?.comment || ''} 
-                                    setComment={(value) => handleActivityFeedbackChange(order._id, 'comment', value)} 
-                                />
-                                <button 
-                                    className={styles.btnFeedback} 
-                                    onClick={(e) => handleActivityFeedback(e, order._id)}
-                                >
-                                    Send
-                                </button>
-                                <div>
-                                    {showMessage && lastUpdated === activity._id ? (
-                                        <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
-                                            Review sent successfully
-                                        </p>
-                                    ) : null}
-                                </div> */}
                             </div>
                         ))
                         ) : ( <p>No Orders Yet</p> )}
