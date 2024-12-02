@@ -173,7 +173,7 @@ const getLogo = async (req, res) => {
 //seller getProducts
 const getProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({})
+        const products = await ProdModel.find({},{ availableAmount: 1, sales: 1, revenueOfThisProduct: 1 })
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -182,7 +182,8 @@ const getProducts = async (req, res) => {
 //seller getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } }, { availableAmount: 0 });
+        //?????????????????????????????????????????????availableAmount bi 1 walla 0
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } },  { availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -303,39 +304,8 @@ const editProduct = async (req, res) => {
         }
     }
 }
-// const editProduct = async (req, res) => {
-//     uploadProductImage(req, res, async (err) => {
-//         if (err) {
-//             return res.status(400).json({ error: err.message });
-//         }
 
-//         const { id } = req.params;
-//         let updatedProd = await ProdModel.findById(id);
-//         if (!updatedProd) {
-//             return res.status(404).json({ error: 'Product not found' });
-//         }
 
-//         try {
-//             const picture = req.file
-//                 ? {
-//                     filename: req.file.filename,
-//                     contentType: req.file.mimetype,
-//                     fileID: req.file.id,
-//                 }
-//                 : updatedProd.picture; // Retain existing picture if no new file is uploaded
-
-//             updatedProd = await ProdModel.findByIdAndUpdate(
-//                 id,
-//                 { ...req.body, picture },
-//                 { new: true }
-//             );
-
-//             res.status(200).json(updatedProd);
-//         } catch (error) {
-//             res.status(400).json({ error: error.message });
-//         }
-//     });
-// };
 
 //seller can archive or unarchive products
 

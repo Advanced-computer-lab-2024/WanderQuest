@@ -346,5 +346,27 @@ const getAllAdvertisers = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+//view sales Report
+const viewSalesReport = async (req,res) => {
+    const advertiserId = req.user._id;
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities };
+    try{
+        if (!mongoose.Types.ObjectId.isValid(advertiserId)) {
+            return res.status(400).json({ error: 'Wrong ID format' });
+        }
+        const createdActivity = await ActivityModel.find({createdBy: advertiserId});
+        const activityRevenue = createdActivity.reduce((total,activity) => total + (activity.revenueOfThisActivity || 0) , 0);
+
+        const report = {
+            activityRevenue,
+            totalRevenue : activityRevenue,
+        };
+        res.status(200).json({ message: "Sales report generated successfully", report });
+
+    }catch(error){
+        res.status(404).json({ error: error.message });
+
+    }
+}
+
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,viewSalesReport };

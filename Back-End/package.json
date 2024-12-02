@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "m": "^1.9.0",
     "mongodb": "^5.9.1",
-    "mongoose": "^8.8.1",
+    "mongoose": "^8.8.3",
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^5.0.2",
     "validator": "^13.12.0"

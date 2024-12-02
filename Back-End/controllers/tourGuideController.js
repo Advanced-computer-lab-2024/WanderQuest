@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Activity } = require('../models/objectModel');
+const { Activity, itinerary } = require('../models/objectModel');
 const TourGuide = require('../models/userModel').TourGuide;
 const Itinerary = require('../models/objectModel').itinerary;
 const multer = require('multer');
@@ -536,6 +536,30 @@ const commentOnItinerary = async (req, res) => {
     }
 }
 
+//view sales report 
+const viewSalesReport = async (req,res) => {
+  const tourGuide = req.user._id;
+  try{
+
+    if (!mongoose.Types.ObjectId.isValid(tourGuide)) {
+        return res.status(400).json({ error: 'Wrong ID format' });
+    }
+
+    const myCreatedItineraries = await Itinerary.find({createdBy: tourGuide});
+    const  itineraryRevenue = myCreatedItineraries.reduce((total,itinerary) => total + (itinerary.revenueOfThisItinerary || 0 ),0);
+    const report = {
+        itineraryRevenue,
+        totalRevenue : itineraryRevenue
+
+    };
+
+    res.status(200).json({ message: "Sales report generated successfully", report });
+  }catch(error){
+    console.error(error);
+    res.status(500).json({error: error.message});
+  }
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -553,5 +577,6 @@ module.exports = {
     rateTourGuide,
     commentOnTourGuide,
     rateItinerary,
-    commentOnItinerary
+    commentOnItinerary,
+    viewSalesReport
 };
