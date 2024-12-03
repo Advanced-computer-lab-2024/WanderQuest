@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const { reject } = require('bcrypt/promises');
-
+const nodemailer = require('nodemailer');
+const { sendEmail  } = require('../controllers/authenticationController');
 const Schema = mongoose.Schema;
 
 const documentSchema = new mongoose.Schema({
@@ -157,6 +158,7 @@ TouristSchema.methods.deduceFromWallet = async function (amount) {
         }
         this.totalPoints += pointsEarned;
         this.availablePoints += pointsEarned;
+        await sendEmail(this.email,'Payment regarding WanderQuest',`${amount} has been deducted from your wallet`);
         await this.save();
     } catch (error) {
         console.error('Error deducting from wallet:', error);
