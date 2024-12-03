@@ -386,7 +386,7 @@ async function sendEmail(to, subject, text) {
     });
 
     let mailOptions = {
-        from: process.env.SMTP_USER,
+        from: process.env.SMTP_EMAIL,
         to: to,
         subject: subject,
         text: text
@@ -397,21 +397,27 @@ async function sendEmail(to, subject, text) {
 
 async function requestForgetPasswordEmail(req, res) {
     try {
-        let user = await User.findById(req.user._id);
+        const { email, username } = req.body;
 
-        user = user || await Admin.findById(req.user._id);
-
-        user = user || await TourGoverner.findById(req.user._id);
+        let user = await User.findOne({ username });
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
+            user = await Admin.findOne({ username });
+        }
+
+        if (!user) {
+            user = await TourGoverner.findOne({ username });
+        }
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid username or email.' });
         }
 
         const otp = generateOTP();
         user.otp = { otp: otp, expiry: Date.now() + 600000 }; // OTP expires in 10 minutes
         await user.save();
 
-        await sendEmail(user.email, 'Password Reset Request', `Your OTP for password reset is ${otp}. It will expire in 10 minutes.`);
+        await sendEmail(email, 'Password Reset Request', `Your OTP for password reset is ${otp}. It will expire in 10 minutes.`);
 
         return res.status(200).json({ message: 'OTP sent to your email.' });
     } catch (error) {
@@ -422,13 +428,13 @@ async function requestForgetPasswordEmail(req, res) {
 
 async function resetPassword(req, res) {
     try {
-        const { otp, newPassword } = req.body;
+        const { otp, newPassword, username } = req.body;
 
-        let user = await User.findById(req.user._id);
+        let user = await User.findOne({ username });
 
-        user = user || await Admin.findById(req.user._id);
+        user = user || await Admin.findOne({ username });
 
-        user = user || await TourGoverner.findById(req.user._id);
+        user = user || await TourGoverner.findOne({ username });
 
         if (!user) {
             return res.status(400).json({ message: 'User not found' });
