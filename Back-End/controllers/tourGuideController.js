@@ -237,6 +237,25 @@ const seenNotifications = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+const specificNotification = async (req,res)=>{
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid product ID' });
+    }
+
+    try {
+
+        const notification = await NotificationModel.findById(id);
+
+        if (!notification) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.status(200).json(notification);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 //create an itinerary 
 const createItinerary = async (req, res) => {
@@ -597,4 +616,5 @@ module.exports = {
     rateItinerary,
     commentOnItinerary,
     myNotifications,
-    seenNotifications};
+    seenNotifications,
+    specificNotification};
