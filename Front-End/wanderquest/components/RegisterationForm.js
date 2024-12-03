@@ -53,6 +53,7 @@ const RegistrationForm = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(userData),
+            credentials:"include"
         })
         .then(response => response.json())  // Parse the response
         .then(data => {
@@ -64,6 +65,9 @@ const RegistrationForm = () => {
                 console.log(data.id);
                 // Handle success (e.g., redirect to login or another page)
                 console.log("Registration successful:", data);
+                if(userType === "tourist"){
+                    window.location.href = "/signin";
+                }
                 
                 
             }
