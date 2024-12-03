@@ -43,6 +43,6 @@ router.patch('/itinerary/activate/:id', requireAuth({role: "tourGuide"}), activa
 router.patch('/itinerary/deactivate/:id', requireAuth({role: "tourGuide"}), deactivateItinerary);
 router.post('/rate/:tourGuideId', requireAuth({role: "tourist"}), rateTourGuide);
 router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnTourGuide);
-router.get('/notifs/:id',requireAuth({role: "tourGuide"}),myNotifications);
-router.patch('/notifs/:id',requireAuth({role: "tourGuide"}),seenNotifications);
+router.get('/notifs',requireAuth({role: "tourGuide"}),myNotifications);
+router.patch('/notifs',requireAuth({role: "tourGuide"}),seenNotifications);
 module.exports = router;
