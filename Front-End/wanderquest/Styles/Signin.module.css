@@ -54,6 +54,7 @@ font-family: Arial, Helvetica, sans-serif;
 }
 .error{
     color: red;
+    font-size: 15px;
 }
 .btn{
     width: 100%;
@@ -75,6 +76,7 @@ font-family: Arial, Helvetica, sans-serif;
 }
 .link{
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 .createaccountInline {
     margin-top: 10px;

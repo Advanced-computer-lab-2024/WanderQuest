@@ -53,6 +53,7 @@ const RegistrationForm = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(userData),
+            credentials:"include"
         })
         .then(response => response.json())  // Parse the response
         .then(data => {

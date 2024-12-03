@@ -3,32 +3,56 @@ import React, { useState } from 'react';
 import styles from '../styles/ForgotPassword.module.css';
 
 function ForgotPassword() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [step, setStep] = useState(1); // Track the current step
+  const [step, setStep] = useState(1); // Tracks the current step
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
-    // Mock API call to send OTP
-    console.log(`Sending OTP to ${email}`);
-    setStep(2); // Move to OTP verification step
+    setError('');
+    try {
+      const response = await fetch('http://localhost:4000/authentication/requestForgetPasswordEmail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage(data.message);
+        setStep(2); // Move to OTP verification step
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setError('An error occurred while sending the OTP.');
+    }
   };
 
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
-    // Mock OTP verification and password reset
-    console.log(`Verifying OTP: ${otp}`);
-    setStep(3); // Move to password reset step
-  };
-
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-    // Mock password reset
-    console.log(`Resetting password for ${email}`);
-    setMessage('Password reset successfully!');
-    window.location.href = "/signin";
+    setError('');
+    try {
+      const response = await fetch('http://localhost:4000/authentication/resetPassword', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ otp, username, newPassword }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage(data.message);
+        setStep(3); // Move to success step
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setError('An error occurred while resetting the password.');
+    }
   };
 
   return (
@@ -37,6 +61,13 @@ function ForgotPassword() {
         <form onSubmit={handleSendOTP} className={styles.formContainer}>
           <h2>Forgot Password</h2>
           <input
+            type="text"
+            placeholder="Enter your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <input
             type="email"
             placeholder="Enter your email"
             value={email}
@@ -44,6 +75,7 @@ function ForgotPassword() {
             required
           />
           <button type="submit">Send OTP</button>
+          {error && <p className={styles.error}>{error}</p>}
         </form>
       )}
       {step === 2 && (
@@ -56,12 +88,6 @@ function ForgotPassword() {
             onChange={(e) => setOtp(e.target.value)}
             required
           />
-          <button type="submit">Verify OTP</button>
-        </form>
-      )}
-      {step === 3 && (
-        <form onSubmit={handleResetPassword} className={styles.formContainer}>
-          <h2>Reset Password</h2>
           <input
             type="password"
             placeholder="Enter new password"
@@ -70,8 +96,14 @@ function ForgotPassword() {
             required
           />
           <button type="submit">Reset Password</button>
-          <p>{message}</p>
+          {error && <p className={styles.error}>{error}</p>}
         </form>
+      )}
+      {step === 3 && (
+        <div className={styles.formContainer}>
+          <h2>{message}</h2>
+          <a href="/signin">Go to Sign In</a>
+        </div>
       )}
     </div>
   );

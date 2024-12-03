@@ -30,9 +30,10 @@ const UploadDocuments = ({ userType, userId }) => {
         
 
         try {
-            const response = await fetch(`http://localhost:4000/authentication/uploadDocuments/${userId}`, {
+            const response = await fetch(`http://localhost:4000/authentication/uploadDocuments`, {
                 method: 'POST',
                 body: formData,
+                credentials:"include"
             });
 
             if (!response.ok) {
