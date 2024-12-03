@@ -95,3 +95,22 @@ font-family: Arial, Helvetica, sans-serif;
   .createaccountInline a:hover {
     text-decoration: underline;
   }
+
+.forgetPassInline{
+    margin-top: 6px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.forgetPassInline span {
+    color: #555; 
+  }
+
+.forgetPassInline a {
+    color: #0070f3; /* Adjust link color */
+    text-decoration: none;
+}
+
+.forgetPassInline a:hover {
+    text-decoration: underline;
+}
