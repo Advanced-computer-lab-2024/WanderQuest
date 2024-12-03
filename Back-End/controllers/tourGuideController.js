@@ -214,7 +214,29 @@ const myNotifications = async(req,res)=>{
         res.status(500).json({ error: error.message });
     }
 }
+const seenNotifications = async (req, res) => {
+    const { _id } = req.user._id;
 
+    if (!_id) {
+        return res.status(400).json({ error: 'UserID is required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const result = await NotificationModel.updateMany(
+            { userID: _id }, // Match notifications by userID
+            { $set: { seen: true } } // Update the "seen" field to true
+        );
+
+        res.status(200).json({ message: 'Notifications updated', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
 
 //create an itinerary 
 const createItinerary = async (req, res) => {
@@ -574,4 +596,5 @@ module.exports = {
     commentOnTourGuide,
     rateItinerary,
     commentOnItinerary,
-    myNotifications};
+    myNotifications,
+    seenNotifications};
