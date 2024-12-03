@@ -452,4 +452,19 @@ async function resetPassword(req, res) {
     }
 }
 
-module.exports = { getUser, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, registerUser, acceptUser, acceptTerms, requestAccountDeletion, login, requestForgetPasswordEmail, resetPassword };
+module.exports = {
+    getUser,
+    uploadDocuments,
+    getUserDocuments,
+    getUsersRequestingAcceptance,
+    getDocumentByFileID,
+    changePassword,
+    registerUser,
+    acceptUser,
+    acceptTerms,
+    requestAccountDeletion,
+    login,
+    sendEmail,
+    requestForgetPasswordEmail,
+    resetPassword
+};
