@@ -173,7 +173,7 @@ const uploadDocuments = async (req, res) => {
 // retrieve documents
 const getUserDocuments = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(req.params.id);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });

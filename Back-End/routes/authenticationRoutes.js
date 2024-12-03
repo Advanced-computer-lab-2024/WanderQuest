@@ -12,7 +12,7 @@ router.post('/login', login);
 router.get('/user', requireAuth(), getUser);
 router.post('/changePassword', requireAuth(), changePassword);
 router.post('/uploadDocuments', requireAuth(), uploadDocuments);
-router.get('/getDocuments', requireAuth(), getUserDocuments);
+router.get('/getDocuments/:id', requireAuth(), getUserDocuments);
 router.get('/getUsersRequestingAcceptance', requireAuth({ role: 'Admin' }), getUsersRequestingAcceptance);
 router.get('/getDocumentByFileID/:id', requireAuth(), getDocumentByFileID);
 router.patch('/acceptUser/:id', requireAuth({ role: 'Admin' }), acceptUser);
