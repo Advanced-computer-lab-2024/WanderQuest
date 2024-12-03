@@ -609,7 +609,7 @@ const flagActivity = async (req, res) => {
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: activity.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Activity has been flagged as inappropriate.",
+                message: `Your Activity ${activity.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: activityId // Set the ReasonID to the Itinerary ID
             });
@@ -646,7 +646,7 @@ const flagItinerary = async (req, res) => {
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: itinerary.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Itinerary has been flagged as inappropriate.",
+                message: `Your Itinerary ${itinerary.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: id // Set the ReasonID to the Itinerary ID
             });
