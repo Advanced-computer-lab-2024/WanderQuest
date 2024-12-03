@@ -27,7 +27,7 @@ import Salesrepadv from "../../components/Salesrepadv";
 export default function Home() {
    return (<>
       <Navbar></Navbar>
-      <Salesrepadv></Salesrepadv>
+      {/* <Salesrepadv></Salesrepadv> */}
 {/* <Salesrepseller></Salesrepseller> */}
       {/* <Signin></Signin>
 
@@ -37,7 +37,7 @@ export default function Home() {
       <Link href="/admin">
          <button className='admin'>Admin</button>
       </Link> */}
-      {/* <Salesrep></Salesrep> */}
+      <Salesrep></Salesrep>
       {/* <Link href="/guest">
          <button className='guest'>Guest</button>
       </Link>

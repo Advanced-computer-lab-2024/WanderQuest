@@ -4,16 +4,25 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import { useSpring, animated } from "@react-spring/web";
 import styles from '../styles/Report.module.css';
 
 // Register necessary components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale, 
+  LinearScale, 
+  BarElement, 
+  ArcElement,
+  Title, 
+  Tooltip, 
+  Legend
+);
 
 const Salesrep = () => {
   const [productFilter, setProductFilter] = useState("All");
@@ -38,6 +47,23 @@ const Salesrep = () => {
         borderWidth: 1
       },
     ],
+  };
+
+  const doughnutData = {
+    labels: ['Products', 'Itineraries', 'Activities', 'Other'],
+    datasets: [
+      {
+        label: 'Sales Distribution',
+        data: [1200, 800, 600, 400],
+        backgroundColor: [
+          'rgb(0, 123, 255)',
+          'rgb(52, 152, 219)',
+          'rgb(33, 97, 140)',
+          'rgb(94, 186, 255)'
+        ],
+        hoverOffset: 4
+      }
+    ]
   };
 
   const filterData = (filter) => {
@@ -101,17 +127,32 @@ const Salesrep = () => {
       x: {
         ticks: { color: 'black' },
         grid: {
-          display: false, // Hides vertical grid lines
+          display: false,
         },
       },
       y: {
         ticks: { color: 'black' },
         grid: {
-          drawBorder: false, // Hides the border line
-          drawTicks: true,   // Keeps tick marks
+          drawBorder: false,
+          drawTicks: true,
         },
       },
     },
+  };
+
+  const doughnutOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: { color: 'black' }
+      },
+      title: {
+        display: true,
+        text: 'Sales Distribution',
+        color: 'black'
+      }
+    }
   };
 
   return (
@@ -123,10 +164,6 @@ const Salesrep = () => {
           <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
         </div>
         <div className={styles.total}>
-          <p className={styles.text}>Products sales</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total}>
           <p className={styles.text}>Total users</p>
           <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
         </div>
@@ -134,13 +171,13 @@ const Salesrep = () => {
           <p className={styles.text}>New users</p>
           <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
         </div>
-        <div className={styles.total}>
-          <p className={styles.text}>Itineraries Sales</p>
-          <animated.span className={styles.nums}>{itineraryNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total}>
-          <p className={styles.text}>Activity Sales</p>
-          <animated.span className={styles.nums}>{activityNumber.to((n) => n.toFixed(0))}</animated.span>
+
+        <div className={styles.graph}>
+          <h2>Sales Distribution</h2>
+          <Doughnut 
+            data={doughnutData}
+            options={doughnutOptions}
+          />
         </div>
       </div>
 
@@ -189,7 +226,7 @@ const Salesrep = () => {
             </select>
           </label>
           <div className={styles.graph}>
-          <h2>Itiniraries</h2>
+          <h2>Itineraries</h2>
             <Bar
               data={filterData(itineraryFilter)}
               options={{
@@ -232,6 +269,7 @@ const Salesrep = () => {
             />
           </div>
         </div>
+
       </div>
     </div>
   );

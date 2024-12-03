@@ -306,7 +306,7 @@ function BookingsPage() {
           const pricetotal = `${price.grandTotal}`
           return (
             <div key={index} className={styles.card}>
-              <img src="/Blue and White Illustrative International Civil Aviation Day Instagram Post.png" alt="" className={styles.hotelImage}/>
+              <img src="/plane2.png" alt="" className={styles.hotelImage}/>
               <p>
                 <strong>From:</strong> {departureInfo.iataCode} at {formattedDepartureDate} at {formattedDepartureTime}
               </p>
