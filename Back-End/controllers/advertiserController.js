@@ -413,4 +413,33 @@ const viewSalesReport = async (req,res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,myNotifications,seenNotifications,viewSalesReport };
+//view tourist report
+const viewTouristsReport = async (req, res) => {
+    const advertiserId = req.user._id;
+
+    try {
+        if (!advertiserId) {
+            return res.status(400).json({ error: 'UserID is required' });
+        }
+        // Validate Advertiser
+        if (!mongoose.Types.ObjectId.isValid(advertiserId)) {
+            return res.status(400).json({ error: 'Invalid Advertiser ID' });
+        }
+
+        const activities = await ActivityModel.find({ createdBy: advertiserId });
+        //console.log(activities);
+        const totalTourists = activities.reduce((sum, activity) => sum + (activity.touristsCount || 0), 0);
+
+        const report = {
+            totalTouristsFromActivities: totalTourists,
+        };
+
+        res.status(200).json({ message: 'Tourist Report Generated', report });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,myNotifications,seenNotifications,viewSalesReport,viewTouristsReport };

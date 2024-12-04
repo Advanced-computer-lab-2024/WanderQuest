@@ -57,6 +57,7 @@ const bookActivity = async (req, res) => {
 
         //increment no.of booking of activities
         retActivity.NoOfBooking += 1;
+        retActivity.touristsCount = (retActivity.touristsCount || 0)+1;
         // Recalculate revenue assuming that all bookings are online
         const appFee = retActivity.price * 0.10;
         retActivity.revenue = (retActivity.revenue || 0) + (retActivity.price - appFee);
@@ -150,6 +151,8 @@ const bookItinerary = async (req, res) => {
         const savedBooking = await newBooking.save();
         // Increment the number of bookings for the itinerary
         retItinerary.NoOfBookings += 1;
+        retItinerary.touristsCount = (retItinerary.touristsCount || 0) + 1;
+
         // Recalculate revenue
         const appFee = retItinerary.price * 0.10;
         retItinerary.revenue = (retItinerary.revenue || 0) + (retItinerary.price - appFee);

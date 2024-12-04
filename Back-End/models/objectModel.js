@@ -137,6 +137,7 @@ const activitySchema = new mongoose.Schema({
     specialDiscounts: { type: String },
     bookingIsOpen: { type: Boolean, default: true },
     NoOfBooking: { type: Number, default: 0},
+    touristsCount: { type: Number, default: 0 }, 
     revenueOfThisActivity: { type: Number, default: 0 }, //!!!!!!!!!!!!!ensure that it is not seen by tourist
     ratings: [{ type: ratingSchema, required: false, default: null }],
     rating: { type: Number, default: null },
@@ -242,6 +243,7 @@ const itinerarySchema = new mongoose.Schema({
     ],
     BookingAlreadyMade: { type: Boolean, default: false },
     NoOfBookings: { type : Number, default: 0 },
+    touristsCount: { type: Number, default: 0 }, 
     revenueOfThisItinerary: { type: Number, default: 0},
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
