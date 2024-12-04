@@ -700,7 +700,7 @@ const viewTouristReport = async (req, res) => {
 
 // get the tour guide info
 const getTourGuideInfo = async (req, res) => {
-    const { tourGuideId } = req.params;
+    const tourGuideId = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
         return res.status(400).json({ error: 'Invalid Tour Guide ID format' });
