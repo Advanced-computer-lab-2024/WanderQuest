@@ -543,15 +543,26 @@ const issueAnOrder = async (req, res) => {
 const viewOrders = async (req, res) => {
     const touristId = req.user._id;
     try {
-        const orders = await orderModel.find({ orderedBy: touristId });
-        if(!orders){
+        const orders = await orderModel.find({ orderedBy: touristId }).populate('products.productId', 'name price');
+        if (!orders || orders.length === 0) {
             return res.status(404).json({ error: 'No orders found' });
         }
-        return res.status(200).json(orders);
+
+        // Transform the orders to include product names, prices, and quantities
+        const transformedOrders = orders.map(order => ({
+            ...order.toObject(),
+            products: order.products.map(product => ({
+                name: product.productId.name,
+                price: product.productId.price,
+                quantity: product.quantity
+            }))
+        }));
+
+        return res.status(200).json(transformedOrders);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-}
+};
 
 const cancelOrder = async (req, res) => {
     const touristId = req.user._id;
@@ -577,6 +588,92 @@ const cancelOrder = async (req, res) => {
         return res.status(200).json({ message: 'Order cancelled successfully', order });
     } catch (error) {
         return res.status(500).json({ error: error.message });
+    }
+}
+
+const addToCart = async (req, res) => {
+    const touristId = req.user._id
+    const { productId, quantity } = req.body
+    if(!productId || !quantity){
+        return res.status(400).json({ error: 'Missing product ID or quantity' })
+    }
+    try{
+        const product = await Product.findById(productId)
+        if(!product){
+            return res.status(404).json({ error: 'Could not find product with ID: ' + productId })
+        }
+        if(product.availableAmount < quantity){
+            return res.status(400).json({ error: 'Not enough stock for product: ' + product.name })
+        }
+        const tourist = await Tourist.findById(touristId)
+        tourist.cart = [...tourist.cart, { productId, quantity }]
+        await tourist.save()
+        return res.status(200).json({ message: 'Product added to cart successfully', cart: tourist.cart })
+    } catch (error){
+        return res.status(500).json({ error: error.message})
+    }
+}
+
+const removeFromCart = async (req, res) => {
+    const touristId = req.user._id
+    const { productId } = req.body
+    if(!productId){
+        return res.status(400).json({ error: 'Missing product ID' })
+    }
+    try{
+        const tourist = await Tourist.findById(touristId);
+        tourist.cart = tourist.cart.filter(product => !product.productId.equals(productId));
+        await tourist.save();
+    } catch (error){
+        return res.status(500).json({ error: error.message })
+    }
+}
+
+const viewCart = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const tourist = await Tourist.findById(touristId).populate('cart.productId', 'name');
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+
+        // Transform the cart to include product names and quantities
+        const transformedCart = tourist.cart.map(item => ({
+            name: item.productId.name,
+            quantity: item.quantity
+        }));
+
+        return res.status(200).json(transformedCart);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const checkoutOrder = async (req, res) => {
+    const touristId = req.user._id;
+    const { cart } = req.body;
+
+    if(!cart){
+        return res.status(400).json({ error: 'Missing cart' });
+    }
+
+    try{
+        let totalPrice = 0;
+        for(const item of cart){
+            const product = await Product.findById(item.productId);
+            if(!product){
+                return res.status(404).json({ error: 'Could not find product with ID: ' + item.productId });
+            }
+            if(product.availableAmount < item.quantity){
+                return res.status(400).json({ error: 'Not enough stock for product: ' + product.name });
+            }
+            totalPrice += product.price * item.quantity;
+        }
+        
+        const order = await orderModel.create({ orderedBy: touristId, products: cart, totalPrice: totalPrice, date: new Date(), status: 'pending' });
+        return res.status(200).json({ order: order.products})
+    } catch(error){
+        return res.status(500).json({ error: error.message })
     }
 }
 

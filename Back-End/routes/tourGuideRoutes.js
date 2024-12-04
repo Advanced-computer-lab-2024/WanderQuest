@@ -22,6 +22,8 @@ const {
     rateTourGuide,
     commentOnTourGuide,
     myNotifications,
+    seenNotifications,
+    specificNotification,
     viewSalesReport,
     viewFilterSalesReport} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
@@ -44,7 +46,9 @@ router.patch('/itinerary/activate/:id', requireAuth({role: "tourGuide"}), activa
 router.patch('/itinerary/deactivate/:id', requireAuth({role: "tourGuide"}), deactivateItinerary);
 router.post('/rate/:tourGuideId', requireAuth({role: "tourist"}), rateTourGuide);
 router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnTourGuide);
-router.get('/notifs/:id',requireAuth({role: "tourGuide"}),myNotifications);
+router.get('/notifs',requireAuth({role: "tourGuide"}),myNotifications);
+router.get('/notif/:id',requireAuth({role: "tourGuide"}),specificNotification);
+router.patch('/notifs',requireAuth({role: "tourGuide"}),seenNotifications);
 router.get('/salesReport/:id',requireAuth({role: "tourGuide"}),viewSalesReport);
 router.get('/filterReport/:itineraryId/:startDate/:endDate',requireAuth({role: "tourGuide"}),viewFilterSalesReport);
 module.exports = router;

@@ -8,10 +8,7 @@ const ProfileInfo = () => {
 
   return (
     <div>
-        <Navbar />
-        <div>
             <CompanyInfo/>
-        </div>
     </div>
   );
 

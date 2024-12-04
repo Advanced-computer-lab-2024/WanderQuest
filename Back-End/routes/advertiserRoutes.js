@@ -14,6 +14,7 @@ const {
     readOneActivity,
     readOneActivityByName,
     myNotifications,
+    seenNotifications,
     viewSalesReport }
     = require('../controllers/advertiserController');
 const { createTransportation, getAllTransportations } = require('../controllers/transportationController');
@@ -35,7 +36,7 @@ router.delete('/activity/:id', requireAuth({ role: 'advertiser' }), deleteActivi
 router.get('/myActivities', requireAuth({ role: 'advertiser' }), myCreatedActivities);
 router.post('/transportation/create', requireAuth({ role: 'advertiser' }), createTransportation);
 router.get('/transportations', getAllTransportations);
-router.get('/notifs/:id',requireAuth({role: "advertiser"}),myNotifications);
-router.get('/salesReport/:id',viewSalesReport);
+router.get('/notifs',requireAuth({role: "advertiser"}),myNotifications);
+router.patch('/notifs',requireAuth({role: "advertiser"}),seenNotifications)router.get('/salesReport/:id',viewSalesReport);
 
 module.exports = router;

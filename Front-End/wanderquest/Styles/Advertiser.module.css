@@ -1,0 +1,24 @@
+.profileButton {
+    position: absolute;
+    top: 60px;
+    right: 50px;
+    display: flex;
+    align-items: center;
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.profileButton:hover {
+    background-color: #005bb5;
+}
+
+.profileIcon {
+    margin-right: 5px;
+    font-size: 20px; /* Adjust icon size as needed */
+}
