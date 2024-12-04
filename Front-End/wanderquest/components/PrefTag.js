@@ -14,7 +14,13 @@ const PrefTag = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch('http://localhost:4000/admin/tags'); 
+        const response = await fetch('http://localhost:4000/admin/tags', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }); 
         if(!response.ok) throw new Error('Failed to fetch Preference Tags');
         const fetched = await response.json();
         setTags(fetched);
@@ -48,6 +54,7 @@ const PrefTag = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({type: tagInput}),
 
       }); 
@@ -68,7 +75,11 @@ const PrefTag = () => {
   const handleDelete = async (tagId) => {
     try {
       const response = await fetch(`http://localhost:4000/admin/deleteTag/${tagId}`,{
-        method: 'DELETE'
+        method: 'DELETE',
+        headers:{
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       });
       if(!response.ok) throw new Error('Cannot Delete Tag!');
       setTags(tags.filter((tag)=> tag._id !== tagId));
@@ -105,6 +116,7 @@ const PrefTag = () => {
         headers:{
           'Contetnt-type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({type: isEditing.value}),
        });
       if( !response.ok) throw new Error('Cannot Update Tag!');

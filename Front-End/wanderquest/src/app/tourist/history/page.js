@@ -317,8 +317,34 @@ const TouristHistory = () => {
         }
     };
 
+    // const handleOrderCancel = async (e, id) => {
+    //     e.preventDefault();
+    //     const response = await fetch(`http://localhost:4000/tourist/orders/cancel/${id}`, {
+    //         method: 'PATCH',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         credentials: 'include',
+    //     });
+    //     if(response.ok){
+    //         setLastUpdated(id);
+    //         setOnOrders(prev => prev.filter(order => order._id !== id));
+    //         setPastOrders(prev => [...prev, { ...orderToCancel, status: 'canceled' }]);
+    //     }
+    //     else{
+    //         console.log('Error cancelling order');
+    //     }
+    // }
+
     const handleOrderCancel = async (e, id) => {
         e.preventDefault();
+        const orderToCancel = onOrders.find(order => order._id === id); // Retrieve the canceled order.
+    
+        if (!orderToCancel) {
+            console.log('Order not found');
+            return;
+        }
+    
         const response = await fetch(`http://localhost:4000/tourist/orders/cancel/${id}`, {
             method: 'PATCH',
             headers: {
@@ -326,15 +352,16 @@ const TouristHistory = () => {
             },
             credentials: 'include',
         });
-        if(response.ok){
-            setLastUpdated(id);
-            setOnOrders(prev => prev.filter(order => order._id !== id));
-            setPastOrders(prev => [...prev, { ...orderToCancel, status: 'canceled' }]);
-        }
-        else{
+    
+        if (response.ok) {
+            setLastUpdated(id); // Assuming this triggers a re-fetch or re-render elsewhere.
+            setOnOrders(prev => prev.filter(order => order._id !== id)); // Remove the order from active list.
+            setPastOrders(prev => [...prev, { ...orderToCancel, status: 'canceled' }]); // Add to past orders.
+        } else {
             console.log('Error cancelling order');
         }
-    }
+    };
+    
 
 
     return (
@@ -355,8 +382,9 @@ const TouristHistory = () => {
             </div>
             <div>
     {activeButton === 'Rate' && (
+        <div>
+            <h2 className={styles.otherTitle}>Rate Your Experience</h2>
         <div className={styles.innerBox}>
-            <h2 className={styles.innerTitle}>Rate Your Experience</h2>
             {/* Followed Tour Guides Section
             <div className={styles.innerContainer}>
                 <h2 className={styles.innerTitle}>Followed Tour Guides</h2>
@@ -427,46 +455,7 @@ const TouristHistory = () => {
                     )}
                 </div>
             </div>
-
-            {/* Attended Activities Section */}
-            <div className={styles.innerContainer}>
-                <h2 className={styles.innerTitle}>Attended Activities</h2>
-                <div>
-                    {attendedActivities ? (
-                        attendedActivities.map((activity) => (
-                            <div key={activity._id} className={styles.innerBox}>
-                                <p><strong>Activity:</strong> {activity.title}</p>
-                                <p><strong>Date:</strong> {new Date(activity.date).toLocaleDateString()}</p>
-                                <p><strong>Location:</strong> {activity.location}</p>
-                                <p><strong>Rating:</strong> {activity.rating}</p>
-                                <AddRating 
-                                    rating={activityFeedback[activity._id]?.rating || ''} 
-                                    setRating={(value) => handleActivityFeedbackChange(activity._id, 'rating', value)} 
-                                />
-                                <AddComment 
-                                    comment={activityFeedback[activity._id]?.comment || ''} 
-                                    setComment={(value) => handleActivityFeedbackChange(activity._id, 'comment', value)} 
-                                />
-                                <button 
-                                    className={styles.btnFeedback} 
-                                    onClick={(e) => handleActivityFeedback(e, activity._id)}
-                                >
-                                    Send
-                                </button>
-                                <div>
-                                    {showMessage && lastUpdated === activity._id ? (
-                                        <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
-                                            Feedback sent successfully
-                                        </p>
-                                    ) : null}
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No Attended Activities</p>
-                    )}
-                </div>
-            </div>
+        </div>
         </div>
     )}
 </div>
@@ -474,7 +463,7 @@ const TouristHistory = () => {
 <div>
     {activeButton === 'Orders' && (
         <div>
-            <h2 className={styles.innerTitle}>Your Orders</h2>
+            <h2 className={styles.otherTitle}>Your Orders</h2>
         <div className={styles.innerBox}>
         <h2 className={styles.innerTitle}>Active Orders</h2>
             <div className={styles.tabInBox}>
@@ -484,16 +473,18 @@ const TouristHistory = () => {
                             <div key={order._id} className={styles.innerBox}>
                                 <h2 className={styles.innerTitle}>Order</h2>
                                 {/* <img src={order.picture} alt="Order Image" /> */}
-                                {/*<p><strong>Product(s):</strong></p>*/}{order.products.map((prod) => (
-                                    <div key={prod._id} className={styles.innerBox}>
-                                    <p><strong>Product ID:</strong>{prod.productId}</p>
-                                    <p><strong>Quantity:</strong>{prod.quantity}</p>
-                                </div>
-                            ))}
-                            <p><strong>Date of Order:</strong> {new Date(order.date).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'})}</p>
-                            <p><strong>Total Price:</strong>{order.totalPrice}</p>
-                            <p><strong>Status:</strong>{order.status}</p>
-                            <button className={styles.cancelButton} onClick={(e)=>handleOrderCancel(e, order._id)}>Cancel</button>
+                                <p><strong>Product(s):</strong></p>
+                                {order.products.map((prod,index) => (
+                                    <div key={`${order._id}-${index}`} className={styles.innerBox}>
+                                        <p>{/*<strong>Product:</strong>*/}{prod.name}</p>
+                                        <p><strong>Quantity:</strong>{prod.quantity}</p>
+                                        <p><strong>Rating:</strong>{prod.rating ?? "N/A"}</p>
+                                    </div>
+                                ))}
+                                <p><strong>Date of Order:</strong> {new Date(order.date).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'})}</p>
+                                <p><strong>Total Price:</strong>{order.totalPrice}</p>
+                                <p><strong>Status:</strong>{order.status}</p>
+                                <button className={styles.cancelButton} onClick={(e)=>handleOrderCancel(e, order._id)}>Cancel</button>
                             </div>
                         ))
                     ) : (
@@ -511,13 +502,14 @@ const TouristHistory = () => {
                             <div key={order._id} className={styles.innerBox}>
                                 <h2 className={styles.innerTitle}>Order</h2>
                                 {/* <img src={order.picture} alt="Order Image" /> */}
-                                {/*<p><strong>Product(s):</strong></p>*/}{order.products.map((prod) => (
-                                    <div key={prod._id} className={styles.innerBox}>
-                                        <p><strong>Product ID:</strong>{prod.productId}</p>
+                                <p><strong>Product(s):</strong></p>{order.products.map((prod,index) => (
+                                    <div key={`${order._id}-${index}`} className={styles.innerBox}>
+                                        <p>{/*<strong>Product:</strong>*/}{prod.name}</p>
                                         <p><strong>Quantity:</strong>{prod.quantity}</p>
+                                        <p><strong>Rating:</strong>{prod.rating ?? "N/A"}</p>
                                     </div>
                                 ))}
-                                <p><strong>Date of Order:</strong> {new Date(order.date).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'})}</p>
+                                <p><strong>Date of Order:</strong> {new Date(order.date).toLocaleDateString(/*'en-US', {year:'numeric', month:'long', day:'numeric'}*/)}</p>
                                 <p><strong>Total Price:</strong>{order.totalPrice}</p>
                                 <p><strong>Status:</strong>{order.status}</p>
                             </div>
@@ -534,7 +526,7 @@ const TouristHistory = () => {
 <div>
     {activeButton === 'Events' && (
         <div>
-            <h2 className={styles.innerTitle}>Your Events</h2>
+            <h2 className={styles.otherTitle}>Your Events</h2>
         <div className={styles.innerBox}>
             <h2 className={styles.innerTitle}>Upcoming Events</h2>
             <div className={styles.tabInBox}>

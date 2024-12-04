@@ -2,7 +2,7 @@
 
 .histContainer {
     padding: 30px;
-    background-color: #f4f4f4;
+    background-color: #17455C;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     max-width: 900px;
@@ -37,6 +37,13 @@
     color: #333;
   }
   
+  .otherTitle{
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    color: #f3f0f0;
+  }
+
   .pastItern {
     margin-bottom: 40px;
     padding: 20px;

@@ -26,7 +26,7 @@ export default function Home() {
    return (<>
       <Signin></Signin>
 
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
     
 
 
