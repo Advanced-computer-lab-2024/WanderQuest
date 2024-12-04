@@ -9,6 +9,8 @@ const Cruditinerary = () => {
     const [itineraries, setItineraries] = useState([]);
     const [showMessage, setShowMessage] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(null);
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         title: '',
         activities: [],
@@ -108,6 +110,7 @@ const Cruditinerary = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify(updatedFormData)
                 });
 
@@ -131,6 +134,7 @@ const Cruditinerary = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify(updatedFormData)
                 });
 
@@ -175,7 +179,8 @@ const Cruditinerary = () => {
 
         try {
             const response = await fetch(`http://localhost:4000/tourGuide/itineraries/${itinerary._id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                include: 'credentials'
             });
             if (!response.ok) {
                 const errorData = await response.json();
@@ -266,14 +271,20 @@ const Cruditinerary = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({ bookingIsOpen: true })
-               
             });
+    
+            const responseData = await response.json();
+    
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error response:', errorData);
-                throw new Error('Network response was not ok');
+                setErrorMessage('You are not authorized to activate this itinerary.');
+                setLastUpdated(itineraryId);
+                setShowError(true);
+                setTimeout(() => setShowError(false), 3000);
+                return;
             }
+    
             setItineraries((prevItineraries) =>
                 prevItineraries.map((itinerary) =>
                     itinerary._id === itineraryId
@@ -284,14 +295,13 @@ const Cruditinerary = () => {
             setLastUpdated(itineraryId);
             setShowMessage(true);
             setTimeout(() => setShowMessage(false), 3000);
-            console.log('Itinerary activated successfully');
         } catch (error) {
             console.error('Error activating itinerary:', error);
         }
-    }
+    };
+    
 
-
-    const handleDeativation = async (itineraryId) => {
+    const handleDeactivation = async (itineraryId) => {
         try {
             const response = await fetch(`http://localhost:4000/tourGuide/itinerary/deactivate/${itineraryId}`,
                 {
@@ -299,13 +309,17 @@ const Cruditinerary = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify({ bookingIsOpen: false })
                 }
             );
+            const responseData = await response.json();
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error response:', errorData);
-                throw new Error('Network response was not ok');
+                setErrorMessage('You are not authorized to activate this itinerary.');
+                setLastUpdated(itineraryId);
+                setShowError(true);
+                setTimeout(() => setShowError(false), 3000);
+                return;
             }
             setLastUpdated(itineraryId);
             setShowMessage(true);
@@ -502,7 +516,7 @@ const Cruditinerary = () => {
                            
                             {
                                 itinerary.bookingIsOpen ?
-                            <button className={styles.inactive} onClick={() => handleDeativation(itinerary._id)}>Deactivate</button> : 
+                            <button className={styles.inactive} onClick={() => handleDeactivation(itinerary._id)}>Deactivate</button> : 
                             <button className={styles.active} onClick={() => handleActivation(itinerary._id)}>Activate</button>
                             }
                             
@@ -515,6 +529,10 @@ const Cruditinerary = () => {
                                  :
                                   <p className={`${styles.deactivationmessage} ${showMessage ? styles.fadeOut : ''}`}><strong>Booking is Closed</strong></p>
                                 )
+                                }
+                                { showError && lastUpdated === itinerary._id ?
+                                    <p className={`${styles.deactivationmessage} ${showError ? styles.fadeOut : ''}`}>{errorMessage}</p>
+                                    : null
                                 }
                             </div>
                         </div>
