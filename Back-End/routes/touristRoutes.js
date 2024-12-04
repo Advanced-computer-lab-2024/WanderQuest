@@ -35,7 +35,8 @@ const {
     seenNotifications,
     myNotifications,
     clearNotifications,
-    deleteNotification
+    deleteNotification,
+    bookingNotification
 } = require('../controllers/touristController');
 const { getProducts } = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
@@ -95,7 +96,7 @@ router.get('/notifs',myNotifications);
 router.patch('/notifs',seenNotifications);
 router.delete('/notifications',clearNotifications);
 router.delete('/notification/:id',deleteNotification);
-
+router.post('/bookingReminder',bookingNotification);
 
 
 module.exports = router;

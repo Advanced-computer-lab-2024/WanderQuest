@@ -8,6 +8,7 @@ const ActivityModel = require('../models/objectModel').Activity;
 const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
 const orderModel = require('../models/objectModel').Order;
+const BookingModel = require('../models/bookingModel');
 const { sendEmail  } = require('../controllers/authenticationController');
 const mongoose = require('mongoose');
 
@@ -806,7 +807,6 @@ const seenNotifications = async (req, res) => {
 const deleteNotification = async (req, res) => {
     const notificationID = req.params.id; // Assuming the notification ID is passed as a URL parameter
     const userID = req.user._id;
-
     try {
         const notification = await NotificationModel.findOneAndDelete({
             _id: notificationID,
@@ -834,6 +834,36 @@ const clearNotifications = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+const bookingNotification = async (req, res) => {
+    const touristID = req.user._id;
+    try {
+        const currentDate = new Date();
+        const fourDaysFromNow = new Date();
+        fourDaysFromNow.setDate(currentDate.getDate() + 4);
+        const bookings = await BookingModel.find({
+            userID: touristID,
+            startDate: {$gte: currentDate,$lt: fourDaysFromNow}});
+        const notifications = [];
+        const emailPromises = []; 
+        for (const booking of bookings) {
+            const notification = await NotificationModel.create({
+                userID: touristID,
+                message: `Your booking for ${booking.activityName} is starting on ${booking.startDate.toDateString()}!`,
+                reason: 'Upcoming Booking Reminder',
+                ReasonID: booking._id 
+            });
+            notifications.push(notification);
+        }
+        await Promise.all(emailPromises); // Send all emails in parallel
+        return res.status(200).json({
+            message: 'Notifications created successfully.',
+            notifications
+        });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -868,5 +898,6 @@ module.exports = {
     myNotifications,
     seenNotifications,
     clearNotifications,
-    deleteNotification
+    deleteNotification,
+    bookingNotification
 };
