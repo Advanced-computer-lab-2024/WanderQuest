@@ -121,7 +121,8 @@ const TouristSchema = new Schema({
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true, default: [] }],
     savedEvents: [{
         eventType: { type: String, enum: ['Activity', 'itinerary'], required: true },
-        eventId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'savedEvents.eventType' }
+        eventId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'savedEvents.eventType' },
+        notify:{type:Boolean,required:false,default:false}
     }],
     cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true, default: [] }],
 });

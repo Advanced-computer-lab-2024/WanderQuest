@@ -29,7 +29,13 @@ const {
     removeFromWishlist,
     issueAnOrder,
     viewOrders,
-    cancelOrder
+    cancelOrder,
+    beNotified,
+    bookingIsOpenReminder,
+    seenNotifications,
+    myNotifications,
+    clearNotifications,
+    deleteNotification
 } = require('../controllers/touristController');
 const { getProducts } = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
@@ -83,7 +89,12 @@ router.delete('/wishlist/remove', removeFromWishlist);
 router.get("/orders", viewOrders)
 router.post("/orders/issue", issueAnOrder)
 router.patch("/orders/cancel/:id", cancelOrder)
-
+router.patch("/beNotified/:id",beNotified)
+router.post('/savedReminder',bookingIsOpenReminder);
+router.get('/notifs',myNotifications);
+router.patch('/notifs',seenNotifications);
+router.delete('/notifications',clearNotifications);
+router.delete('/notification/:id',deleteNotification);
 
 
 
