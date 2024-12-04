@@ -9,10 +9,13 @@ import AddRating from '../../../../components/AddRating';
 const TouristHistory = () => {
     //const [followedGuides, setFollowedGuides] = useState([]);
     // const [tourGuideData, setTourGuideData] = useState(null);
-    const [pastItineraries, setPastItineraries] = useState(null);
-    const [attendedActivities, setAttendedActivities] = useState(null);
+
+    const [pastItineraries, setPastItineraries] = useState([]);
+    const [ongoingIti, setOngoingIti] = useState([]);
+
     const [pastOrders, setPastOrders] = useState([]);
     const [onOrders, setOnOrders] = useState([]);
+
     const [pastEvents, setPastEvents] = useState(null);
     const [ongoingEvents, setOngoingEvents] = useState(null);
     const [touristID, setTouristID] = useState("");
@@ -27,7 +30,8 @@ const TouristHistory = () => {
 
     const [activityFeedback, setActivityFeedback] = useState({});
 
-    const [activeButton, setActiveButton] = useState('Orders');
+    const [activeButton, setActiveButton] = useState('Rate');
+
     const [showGuidePopup, setShowGuidePopup] = useState(false);
     const [selectedGuide, setSelectedGuide] = useState(null);
 
@@ -95,21 +99,34 @@ const TouristHistory = () => {
 
 
 
-    // useEffect(() => {
-    //     const fetchItineraries = async () => {
-    //         try {
-    //             const response = await fetch(`http://localhost:4000/itinerary/myItineraries/${tourGuideData._id}`,{
-    //                 credentials: 'include',
-    //             });
-    //             const data = await response.json();
-    //             //const guideID = data.map(itinerary => itinerary.createdBy);
-    //             setPastItineraries(data);
-    //         } catch (error) {
-    //             console.error('Error fetching itineraries:', error);
-    //         }
-    //     };
-    //     fetchItineraries();
-    // }, [lastUpdated]);
+    useEffect(() => {
+        const fetchItineraries = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/booking/itineraries/${touristID}`, {
+                    credentials: 'include',
+                });
+                const data = await response.json();
+    
+                if (Array.isArray(data) && data.length > 0) {
+                    const ongoing = [];
+                    const past = [];
+                    data.forEach(itinerary => {
+                        if (new Date(itinerary.date) > new Date()) {
+                            ongoing.push(itinerary);
+                        } else {
+                            past.push(itinerary);
+                        }
+                    });
+                    setOngoingIti(ongoing);
+                    setPastItineraries(past);
+                    console.log('Itineraries:', data);
+                }
+            } catch (error) {
+                console.error('Error fetching itineraries:', error);
+            }
+        };
+        fetchItineraries();
+    }, [lastUpdated]);
 
 
     useEffect(() => {
@@ -215,10 +232,11 @@ const TouristHistory = () => {
         }
 
     }
-    const handleGuidePopup = async (guideId) => {
+    const handleGuidePopup = async (guideID) => {
         try {
-            const response = await fetch(`http://localhost:4000/tourGuide/profile/${guideId}`);
+            const response = await fetch(`http://localhost:4000/tourGuide/tourGuideInfo/${guideID}`);
             const data = await response.json();
+            console.log('Guide Details:', data);
             setSelectedGuide(data); // Store guide details in state
             setShowGuidePopup(true); // Open the popup
         } catch (error) {
@@ -411,50 +429,66 @@ const TouristHistory = () => {
 
             {/* List of Itineraries Section */}
             <div className={styles.innerContainer}>
-                <h2 className={styles.innerTitle}>List of Itineraries</h2>
-                <div>
-                    {pastItineraries ? (
-                        pastItineraries.map((itinerary) => (
-                            <div key={itinerary._id} className={styles.innerBox}>
-                                <p><strong>Title: {itinerary.title}</strong></p>
-                                <p><strong>Available Dates:</strong> {itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</p>
-                                <p><strong>Time:</strong> {itinerary.time.join(', ')}</p>
-                                <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
-                                <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
-                                <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
-                                <p><strong>Price:</strong> {itinerary.price}</p>
-                                <button className={styles.linkButton} onClick={() => handleGuidePopup(itinerary.createdBy)}>
-                                    View Tour Guide
-                                </button>
-                                <p><strong>Rating:</strong> {itinerary.rating}</p>
-                                <AddRating 
-                                    rating={itiFeedback[itinerary._id]?.rating || ''} 
-                                    setRating={(value) => handleItiFeedbackChange(itinerary._id, 'rating', value)} 
-                                />
-                                <AddComment 
-                                    comment={itiFeedback[itinerary._id]?.comment || ''} 
-                                    setComment={(value) => handleItiFeedbackChange(itinerary._id, 'comment', value)} 
-                                />
-                                <button 
-                                    className={styles.btnFeedback} 
-                                    onClick={(e) => handleItiFeedback(e, itinerary._id)}
-                                >
-                                    Send
-                                </button>
-                                <div>
-                                    {showMessage && lastUpdated === itinerary._id ? (
-                                        <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
-                                            Feedback sent successfully
-                                        </p>
-                                    ) : null}
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No Itineraries Available</p>
-                    )}
+    <h2 className={styles.innerTitle}>List of Itineraries</h2>
+    <div>
+        {/* Check if pastItineraries is a valid array */}
+        {Array.isArray(pastItineraries) && pastItineraries.length > 0 ? (
+            pastItineraries.map((itinerary) => (
+                <div id={itinerary.id} key={itinerary.details._id} className={styles.innerBox}>
+                    <p><strong>Title: {itinerary.details.title}</strong></p>
+                    <p>
+                        <strong>Time:</strong> {Array.isArray(itinerary.details.time) 
+                            ? itinerary.details.time.join(', ') 
+                            : 'N/A'}
+                    </p>
+                    <p>
+                        <strong>Accessibility:</strong> {itinerary.details.accessibility ? 'Yes' : 'No'}
+                    </p>
+                    <p>
+                        <strong>Pick Up Location:</strong> {itinerary.details.pickUpLocation || 'N/A'}
+                    </p>
+                    <p>
+                        <strong>Drop Off Location:</strong> {itinerary.details.dropOffLocation || 'N/A'}
+                    </p>
+                    <p><strong>Price:</strong> {itinerary.details.price || 'N/A'}</p>
+                    <button 
+                        className={styles.linkButton} 
+                        onClick={() => handleGuidePopup(itinerary.details.createdBy)}
+                    >
+                        View Tour Guide
+                    </button>
+                    <p><strong>Rating:</strong> {itinerary.details.rating || 'Not Rated'}</p>
+                    {/* Components for adding feedback */}
+                    <AddRating 
+                        rating={itiFeedback[itinerary._id]?.rating || ''} 
+                        setRating={(value) => handleItiFeedbackChange(itinerary._id, 'rating', value)} 
+                    />
+                    <AddComment 
+                        comment={itiFeedback[itinerary._id]?.comment || ''} 
+                        setComment={(value) => handleItiFeedbackChange(itinerary._id, 'comment', value)} 
+                    />
+                    <button 
+                        className={styles.btnFeedback} 
+                        onClick={(e) => handleItiFeedback(e, itinerary._id)}
+                    >
+                        Send
+                    </button>
+                    <div>
+                        {showMessage && lastUpdated === itinerary._id ? (
+                            <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
+                                Feedback sent successfully
+                            </p>
+                        ) : null}
+                    </div>
                 </div>
-            </div>
+            ))
+        ) : (
+            // Fallback for no itineraries
+            <p>No Itineraries Available</p>
+        )}
+    </div>
+</div>
+
         </div>
         </div>
     )}
@@ -588,33 +622,27 @@ const TouristHistory = () => {
         </div>
         </div>
     )}
-</div> 
+        </div> 
 
             </div>
             {showGuidePopup && selectedGuide && (
-    <div className={styles.popupOverlay}>
-        <div className={styles.popupWindow}>
-            <button 
-                className={styles.closeButton} 
-                onClick={() => setShowGuidePopup(false)}
-            >
-                Close
-            </button>
-            <h2>Tour Guide Details</h2>
-            <p><strong>Username:</strong> {selectedGuide.username}</p>
-            <p><strong>Email:</strong> {selectedGuide.email}</p>
-            <h3>Rate This Guide</h3>
-            <AddRating rating={rating} setRating={setRating} />
-            <AddComment comment={comment} setComment={setComment} />
-            <button 
-                className={styles.btnFeedback} 
-                onClick={handleFeedback}
-            >
-                Submit Feedback
-            </button>
-        </div>
-    </div>
-)}
+                <div className={styles.popupOverlay}>
+                    <div className={styles.popupWindow}>
+                        <button className={styles.closeButton} onClick={() => setShowGuidePopup(false)}>
+                        x
+                        </button>
+                        <h2>Tour Guide Details</h2>
+                        <p><strong>Username:</strong> {selectedGuide.username}</p>
+                        <p><strong>Email:</strong> {selectedGuide.email}</p>
+                        <h3>Rate This Guide</h3>
+                        <AddRating rating={rating} setRating={setRating} />
+                        <AddComment comment={comment} setComment={setComment} />
+                        <button className={styles.btnFeedback} onClick={handleFeedback}>
+                        Submit Feedback
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
