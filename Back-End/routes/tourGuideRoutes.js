@@ -22,7 +22,8 @@ const {
     rateTourGuide,
     commentOnTourGuide,
     myNotifications,
-    seenNotifications} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
+    seenNotifications,
+    specificNotification} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
 const requireAuth = require('../middleware/requireAuth');
@@ -43,6 +44,7 @@ router.patch('/itinerary/activate/:id', requireAuth({role: "tourGuide"}), activa
 router.patch('/itinerary/deactivate/:id', requireAuth({role: "tourGuide"}), deactivateItinerary);
 router.post('/rate/:tourGuideId', requireAuth({role: "tourist"}), rateTourGuide);
 router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnTourGuide);
-router.get('/notifs/:id',requireAuth({role: "tourGuide"}),myNotifications);
-router.patch('/notifs/:id',requireAuth({role: "tourGuide"}),seenNotifications);
+router.get('/notifs',requireAuth({role: "tourGuide"}),myNotifications);
+router.get('/notif/:id',requireAuth({role: "tourGuide"}),specificNotification);
+router.patch('/notifs',requireAuth({role: "tourGuide"}),seenNotifications);
 module.exports = router;
