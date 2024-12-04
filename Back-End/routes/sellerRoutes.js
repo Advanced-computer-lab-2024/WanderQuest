@@ -34,6 +34,6 @@ router.patch('/archiveProduct/:id', archiveProduct);
 
 router.patch('/unarchiveProduct/:id', unarchiveProduct);
 
-router.get('/salesReport/:id',viewSalesReport);
+router.get('/salesReport',requireAuth({role: "seller"}),viewSalesReport);
 
 module.exports = router;

@@ -49,6 +49,7 @@ router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnTourGuide);
 router.get('/notifs',requireAuth({role: "tourGuide"}),myNotifications);
 router.get('/notif/:id',requireAuth({role: "tourGuide"}),specificNotification);
 router.patch('/notifs',requireAuth({role: "tourGuide"}),seenNotifications);
-router.get('/salesReport/:id',requireAuth({role: "tourGuide"}),viewSalesReport);
+router.get('/salesReport',requireAuth({role: "tourGuide"}),viewSalesReport);
 router.get('/filterReport/:itineraryId/:startDate/:endDate',requireAuth({role: "tourGuide"}),viewFilterSalesReport);
+
 module.exports = router;

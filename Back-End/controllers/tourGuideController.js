@@ -605,7 +605,11 @@ const viewSalesReport = async (req,res) => {
     if (!mongoose.Types.ObjectId.isValid(tourGuide)) {
         return res.status(400).json({ error: 'Wrong ID format' });
     }
-
+    const tourrGuide = await TourGuide.findById(tourGuide);
+    console.log(tourGuide);
+    if (!tourrGuide) {
+        return res.status(404).json({ error: 'Tour guide not found' });
+    }
     const myCreatedItineraries = await Itinerary.find({createdBy: tourGuide});
     const  itineraryRevenue = myCreatedItineraries.reduce((total,itinerary) => total + (itinerary.revenueOfThisItinerary || 0 ),0);
     const report = {

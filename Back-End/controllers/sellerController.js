@@ -358,16 +358,14 @@ const viewAllProductSales = async (req, res) => {
 
 // view sales Report 
 const viewSalesReport = async (req,res) => {
-    const sellerId = req.user._id;
+   const sellerId = await Seller.findById(req.user._id);
     try{
-        if (!mongoose.Types.ObjectId.isValid(sellerId)) {
-            return res.status(400).json({ message: "Invalid sellerId format" });
-        }
+
         const myProducts = await ProdModel.find({ seller: sellerId});
         const productsRevenue = myProducts.reduce((total,product) => total + (product.revenueOfThisProduct || 0),0);
 
         const report = {
-            productsRevenue,
+           // productsRevenue,
             totalRevenue: productsRevenue,
         }
 

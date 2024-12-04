@@ -38,6 +38,6 @@ router.post('/transportation/create', requireAuth({ role: 'advertiser' }), creat
 router.get('/transportations', getAllTransportations);
 router.get('/notifs',requireAuth({role: "advertiser"}),myNotifications);
 router.patch('/notifs',requireAuth({role: "advertiser"}),seenNotifications);
-router.get('/salesReport/:id',viewSalesReport);
+router.get('/salesReport',requireAuth({role: "advertiser"}),viewSalesReport);
 
 module.exports = router;
