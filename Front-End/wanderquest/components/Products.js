@@ -266,8 +266,8 @@ return (
                                 step="100"
                             />
                         </div>
-                        <button onClick={handlePriceFilter}>Apply Filter</button>
-                        <button className={styles.productArchive} onClick={ClearFilters}>Clear Filters</button>
+                        <button style={{ margin: '5px' }} onClick={handlePriceFilter}>Apply Filter</button>
+                        <button  style={{ margin: '5px' }} className={styles.productArchive} onClick={ClearFilters}>Clear Filters</button>
                     </div>
                 </div>
 
@@ -281,10 +281,10 @@ return (
                 </div> */}
                 <div className={styles.cardscontainer}>
                 {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-    filteredProducts
-        .filter(product => !product.isArchived)
-        .map((product) => (
-            <div className={styles.productCard} key={product._id}>
+                        filteredProducts
+                         .filter(product => !product.isArchived)
+                    .map((product) => (
+                <div className={styles.productCard} key={product._id}>
                 <img
                     src={product.picture}
                     alt={product.name}

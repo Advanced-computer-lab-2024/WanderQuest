@@ -289,6 +289,7 @@ const clearsearch=()=>{
                 ))}
               </select>
               <button onClick={handleApplyFilters}>Apply</button>
+              <button onClick={handleClearFilters}>Apply</button>
             </div>
   
             <div className={styles.filterSection}>

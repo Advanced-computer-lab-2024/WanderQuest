@@ -242,14 +242,14 @@ const ItinerarydetailsPage = ({ params }) => {
                             );
                             })
                         )}
-                        </div>
+                    </div>
 
 
-                <button className={styles.searchbtn} onClick={() => { handleBooking(itinerary.availableDates[0]) }} >
+                    <button className={styles.searchbtn} onClick={() => { handleBooking(itinerary.availableDates[0]) }} >
                     Book
-                </button>
+                     </button>
          
-                <button className={styles.searchbtn} onClick={share}>share link</button>
+                    <button className={styles.searchbtn} onClick={share}>share link</button>
 
             </div>
         </>

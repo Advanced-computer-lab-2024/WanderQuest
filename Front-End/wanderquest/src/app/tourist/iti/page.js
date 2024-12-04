@@ -287,7 +287,8 @@ const clearsearch=()=>{
                   </option>
                 ))}
               </select>
-              <button onClick={handleApplyFilters}>Apply</button>
+              <button  style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply</button>
+              <button  style={{ margin: '5px' }} onClick={handleClearFilters}>Clear</button>
             </div>
   
             <div className={styles.filterSection}>
