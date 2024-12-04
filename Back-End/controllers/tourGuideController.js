@@ -580,6 +580,32 @@ const viewSalesReport = async (req,res) => {
   }
 }
 
+//filter sales report 
+const viewFilterSalesReport = async (req,res) => {
+  const tourGuideId = req.user._id;
+  const {itineraryId, startDate , endDate} = req.params;
+
+  if (!itineraryId || !startDate || !endDate) {
+    return res.status(400).json({ error: 'Itinerary ID, Start Date, and End Date are required' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
+    return res.status(400).json({ error: 'Invalid ID format' });
+}
+  try{
+    const filter = { createdBy: tourGuideId, _id: itineraryId };
+    //setting the createdAt field in the filter object to a range query
+    filter.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+    };
+    const itineraries = await Itinerary.find(filter);
+    const totalRevenue = itineraries.reduce( (total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0),0);
+    res.status(200).json({message: 'Filtered successfully',itineraries,totalRevenue});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+}
 module.exports = {
     getProfile,
     updateProfile,
@@ -599,4 +625,5 @@ module.exports = {
     rateItinerary,
     commentOnItinerary,
     viewSalesReport,
-    myNotifications};
+    myNotifications,
+    viewFilterSalesReport};

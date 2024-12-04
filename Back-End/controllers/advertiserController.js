@@ -366,7 +366,7 @@ const myNotifications = async(req,res)=>{
         res.status(500).json({ error: error.message });
     }
 }
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,myNotifications };
+
 //view sales Report
 const viewSalesReport = async (req,res) => {
     const advertiserId = req.user._id;
@@ -390,4 +390,4 @@ const viewSalesReport = async (req,res) => {
     }
 }
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,viewSalesReport };
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,myNotifications,viewSalesReport };

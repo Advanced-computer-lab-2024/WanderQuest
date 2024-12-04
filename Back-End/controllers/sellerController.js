@@ -355,4 +355,25 @@ const viewAllProductSales = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales, uploadProductPhoto };
+
+// view sales Report 
+const viewSalesReport = async (req,res) => {
+    const sellerId = req.user._id;
+    try{
+        if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+            return res.status(400).json({ message: "Invalid sellerId format" });
+        }
+        const myProducts = await ProdModel.find({ seller: sellerId});
+        const productsRevenue = myProducts.reduce((total,product) => total + (product.revenueOfThisProduct || 0),0);
+
+        const report = {
+            productsRevenue,
+            totalRevenue: productsRevenue,
+        }
+
+        res.status(200).json({message: " sales report generated successfully" ,report});
+    }catch(error){
+        res.status(404).json({error: error.message});
+    }
+}
+module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales, uploadProductPhoto,viewSalesReport };
