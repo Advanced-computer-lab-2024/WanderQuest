@@ -1,5 +1,5 @@
 const AdminModel = require('../models/adminModel');
-const { User } = require('../models/userModel');
+const { User, Advertiser, TourGuide } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
@@ -14,9 +14,9 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-
+const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
-
+const { sendEmail  } = require('../controllers/authenticationController');
 // Collection name in MongoDB
 const collectionName = 'uploads';
 
@@ -605,14 +605,15 @@ const flagActivity = async (req, res) => {
             if (!activity) {
                 return res.status(404).json({ message: 'Activity not found.' });
             }
-    
+            const advertiser = await Advertiser.findById(activity.createdBy);
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: activity.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Activity has been flagged as inappropriate.",
+                message: `Your Activity ${activity.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: activityId // Set the ReasonID to the Itinerary ID
             });
+            await sendEmail(advertiser.email,notification.reason,notification.message);
     
             // Respond with success
             return res.status(201).json({  message: 'Event flagged successfully', activity ,
@@ -621,7 +622,6 @@ const flagActivity = async (req, res) => {
             console.error(error);
             return res.status(500).json({ message: 'An error occurred while creating the notification.' });
         }
-        res.status(200).json({});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -642,15 +642,15 @@ const flagItinerary = async (req, res) => {
             if (!itinerary) {
                 return res.status(404).json({ message: 'Itinerary not found.' });
             }
-    
+            const tourGuide = await TourGuide.findById(itinerary.createdBy);
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: itinerary.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Itinerary has been flagged as inappropriate.",
+                message: `Your Itinerary ${itinerary.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: id // Set the ReasonID to the Itinerary ID
             });
-    
+            await sendEmail(tourGuide.email,notification.reason,notification.message);
             // Respond with success
             return res.status(201).json({ message: 'Itinerary flagged successfully', retItinerary,
                 message: 'Notification created successfully.', notification });

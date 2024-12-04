@@ -18,14 +18,11 @@ export default function useDeleteUser(users, setUsers) {
     try {
       const response = await fetch(`http://localhost:4000/admin/delete/${userId}`, {
         method: 'DELETE',
-        credentials:"include"
+        credentials: 'include',
       });
 
       if (response.ok) {
-        setUsers((prevUsers) => ({
-          ...prevUsers,
-          users: prevUsers.users.filter((user) => user._id !== userId),
-        }));
+        setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
         hideDeleteConfirmation();
         alert('User deleted successfully.');
       } else {

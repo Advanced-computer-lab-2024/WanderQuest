@@ -36,8 +36,8 @@ export default function Home() {
 
       <Link href="/admin">
          <button className='admin'>Admin</button>
-      </Link> */}
-      <Salesrep></Salesrep>
+      </Link>
+      {/* <Salesrep></Salesrep> */}
       {/* <Link href="/guest">
          <button className='guest'>Guest</button>
       </Link>

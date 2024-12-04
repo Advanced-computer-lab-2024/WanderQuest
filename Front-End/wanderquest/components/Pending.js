@@ -31,7 +31,9 @@ const AdminReviewRequests = () => {
 
   const fetchDocuments = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:4000/authentication/getDocuments/${userId}`);
+      const response = await fetch(`http://localhost:4000/authentication/getDocuments/${userId}`,{
+        credentials:"include"
+      });
       if (!response.ok) throw new Error("Failed to fetch documents");
       const data = await response.json();
       setDocuments(data.map((doc) => ({ ...doc, userId })));
@@ -47,6 +49,7 @@ const AdminReviewRequests = () => {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accepted }),
+        credentials: "include"
       });
       if (!response.ok) throw new Error("Failed to update user");
 
