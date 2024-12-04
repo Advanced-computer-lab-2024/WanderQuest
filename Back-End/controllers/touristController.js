@@ -3,10 +3,15 @@ const { TourGuide } = require('../models/userModel');
 const ProdModel = require('../models/objectModel').Product;
 const Tourist = require('../models/userModel').Tourist;
 const PlaceModel = require('../models/objectModel').Places;
+const NotificationModel = require('../models/objectModel').notification;
 const ActivityModel = require('../models/objectModel').Activity;
 const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
 const orderModel = require('../models/objectModel').Order;
+const BookingModel = require('../models/bookingModel');
+const { sendEmail  } = require('../controllers/authenticationController');
+const mongoose = require('mongoose');
+
 const axios = require('axios');
 
 // functions
@@ -676,6 +681,188 @@ const checkoutOrder = async (req, res) => {
         return res.status(500).json({ error: error.message })
     }
 }
+const beNotified = async (req, res) => {
+    const eventID = req.params.id;
+    const touristID = req.user._id;
+    try {
+        // Find the tourist by ID
+        const tourist = await Tourist.findById(touristID);
+        if (!tourist) {
+            return res.status(400).json({ error: 'Tourist does not exist' });
+        }
+        // Update the notify property of the specific event
+        const updatedTourist = await Tourist.findOneAndUpdate(
+            { _id: touristID, 'savedEvents.eventId': eventID },
+            { $set: { 'savedEvents.$.notify': true } }
+        );
+        if (!updatedTourist) {
+            return res.status(404).json({ error: 'Event not found in saved events' });
+        }
+        return res.status(200).json({ message: 'Notification preference updated', tourist: updatedTourist });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while updating notification preference' });
+    }
+};
+const bookingIsOpenReminder = async (req, res) => {
+    const touristID = req.user._id;
+    
+    try {
+        const tourist = await Tourist.findById(touristID).populate('savedEvents.eventId'); 
+        if (!tourist) {
+            return res.status(404).json({ error: 'Tourist not found' });
+        }
+
+        const notifications = []; // Array to hold notification promises for batch processing
+        const emailPromises = []; // Array to hold email promises
+
+        for (const event of tourist.savedEvents) {
+            if (event.notify) {
+                let activity, itinerary;
+
+                if (event.eventType === 'Activity') {
+                    activity = await ActivityModel.findById(event.eventId);
+                    if (!activity) {
+                        console.error('Activity does not exist:', event.eventId);
+                        continue; // Skip to the next event
+                    }
+                    if (activity.bookingIsOpen) {
+                        const notification = await NotificationModel.create({
+                            userID: touristID,
+                            message: `Your saved Activity ${activity.title} can be booked now.`,
+                            reason: 'Open For Booking',
+                            ReasonID: activity._id
+                        });
+                        notifications.push(notification);
+                        emailPromises.push(sendEmail(tourist.email, notification.reason, notification.message));
+                    }
+                } else if (event.eventType === 'itinerary') {
+                    itinerary = await ItineraryModel.findById(event.eventId);
+                    if (!itinerary) {
+                        console.error('Itinerary does not exist:', event.eventId);
+                        continue; // Skip to the next event
+                    }
+                    if (itinerary.bookingIsOpen) {
+                        const notification = await NotificationModel.create({
+                            userID: touristID,
+                            message: `Your saved Itinerary ${itinerary.title} can be booked now.`,
+                            reason: 'Open For Booking',
+                            ReasonID: itinerary._id
+                        });
+                        notifications.push(notification);
+                        emailPromises.push(sendEmail(tourist.email, notification.reason, notification.message));
+                    }
+                }
+            }
+        }
+
+        await Promise.all(emailPromises); // Send all emails in parallel
+        return res.status(200).json({ message: 'Booking reminders processed successfully', notifications });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+const myNotifications = async(req,res)=>{
+    const { _id } = req.user._id;
+
+    if (!_id) {
+        return res.status(400).json({ error: 'UserID is required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const myNotification = await NotificationModel.find({ userID: _id });
+        res.status(200).json(myNotification);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+const seenNotifications = async (req, res) => {
+    const { _id } = req.user._id;
+
+    if (!_id) {
+        return res.status(400).json({ error: 'UserID is required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return res.status(400).json({ error: 'Invalid UserID format' });
+    }
+
+    try {
+        const result = await NotificationModel.updateMany(
+            { userID: _id }, // Match notifications by userID
+            { $set: { seen: true } } // Update the "seen" field to true
+        );
+
+        res.status(200).json({ message: 'Notifications updated', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+const deleteNotification = async (req, res) => {
+    const notificationID = req.params.id; // Assuming the notification ID is passed as a URL parameter
+    const userID = req.user._id;
+    try {
+        const notification = await NotificationModel.findOneAndDelete({
+            _id: notificationID,
+            userID: userID,
+        });
+
+        if (!notification) {
+            return res.status(404).json({ error: 'Notification not found or you do not have permission to delete it.' });
+        }
+
+        return res.status(200).json({ message: 'Notification deleted successfully.' });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const clearNotifications = async (req, res) => {
+    const userID = req.user._id;
+
+    try {
+        const result = await NotificationModel.deleteMany({ userID: userID });
+
+        return res.status(200).json({ message: 'All notifications cleared successfully.', deletedCount: result.deletedCount });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+const bookingNotification = async (req, res) => {
+    const touristID = req.user._id;
+    try {
+        const currentDate = new Date();
+        const fourDaysFromNow = new Date();
+        fourDaysFromNow.setDate(currentDate.getDate() + 4);
+        const bookings = await BookingModel.find({
+            userID: touristID,
+            startDate: {$gte: currentDate,$lt: fourDaysFromNow}});
+        const notifications = [];
+        const emailPromises = []; 
+        for (const booking of bookings) {
+            const notification = await NotificationModel.create({
+                userID: touristID,
+                message: `Your booking for ${booking.activityName} is starting on ${booking.startDate.toDateString()}!`,
+                reason: 'Upcoming Booking Reminder',
+                ReasonID: booking._id 
+            });
+            notifications.push(notification);
+        }
+        await Promise.all(emailPromises); // Send all emails in parallel
+        return res.status(200).json({
+            message: 'Notifications created successfully.',
+            notifications
+        });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
 
 module.exports = {
     getProfile,
@@ -705,5 +892,12 @@ module.exports = {
     removeFromWishlist,
     issueAnOrder,
     viewOrders,
-    cancelOrder
+    cancelOrder,
+    beNotified,
+    bookingIsOpenReminder,
+    myNotifications,
+    seenNotifications,
+    clearNotifications,
+    deleteNotification,
+    bookingNotification
 };
