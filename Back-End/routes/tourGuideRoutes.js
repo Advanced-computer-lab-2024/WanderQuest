@@ -25,7 +25,8 @@ const {
     seenNotifications,
     specificNotification,
     viewSalesReport,
-    viewFilterSalesReport} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
+    viewFilterSalesReport,
+    viewTouristReport} = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
 const router = express.Router();
 const requireAuth = require('../middleware/requireAuth');
@@ -51,5 +52,6 @@ router.get('/notif/:id',requireAuth({role: "tourGuide"}),specificNotification);
 router.patch('/notifs',requireAuth({role: "tourGuide"}),seenNotifications);
 router.get('/salesReport',requireAuth({role: "tourGuide"}),viewSalesReport);
 router.get('/filterReport/:itineraryId/:startDate/:endDate',requireAuth({role: "tourGuide"}),viewFilterSalesReport);
+router.get('/touristReport',requireAuth({role: "tourGuide"}),viewTouristReport);
 
 module.exports = router;

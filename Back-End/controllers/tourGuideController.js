@@ -636,21 +636,68 @@ const viewFilterSalesReport = async (req,res) => {
 
   if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
     return res.status(400).json({ error: 'Invalid ID format' });
-}
+    
+  }
+
   try{
+    const tourrGuide = await TourGuide.findById(tourGuideId);
+    console.log(tourGuide);
+    if (!tourrGuide) {
+       return res.status(404).json({ error: 'Tour guide not found' });
+     }
     const filter = { createdBy: tourGuideId, _id: itineraryId };
+
+    // const filter = { createdBy: tourGuideId };
+    // if (itineraryId) filter._id = itineraryId;
+
     //setting the createdAt field in the filter object to a range query
     filter.createdAt = {
         $gte: new Date(startDate),
         $lte: new Date(endDate),
     };
     const itineraries = await Itinerary.find(filter);
+    if (itineraries.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No itinerary found within the specified time" });
+      }
+  
     const totalRevenue = itineraries.reduce( (total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0),0);
     res.status(200).json({message: 'Filtered successfully',itineraries,totalRevenue});
   }catch(error){
     res.status(400).json({error: error.message});
   }
 }
+
+//view touristReport 
+const viewTouristReport = async (req, res) => {
+    const tourGuideId = req.user._id;
+
+    try {
+        // Validate Tour Guide
+        if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
+            return res.status(400).json({ error: 'Invalid Tour Guide ID' });
+        }
+        const tourrGuide = await TourGuide.findById(tourGuideId);
+        console.log(tourGuideId);
+        if (!tourrGuide) {
+            return res.status(404).json({ error: 'Tour guide not found' });
+        }
+        const itineraries = await Itinerary.find({ createdBy: tourGuideId });
+
+        const totalTouristsFromItineraries = itineraries.reduce((sum, itinerary) => sum + (itinerary.touristsCount || 0), 0);
+
+        const report = {
+            totalTourists: totalTouristsFromItineraries ,
+        };
+
+        res.status(200).json({ message: 'Tourist Report Generated ', report });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -673,4 +720,6 @@ module.exports = {
     myNotifications,
     seenNotifications,
     specificNotification,
-    viewFilterSalesReport};
+    viewFilterSalesReport,
+    viewTouristReport,
+};
