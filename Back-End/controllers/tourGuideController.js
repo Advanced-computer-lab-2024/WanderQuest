@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Activity } = require('../models/objectModel');
+const { Activity, itinerary } = require('../models/objectModel');
 const TourGuide = require('../models/userModel').TourGuide;
 const Itinerary = require('../models/objectModel').itinerary;
 const multer = require('multer');
@@ -597,6 +597,60 @@ const commentOnItinerary = async (req, res) => {
     }
 }
 
+//view sales report 
+const viewSalesReport = async (req,res) => {
+  const tourGuide = req.user._id;
+  try{
+
+    if (!mongoose.Types.ObjectId.isValid(tourGuide)) {
+        return res.status(400).json({ error: 'Wrong ID format' });
+    }
+    const tourrGuide = await TourGuide.findById(tourGuide);
+    console.log(tourGuide);
+    if (!tourrGuide) {
+        return res.status(404).json({ error: 'Tour guide not found' });
+    }
+    const myCreatedItineraries = await Itinerary.find({createdBy: tourGuide});
+    const  itineraryRevenue = myCreatedItineraries.reduce((total,itinerary) => total + (itinerary.revenueOfThisItinerary || 0 ),0);
+    const report = {
+        itineraryRevenue,
+        totalRevenue : itineraryRevenue
+
+    };
+
+    res.status(200).json({ message: "Sales report generated successfully", report });
+  }catch(error){
+    console.error(error);
+    res.status(500).json({error: error.message});
+  }
+}
+
+//filter sales report 
+const viewFilterSalesReport = async (req,res) => {
+  const tourGuideId = req.user._id;
+  const {itineraryId, startDate , endDate} = req.params;
+
+  if (!itineraryId || !startDate || !endDate) {
+    return res.status(400).json({ error: 'Itinerary ID, Start Date, and End Date are required' });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
+    return res.status(400).json({ error: 'Invalid ID format' });
+}
+  try{
+    const filter = { createdBy: tourGuideId, _id: itineraryId };
+    //setting the createdAt field in the filter object to a range query
+    filter.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+    };
+    const itineraries = await Itinerary.find(filter);
+    const totalRevenue = itineraries.reduce( (total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0),0);
+    res.status(200).json({message: 'Filtered successfully',itineraries,totalRevenue});
+  }catch(error){
+    res.status(400).json({error: error.message});
+  }
+}
 module.exports = {
     getProfile,
     updateProfile,
@@ -615,6 +669,8 @@ module.exports = {
     commentOnTourGuide,
     rateItinerary,
     commentOnItinerary,
+    viewSalesReport,
     myNotifications,
     seenNotifications,
-    specificNotification};
+    specificNotification,
+    viewFilterSalesReport};

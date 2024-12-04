@@ -81,9 +81,12 @@ const productSchema = new Schema({
     }],
     availableAmount:
         { type: Number, required: true },
-    sales: { type: Number, required: true,default: 0}
+    sales: { type: Number, required: true,default: 0},
+    revenueOfThisProduct: { type: Number, required: true, default: 0}
 
 }, { timestamps: true });
+
+//middleware to calculate the average ratings
 productSchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {
         const total = this.ratings.reduce((acc, val) => acc + val.rating, 0);
@@ -93,6 +96,25 @@ productSchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
+
+//function to update availability and sales of product
+productSchema.methods.updateAvailabilityAndSales = async function (quantity) {
+    if (this.availableAmount < quantity){
+        throw new Error('Not enough stock available');
+    }
+    this.availableAmount-= quantity;
+    this.sales += quantity;
+    await this.save();
+    
+}
+
+//Middleware to calculate total revenue of specific product
+productSchema.pre('save', function (next){
+   this.revenueOfThisProduct = this.sales * this.price ;
+   next();
+});
+
+
 const Product = mongoose.model('Product', productSchema);
 
 //category Schema
@@ -114,6 +136,8 @@ const activitySchema = new mongoose.Schema({
     tags: { type: [PreferencedTagSchema], default: [] },
     specialDiscounts: { type: String },
     bookingIsOpen: { type: Boolean, default: true },
+    NoOfBooking: { type: Number, default: 0},
+    revenueOfThisActivity: { type: Number, default: 0 }, //!!!!!!!!!!!!!ensure that it is not seen by tourist
     ratings: [{ type: ratingSchema, required: false, default: null }],
     rating: { type: Number, default: null },
     comments: [
@@ -174,6 +198,13 @@ activitySchema.virtual('formattedDate').get(function () {
 activitySchema.set('toJSON', { virtuals: true });
 activitySchema.set('toObject', { virtuals: true });
 
+//middleware to update revenue when bookings are incremented
+activitySchema.methods.updateRevenue = async function () {
+    this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    await this.save();
+};
+
+//middleware to update the ratings of activity
 activitySchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {
         const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
@@ -210,6 +241,8 @@ const itinerarySchema = new mongoose.Schema({
         }
     ],
     BookingAlreadyMade: { type: Boolean, default: false },
+    NoOfBookings: { type : Number, default: 0 },
+    revenueOfThisItinerary: { type: Number, default: 0},
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TourGuideModel',
@@ -269,6 +302,16 @@ itinerarySchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
+
+//middleware to update revenue of itinerary
+itinerarySchema.methods.updateRevenue = async function () {
+    const activities = await Activity.find({ _id: { $in: this.activities } });
+     //The revenue for these activities is then summed up
+    const totalActivityRevenue = activities.reduce((total, activity) => total + activity.revenue, 0); 
+    this.revenue = totalActivityRevenue + this.bookings * this.price;
+    await this.save();
+};
+
 const itinerary = mongoose.model('itinerary', itinerarySchema);
 
 const complaintSchema = new Schema({
