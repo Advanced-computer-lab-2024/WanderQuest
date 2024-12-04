@@ -37,6 +37,7 @@ router.get('/myActivities', requireAuth({ role: 'advertiser' }), myCreatedActivi
 router.post('/transportation/create', requireAuth({ role: 'advertiser' }), createTransportation);
 router.get('/transportations', getAllTransportations);
 router.get('/notifs',requireAuth({role: "advertiser"}),myNotifications);
-router.patch('/notifs',requireAuth({role: "advertiser"}),seenNotifications)router.get('/salesReport/:id',viewSalesReport);
+router.patch('/notifs',requireAuth({role: "advertiser"}),seenNotifications);
+router.get('/salesReport/:id',viewSalesReport);
 
 module.exports = router;
