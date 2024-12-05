@@ -9,9 +9,12 @@
   
   .productCard {
     background-color: white;
+    align-items: center;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
+    margin-left: 40% ;
+    margin-bottom: 20px;
+    margin-top: 20px;
     padding: 20px;
     width: 350px;
     transition: transform 0.2s ease-in-out;
@@ -94,9 +97,7 @@
 .productsearch{
     display: inline;
 }
-.searchbtn{
-    
-}
+
 .searchcom{
     display: inline;
 }
@@ -164,6 +165,21 @@
     border-radius: 5px;
     padding: 10px 15px;
 }
+
+.deleteButton {
+  background-color: #ff4d4d; /* Light Red color */
+  color: white; /* Text color */
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.deleteButton:hover {
+  background-color: #cc0000; /* Darker Red color on hover */
+  color: white; /* Ensure text color stays white on hover */
+}
+
 
 .productArchive:hover {
     background-color: #042335;
