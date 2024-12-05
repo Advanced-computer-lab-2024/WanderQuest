@@ -15,7 +15,6 @@ const {
     changePreferredCurrency,
     redeemPoints,
     fileComplaint,
-    specComplaint,
     myComplaints,
     reviewProduct,
     getLevel,
@@ -76,7 +75,6 @@ router.patch('/changePreferredCurrency', changePreferredCurrency);
 router.patch('/redeem', redeemPoints);
 router.post('/fileComplaint', fileComplaint);
 router.get('/myComplaints', myComplaints);
-router.get('/myComplaints/:id', specComplaint);
 router.get('/level', getLevel)
 router.get('/availablePoints', getavailablePoints)
 router.get('/totalPoints', getTotalPoints)
@@ -85,9 +83,9 @@ router.post('/saveEvent', saveEvent);
 router.get('/viewSavedEvents', viewSavedEvents);
 router.delete('/removeSavedEvents', removeSavedEvents);
 
-router.post('/wishlist/add/:id', addToWishlist);
+router.post('/wishlist/add', addToWishlist);
 router.get('/wishlist', viewWishlist);
-router.delete('/wishlist/remove/:id', removeFromWishlist);
+router.delete('/wishlist/remove', removeFromWishlist);
 
 router.get("/orders", viewOrders)
 router.post("/orders/issue", issueAnOrder)
