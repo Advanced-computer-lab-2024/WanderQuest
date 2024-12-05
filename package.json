@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/material": "^6.1.10",
     "@react-google-maps/api": "^2.19.3",
     "@react-spring/web": "^9.7.5",
     "axios": "^1.7.7",

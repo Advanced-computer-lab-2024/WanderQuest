@@ -6,6 +6,10 @@ import { useRouter } from 'next/navigation';
 import Navbar from '../../../../components/Navbar';
 import { motion } from "framer-motion";
 
+
+
+
+
 const ItineraryListpage = (Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const role='Tourist';
