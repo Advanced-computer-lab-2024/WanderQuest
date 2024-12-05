@@ -111,6 +111,10 @@ function Signin() {
     onChange={(e) => setPassword(e.target.value)}
     required 
   />
+  <div className={styles.forgetPassInline}>
+  <a className={styles.link} href="/forgotPassword">Forgot Password?</a>
+</div>
+
 </div>
       </div>
       <div className={styles.createaccount}>

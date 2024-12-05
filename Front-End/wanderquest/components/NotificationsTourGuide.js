@@ -72,7 +72,7 @@ const Notificationstourguide = () => {
                 {notifications.map((notification) => (
                     <li
                         key={notification._id}
-                        className={`${styles.listItem} ${
+                        className={`${styles.listItem} ${ 
                             notification.seen ? styles.seen : ''
                         }`}
                     >
