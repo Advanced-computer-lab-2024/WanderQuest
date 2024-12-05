@@ -8,6 +8,9 @@ const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
 const axios = require('axios');
 
+const mongoose = require('mongoose');
+
+
 // functions
 const getProfile = async (req, res) => {
     try {
@@ -245,6 +248,26 @@ const myComplaints = async (req, res) => {
     }
 };
 
+const specComplaint = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: 'Invalid complaint ID' });
+    }
+
+    try {
+
+        const complaint = await ComplaintModel.findById(id);
+
+        if (!complaint) {
+            return res.status(404).json({ message: 'Complaint not found' });
+        }
+
+        res.status(200).json(complaint);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 //rate an activity
 const rateAnActivity = async (req, res) => {
 
@@ -479,15 +502,15 @@ const removeSavedEvents = async (req, res) => {
 
 const addToWishlist = async (req, res) => {
     const touristId = req.user._id;
-    const { productId } = req.body;
+    const { id } = req.params;
 
-    if (!productId) {
+    if (!id) {
         return res.status(400).json({ error: 'Missing product ID' });
     }
 
     try {
         // Find the product by ID
-        const productDet = await Product.findById(productId);
+        const productDet = await Product.findById(id);
         if (!productDet) {
             return res.status(400).json({ error: 'Could not find the product' });
         }
@@ -499,12 +522,12 @@ const addToWishlist = async (req, res) => {
         }
 
         // Check if the product is already in the wishlist
-        if (touristProf.wishlist.includes(productId)) {
+        if (touristProf.wishlist.includes(id)) {
             return res.status(400).json({ error: 'Product already in wishlist' });
         }
 
         // Add the product to the wishlist
-        touristProf.wishlist.push(productId);
+        touristProf.wishlist.push(id);
         await touristProf.save();
 
         return res.status(200).json({ message: 'Added to wishlist', wishlist: touristProf.wishlist });
@@ -530,16 +553,16 @@ const viewWishlist = async (req, res) => {
 
 const removeFromWishlist = async (req, res) => {
     const touristId = req.user._id;
-    const { productId } = req.body;
+    const { id } = req.params;
 
     try {
-        if (!productId) {
+        if (!id) {
             return res.status(400).json({ error: 'Missing product ID' });
         }
 
         const touristProf = await Tourist.findById(touristId);
 
-        touristProf.wishlist = touristProf.wishlist.filter(product => !product.equals(productId));
+        touristProf.wishlist = touristProf.wishlist.filter(product => !product.equals(id));
         await touristProf.save();
 
         res.status(200).json({ message: 'Event removed successfully', wishlist: touristProf.wishlist });
@@ -560,6 +583,7 @@ module.exports = {
     redeemPoints,
     fileComplaint,
     myComplaints,
+    specComplaint,
     rateAnActivity,
     commentOnActivity,
     rateProduct,

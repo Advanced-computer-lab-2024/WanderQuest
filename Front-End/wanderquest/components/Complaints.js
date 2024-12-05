@@ -14,6 +14,56 @@ const Complaints = (props) => {
     const router = useRouter();
 
 
+
+    if (role === 'Admin') {
+        useEffect(() => {
+            fetch('http://localhost:4000/admin/complaints', {
+                credentials: 'include' 
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        console.log(res);
+                        throw new Error('Network response was not ok');
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    setComplaints(data);
+                    console.log(data);
+                    setLoading(false); 
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                    setComplaints([]);
+                    setLoading(false); 
+                });
+        }, []);
+    } else if (role === 'Tourist') {
+        useEffect(() => {
+            fetch('http://localhost:4000/tourist/myComplaints', {
+                credentials: 'include' 
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        console.log(res);
+                        throw new Error('Network response was not ok');
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    setComplaints(data);
+                    console.log(data);
+                    setLoading(false); 
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                    setComplaints([]);
+                    setLoading(false); 
+                });
+        }, []);
+    }
+
+
     const handleViewComplaint = (complaintId) => {
         if (role === 'Admin') {
             router.push(`/admin/complaints/${complaintId}`);
@@ -23,28 +73,7 @@ const Complaints = (props) => {
     };
    
 
-    useEffect(() => {
-        fetch('http://localhost:4000/admin/complaints', {
-            credentials: 'include' 
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    console.log(res);
-                    throw new Error('Network response was not ok');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                setComplaints(data);
-                console.log(data);
-                setLoading(false); 
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-                setComplaints([]);
-                setLoading(false); 
-            });
-    }, []);
+   
     
 
     const sortComplaintsByDate = (order) => {
