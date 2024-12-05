@@ -181,6 +181,29 @@ const Products = (props) => {
                 setLoading(false); // Reset filtered products on error
             });
     }, []);
+
+    const addWishlist = async (id) => {
+        
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/wishlist/add/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            });
+    
+            if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to add to wishlist');
+            }
+    
+            const result = await response.json();
+            console.log('Successfully added to wishlist', result);
+        } catch (error) {
+            console.error('Error adding item to wishlist:', error.message);
+        }
+        }
     
     if (loading) {return<>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
@@ -375,8 +398,18 @@ return (
                                 >
                                     Add a Comment
                                 </button>
+<<<<<<< HEAD
                             </>
                         )} */}
+=======
+                                <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
+                                    Add to Wishlist
+                                </button>
+                                </>
+                                )}
+                            </div>
+                        </div>
+>>>>>>> c78af3011aaa8278d4d79301b9c1cb5610b2df62
                     </div>
                 </div>
             </div>

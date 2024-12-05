@@ -28,6 +28,7 @@ const ViewComplaints = (props) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ reply: replyText }),
+            credentials: 'include',
         })
             .then(response => response.json())
             .then(data => {
@@ -38,27 +39,53 @@ const ViewComplaints = (props) => {
             .catch(error => console.error('Error sending reply:', error));
     };
 
-    useEffect(() => {
-        fetch(`http://localhost:4000/admin/complaints/${id}`)
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                setComplaint(data);
-                setStatus(data.status);
-                console.log(data);
-                setLoading(false);// Initialize filtered complaint with fetched data
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-                setComplaint([]); 
-                setLoading(false); // Reset filtered complaint on error
-            });
-    }, [status]);
+    if (role === 'Tourist') {
+        useEffect(() => {
+            fetch(`http://localhost:4000/tourist/myComplaints/${id}`,{credentials: 'include'})
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    setComplaint(data);
+                    setStatus(data.status);
+                    console.log(data);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                    setComplaint([]);
+                    setLoading(false);
+                });
+        }, [status]);
 
+    }else if (role === 'Admin' ){
+        useEffect(() => {
+            fetch(`http://localhost:4000/admin/complaints/${id}`,{credentials: 'include'})
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    setComplaint(data);
+                    setStatus(data.status);
+                    console.log(data);
+                    setLoading(false);// Initialize filtered complaint with fetched data
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                    setComplaint([]); 
+                    setLoading(false); // Reset filtered complaint on error
+                });
+        }, [status]);
+    
+    }
+
+    
 
     const toggleStatus = () => {
         const newStatus = status === 'Pending' ? 'Resolved' : 'Pending';
@@ -70,6 +97,8 @@ const ViewComplaints = (props) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ status: newStatus }),
+            credentials: 'include',
+
         })
             .then(response => response.json())
             .then(data => setStatus(data.status))
@@ -172,7 +201,7 @@ const ViewComplaints = (props) => {
 
                             {role === 'Admin' &&(<div>
                                 <h3>Complaint By:</h3>
-                                <p>{complaint.complaintBy}</p>
+                                <p>{complaint.createdBy}</p>
                             </div>)}
 
                             {role === 'Tourist' &&(<div>

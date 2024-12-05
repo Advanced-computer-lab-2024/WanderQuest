@@ -31,7 +31,8 @@ const ComplaintCard = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title, body, date })
+            body: JSON.stringify({ title, body, date }),
+            credentials: 'include',
             });
     
             if (!response.ok) {

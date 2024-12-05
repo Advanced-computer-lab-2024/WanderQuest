@@ -8,7 +8,7 @@ const museumpage = () => {
             <Navbar />
             {/* <motion.p
   style={{ border: '0px solid black' ,width:400}}
-  animate={{ scale: 2.5,  color: '#ff2994', x: 1450 }}
+  animate={{ scale: 2.5,  color: '#ff2994', x: 900 }}
   transition={{duration:0.5}}
 >
   Products Page

@@ -16,7 +16,7 @@ import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
 import Signin from "../../components/Signin";
 
-import { Chart as ChartJS } from 'chart.js'
+import { Chart } from 'chart.js'
 import { Bar,Doughnut,Line } from 'react-chartjs-2'
 import { motion } from 'framer-motion';
 import Salesrep from "../../components/Salesrep";
