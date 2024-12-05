@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const UserModel = require('../models/userModel').User;
 const TouristModel = require('../models/userModel').Tourist;
 const SellerModel = require('../models/userModel').Seller;
 const AdvertiserModel = require('../models/userModel').Advertiser;
@@ -54,8 +55,8 @@ const documentSchema = new mongoose.Schema({
 const productSchema = new Schema({
     name:
         { type: String, required: true },
-    // picture:
-    //     [{ data: Buffer, type: String, required: false }],
+    picture:
+        [{ data: Buffer, type: String, required: false }],
     picture:
     { type: documentSchema, default: undefined },
     price:
@@ -80,9 +81,12 @@ const productSchema = new Schema({
     }],
     availableAmount:
         { type: Number, required: true },
-    sales: { type: Number, required: true,default: 0}
+    sales: { type: Number, required: true,default: 0},
+    revenueOfThisProduct: { type: Number, required: true, default: 0}
 
-});
+}, { timestamps: true });
+
+//middleware to calculate the average ratings
 productSchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {
         const total = this.ratings.reduce((acc, val) => acc + val.rating, 0);
@@ -92,6 +96,25 @@ productSchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
+
+//function to update availability and sales of product
+productSchema.methods.updateAvailabilityAndSales = async function (quantity) {
+    if (this.availableAmount < quantity){
+        throw new Error('Not enough stock available');
+    }
+    this.availableAmount-= quantity;
+    this.sales += quantity;
+    await this.save();
+    
+}
+
+//Middleware to calculate total revenue of specific product
+productSchema.pre('save', function (next){
+   this.revenueOfThisProduct = this.sales * this.price ;
+   next();
+});
+
+
 const Product = mongoose.model('Product', productSchema);
 
 //category Schema
@@ -113,6 +136,9 @@ const activitySchema = new mongoose.Schema({
     tags: { type: [PreferencedTagSchema], default: [] },
     specialDiscounts: { type: String },
     bookingIsOpen: { type: Boolean, default: true },
+    NoOfBooking: { type: Number, default: 0},
+    touristsCount: { type: Number, default: 0 }, 
+    revenueOfThisActivity: { type: Number, default: 0 }, //!!!!!!!!!!!!!ensure that it is not seen by tourist
     ratings: [{ type: ratingSchema, required: false, default: null }],
     rating: { type: Number, default: null },
     comments: [
@@ -173,6 +199,13 @@ activitySchema.virtual('formattedDate').get(function () {
 activitySchema.set('toJSON', { virtuals: true });
 activitySchema.set('toObject', { virtuals: true });
 
+//middleware to update revenue when bookings are incremented
+activitySchema.methods.updateRevenue = async function () {
+    this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    await this.save();
+};
+
+//middleware to update the ratings of activity
 activitySchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {
         const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
@@ -209,6 +242,9 @@ const itinerarySchema = new mongoose.Schema({
         }
     ],
     BookingAlreadyMade: { type: Boolean, default: false },
+    NoOfBookings: { type : Number, default: 0 },
+    touristsCount: { type: Number, default: 0 }, 
+    revenueOfThisItinerary: { type: Number, default: 0},
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TourGuideModel',
@@ -268,6 +304,16 @@ itinerarySchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
+
+//middleware to update revenue of itinerary
+itinerarySchema.methods.updateRevenue = async function () {
+    const activities = await Activity.find({ _id: { $in: this.activities } });
+     //The revenue for these activities is then summed up
+    const totalActivityRevenue = activities.reduce((total, activity) => total + activity.revenue, 0); 
+    this.revenue = totalActivityRevenue + this.bookings * this.price;
+    await this.save();
+};
+
 const itinerary = mongoose.model('itinerary', itinerarySchema);
 
 const complaintSchema = new Schema({
@@ -318,6 +364,57 @@ const transportationSchema = new Schema({
 
 const transportation = mongoose.model('transportation', transportationSchema)
 
+// Define a sub-schema for the products in the order
+const orderProductSchema = new Schema({
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, min: 1 }
+});
+
+const orderSchema = new Schema({
+    orderedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist', required: true },
+    products: [orderProductSchema], // Use the sub-schema for products
+    totalPrice: { type: Number, required: true },
+    date: { type: Date, required: true, default: Date.now },
+    status: { 
+        type: String, 
+        required: true, 
+        default: 'pending', 
+        enum: ['pending', 'cancelled', 'sent to delivery', 'delivered'] 
+    }
+});
+
+// Pre-save middleware to calculate totalPrice
+orderSchema.pre('save', async function (next) {
+    try {
+        const productIds = this.products.map(p => p.productId);
+        const products = await Product.find({ _id: { $in: productIds } });
+        this.totalPrice = this.products.reduce((acc, p) => {
+            const product = products.find(prod => prod._id.equals(p.productId));
+            return acc + (product.price * p.quantity);
+        }, 0);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
+const Order = mongoose.model('Order', orderSchema);
+
+const notificationSchema = new Schema({
+    userID:{type: mongoose.Schema.Types.ObjectId,
+        ref: UserModel,
+        required: true},
+    message:{type:String,required:false},
+    reason: {type:String,required:false},
+    ReasonID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+    },
+    seen:{type:Boolean,required:false,default:false},
+    createdAt: { type: Date, default: Date.now }   
+});
+const notification = mongoose.model('notification', notificationSchema);
+
 // const promoCodeSchema = new Schema({
 //     code: { type: String, required: true, unique: true },
 //     type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
@@ -339,6 +436,18 @@ const transportation = mongoose.model('transportation', transportationSchema)
 
 // const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
-module.exports = { Places, Tags, Product, Activity, itinerary, ActivityCategory, PrefTag, complaint, rating, transportation
+module.exports = {
+    Places,
+    Tags,
+    Product,
+    Activity,
+    itinerary,
+    ActivityCategory,
+    PrefTag,
+    complaint,
+    rating,
+    transportation,
+    Order,
+    notification
     // , PromoCode
  }

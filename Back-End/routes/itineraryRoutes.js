@@ -9,11 +9,11 @@ const requireAuth = require('../middleware/requireAuth');
 
 //routes
 router.post('/create', requireAuth({ role: 'tourGuide' }), createItinerary);
-router.get('/itineraries', readItinerary);
-router.get('/myItineraries',myCreatedItineraries);
-router.put('/itineraries/:id',updateItinerary);
-router.delete('/itineraries/:id', deleteItinerary);
-router.get('/itineraries/:id', readItineraryById);
+router.get('/itineraries',requireAuth({ role: 'tourGuide' }), readItinerary);
+router.get('/myItineraries',requireAuth({ role: 'tourGuide' }),myCreatedItineraries);
+router.put('/itineraries/:id',requireAuth({ role: 'tourGuide' }),updateItinerary);
+router.delete('/itineraries/:id', requireAuth({ role: 'tourGuide' }),deleteItinerary);
+router.get('/itineraries/:id', requireAuth({ role: 'tourGuide' }),readItineraryById);
 router.post('/rate/:id', requireAuth({role: "tourist"}), rateItinerary);
 router.post('/comment/:id', requireAuth({role: "tourist"}), commentOnItinerary);
 

@@ -1,6 +1,9 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../../components/Navbar';
+import styles from '../../../Styles/Tourist.module.css'
+import { FaUserCircle } from "react-icons/fa";
+
 
 
 export default function Tourist() {
@@ -51,26 +54,30 @@ export default function Tourist() {
     
 
     return (
-        <div>
-            <Navbar />
-            
+        <div className={styles.container}>
             <h1>Tourist Page</h1>
             <p>Welcome to the Tourist page!</p>
-            <button onClick={handleRedirect}>Go to Itinerary</button>
-            <button onClick={handleRedirectac}>Go to activity</button>
-            <button onClick={handleRedirectp}>Go to products</button>
-            <button onClick={handleRedirectm}>Go to museums</button>
-            <button onClick={handleRedirectcomp}>File a complaint</button>
-            <button onClick={handleRedirectviewcomp}>View Complaint</button>
-            <button onClick={handleRedirectHist}>Go to History</button>
-            <button onClick={handleRedirec}>my bookings</button>
-            <button onClick={handleRedirechotel}>Hotels</button>
-            <button onClick={handleRedirecflight}>Flights</button>
-            <button onClick={handleRedirectransport}>Transportaiton</button>
-            <button onClick={handleRedirectProfile}>Profile</button>
-            <button onClick={handleRedirectWishlist}>View Wishlist</button>
 
+            <div className={styles.buttons}>
+                <button onClick={handleRedirect}>Go to Itinerary</button>
+                <button onClick={handleRedirectac}>Go to activity</button>
+                <button onClick={handleRedirectp}>Go to products</button>
+                <button onClick={handleRedirectm}>Go to museums</button>
+                <button onClick={handleRedirectcomp}>File a complaint</button>
+                <button onClick={handleRedirectviewcomp}>View Complaint</button>
+                <button onClick={handleRedirectHist}>Go to History</button>
+                <button onClick={handleRedirec}>My Bookings</button>
+                <button onClick={handleRedirechotel}>Hotels</button>
+                <button onClick={handleRedirecflight}>Flights</button>
+                <button onClick={handleRedirectransport}>Transportation</button>
+                <button onClick={handleRedirectWishlist}>View Wishlist</button>
 
+            </div>
+
+            {/* Profile button with icon */}
+            <button className={styles.profileButton} onClick={handleRedirectProfile}>
+                <FaUserCircle className={styles.profileIcon} /> Profile
+            </button>
         </div>
     );
 

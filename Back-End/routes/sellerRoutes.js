@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto,getProductPhoto } = require('../controllers/sellerController');
+const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto,getProductPhoto,viewSalesReport } = require('../controllers/sellerController');
 const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
@@ -26,12 +26,14 @@ router.get("/products/:id", getProdById);
 // router.post('/uploadProductPhoto', ensureGridFSInitialized,uploadProductPhoto);
 router.post('/uploadProductPhoto/:id', uploadProductPhoto);
 
-router.post('/addProduct', addProduct);
-router.patch('/editProduct/:id', editProduct);
+router.post('/addProduct', requireAuth({role: "seller"}), addProduct);
+router.patch('/editProduct/:id', requireAuth({role: "seller"}), editProduct);
 router.get('/availableProducts', getAvailableProducts)
 //seller archive and unarchive products
 router.patch('/archiveProduct/:id', archiveProduct);
 
 router.patch('/unarchiveProduct/:id', unarchiveProduct);
+
+router.get('/salesReport',requireAuth({role: "seller"}),viewSalesReport);
 
 module.exports = router;

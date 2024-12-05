@@ -24,16 +24,16 @@ import Salesrep from "../../components/Salesrep";
 
 export default function Home() {
    return (<>
-      {/* <Signin></Signin>
+      <Signin></Signin>
 
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
     
 
 
       <Link href="/admin">
          <button className='admin'>Admin</button>
-      </Link> */}
-      <Salesrep></Salesrep>
+      </Link>
+      {/* <Salesrep></Salesrep> */}
       {/* <Link href="/guest">
          <button className='guest'>Guest</button>
       </Link>

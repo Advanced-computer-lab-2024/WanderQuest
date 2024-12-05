@@ -28,11 +28,30 @@ const {
     addToWishlist,
     viewWishlist,
     removeFromWishlist,
+    issueAnOrder,
+    viewOrders,
+    cancelOrder,
+    beNotified,
+    bookingIsOpenReminder,
+    seenNotifications,
+    myNotifications,
+    clearNotifications,
+    deleteNotification,
+    bookingNotification
 } = require('../controllers/touristController');
-const {getProducts} = require('../controllers/adminController')
+const { getProducts } = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
+
+
+// requests that do not require authentication
+router.get("/products", getProducts)
+
+router.get('/upcomingItineraries', getUpcomingItineraries);
+router.get('/upcomingActivities', getUpcomingActivities);
+router.get('/upcomingPlaces', getAllPlaces);
+
 
 // require auth for all tourist routes
 router.use(requireAuth({ role: 'tourist' }));
@@ -41,17 +60,12 @@ router.use(requireAuth({ role: 'tourist' }));
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.get('/availableProducts', getAvailableProducts);
-router.get('/upcomingActivities', getUpcomingActivities);
 
 // Sharing activity via link or email
 router.get('/upcomingActivities/:id', getActivityById);
 
-router.get('/upcomingItineraries', getUpcomingItineraries);
-
 // Sharing activity via link or email
 router.get('/upcomingItineraries/:id', getItineraryById);
-
-router.get('/upcomingPlaces', getAllPlaces);
 
 // Sharing activity via link or email
 router.get('/upcomingPlaces/:id', getPlaceById);
@@ -75,9 +89,16 @@ router.post('/wishlist/add/:id', addToWishlist);
 router.get('/wishlist', viewWishlist);
 router.delete('/wishlist/remove/:id', removeFromWishlist);
 
-router.get("/products", getProducts)
-
-
+router.get("/orders", viewOrders)
+router.post("/orders/issue", issueAnOrder)
+router.patch("/orders/cancel/:id", cancelOrder)
+router.patch("/beNotified/:id",beNotified)
+router.post('/savedReminder',bookingIsOpenReminder);
+router.get('/notifs',myNotifications);
+router.patch('/notifs',seenNotifications);
+router.delete('/notifications',clearNotifications);
+router.delete('/notification/:id',deleteNotification);
+router.post('/bookingReminder',bookingNotification);
 
 
 module.exports = router;

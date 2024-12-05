@@ -18,7 +18,7 @@ router.get('/myActivities', requireAuth({ role: 'advertiser' }), myCreatedActivi
 router.get('/allAdvertisers', requireAuth({ role: 'Admin' }), getAllAdvertisers);
 router.post('/activity', requireAuth({ role: 'advertiser' }), createActivity);
 router.get('/activities', readActivities);
-router.put('/activity/:id', updateActivity);
+router.put('/activity/:id', requireAuth({ role: 'advertiser' }),updateActivity);
 router.delete('/activity/:id', deleteActivity);
 router.get('/upcomingActivities', getUpcomingActivities);
 router.get('/upcomingItineraries', getUpcomingItineraries);
