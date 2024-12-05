@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Activity } = require('../models/objectModel');
+const { Activity, itinerary } = require('../models/objectModel');
 const TourGuide = require('../models/userModel').TourGuide;
 const Itinerary = require('../models/objectModel').itinerary;
 const multer = require('multer');
@@ -195,7 +195,7 @@ const myCreatedItineraries = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-const myNotifications = async(req,res)=>{
+const myNotifications = async (req, res) => {
     const { _id } = req.user._id;
 
     if (!_id) {
@@ -237,7 +237,7 @@ const seenNotifications = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-const specificNotification = async (req,res)=>{
+const specificNotification = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ error: 'Invalid product ID' });
@@ -377,7 +377,7 @@ const updateItinerary = async (req, res) => {
         if (!updatedItinerary) {
             return res.status(404).json({ error: 'No such itinerary' });
         }
-        if(updatedItinerary.createdBy.toString() !== createdBy.toString()){
+        if (updatedItinerary.createdBy.toString() !== createdBy.toString()) {
             return res.status(403).json({ error: 'You are not authorized to update this itinerary' });
         }
         res.status(200).json(updatedItinerary);
@@ -405,7 +405,7 @@ const deleteItinerary = async (req, res) => {
         if (itinerary.BookingAlreadyMade) {
             return res.status(400).json({ error: "Itinerary can't be deleted, bookings already made." });
         }
-        if(itinerary.createdBy.toString() !== createdBy.toString()){
+        if (itinerary.createdBy.toString() !== createdBy.toString()) {
             return res.status(403).json({ error: 'You are not authorized to delete this itinerary' });
         }
         itinerary = await Itinerary.findByIdAndDelete({ _id: id });
@@ -431,7 +431,7 @@ const activateItinerary = async (req, res) => {
         if (itinerary.bookingIsOpen) {
             return res.status(400).json({ error: 'Booking is already open' });
         }
-        if(itinerary.createdBy.toString() !== createdBy.toString()){
+        if (itinerary.createdBy.toString() !== createdBy.toString()) {
             return res.status(403).json({ error: 'You are not authorized to activate this itinerary' });
         }
         itinerary.bookingIsOpen = true;
@@ -460,7 +460,7 @@ const deactivateItinerary = async (req, res) => {
             return res.status(400).json({ error: 'Booking is already closed' });
         }
 
-        if(itinerary.createdBy.toString() !== createdBy.toString()){
+        if (itinerary.createdBy.toString() !== createdBy.toString()) {
             return res.status(403).json({ error: 'You are not authorized to deactivate this itinerary' });
         }
         itinerary.bookingIsOpen = false;
@@ -475,7 +475,7 @@ const deactivateItinerary = async (req, res) => {
 
 //Rate a tourGuide
 const rateTourGuide = async (req, res) => {
-    const  {tourGuideId}  = req.params;
+    const { tourGuideId } = req.params;
     const touristId = req.user._id;
     const { rating } = req.body;
 
@@ -597,6 +597,128 @@ const commentOnItinerary = async (req, res) => {
     }
 }
 
+//view sales report 
+const viewSalesReport = async (req, res) => {
+    const tourGuide = req.user._id;
+    try {
+
+        if (!mongoose.Types.ObjectId.isValid(tourGuide)) {
+            return res.status(400).json({ error: 'Wrong ID format' });
+        }
+        const tourrGuide = await TourGuide.findById(tourGuide);
+        console.log(tourGuide);
+        if (!tourrGuide) {
+            return res.status(404).json({ error: 'Tour guide not found' });
+        }
+        const myCreatedItineraries = await Itinerary.find({ createdBy: tourGuide });
+        const itineraryRevenue = myCreatedItineraries.reduce((total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0), 0);
+        const report = {
+            itineraryRevenue,
+            totalRevenue: itineraryRevenue
+
+        };
+
+        res.status(200).json({ message: "Sales report generated successfully", report });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+//filter sales report 
+const viewFilterSalesReport = async (req, res) => {
+    const tourGuideId = req.user._id;
+    const { itineraryId, startDate, endDate } = req.params;
+
+    if (!itineraryId || !startDate || !endDate) {
+        return res.status(400).json({ error: 'Itinerary ID, Start Date, and End Date are required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
+        return res.status(400).json({ error: 'Invalid ID format' });
+
+    }
+
+    try {
+        const tourrGuide = await TourGuide.findById(tourGuideId);
+        console.log(tourGuide);
+        if (!tourrGuide) {
+            return res.status(404).json({ error: 'Tour guide not found' });
+        }
+        const filter = { createdBy: tourGuideId, _id: itineraryId };
+
+        // const filter = { createdBy: tourGuideId };
+        // if (itineraryId) filter._id = itineraryId;
+
+        //setting the createdAt field in the filter object to a range query
+        filter.createdAt = {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate),
+        };
+        const itineraries = await Itinerary.find(filter);
+        if (itineraries.length === 0) {
+            return res
+                .status(404)
+                .json({ message: "No itinerary found within the specified time" });
+        }
+
+        const totalRevenue = itineraries.reduce((total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0), 0);
+        res.status(200).json({ message: 'Filtered successfully', itineraries, totalRevenue });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+//view touristReport 
+const viewTouristReport = async (req, res) => {
+    const tourGuideId = req.user._id;
+
+    try {
+        // Validate Tour Guide
+        if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
+            return res.status(400).json({ error: 'Invalid Tour Guide ID' });
+        }
+        const tourrGuide = await TourGuide.findById(tourGuideId);
+        console.log(tourGuideId);
+        if (!tourrGuide) {
+            return res.status(404).json({ error: 'Tour guide not found' });
+        }
+        const itineraries = await Itinerary.find({ createdBy: tourGuideId });
+
+        const totalTouristsFromItineraries = itineraries.reduce((sum, itinerary) => sum + (itinerary.touristsCount || 0), 0);
+
+        const report = {
+            totalTourists: totalTouristsFromItineraries,
+        };
+
+        res.status(200).json({ message: 'Tourist Report Generated ', report });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// get the tour guide info
+const getTourGuideInfo = async (req, res) => {
+    const tourGuideId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(tourGuideId)) {
+        return res.status(400).json({ error: 'Invalid Tour Guide ID format' });
+    }
+
+    try {
+        const tourGuide = await TourGuide.findById(tourGuideId).select('username email averageRating previousWork');
+        if (!tourGuide) {
+            return res.status(404).json({ error: 'Tour Guide not found' });
+        }
+        res.status(200).json(tourGuide);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+
+};
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -615,6 +737,11 @@ module.exports = {
     commentOnTourGuide,
     rateItinerary,
     commentOnItinerary,
+    viewSalesReport,
     myNotifications,
     seenNotifications,
-    specificNotification};
+    specificNotification,
+    viewFilterSalesReport,
+    viewTouristReport,
+    getTourGuideInfo
+};

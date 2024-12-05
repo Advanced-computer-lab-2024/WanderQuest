@@ -31,7 +31,8 @@ const {
     viewAllProductSales,
     /* uploadProductImage,*/
     flagActivity,
-    flagItinerary
+    flagItinerary,
+    viewSalesReport
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -117,6 +118,9 @@ router.patch('/products/unarchive/:id', unarchiveProduct);
 router.patch('/flagActivity/:id', flagActivity);
 //flag an itinerary
 router.patch('/flagItinerary/:id', flagItinerary);
+
+//view sales report
+router.get('/salesReport', viewSalesReport);
 
 //Admin filterByStatus
 module.exports = router

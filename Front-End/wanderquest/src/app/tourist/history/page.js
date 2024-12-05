@@ -469,13 +469,13 @@ const TouristHistory = () => {
             <div className={styles.tabInBox}>
                 <div>
                     {onOrders.length > 0 ? (
-                        onOrders.map((order) => (
-                            <div key={order._id} className={styles.innerBox}>
+                        onOrders.map((order,index) => (
+                            <div key={index} className={styles.innerBox}>
                                 <h2 className={styles.innerTitle}>Order</h2>
                                 {/* <img src={order.picture} alt="Order Image" /> */}
                                 <p><strong>Product(s):</strong></p>
                                 {order.products.map((prod,index) => (
-                                    <div key={`${order._id}-${index}`} className={styles.innerBox}>
+                                    <div key={index} className={styles.innerBox}>
                                         <p>{/*<strong>Product:</strong>*/}{prod.name}</p>
                                         <p><strong>Quantity:</strong>{prod.quantity}</p>
                                         <p><strong>Rating:</strong>{prod.rating ?? "N/A"}</p>
@@ -498,12 +498,12 @@ const TouristHistory = () => {
             <div className={styles.tabInBox}>
                 <div>
                     {pastOrders.length > 0 ? (
-                        pastOrders.map((order)=>(
-                            <div key={order._id} className={styles.innerBox}>
+                        pastOrders.map((order,index)=>(
+                            <div key={index} className={styles.innerBox}>
                                 <h2 className={styles.innerTitle}>Order</h2>
                                 {/* <img src={order.picture} alt="Order Image" /> */}
                                 <p><strong>Product(s):</strong></p>{order.products.map((prod,index) => (
-                                    <div key={`${order._id}-${index}`} className={styles.innerBox}>
+                                    <div key={index} className={styles.innerBox}>
                                         <p>{/*<strong>Product:</strong>*/}{prod.name}</p>
                                         <p><strong>Quantity:</strong>{prod.quantity}</p>
                                         <p><strong>Rating:</strong>{prod.rating ?? "N/A"}</p>
