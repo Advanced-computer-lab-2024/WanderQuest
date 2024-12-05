@@ -5,8 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../../../components/Navbar';
 import { motion } from "framer-motion";
-
-
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Rating from '@mui/material/Rating';
+import Typography from '@mui/material/Typography';
+import StarIcon from '@mui/icons-material/Star'; 
 
 
 
@@ -25,6 +28,19 @@ const ItineraryListpage = (Props) => {
   const [minBudget, setMinBudget] = useState('');
   const [maxBudget, setMaxBudget] = useState('');
   const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const labels = {
+    0.5: 'Useless',
+    1: 'Useless+',
+    1.5: 'Poor',
+    2: 'Poor+',
+    2.5: 'Ok',
+    3: 'Ok+',
+    3.5: 'Good',
+    4: 'Good+',
+    4.5: 'Excellent',
+    5: 'Excellent+',
+  };
+  
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
   const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Japanese", "Russian"];
@@ -425,7 +441,16 @@ const clearsearch=()=>{
                   {itinerary.BookingAlreadyMade ? "Yes" : "No"}
                 </p>
                 <p className={styles.productRating}>
-                        {itinerary.rating && itinerary.rating > 0 ? `Rating: ${itinerary.rating}/5` : "No rating yet"}
+                        {itinerary.rating && itinerary.rating > 0 ?(<> <Rating
+        name="text-feedback"
+        value={itinerary.rating}
+        readOnly
+        precision={0.5}
+        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
+      /> <Box sx={{ ml: 2 }}>{labels[itinerary.rating]}</Box></>)  : "No rating yet"}
+{/*                         
+                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
+     
                     </p>
                 <Link href={`iti/${itinerary._id}`} passHref>
                   <button className={styles.searchbtn}>View</button>
