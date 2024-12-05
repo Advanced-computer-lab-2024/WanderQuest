@@ -9,12 +9,10 @@ const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
 const orderModel = require('../models/objectModel').Order;
 const BookingModel = require('../models/bookingModel');
-const { sendEmail  } = require('../controllers/authenticationController');
+const { sendEmail } = require('../controllers/authenticationController');
 const mongoose = require('mongoose');
 
 const axios = require('axios');
-
-const mongoose = require('mongoose');
 
 
 // functions
@@ -103,7 +101,7 @@ const getItineraryById = async (req, res) => {
 
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 }, isArchived: false }, { availableAmount: 0 , sales: 0,revenueOfThisProduct: 0});
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 }, isArchived: false }, { availableAmount: 0, sales: 0, revenueOfThisProduct: 0 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -414,23 +412,23 @@ const reviewProduct = async (req, res) => {
 
 const saveEvent = async (req, res) => {
     const touristId = req.user._id;
-    const {eventType, eventId} = req.body;
-    if(!eventType || !eventId){
-        return res.status(400).json({ error: 'Missing event type or id'})
+    const { eventType, eventId } = req.body;
+    if (!eventType || !eventId) {
+        return res.status(400).json({ error: 'Missing event type or id' })
     }
-    if(eventType != "Activity" && eventType != "itinerary"){
-        return res.status(400).json({ error: 'Event must be an activity or itinerary'})
+    if (eventType != "Activity" && eventType != "itinerary") {
+        return res.status(400).json({ error: 'Event must be an activity or itinerary' })
     }
-    try{
+    try {
         const touristProf = await Tourist.findById(touristId);
-        if(!touristProf){
-            return res.status(400).json({ error: 'Could not find tourist with this ID'})
+        if (!touristProf) {
+            return res.status(400).json({ error: 'Could not find tourist with this ID' })
         }
-        touristProf.savedEvents.push({eventType, eventId})
+        touristProf.savedEvents.push({ eventType, eventId })
         await touristProf.save();
         return res.status(200).json({ message: 'Event saved successfully' });
-    } catch (error){
-        res.status(500).json({ error: error.message})
+    } catch (error) {
+        res.status(500).json({ error: error.message })
     }
 }
 
@@ -438,12 +436,12 @@ const viewSavedEvents = async (req, res) => {
     const touristId = req.user._id;
     try {
         const touristProf = await Tourist.findById(touristId);
-        if(!touristProf){
-            return res.status(404).json({error: 'Could not find the tourist'})
+        if (!touristProf) {
+            return res.status(404).json({ error: 'Could not find the tourist' })
         }
         return res.status(200).json(touristProf.savedEvents);
-    } catch(error){
-        return res.status(500).json({ error: error.message})
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
     }
 }
 
@@ -507,17 +505,17 @@ const viewWishlist = async (req, res) => {
     const touristId = req.user._id;
     try {
         const touristProf = await Tourist.findById(touristId);
-        if(!touristProf){
-            return res.status(404).json({error: 'Could not find the tourist'})
+        if (!touristProf) {
+            return res.status(404).json({ error: 'Could not find the tourist' })
         }
         const wishlistProducts = await Product.find(
             { _id: { $in: touristProf.wishlist } },
-            {availableAmount: 0, sales: 0,revenueOfThisProduct: 0}
+            { availableAmount: 0, sales: 0, revenueOfThisProduct: 0 }
         );
 
         return res.status(200).json(wishlistProducts);
-    } catch(error){
-        return res.status(500).json({ error: error.message})
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
     }
 }
 
@@ -551,17 +549,17 @@ const issueAnOrder = async (req, res) => {
 
     try {
         let totalPrice = 0;
-        for(const product of products){
+        for (const product of products) {
             const productDet = await Product.findById(product.productId);
-            if(!productDet){
+            if (!productDet) {
                 return res.status(404).json({ error: 'Could not find product with ID: ' + product.productId });
             }
-            if(productDet.availableAmount < product.quantity){
+            if (productDet.availableAmount < product.quantity) {
                 return res.status(400).json({ error: 'Not enough stock for product: ' + productDet.name });
             }
             totalPrice += productDet.price * product.quantity;
         }
-        const order = await orderModel.create({ orderedBy: touristId, products: products, totalPrice: totalPrice, date: new Date(), status: 'pending'});
+        const order = await orderModel.create({ orderedBy: touristId, products: products, totalPrice: totalPrice, date: new Date(), status: 'pending' });
         return res.status(200).json({ message: 'Order placed successfully', order });
     } catch (error) {
         return res.status(500).json({ error: error.message });
@@ -602,13 +600,13 @@ const cancelOrder = async (req, res) => {
 
     try {
         const order = await orderModel.findById(id);
-        if(!order){
+        if (!order) {
             return res.status(404).json({ error: 'Could not find order with ID: ' + id });
         }
-        if(order.orderedBy.toString() !== touristId.toString()){
+        if (order.orderedBy.toString() !== touristId.toString()) {
             return res.status(403).json({ error: 'You are not authorized to cancel this order' });
         }
-        if(order.status == 'cancelled'){
+        if (order.status == 'cancelled') {
             return res.status(400).json({ error: 'Order already cancelled' });
         }
         order.status = 'cancelled';
@@ -622,37 +620,37 @@ const cancelOrder = async (req, res) => {
 const addToCart = async (req, res) => {
     const touristId = req.user._id
     const { productId, quantity } = req.body
-    if(!productId || !quantity){
+    if (!productId || !quantity) {
         return res.status(400).json({ error: 'Missing product ID or quantity' })
     }
-    try{
+    try {
         const product = await Product.findById(productId)
-        if(!product){
+        if (!product) {
             return res.status(404).json({ error: 'Could not find product with ID: ' + productId })
         }
-        if(product.availableAmount < quantity){
+        if (product.availableAmount < quantity) {
             return res.status(400).json({ error: 'Not enough stock for product: ' + product.name })
         }
         const tourist = await Tourist.findById(touristId)
         tourist.cart = [...tourist.cart, { productId, quantity }]
         await tourist.save()
         return res.status(200).json({ message: 'Product added to cart successfully', cart: tourist.cart })
-    } catch (error){
-        return res.status(500).json({ error: error.message})
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
     }
 }
 
 const removeFromCart = async (req, res) => {
     const touristId = req.user._id
     const { productId } = req.body
-    if(!productId){
+    if (!productId) {
         return res.status(400).json({ error: 'Missing product ID' })
     }
-    try{
+    try {
         const tourist = await Tourist.findById(touristId);
         tourist.cart = tourist.cart.filter(product => !product.productId.equals(productId));
         await tourist.save();
-    } catch (error){
+    } catch (error) {
         return res.status(500).json({ error: error.message })
     }
 }
@@ -681,26 +679,26 @@ const checkoutOrder = async (req, res) => {
     const touristId = req.user._id;
     const { cart } = req.body;
 
-    if(!cart){
+    if (!cart) {
         return res.status(400).json({ error: 'Missing cart' });
     }
 
-    try{
+    try {
         let totalPrice = 0;
-        for(const item of cart){
+        for (const item of cart) {
             const product = await Product.findById(item.productId);
-            if(!product){
+            if (!product) {
                 return res.status(404).json({ error: 'Could not find product with ID: ' + item.productId });
             }
-            if(product.availableAmount < item.quantity){
+            if (product.availableAmount < item.quantity) {
                 return res.status(400).json({ error: 'Not enough stock for product: ' + product.name });
             }
             totalPrice += product.price * item.quantity;
         }
-        
+
         const order = await orderModel.create({ orderedBy: touristId, products: cart, totalPrice: totalPrice, date: new Date(), status: 'pending' });
-        return res.status(200).json({ order: order.products})
-    } catch(error){
+        return res.status(200).json({ order: order.products })
+    } catch (error) {
         return res.status(500).json({ error: error.message })
     }
 }
@@ -729,9 +727,9 @@ const beNotified = async (req, res) => {
 };
 const bookingIsOpenReminder = async (req, res) => {
     const touristID = req.user._id;
-    
+
     try {
-        const tourist = await Tourist.findById(touristID).populate('savedEvents.eventId'); 
+        const tourist = await Tourist.findById(touristID).populate('savedEvents.eventId');
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
@@ -785,7 +783,7 @@ const bookingIsOpenReminder = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
-const myNotifications = async(req,res)=>{
+const myNotifications = async (req, res) => {
     const { _id } = req.user._id;
 
     if (!_id) {
@@ -865,15 +863,16 @@ const bookingNotification = async (req, res) => {
         fourDaysFromNow.setDate(currentDate.getDate() + 4);
         const bookings = await BookingModel.find({
             userID: touristID,
-            startDate: {$gte: currentDate,$lt: fourDaysFromNow}});
+            startDate: { $gte: currentDate, $lt: fourDaysFromNow }
+        });
         const notifications = [];
-        const emailPromises = []; 
+        const emailPromises = [];
         for (const booking of bookings) {
             const notification = await NotificationModel.create({
                 userID: touristID,
                 message: `Your booking for ${booking.activityName} is starting on ${booking.startDate.toDateString()}!`,
                 reason: 'Upcoming Booking Reminder',
-                ReasonID: booking._id 
+                ReasonID: booking._id
             });
             notifications.push(notification);
         }
