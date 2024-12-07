@@ -177,7 +177,7 @@ const getProdById = async (req, res) => {
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ }, { availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ },  { isArchived: 1, availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -609,7 +609,7 @@ const flagActivity = async (req, res) => {
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: activity.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Activity has been flagged as inappropriate.",
+                message: `Your Activity ${activity.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: activityId // Set the ReasonID to the Itinerary ID
             });
@@ -646,7 +646,7 @@ const flagItinerary = async (req, res) => {
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: itinerary.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Itinerary has been flagged as inappropriate.",
+                message: `Your Itinerary ${itinerary.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: id // Set the ReasonID to the Itinerary ID
             });
@@ -665,6 +665,37 @@ const flagItinerary = async (req, res) => {
 
 // const addPromoCode = async (req, res) => {
 // }
+
+//view sales report
+const viewSalesReport = async (req,res) => {
+    try{
+        
+        const availableProducts = await ProdModel.find({ isArchived: false});
+        const availableActivities = await Activity.find({});
+        const itineraries = await itinerary.find({});
+        const productRevenue = availableProducts.reduce((total, product) => total + product.revenueOfThisProduct, 0);
+        const activityRevenue = availableActivities.reduce((total, activity) => {
+
+            return total + (activity.revenueOfThisActivity - 0);///////////!!!!check
+        }, 0);
+        const itineraryRevenue = itineraries.reduce((total, itinerary) => {
+            
+            return total + (itinerary.revenueOfThisItinerary - 0); ///////////!!!!check
+        }, 0);
+        const totalRevenue = productRevenue + activityRevenue + itineraryRevenue;
+        const report = {
+            productRevenue,
+            activityRevenue,
+            itineraryRevenue,
+            totalRevenue
+        };
+        res.status(200).json({ message: 'report successfully viewed ', report });
+        
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Unable to generate sales report', error });
+    }
+}
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -695,5 +726,6 @@ module.exports = {
     flagItinerary,
     viewAllProductSales,
     uploadProductPhoto,
-    getProductPhoto
+    getProductPhoto,
+    viewSalesReport
 }

@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 body {
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
     font-size: 20px;
     margin: 0; /* Remove default margin */
 }
@@ -7,9 +12,12 @@ body {
     display: flex;
     justify-content: space-between; /* Space out items to left, center, and right */
     align-items: center;
-    height: 60px;
+    height: 90px;
     background-color: white;
     padding: 0 20px; /* Add padding to the sides */
+    border-radius: 5px;
+    
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-middleside {
@@ -31,6 +39,10 @@ body {
 .navbar-button {
     background-color: transparent;
     border: none;
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
     font-size: 20px;
     min-width: 120px;
     cursor: pointer; /* Change cursor to pointer */
@@ -42,7 +54,9 @@ body {
 }
 
 .navbar-logo {
-    width: 105px; /* Adjust width as needed for larger size */
+    width: 130px; /* Adjust width as needed for larger size */
+    margin-top: 10px;
+    margin-left: 10px;
     height: auto; /* Maintain aspect ratio */
     object-fit: contain;
 }
@@ -76,3 +90,33 @@ body {
 .navbar-link:active {
     color: #ffffff; /* Prevent the link from turning blue when clicked */
 }
+
+.navbar-wishlist-button,
+.navbar-complaints-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.navbar-wishlist-button:hover,
+.navbar-complaints-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.navbar-wishlist-button svg,
+.navbar-complaints-button svg {
+    transition: transform 0.2s;
+}
+
+.navbar-wishlist-button:hover svg,
+.navbar-complaints-button:hover svg {
+    transform: scale(1.1);
+}
+
