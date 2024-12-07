@@ -6,12 +6,96 @@
   background-color: #f5f5f5;
 } */
 
-  
+.wishlistContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.wishlistPanel {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Start off-screen */
+  width: 400px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease-in-out;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.wishlistPanel.open {
+  right: 0;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px 10px;
+  color: #333;
+}
+
+.closeButton:hover {
+  color: #666;
+}
+
+.wishlistItems {
+  margin-top: 20px;
+}
+
+.wishlistItem {
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  gap: 15px;
+}
+
+.wishlistItem img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.itemDetails {
+  flex: 1;
+}
+
+.itemDetails h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.price {
+  font-weight: bold;
+  color: #2c5282;
+}
+
+.emptyMessage {
+  text-align: center;
+  color: #666;
+  margin-top: 20px;
+}
   .productCard {
     background-color: white;
+    align-items: center;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
+    margin-left: 40% ;
+    margin-bottom: 20px;
+    margin-top: 20px;
     padding: 20px;
     width: 350px;
     transition: transform 0.2s ease-in-out;
@@ -94,9 +178,7 @@
 .productsearch{
     display: inline;
 }
-.searchbtn{
-    
-}
+
 .searchcom{
     display: inline;
 }
@@ -164,6 +246,21 @@
     border-radius: 5px;
     padding: 10px 15px;
 }
+
+.deleteButton {
+  background-color: #ff4d4d; /* Light Red color */
+  color: white; /* Text color */
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.deleteButton:hover {
+  background-color: #cc0000; /* Darker Red color on hover */
+  color: white; /* Ensure text color stays white on hover */
+}
+
 
 .productArchive:hover {
     background-color: #042335;

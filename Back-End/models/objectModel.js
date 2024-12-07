@@ -58,7 +58,7 @@ const productSchema = new Schema({
     picture:
         [{ data: Buffer, type: String, required: false }],
     picture:
-    { type: documentSchema, default: undefined },
+        { type: documentSchema, default: undefined },
     price:
         { type: Number, required: true },
     description:
@@ -71,18 +71,18 @@ const productSchema = new Schema({
     ratings:
         [{ type: ratingSchema, required: false, default: null }],
     rating:
-    {type:Number, required:false,default:null},
+        { type: Number, required: false, default: null },
     isArchived: { type: Boolean, default: false },
     reviews:
-    [{
-        touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
-        review: { type: String, required: true },
-        createdAt: { type: Date, default: Date.now }
-    }],
+        [{
+            touristId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist' },
+            review: { type: String, required: true },
+            createdAt: { type: Date, default: Date.now }
+        }],
     availableAmount:
         { type: Number, required: true },
-    sales: { type: Number, required: true,default: 0},
-    revenueOfThisProduct: { type: Number, required: true, default: 0}
+    sales: { type: Number, required: true, default: 0 },
+    revenueOfThisProduct: { type: Number, required: true, default: 0 }
 
 }, { timestamps: true });
 
@@ -99,19 +99,19 @@ productSchema.pre('save', function (next) {
 
 //function to update availability and sales of product
 productSchema.methods.updateAvailabilityAndSales = async function (quantity) {
-    if (this.availableAmount < quantity){
+    if (this.availableAmount < quantity) {
         throw new Error('Not enough stock available');
     }
-    this.availableAmount-= quantity;
+    this.availableAmount -= quantity;
     this.sales += quantity;
     await this.save();
-    
+
 }
 
 //Middleware to calculate total revenue of specific product
-productSchema.pre('save', function (next){
-   this.revenueOfThisProduct = this.sales * this.price ;
-   next();
+productSchema.pre('save', function (next) {
+    this.revenueOfThisProduct = this.sales * this.price;
+    next();
 });
 
 
@@ -136,8 +136,8 @@ const activitySchema = new mongoose.Schema({
     tags: { type: [PreferencedTagSchema], default: [] },
     specialDiscounts: { type: String },
     bookingIsOpen: { type: Boolean, default: true },
-    NoOfBooking: { type: Number, default: 0},
-    touristsCount: { type: Number, default: 0 }, 
+    NoOfBooking: { type: Number, default: 0 },
+    touristsCount: { type: Number, default: 0 },
     revenueOfThisActivity: { type: Number, default: 0 }, //!!!!!!!!!!!!!ensure that it is not seen by tourist
     ratings: [{ type: ratingSchema, required: false, default: null }],
     rating: { type: Number, default: null },
@@ -242,19 +242,19 @@ const itinerarySchema = new mongoose.Schema({
         }
     ],
     BookingAlreadyMade: { type: Boolean, default: false },
-    NoOfBookings: { type : Number, default: 0 },
-    touristsCount: { type: Number, default: 0 }, 
-    revenueOfThisItinerary: { type: Number, default: 0},
+    NoOfBookings: { type: Number, default: 0 },
+    touristsCount: { type: Number, default: 0 },
+    revenueOfThisItinerary: { type: Number, default: 0 },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TourGuideModel',
         required: false,
     },
-     /*
-    Added the following field to handle the availability of booking
-    For the requirement "Activate/ deactivate an itinerary with bookings"
-    */
-    bookingIsOpen: { 
+    /*
+   Added the following field to handle the availability of booking
+   For the requirement "Activate/ deactivate an itinerary with bookings"
+   */
+    bookingIsOpen: {
         type: Boolean,
         default: true
     },
@@ -308,8 +308,8 @@ itinerarySchema.pre('save', function (next) {
 //middleware to update revenue of itinerary
 itinerarySchema.methods.updateRevenue = async function () {
     const activities = await Activity.find({ _id: { $in: this.activities } });
-     //The revenue for these activities is then summed up
-    const totalActivityRevenue = activities.reduce((total, activity) => total + activity.revenue, 0); 
+    //The revenue for these activities is then summed up
+    const totalActivityRevenue = activities.reduce((total, activity) => total + activity.revenue, 0);
     this.revenue = totalActivityRevenue + this.bookings * this.price;
     await this.save();
 };
@@ -322,7 +322,7 @@ const complaintSchema = new Schema({
     body:
         { type: String, required: true },
     status:
-    {type:String,required:false,default:'Pending'},
+        { type: String, required: false, default: 'Pending' },
     date:
         { type: Date, required: false, default: Date.now },
     reply:
@@ -338,23 +338,23 @@ const complaint = mongoose.model('complaint', complaintSchema)
 
 const transportationSchema = new Schema({
     company:
-    { type: String, required: false },
+        { type: String, required: false },
     type:
-    { type: String, required: true },
+        { type: String, required: true },
     price:
-    { type: Number, required: true },
+        { type: Number, required: true },
     departure:
-    { type: String, required: true },
+        { type: String, required: true },
     arrival:
-    { type: String, required: true },
+        { type: String, required: true },
     date:
-    { type: Date, required: false, default: Date.now },
+        { type: Date, required: false, default: Date.now },
     bookingAlreadyMade:
-    { type: Boolean, required: true, default: false },
+        { type: Boolean, required: true, default: false },
     pickUpLocation:
-    { type: String, required: true },
+        { type: String, required: true },
     dropOffLocation:
-    { type: String, required: true },
+        { type: String, required: true },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: AdvertiserModel,
@@ -375,11 +375,11 @@ const orderSchema = new Schema({
     products: [orderProductSchema], // Use the sub-schema for products
     totalPrice: { type: Number, required: true },
     date: { type: Date, required: true, default: Date.now },
-    status: { 
-        type: String, 
-        required: true, 
-        default: 'pending', 
-        enum: ['pending', 'cancelled', 'sent to delivery', 'delivered'] 
+    status: {
+        type: String,
+        required: true,
+        default: 'pending',
+        enum: ['pending', 'cancelled', 'sent to delivery', 'delivered']
     }
 });
 
@@ -401,17 +401,19 @@ orderSchema.pre('save', async function (next) {
 const Order = mongoose.model('Order', orderSchema);
 
 const notificationSchema = new Schema({
-    userID:{type: mongoose.Schema.Types.ObjectId,
+    userID: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: UserModel,
-        required: true},
-    message:{type:String,required:false},
-    reason: {type:String,required:false},
+        required: true
+    },
+    message: { type: String, required: false },
+    reason: { type: String, required: false },
     ReasonID: {
         type: mongoose.Schema.Types.ObjectId,
         required: false,
     },
-    seen:{type:Boolean,required:false,default:false},
-    createdAt: { type: Date, default: Date.now }   
+    seen: { type: Boolean, required: false, default: false },
+    createdAt: { type: Date, default: Date.now }
 });
 const notification = mongoose.model('notification', notificationSchema);
 
@@ -450,4 +452,4 @@ module.exports = {
     Order,
     notification
     // , PromoCode
- }
+}
