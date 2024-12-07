@@ -223,7 +223,9 @@ const cancelBooking = async (req, res) => {
         const hoursDifference = (startDate - currentDate) / (1000 * 60 * 60);
 
         if (hoursDifference < 48) {
+            console.log(hoursDifference);
             return res.status(400).json({ error: 'Cannot cancel a booking within 48 hours of the start date' });
+
         }
         booking.status = 'cancelled';
         await booking.save();
