@@ -40,9 +40,10 @@ export default function Home() {
     
 
 
-      <Link href="/admin">
+      {/* <Link href="/admin">
          <button className='admin'>Admin</button>
-      </Link>
+      </Link> */}
+      {/* <Salesrep></Salesrep> */}
       {/* <Link href="/guest">
          <button className='guest'>Guest</button>
       </Link>
