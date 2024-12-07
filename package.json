@@ -3,7 +3,7 @@
     "@react-google-maps/api": "^2.19.3",
     "@react-spring/web": "^9.7.5",
     "axios": "^1.7.7",
-    "chart.js": "^4.4.6",
+    "chart.js": "^4.4.7",
     "cookie-parser": "^1.4.7",
     "country-list": "^2.3.0",
     "date-fns": "^4.1.0",
