@@ -1,14 +1,26 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, {useRef,useState, useEffect } from 'react';
 import Navbar from '../../../../components/Navbar';
 import styles from '/Styles/TouristHistory.module.css';
 import AddComment from '../../../../components/AddComment';
 import AddRating from '../../../../components/AddRating';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 
 const TouristHistory = () => {
     //const [followedGuides, setFollowedGuides] = useState([]);
     // const [tourGuideData, setTourGuideData] = useState(null);
+
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1
+      };
 
     const [pastItineraries, setPastItineraries] = useState([]);
     const [ongoingIti, setOngoingIti] = useState([]);
@@ -35,6 +47,7 @@ const TouristHistory = () => {
     const [showGuidePopup, setShowGuidePopup] = useState(false);
     const [selectedGuide, setSelectedGuide] = useState(null);
 
+    const [loading, setLoading] = useState(false);
 
     //const guideID = "672e33ac93c8d93da59e6f4d"; // Hardcoded for now, will be dynamic in the future
 
@@ -201,7 +214,7 @@ const TouristHistory = () => {
 
             console.log('Rating:', rating);
             console.log('Comment:', comment);
-            const ratingResp = await fetch(`http://localhost:4000/tourGuide/rate/${tourGuideData._id}`, {
+            const ratingResp = await fetch(`http://localhost:4000/tourGuide/rate/${selectedGuide._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -209,7 +222,7 @@ const TouristHistory = () => {
                 credentials: 'include',
                 body: JSON.stringify({ touristId: touristID, rating: rating })
             });
-            const commentResp = await fetch(`http://localhost:4000/tourGuide/comment/${tourGuideData._id}`, {
+            const commentResp = await fetch(`http://localhost:4000/tourGuide/comment/${selectedGuide._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -234,13 +247,20 @@ const TouristHistory = () => {
     }
     const handleGuidePopup = async (guideID) => {
         try {
+            setLoading(true); // Set loading to true before fetching
             const response = await fetch(`http://localhost:4000/tourGuide/tourGuideInfo/${guideID}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch guide details'); // Handle HTTP errors
+            }
             const data = await response.json();
             console.log('Guide Details:', data);
             setSelectedGuide(data); // Store guide details in state
             setShowGuidePopup(true); // Open the popup
         } catch (error) {
-            console.error('Error fetching guide details:', error);
+            console.log('Error fetching guide details:', error);
+            alert('This Itinerary Did Not Have A Guide'); // Show user-friendly error
+        } finally {
+            setLoading(false); // Reset loading state
         }
     };
     
@@ -270,6 +290,7 @@ const TouristHistory = () => {
     const handleItiFeedback = async (e, id) => {
         e.preventDefault();
         const { rating = '', comment = '' } = itiFeedback[id] || {};
+        console.log(id, itiFeedback[id]);
 
         const ratingFeedback = await fetch(`http://localhost:4000/itinerary/rate/${id}`, {
             method: 'POST',
@@ -403,89 +424,59 @@ const TouristHistory = () => {
         <div>
             <h2 className={styles.otherTitle}>Rate Your Experience</h2>
         <div className={styles.innerBox}>
-            {/* Followed Tour Guides Section
-            <div className={styles.innerContainer}>
-                <h2 className={styles.innerTitle}>Followed Tour Guides</h2>
-
-                {tourGuideData ? (
-                    <div>
-                        <p>Username: {tourGuideData.username}</p>
-                        <p>Email: {tourGuideData.email}</p>
-                        <AddRating rating={rating} setRating={setRating} />
-                        <AddComment comment={comment} setComment={setComment} />
-                        <button className={styles.btnFeedback} onClick={handleFeedback}>Send</button>
-                        <div>
-                            {showMessage && lastUpdated === tourGuideData._id ? (
-                                <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
-                                    Feedback sent successfully
-                                </p>
-                            ) : null}
-                        </div>
-                    </div>
-                ) : (
-                    <p>No Followed Tour Guides</p>
-                )}
-            </div> */}
-
             {/* List of Itineraries Section */}
             <div className={styles.innerContainer}>
     <h2 className={styles.innerTitle}>List of Itineraries</h2>
-    <div>
-        {/* Check if pastItineraries is a valid array */}
-        {Array.isArray(pastItineraries) && pastItineraries.length > 0 ? (
-            pastItineraries.map((itinerary) => (
-                <div id={itinerary.id} key={itinerary.details._id} className={styles.innerBox}>
-                    <p><strong>Title: {itinerary.details.title}</strong></p>
-                    <p>
-                        <strong>Time:</strong> {Array.isArray(itinerary.details.time) 
-                            ? itinerary.details.time.join(', ') 
-                            : 'N/A'}
-                    </p>
-                    <p>
-                        <strong>Accessibility:</strong> {itinerary.details.accessibility ? 'Yes' : 'No'}
-                    </p>
-                    <p>
-                        <strong>Pick Up Location:</strong> {itinerary.details.pickUpLocation || 'N/A'}
-                    </p>
-                    <p>
-                        <strong>Drop Off Location:</strong> {itinerary.details.dropOffLocation || 'N/A'}
-                    </p>
-                    <p><strong>Price:</strong> {itinerary.details.price || 'N/A'}</p>
-                    <button 
-                        className={styles.linkButton} 
-                        onClick={() => handleGuidePopup(itinerary.details.createdBy)}
-                    >
-                        View Tour Guide
-                    </button>
-                    <p><strong>Rating:</strong> {itinerary.details.rating || 'Not Rated'}</p>
-                    {/* Components for adding feedback */}
-                    <AddRating 
-                        rating={itiFeedback[itinerary._id]?.rating || ''} 
-                        setRating={(value) => handleItiFeedbackChange(itinerary._id, 'rating', value)} 
-                    />
-                    <AddComment 
-                        comment={itiFeedback[itinerary._id]?.comment || ''} 
-                        setComment={(value) => handleItiFeedbackChange(itinerary._id, 'comment', value)} 
-                    />
-                    <button 
-                        className={styles.btnFeedback} 
-                        onClick={(e) => handleItiFeedback(e, itinerary._id)}
-                    >
-                        Send
-                    </button>
-                    <div>
-                        {showMessage && lastUpdated === itinerary._id ? (
-                            <p className={`${styles.confirmMessage} ${showMessage ? styles.fadeOut : ''}`}>
-                                Feedback sent successfully
-                            </p>
-                        ) : null}
-                    </div>
-                </div>
-            ))
-        ) : (
-            // Fallback for no itineraries
-            <p>No Itineraries Available</p>
-        )}
+    <div className={styles.histContainer}>
+      <h2 className={styles.otherTitle}>List of Past Itineraries</h2>
+      {Array.isArray(pastItineraries) && pastItineraries.length > 0 ? (
+        <Slider {...settings}>
+          {pastItineraries.map((itinerary) => (
+            <div key={itinerary.details._id} className={styles.innerBox}>
+              <p><strong>Title:</strong> {itinerary.details.title}</p>
+              <p>
+                <strong>Time:</strong> {Array.isArray(itinerary.details.time)
+                  ? itinerary.details.time.join(", ")
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Accessibility:</strong> {itinerary.details.accessibility ? "Yes" : "No"}
+              </p>
+              <p>
+                <strong>Pick Up Location:</strong> {itinerary.details.pickUpLocation || "N/A"}
+              </p>
+              <p>
+                <strong>Drop Off Location:</strong> {itinerary.details.dropOffLocation || "N/A"}
+              </p>
+              <p><strong>Price:</strong> {itinerary.details.price || "N/A"}</p>
+                <button className={styles.linkButton} onClick={() => handleGuidePopup(itinerary.details.createdBy)}disabled={loading}>
+                    {loading ? 'Loading...' : 'View Tour Guide'}
+                </button>
+              <p><strong>Rating:</strong> {itinerary.details.rating || "Not Rated"}</p>
+              {/* Components for feedback */}
+              <AddRating
+                rating={itiFeedback[itinerary._id]?.rating || ""}
+                setRating={(value) => handleItiFeedbackChange(itinerary._id, "rating", value)}
+              />
+              <AddComment
+                comment={itiFeedback[itinerary._id]?.comment || ""}
+                setComment={(value) => handleItiFeedbackChange(itinerary._id, "comment", value)}
+              />
+              <button
+                className={styles.btnFeedback}
+                onClick={(e) => handleItiFeedback(e, itinerary._id)}
+              >
+                Send
+              </button>
+              {showMessage && lastUpdated === itinerary._id && (
+                <p className={styles.confirmMessage}>Feedback sent successfully</p>
+              )}
+            </div>
+          ))}
+        </Slider>
+      ) : (
+        <p className={styles.errorMessage}>No Itineraries Available</p>
+      )}
     </div>
 </div>
 
@@ -634,6 +625,7 @@ const TouristHistory = () => {
                         <h2>Tour Guide Details</h2>
                         <p><strong>Username:</strong> {selectedGuide.username}</p>
                         <p><strong>Email:</strong> {selectedGuide.email}</p>
+                        <p><strong>Rating:</strong>{selectedGuide.averageRating > 0 ? (selectedGuide.averageRating): ("Be The First To Rate Them!") }</p>
                         <h3>Rate This Guide</h3>
                         <AddRating rating={rating} setRating={setRating} />
                         <AddComment comment={comment} setComment={setComment} />

@@ -5,18 +5,15 @@ import Image from 'next/image';
 import styles from '../Styles/Navbar.css'; // Ensure this path is correct
 
 const Navbar = () => {
-    const isloggedin = false;
-
+    const isSignedIn = false;
+    
     return (
         <div className="navbar-container">
             <div className='navbar-leftside'> 
                 
-<Link href="/">
-    
-        <img className="navbar-logo" src="/logo.png" alt="Logo" />
-    
-</Link>
+            <Link href="/"><img className="navbar-logo" src="/logo.png" alt="Logo" /></Link>
             </div>
+            
             <div className='navbar-middleside'>
                 
                 <Link href="/activities" className="navbar-link">Products</Link>

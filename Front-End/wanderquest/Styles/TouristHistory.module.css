@@ -1,16 +1,15 @@
 /* Itineraries.module.css */
 
 .histContainer {
-    padding: 30px;
-    background-color: #17455C;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 3000px;
-    margin: 20px auto;
-    display:block;
-    align-items: center;
-  }
-
+  padding: 30px;
+  background-color: #17455C;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Reduced width for better centering */
+  margin: 40px auto; /* Center the slider */
+  display: block;
+  align-items: center;
+}
   .innerContainer{
     padding: 30px;
     background-color: #f4f4f4;
@@ -112,17 +111,19 @@
     background-color: #17455C; /* Elephant color on hover */
   }
   
-
   .innerBox {
-    padding: 30px;
-    background-color: #f4f4f4;
+    padding: 20px; /* Consistent padding */
+    background-color: #ffffff; /* White background for cards */
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 1600px;
-    margin: 30px auto;
-    display:block;
-    align-items: center;
-  }
+    margin: 20px; /* Consistent margin */
+    text-align: left;
+    max-width: 100%;
+    overflow: hidden; /* Prevent content overflow */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 
   @keyframes fadeOut{
     0%{ opacity: 1;}
@@ -239,21 +240,6 @@
   font-size: 1.5em;
   cursor: pointer;
 }
-/* 
-.subBox{
-  padding: 30px;
-  background-color: #122c34;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 30px auto;
-  display:block;
-  align-items: center;
-}
-
-.inStyle{
-  color: #f0f0f0;
-} */
 
 .cancelButton{
   padding: 5px 10px;
@@ -269,4 +255,23 @@
 
 .cancelButton:hover {
   background-color: #fa3737; 
+}
+
+.linkButton {
+  background-color: #1A6187;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.linkButton:hover {
+  background-color: #17455C;
+}
+
+.btnFeedback:hover {
+  background-color: #17455C;
 }
