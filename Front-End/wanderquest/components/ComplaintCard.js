@@ -51,7 +51,7 @@ const ComplaintCard = () => {
     return (
         <div className={styles.container}>
             <div className={styles.complaintCard}>
-                <h1>Complaint Card</h1>
+                <h1>File a Complaint</h1>
                 <div className={styles.complaintInfo}>
                     <div>
                         <label>Title</label>

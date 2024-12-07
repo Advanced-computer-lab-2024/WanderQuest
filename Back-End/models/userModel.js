@@ -119,6 +119,11 @@ const User = mongoose.model('User', UserSchema);
 
 // Disciminator schemas
 
+const cartItemSchema = new Schema({
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, min: 1 }
+});
+
 // Tourist schema
 const TouristSchema = new Schema({
     nationality: { type: String, required: true },
@@ -136,7 +141,7 @@ const TouristSchema = new Schema({
         eventId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'savedEvents.eventType' },
         notify: { type: Boolean, required: false, default: false }
     }],
-    cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true, default: [] }],
+    cart: [cartItemSchema],
     deliveryAddresses: { type: [deliveryAddressSchema], required: false, default: [] },
     activeAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'deliveryAddressSchema', required: false, default: null },
 });

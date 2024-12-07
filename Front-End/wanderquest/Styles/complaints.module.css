@@ -142,4 +142,31 @@
     border-radius: 5px;
 }
 
+/* Adjust complaint cards for sliding panel */
+.complaintsPanel .complaintCard {
+    width: 100%;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
+
+.complaintsPanel .container {
+    padding: 0;
+    width: 100%;
+}
+
+.complaintsPanel h1 {
+    margin-top: 0;
+    padding-top: 10px;
+}
+
+/* Make the complaint cards more compact in the sliding panel */
+.complaintsPanel .complaintInfo {
+    padding: 10px;
+}
+
+.complaintsPanel .complaintButton {
+    padding: 8px 20px;
+    font-size: 14px;
+}
+
 

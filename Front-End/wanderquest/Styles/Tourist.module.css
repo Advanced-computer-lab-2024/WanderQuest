@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Cookie&family=Ms+Madi&family=Playball&display=swap');
+
+
 .container {
     position: relative;
-    padding: 20px;
+    padding: px;
 }
 
 .buttons {
@@ -9,6 +12,98 @@
     gap: 10px;
 }
 
+
+.heroSection {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    overflow: hidden;
+}
+
+.heroImage {
+    width:100%;
+    height: 100%;
+    object-fit: cover;
+}
+.heroText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2;
+    width: 100%;
+}
+
+.heroTitle {
+    font-size: 4.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+}
+
+.heroSubtitle {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    display: block;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.wishlistContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.wishlistContainer.visible {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    visibility: visible;
+}
+
+.wishlistPanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1001;
+    transform: translateX(100%);
+}
+
+.wishlistPanel.open {
+    transform: translateX(0);
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px;
+    color: #333;
+}
+
+.closeButton:hover {
+    color: #666;
+}
 .profileButton {
     position: absolute;
     top: 60px;
@@ -32,4 +127,474 @@
 .profileIcon {
     margin-right: 5px;
     font-size: 20px; /* Adjust icon size as needed */
+}
+
+.complaintsContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.complaintsContainer.visible {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    visibility: visible;
+}
+
+.complaintsPanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1001;
+    transform: translateX(100%);
+}
+
+.complaintsPanel.open {
+    transform: translateX(0);
+}
+.stats {
+    margin-right: auto;
+   margin-left: auto;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    width: 80%;
+    z-index: 1;
+}
+
+.stat {
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: calc(25% - 15px);  /* Adjust width to account for gap */
+}
+
+.statNumber {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #042335;
+    margin-bottom: 5px;
+}
+
+.statLabel {
+    font-size: 1.2rem;
+    color: #666;
+    font-weight: normal;
+}
+.tourGrid {
+    display: grid;
+    grid-template-columns: 40% 60%; /* Changed from repeat(2, 1fr) to explicit percentages */
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-width: 78%;
+}
+
+.tourGrid2 {
+    display: grid;
+    grid-template-columns: 60% 40%; /* Changed from repeat(2, 1fr) to explicit percentages */
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin-top: -10px;
+    margin: -40px auto;
+
+}
+
+
+
+.tourCard1 {
+    width: 100%; /* Changed from 80% to 100% to fill its grid space */
+    position: relative;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.tourCard1:hover {
+    transform: scale(1.02);
+}
+
+.tourCard2 {
+    width: 100%;
+    position: relative;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.tourCard2:hover {
+    transform: scale(1.02);
+}
+
+
+
+
+.cardContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
+}
+
+.cardContent h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.cardContent p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.explore {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.sectionHeader {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0px;
+}
+
+.sectionHeader h2 {
+    align-items: left;
+    display: block;
+    font-size: 2.5rem;
+    text-align: left;
+    color: #333;
+    margin: 0;
+}
+
+
+.sectionHeader p {
+    display: block;
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 10px;
+    margin-top: 20px;  /* Added this line to create more space below the h2 */
+}
+
+
+.explore {
+    
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+
+.tourCard1 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tourCard2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cardContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+}
+
+.cardContent h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.cardContent p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+
+.testimonialSection {
+    padding: 4rem 2rem;
+    background-color: #f8f9fa;
+    margin: 2rem 0;
+    overflow: hidden;
+}
+
+.testimonialContainer {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    height: 300px; /* Adjust based on your content */
+}
+
+.testimonial {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    transition: all 0.5s ease;
+    padding: 2rem;
+}
+
+.testimonial.active {
+    opacity: 1;
+    transform: translateX(0);
+    z-index: 2;
+}
+
+.testimonial.next {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+.testimonial.prev {
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Keep your existing testimonialProfile, profileImage, profileInfo, etc. styles */
+
+.profileImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+.testimonialIndicators {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ddd;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.activeIndicator {
+    background-color: #666;
+    transform: scale(1.2);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .testimonialSection {
+        padding: 2rem 1rem;
+    }
+
+    .testimonialContainer {
+        height: 350px; /* Adjust for mobile */
+    }
+
+    .testimonialText {
+        font-size: 1rem;
+    }
+}
+
+.blogSection {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.blogTitle {
+    color: #6B7280;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.blogHeader {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 3rem;
+}
+
+.blogGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.blogCard {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.blogCard:hover {
+    transform: translateY(-5px);
+}
+
+.blogImage {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.blogContent {
+    padding: 1.5rem;
+    text-align: left;
+}
+
+.blogDate {
+    color: #6B7280;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.blogCardTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.blogExcerpt {
+    color: #6B7280;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.viewMoreButton {
+    margin-top: 3rem;
+    padding: 0.75rem 2rem;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.viewMoreButton:hover {
+    background: #333;
+}
+
+
+.productsSection {
+    padding: 4rem 2rem;
+    background-color: #f8f9fa;
+}
+
+.productsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.productCard {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 400px;
+}
+
+.productImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.productContent {
+    padding: 1.5rem;
+}
+
+.productContent h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.price {
+    font-size: 1.5rem;
+    color: #2c5282;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.description {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }

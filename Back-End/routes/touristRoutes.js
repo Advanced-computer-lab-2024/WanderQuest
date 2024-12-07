@@ -15,7 +15,6 @@ const {
     changePreferredCurrency,
     redeemPoints,
     fileComplaint,
-    specComplaint,
     myComplaints,
     reviewProduct,
     getLevel,
@@ -40,7 +39,12 @@ const {
     bookingNotification,
     addDeliveryAddress,
     getDeliveryAddresses,
-    setActiveDeliveryAddress,
+    setActiveDeliveryAddress,,
+    addToCart,
+    viewCart,
+    removeFromCart,
+    changeAmountInCart,
+    birthDaycode
 } = require('../controllers/touristController');
 const { getProducts } = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
@@ -79,7 +83,6 @@ router.patch('/changePreferredCurrency', changePreferredCurrency);
 router.patch('/redeem', redeemPoints);
 router.post('/fileComplaint', fileComplaint);
 router.get('/myComplaints', myComplaints);
-router.get('/myComplaints/:id', specComplaint);
 router.get('/level', getLevel)
 router.get('/availablePoints', getavailablePoints)
 router.get('/totalPoints', getTotalPoints)
@@ -88,9 +91,9 @@ router.post('/saveEvent', saveEvent);
 router.get('/viewSavedEvents', viewSavedEvents);
 router.delete('/removeSavedEvents', removeSavedEvents);
 
-router.post('/wishlist/add/:id', addToWishlist);
+router.post('/wishlist/add', addToWishlist);
 router.get('/wishlist', viewWishlist);
-router.delete('/wishlist/remove/:id', removeFromWishlist);
+router.delete('/wishlist/remove', removeFromWishlist);
 
 router.get("/orders", viewOrders)
 router.post("/orders/issue", issueAnOrder)
@@ -105,6 +108,11 @@ router.post('/bookingReminder', bookingNotification);
 router.post('/addDeliveryAddresses', addDeliveryAddress);
 router.get('/deliveryAddresses', getDeliveryAddresses);
 router.patch('/setActiveDeliveryAddress', setActiveDeliveryAddress);
+router.post('/birthday',birthDaycode);
 
+router.post('/cart/add',addToCart);
+router.get('/cart', viewCart);
+router.delete('/cart/remove', removeFromCart);
+router.patch('/cart/change', changeAmountInCart);
 
 module.exports = router;
