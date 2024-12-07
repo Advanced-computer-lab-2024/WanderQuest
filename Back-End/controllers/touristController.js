@@ -16,6 +16,7 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 
 
+
 // functions
 const getProfile = async (req, res) => {
     try {
@@ -633,6 +634,9 @@ const addToCart = async (req, res) => {
             return res.status(400).json({ error: 'Not enough stock for product: ' + product.name })
         }
         const tourist = await Tourist.findById(touristId)
+        if(productId in tourist.cart){
+            return res.status(400).json({ error: 'Product already in cart, you can change the quantity you want to order' })
+        }
         tourist.cart = [...tourist.cart, { productId, quantity }]
         await tourist.save()
         return res.status(200).json({ message: 'Product added to cart successfully', cart: tourist.cart })
@@ -651,10 +655,39 @@ const removeFromCart = async (req, res) => {
         const tourist = await Tourist.findById(touristId);
         tourist.cart = tourist.cart.filter(product => !product.productId.equals(productId));
         await tourist.save();
+        return res.status(200).json({ message: "Successfully removed the product from the cart" })
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
 }
+
+const changeAmountInCart = async (req, res) => {
+    const touristId = req.user._id;
+    const { productId, quantity } = req.body;
+    if (!productId || !quantity) {
+        return res.status(400).json({ error: 'Missing product ID or quantity' });
+    }
+    try {
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ error: 'Could not find product with ID: ' + productId });
+        }
+        if (product.availableAmount < quantity) {
+            return res.status(400).json({ error: 'Not enough stock for product: ' + product.name });
+        }
+        const tourist = await Tourist.findById(touristId);
+        const cartItem = tourist.cart.find(item => item.productId.equals(productId));
+        if (cartItem) {
+            cartItem.quantity = quantity;
+        } else {
+            return res.status(404).json({ error: 'Product not found in cart' });
+        }
+        await tourist.save();
+        return res.status(200).json({ message: 'Product quantity updated successfully', cart: tourist.cart });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
 
 const viewCart = async (req, res) => {
     const touristId = req.user._id;
@@ -666,6 +699,7 @@ const viewCart = async (req, res) => {
 
         // Transform the cart to include product names and quantities
         const transformedCart = tourist.cart.map(item => ({
+            id: item.productId._id,
             name: item.productId.name,
             quantity: item.quantity
         }));
@@ -964,5 +998,9 @@ module.exports = {
     clearNotifications,
     deleteNotification,
     bookingNotification,
+    addToCart,
+    viewCart,
+    removeFromCart,
+    changeAmountInCart,
     birthDaycode
 };

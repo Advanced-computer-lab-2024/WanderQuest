@@ -39,6 +39,11 @@ const bookActivity = async (req, res) => {
             return res.status(404).json({ error: 'Activity not found' });
         }
 
+        
+        if (retUser.wallet < retActivity.price) {
+            return res.status(400).json({ error: 'Insufficient funds' });
+        }
+
         const newBooking = new Booking({
             userId,
             bookingType,
@@ -62,7 +67,6 @@ const bookActivity = async (req, res) => {
         const appFee = retActivity.price * 0.10;
         retActivity.revenue = (retActivity.revenue || 0) + (retActivity.price - appFee);
         await retActivity.save();
-
         res.status(201).json(savedBooking);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -121,6 +125,10 @@ const bookItinerary = async (req, res) => {
         const retItinerary = await Itinerary.findById(itineraryId);
         if (!retItinerary) {
             return res.status(404).json({ error: 'Itinerary not found' });
+        }
+
+        if (retUser.wallet < retItinerary.price) {
+            return res.status(400).json({ error: 'Insufficient funds' });
         }
 
         // Convert startDate to ISO string without time part
@@ -215,7 +223,9 @@ const cancelBooking = async (req, res) => {
         const hoursDifference = (startDate - currentDate) / (1000 * 60 * 60);
 
         if (hoursDifference < 48) {
+            console.log(hoursDifference);
             return res.status(400).json({ error: 'Cannot cancel a booking within 48 hours of the start date' });
+
         }
         booking.status = 'cancelled';
         await booking.save();

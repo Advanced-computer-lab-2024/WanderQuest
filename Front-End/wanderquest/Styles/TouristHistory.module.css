@@ -1,22 +1,21 @@
 /* Itineraries.module.css */
 
 .histContainer {
-    padding: 30px;
-    background-color: #17455C;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 900px;
-    margin: 20px auto;
-    display:block;
-    align-items: center;
-  }
-
+  padding: 30px;
+  background-color: #17455C;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Reduced width for better centering */
+  margin: 40px auto; /* Center the slider */
+  display: block;
+  align-items: center;
+}
   .innerContainer{
     padding: 30px;
     background-color: #f4f4f4;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
+    max-width: 1000px;
     margin-top: 60px ;
     margin-left: auto;
     margin-right: auto;
@@ -112,17 +111,19 @@
     background-color: #17455C; /* Elephant color on hover */
   }
   
-
   .innerBox {
-    padding: 30px;
-    background-color: #f4f4f4;
+    padding: 20px; /* Consistent padding */
+    background-color: #ffffff; /* White background for cards */
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 900px;
-    margin: 30px auto;
-    display:block;
-    align-items: center;
-  }
+    margin: 20px; /* Consistent margin */
+    text-align: left;
+    max-width: 100%;
+    overflow: hidden; /* Prevent content overflow */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 
   @keyframes fadeOut{
     0%{ opacity: 1;}
@@ -153,7 +154,7 @@
     background-color: #f0f0f0;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 900px;
+    max-width: 1300px;
     margin: 30px auto;
     display:block;
     align-items: center;
@@ -164,25 +165,49 @@
 .tabButton {
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
-  background-color: #122c34;
-  border-color: #122c34;
+  background-color: #17455C;
   color: #f0f0f0;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   font-size: 16px;
+  position: relative;
 }
 
 .tabButton:hover {
-  background-color: #f0f0f0;
-  color: #1A6187;
+  color: #f0f0f0;
+}
+
+.tabButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px; /* Thickness of the line */
+  background-color: white;
+  transition: width 0.3s ease-in-out;
+}
+
+.tabButton:hover::after {
+  width: 100%;
 }
 
 .activeTab {
-  background-color: #1A6187;
+  background-color: #17455C;
   color: white;
   cursor: default;
 }
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Thickness of the line */
+  background-color: white;
+}
+
 
 .popupOverlay {
   position: fixed;
@@ -215,21 +240,6 @@
   font-size: 1.5em;
   cursor: pointer;
 }
-/* 
-.subBox{
-  padding: 30px;
-  background-color: #122c34;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 30px auto;
-  display:block;
-  align-items: center;
-}
-
-.inStyle{
-  color: #f0f0f0;
-} */
 
 .cancelButton{
   padding: 5px 10px;
@@ -245,4 +255,23 @@
 
 .cancelButton:hover {
   background-color: #fa3737; 
+}
+
+.linkButton {
+  background-color: #1A6187;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.linkButton:hover {
+  background-color: #17455C;
+}
+
+.btnFeedback:hover {
+  background-color: #17455C;
 }

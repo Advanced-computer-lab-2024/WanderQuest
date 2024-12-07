@@ -12,7 +12,7 @@ body {
     display: flex;
     justify-content: space-between; /* Space out items to left, center, and right */
     align-items: center;
-    height: 90px;
+    height: 80px;
     background-color: white;
     padding: 0 20px; /* Add padding to the sides */
     border-radius: 5px;

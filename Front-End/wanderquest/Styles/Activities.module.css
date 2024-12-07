@@ -1,12 +1,12 @@
-.container {
+/* .container {
   padding: 20px;
   max-width: 1000px;
   margin: 40px auto;
-  font-family: 'Roboto', sans-serif; /* Use a modern font */
-  background-color: #f7f7f7; /* Light background for contrast */
+  font-family: 'Roboto', sans-serif; 
+  background-color: #f7f7f7; 
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .title {
   font-size: 2.5rem;
@@ -16,15 +16,35 @@
   font-weight: 700;
   letter-spacing: 1px;
 }
+.activities {
+  flex: 1; /* Take up remaining space */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2-column grid */
+  gap: 20px; /* Space between grid items */
+  padding: 20px;
 
+  overflow-y: auto; /* Make the grid scrollable if it overflows */
+}
 .activity {
   background-color: white; /* White card style */
   border: none;
   margin-bottom: 25px;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Softer shadow */
   transition: transform 0.2s ease-in-out;
+  min-height: 350;
+  max-height: 350px;
+}
+.activitydetails{
+  background-color: white; /* White card style */
+  border: none;
+  margin-bottom: 25px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  transition: transform 0.2s ease-in-out;
+  height: 500px;
 }
 
 .activity:hover {
@@ -98,4 +118,157 @@
   margin-right: auto;
   margin-bottom: 10px;
   width: 25%;
+}
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  padding: 20px;
+  border-right: 2px solid #ddd;
+  font-family: 'Arial', sans-serif;
+  overflow-y: auto; 
+  height: 100%;/* Make sidebar scrollable if content overflows */
+}.pageLayout {
+  margin: 0; /* Removes top margin */
+  display: flex;
+  margin-top: -25px;
+  flex-direction: row; /* Ensures sidebar and itineraries are side-by-side */
+   /* Full viewport height for a consistent layout */
+}
+
+.filterSection {
+  margin-bottom: 20px;
+}
+
+.filterSection h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.filterSection label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.filterSection input[type="text"],
+.filterSection input[type="date"],
+.filterSection input[type="number"],
+.filterSection select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.filterSection input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.filterSection button {
+  width: 100%;
+  padding: 10px;
+  background-color: #1a6187;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filterSection button:hover {
+  background-color: black;
+}.priceFilter {
+  background-color: #f9f9f9; /* Light background for contrast */
+  border: 1px solid #ddd; /* Light border for definition */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding around the content */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  max-width: 400px; /* Limit the width */
+  margin: 20px auto; /* Center align on the page */
+}
+
+.priceFilter h3 {
+  font-size: 1.5rem; /* Increase font size for the header */
+  margin-bottom: 15px; /* Space below the header */
+  color: #333; /* Darker color for better readability */
+}
+
+.priceFilter label {
+  display: block; /* Each label in a new line */
+  margin-bottom: 10px; /* Space between labels */
+  font-weight: 600; /* Bold font for emphasis */
+  color: #555; /* Slightly lighter color for labels */
+}
+
+.priceFilter input[type="number"],
+.priceFilter input[type="range"] {
+  width: 100%; /* Full width inputs */
+  padding: 8px; /* Padding inside inputs */
+  margin-top: 5px; /* Space above inputs */
+  border: 1px solid #ccc; /* Light border for inputs */
+  border-radius: 4px; /* Rounded corners for inputs */
+  font-size: 1rem; /* Font size */
+}
+
+.priceFilter .slider {
+  display: flex; /* Flexbox for range inputs */
+  justify-content: space-between; /* Space between sliders */
+  margin: 20px 0; /* Margin around the slider */
+}
+
+
+
+.priceFilter button:hover {
+  background-color: black; /* Darker green on hover */
+}
+
+.searchbtn{
+  background-color: #042335;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 25px;
+  margin-top : 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+  /* Added that to remove the underline feature of the Link tag in Next */
+  text-decoration: none;
+}.reviews {
+  margin-top: 20px; /* Slightly increased for better spacing */
+  border-top: 1px solid #ccc; /* Softer color for the separator */
+  padding-top: 15px; /* More padding for breathing room */
+  font-family: Arial, sans-serif; /* Clean, modern font */
+}
+
+.review {
+  font-size: 15px; /* Slightly larger text for readability */
+  color: #444; /* Darker color for better contrast */
+  background-color: #f9f9f9; /* Light background for distinction */
+  border: 1px solid #ccc; /* Subtle border color */
+  border-radius: 12px; /* Softer corners */
+  padding: 12px 15px; /* Comfortable inner spacing */
+  margin-bottom: 10px; /* More space between reviews */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds depth with a shadow */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+.searchcom{
+  display: block;
+  margin-left: 33%;
+}.productsearch {
+  border-radius: 20px;
+  width: 500px;
+  height: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adjust values as needed */
+}.travelplan {
+  width: 100%;
+  height: 550px;
+/* Removes padding if any */
+  display: block; /* Ensures it behaves like a block element */
 }
