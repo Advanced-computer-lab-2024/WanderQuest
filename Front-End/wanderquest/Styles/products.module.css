@@ -21,13 +21,7 @@
     align-items: center;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-<<<<<<< HEAD
     /* margin: 5px; */
-=======
-    margin-left: 40% ;
-    margin-bottom: 20px;
-    margin-top: 20px;
->>>>>>> c78af3011aaa8278d4d79301b9c1cb5610b2df62
     padding: 20px;
     width: 350px;
     transition: transform 0.2s ease-in-out;

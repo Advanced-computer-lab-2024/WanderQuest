@@ -372,8 +372,8 @@ return (
                             </>
                         )}
 
-                        {/* Tourist-specific actions */}
-                        {/* {role === "Tourist" && (
+                        Tourist-specific actions
+                         {role === "Tourist" && (
                             <>
                                 <AddRating
                                     rating={ratings[product._id] || product.rating}
@@ -398,21 +398,14 @@ return (
                                 >
                                     Add a Comment
                                 </button>
-<<<<<<< HEAD
-                            </>
-                        )} */}
-=======
-                                <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
-                                    Add to Wishlist
-                                </button>
+                            
                                 </>
                                 )}
                             </div>
                         </div>
->>>>>>> c78af3011aaa8278d4d79301b9c1cb5610b2df62
-                    </div>
-                </div>
-            </div>
+                        </div>
+              
+            
         ))
 ) : (
     <p>No products available.</p>
@@ -421,6 +414,9 @@ return (
                 </div>
             </div>
         </div>
+        <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
+                                    Add to Wishlist
+                                </button>
     </>
 );
 
