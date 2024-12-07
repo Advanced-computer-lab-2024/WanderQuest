@@ -26,7 +26,8 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-icons": "^5.4.0",
-    "react-tag-input": "^6.10.3"
+    "react-tag-input": "^6.10.3",
+    "rough-notation": "^0.5.1"
   },
   "devDependencies": {
     "eslint": "^8",
