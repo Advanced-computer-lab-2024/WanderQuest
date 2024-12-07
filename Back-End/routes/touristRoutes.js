@@ -40,7 +40,8 @@ const {
     addToCart,
     viewCart,
     removeFromCart,
-    changeAmountInCart
+    changeAmountInCart,
+    birthDaycode
 } = require('../controllers/touristController');
 const { getProducts } = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
@@ -101,6 +102,7 @@ router.patch('/notifs',seenNotifications);
 router.delete('/notifications',clearNotifications);
 router.delete('/notification/:id',deleteNotification);
 router.post('/bookingReminder',bookingNotification);
+router.post('/birthday',birthDaycode);
 
 router.post('/cart/add',addToCart);
 router.get('/cart', viewCart);
