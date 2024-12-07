@@ -90,7 +90,7 @@ function Page({ params }) {
     <>
       <Navbar />
       {activity && (
-        <div key={activity.id} className={styles.activity}>
+        <div key={activity.id} className={styles.activitydetails}>
           <h3>{activity.title}</h3>
           <p>
             <strong>Date:</strong> {activity.date}<br />
@@ -104,12 +104,42 @@ function Page({ params }) {
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-            {activity.comments.map((Comment) => (<div>
-              <strong>comment</strong> {Comment.touristId}<br />
-              <strong>comment</strong> {Comment.comment}<br />
-              <strong>comment</strong> {Comment.createdAt}<br />
-            </div>
-            ))}
+            <div className={styles.reviews}>
+                        <h3>Ratings & Reviews</h3>
+
+                        {/* Check if there are no ratings or comments */}
+                        {(!activity.ratings.length && !activity.comments.length) ? (
+                            <p>No reviews and ratings</p>
+                        ) : (
+                            [
+                            ...new Set([
+                                ...activity.ratings.map((rat) => rat.touristId),
+                                ...activity.comments.map((comm) => comm.touristId),
+                            ])
+                            ].map((touristId, idx) => {
+                            const rating = activity.ratings.find((rat) => rat.touristId === touristId);
+                            const comment = activity.comments.find((comm) => comm.touristId === touristId);
+
+                            return (
+                                <div className={styles.review} key={idx}>
+                                <p>
+                                    <strong>{touristId}:</strong>
+                                </p>
+                                {rating && (
+                                    <p>
+                                    <strong>Rating:</strong> {rating.rating} stars
+                                    </p>
+                                )}
+                                {comment && (
+                                    <p>
+                                    <strong>Review:</strong> {comment.comment}
+                                    </p>
+                                )}
+                                </div>
+                            );
+                            })
+                        )}
+                    </div>
 
           </p>
           <button onClick={share}>Share Link</button>
