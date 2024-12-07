@@ -31,7 +31,11 @@ const {
     viewAllProductSales,
     /* uploadProductImage,*/
     flagActivity,
-    flagItinerary
+    flagItinerary,
+    viewSalesReport,
+    createPromo,
+    promocodes,
+    deletePromocode
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -118,5 +122,13 @@ router.patch('/flagActivity/:id', flagActivity);
 //flag an itinerary
 router.patch('/flagItinerary/:id', flagItinerary);
 
+//view sales report
+router.get('/salesReport', viewSalesReport);
+
+//Create Promocode
+router.post('/promo',createPromo);
+//promocodes
+router.get('/promocodes',promocodes);
+router.delete('/promocodes/:id',deletePromocode)
 //Admin filterByStatus
 module.exports = router

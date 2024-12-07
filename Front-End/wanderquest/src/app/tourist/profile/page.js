@@ -7,10 +7,7 @@ const ProfileInfo = () => {
 
   return (
     <div>
-        <Navbar />
-        <div>
         <TouristInfo/>
-        </div>
     </div>
   );
 

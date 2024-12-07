@@ -1,23 +1,21 @@
 /* Itineraries.module.css */
 
 .histContainer {
-    padding: 30px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 900px;
-    margin: 20px auto;
-    display:block;
-    
-    align-items: center;
-  }
-
+  padding: 30px;
+  background-color: #17455C;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Reduced width for better centering */
+  margin: 40px auto; /* Center the slider */
+  display: block;
+  align-items: center;
+}
   .innerContainer{
     padding: 30px;
     background-color: #f4f4f4;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
+    max-width: 1000px;
     margin-top: 60px ;
     margin-left: auto;
     margin-right: auto;
@@ -38,6 +36,13 @@
     color: #333;
   }
   
+  .otherTitle{
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    color: #f3f0f0;
+  }
+
   .pastItern {
     margin-bottom: 40px;
     padding: 20px;
@@ -106,17 +111,19 @@
     background-color: #17455C; /* Elephant color on hover */
   }
   
-
   .innerBox {
-    padding: 30px;
-    background-color: #f4f4f4;
+    padding: 20px; /* Consistent padding */
+    background-color: #ffffff; /* White background for cards */
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 900px;
-    margin: 30px auto;
-    display:block;
-    align-items: center;
-  }
+    margin: 20px; /* Consistent margin */
+    text-align: left;
+    max-width: 100%;
+    overflow: hidden; /* Prevent content overflow */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 
   @keyframes fadeOut{
     0%{ opacity: 1;}
@@ -133,4 +140,138 @@
     margin-top: 10px;
     color: #dc3545;
     animation: fadeOut 3s forwards;
+}
+
+.tabContainer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.tabInBox{
+  padding: 30px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 1300px;
+    margin: 30px auto;
+    display:block;
+    align-items: center;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  border: none;
+  background-color: #17455C;
+  color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-size: 16px;
+  position: relative;
+}
+
+.tabButton:hover {
+  color: #f0f0f0;
+}
+
+.tabButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px; /* Thickness of the line */
+  background-color: white;
+  transition: width 0.3s ease-in-out;
+}
+
+.tabButton:hover::after {
+  width: 100%;
+}
+
+.activeTab {
+  background-color: #17455C;
+  color: white;
+  cursor: default;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Thickness of the line */
+  background-color: white;
+}
+
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupWindow {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.cancelButton{
+  padding: 5px 10px;
+  font-size: 1rem;
+  width: 150px;
+  background-color: #ff0000; 
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor for button */
+  transition: background-color 0.3s; /* Smooth transition */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.cancelButton:hover {
+  background-color: #fa3737; 
+}
+
+.linkButton {
+  background-color: #1A6187;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.linkButton:hover {
+  background-color: #17455C;
+}
+
+.btnFeedback:hover {
+  background-color: #17455C;
 }

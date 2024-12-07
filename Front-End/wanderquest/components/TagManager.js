@@ -15,7 +15,12 @@ const TagManager = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/tourismGovernor/tags'); // Adjust URL as needed
+        const response = await axios.get('http://localhost:4000/tourismGovernor/tags',{
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }); // Adjust URL as needed
         setTags(response.data);
       } catch (error) {
         console.error('Error fetching tags:', error);
@@ -41,7 +46,10 @@ const TagManager = () => {
   
     try {
       // POST request to add a new tag
-      const response = await axios.post('http://localhost:4000/tourismGovernor/addTag', { type: tagInput });
+      const response = await axios.post('http://localhost:4000/tourismGovernor/addTag', {
+         type: tagInput,
+        credentials: 'include',
+        });
       setTags([...tags, response.data]); // Assuming the response contains the new tag object
       setMessage({ type: 'success', text: 'Tag added successfully!' });
       setTagInput(''); // Clear input
@@ -94,7 +102,10 @@ const TagManager = () => {
   
     try {
       // PATCH request to update the tag
-      const response = await axios.patch(``, { type: isEditing.value }); // Update the tag string
+      const response = await axios.patch(``, { 
+        type: isEditing.value,
+        credentials: 'include',
+      }); // Update the tag string
       const updatedTags = tags.map((t) => (t._id === tagId ? response.data : t)); // Update the tag in the state
       setTags(updatedTags);
       setMessage({ type: 'success', text: 'Tag updated successfully!' });

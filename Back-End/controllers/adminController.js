@@ -1,5 +1,5 @@
 const AdminModel = require('../models/adminModel');
-const { User } = require('../models/userModel');
+const { User, Advertiser, TourGuide,Tourist } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
@@ -14,9 +14,10 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-
+const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
-
+const { sendEmail  } = require('../controllers/authenticationController');
+const { once } = require('events');
 // Collection name in MongoDB
 const collectionName = 'uploads';
 
@@ -177,7 +178,7 @@ const getProdById = async (req, res) => {
 //Admin getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ }, { availableAmount: 0 });
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ },  { isArchived: 1, availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
         res.status(200).json(products);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -605,14 +606,15 @@ const flagActivity = async (req, res) => {
             if (!activity) {
                 return res.status(404).json({ message: 'Activity not found.' });
             }
-    
+            const advertiser = await Advertiser.findById(activity.createdBy);
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: activity.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Activity has been flagged as inappropriate.",
+                message: `Your Activity ${activity.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: activityId // Set the ReasonID to the Itinerary ID
             });
+            await sendEmail(advertiser.email,notification.reason,notification.message);
     
             // Respond with success
             return res.status(201).json({  message: 'Event flagged successfully', activity ,
@@ -621,7 +623,6 @@ const flagActivity = async (req, res) => {
             console.error(error);
             return res.status(500).json({ message: 'An error occurred while creating the notification.' });
         }
-        res.status(200).json({});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -642,15 +643,15 @@ const flagItinerary = async (req, res) => {
             if (!itinerary) {
                 return res.status(404).json({ message: 'Itinerary not found.' });
             }
-    
+            const tourGuide = await TourGuide.findById(itinerary.createdBy);
             // Step 2: Create and save the notification
             const notification = await NotificationModel.create({
                 userID: itinerary.createdBy, // Assuming createdBy is an ObjectId referencing the User
-                message: "Your Itinerary has been flagged as inappropriate.",
+                message: `Your Itinerary ${itinerary.title} has been flagged as inappropriate.`,
                 reason: 'Inappropriate content',
                 ReasonID: id // Set the ReasonID to the Itinerary ID
             });
-    
+            await sendEmail(tourGuide.email,notification.reason,notification.message);
             // Respond with success
             return res.status(201).json({ message: 'Itinerary flagged successfully', retItinerary,
                 message: 'Notification created successfully.', notification });
@@ -665,6 +666,104 @@ const flagItinerary = async (req, res) => {
 
 // const addPromoCode = async (req, res) => {
 // }
+
+//view sales report
+const viewSalesReport = async (req,res) => {
+    try{
+        
+        const availableProducts = await ProdModel.find({ isArchived: false});
+        const availableActivities = await Activity.find({});
+        const itineraries = await itinerary.find({});
+        const productRevenue = availableProducts.reduce((total, product) => total + product.revenueOfThisProduct, 0);
+        const activityRevenue = availableActivities.reduce((total, activity) => {
+
+            return total + (activity.revenueOfThisActivity - 0);///////////!!!!check
+        }, 0);
+        const itineraryRevenue = itineraries.reduce((total, itinerary) => {
+            
+            return total + (itinerary.revenueOfThisItinerary - 0); ///////////!!!!check
+        }, 0);
+        const totalRevenue = productRevenue + activityRevenue + itineraryRevenue;
+        const report = {
+            productRevenue,
+            activityRevenue,
+            itineraryRevenue,
+            totalRevenue
+        };
+        res.status(200).json({ message: 'report successfully viewed ', report });
+        
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Unable to generate sales report', error });
+    }
+}
+const createPromo = async (req,res)=>{
+    const { code,type,discount,birthday,touristId } = req.body;
+    const admin = req.user._id;
+    const expiry = Date.now() + (7 * 24 * 60 * 60 * 1000);
+    // Validate input
+    if ( !code||!type||!discount) {
+        return res.status(400).json({ error: ' fields are required' });
+    }
+    try {
+        // Checking if the username already exists
+        const existingPromo = await PromoCode.findOne({code});
+
+        if (existingPromo) {
+            return res.status(400).json({ error: 'Promocode already exists' });
+        }
+
+        const promocode = await PromoCode.create({
+            code,
+            type,
+            discount,
+            expiryDate:expiry,
+            createdBy:admin
+        });
+        const tourists = await Tourist.find();
+
+        // Create notifications for each tourist
+        const notifications = tourists.map(tourist => ({
+            userID: tourist._id,
+            message: `New promo code available: ${code}`,
+            reason: 'New Promo Code',
+            ReasonID: promocode._id // Optional reference to the promo code
+        }));
+
+        // Insert all notifications at once
+        await NotificationModel.insertMany(notifications);
+
+        res.status(200).json(promocode)
+
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+const promocodes = async(req,res)=>{
+    const promos = await PromoCode.find({});
+    res.status(200).json(promos);
+
+}
+const deletePromocode = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Check if the promocode exists
+        const promocode = await PromoCode.findById(id);
+        if (!promocode) {
+            return res.status(404).json({ error: "Promocode not found" });
+        }
+
+        // Delete the promocode
+        await PromoCode.findByIdAndDelete(id);
+
+        return res.status(200).json({ message: "Promocode deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -695,5 +794,9 @@ module.exports = {
     flagItinerary,
     viewAllProductSales,
     uploadProductPhoto,
-    getProductPhoto
+    getProductPhoto,
+    viewSalesReport,
+    createPromo,
+    promocodes,
+    deletePromocode
 }

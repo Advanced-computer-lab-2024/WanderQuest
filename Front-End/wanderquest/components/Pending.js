@@ -31,7 +31,9 @@ const AdminReviewRequests = () => {
 
   const fetchDocuments = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:4000/authentication/getDocuments/${userId}`);
+      const response = await fetch(`http://localhost:4000/authentication/getDocuments/${userId}`,{
+        credentials:"include"
+      });
       if (!response.ok) throw new Error("Failed to fetch documents");
       const data = await response.json();
       setDocuments(data.map((doc) => ({ ...doc, userId })));

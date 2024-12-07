@@ -5,6 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../../../components/Navbar';
 import { motion } from "framer-motion";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Rating from '@mui/material/Rating';
+import Typography from '@mui/material/Typography';
+import StarIcon from '@mui/icons-material/Star'; 
+
+
 
 const ItineraryListpage = (Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
@@ -21,6 +28,19 @@ const ItineraryListpage = (Props) => {
   const [minBudget, setMinBudget] = useState('');
   const [maxBudget, setMaxBudget] = useState('');
   const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const labels = {
+    0.5: 'Useless',
+    1: 'Useless+',
+    1.5: 'Poor',
+    2: 'Poor+',
+    2.5: 'Ok',
+    3: 'Ok+',
+    3.5: 'Good',
+    4: 'Good+',
+    4.5: 'Excellent',
+    5: 'Excellent+',
+  };
+  
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
   const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Japanese", "Russian"];
@@ -93,8 +113,13 @@ const ItineraryListpage = (Props) => {
   
   useEffect(() => {
       fetchItineraries();
-  }, [search]);
-  
+      
+  }, []);
+
+  useEffect(() => {
+
+    handleSearch();
+}, [search]);
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
         return search.toLowerCase() === '' || 
@@ -200,154 +225,245 @@ const clearsearch=()=>{
     return <div className={styles.error}>Error: {error}</div>;
   }
 
-  return (<>      <Navbar></Navbar>
+  return (
+    <>
+      <Navbar></Navbar>
       <img src="/1.png" className={styles.travelplan} alt="iti" />
-    <div className={styles.container}>
+      <div className={styles.container}>
+        {role === "Tourist" ? (
+          <motion.div
+            className={styles.searchcom}
+            initial={{ y: -170 }}
+            transition={{ duration: 1 }}
+          >
+            <input
+              className={styles.productsearch}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              type="text"
+              placeholder="Search for your next journey"
+            />
+          </motion.div>
+        ) : (
+          <></>
+        )}
+        <div className={styles.pageLayout}>
+          <div className={styles.sidebar}>
+            <div className={styles.filterSection}>
+              <h3>Date</h3>
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              />
+            </div>
+  
+            <div className={styles.filterSection}>
+              <h3>Budget</h3>
+              <label htmlFor="min-budget">Min:</label>
+              <input
+                type="number"
+                id="min-budget"
+                placeholder="Min Budget"
+                value={minBudget}
+                onChange={(e) => setMinBudget(e.target.value)}
+              />
+              <label htmlFor="max-budget">Max:</label>
+              <input
+                type="number"
+                id="max-budget"
+                placeholder="Max Budget"
+                value={maxBudget}
+                onChange={(e) => setMaxBudget(e.target.value)}
+              />
+            </div>
+  
+            <div className={styles.filterSection}>
+              <h3>Preferences</h3>
+              {preferences.map((pref) => (
+                <div key={pref}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedPreferences.includes(pref)}
+                      onChange={() => handlePreferenceChange(pref)}
+                    />
+                    {pref}
+                  </label>
+                </div>
+              ))}
+            </div>
+  
+            <div className={styles.filterSection}>
+              <h3>Language</h3>
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+              >
+                <option value="">All Languages</option>
+                {languages.map((language) => (
+                  <option key={language} value={language}>
+                    {language}
+                  </option>
+                ))}
+              </select>
+              <button  style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply</button>
+              <button  style={{ margin: '5px' }} onClick={handleClearFilters}>Clear</button>
+            </div>
+  
+            <div className={styles.filterSection}>
+              <h3 style={{ marginBottom: '5px' }}>Sorting</h3>
+              <button onClick={handleSortAsc} style={{ margin: '5px' }}>Price: Low to High</button>
+              <button onClick={handleSortDesc} style={{ margin: '5px' }}>Price: High to Low</button>
+              <button onClick={handleSortRatingAsc} style={{ margin: '5px' }}>Rating: Low to High</button>
+              <button onClick={handleSortRatingDesc} style={{ margin: '5px' }}>Rating: High to Low</button>
 
-      
-      {role==="Tourist"?(
-      <motion.div className={styles.searchcom} initial={{ y: -170 }} transition={{ duration: 1 }}>
-        <input 
-          className={styles.productsearch} 
-          value={search}
-          onChange={(e) => setSearch(e.target.value)} 
-          type="text" 
-          placeholder='Enter your text' 
-        />
-        <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
-        {/* <button className={styles.searchbtn} onClick={clearsearch}>clearsearch</button> */}
-      </motion.div>):(<></>)}
-      <div className={styles.pageLayout}>
-      <div className={styles.sidebar}>
-  <div className={styles.filterSection}>
-    <h3>Date</h3>
-    <input 
-      type="date" 
-      value={dateFilter} 
-      onChange={(e) => setDateFilter(e.target.value)} 
-    />
-  </div>
-
-  <div className={styles.filterSection}>
-    <h3>Budget</h3>
-    <label htmlFor="min-budget">Min:</label>
-    <input 
-      type="number" 
-      id="min-budget" 
-      placeholder="Min Budget" 
-      value={minBudget} 
-      onChange={(e) => setMinBudget(e.target.value)} 
-    />
-    <label htmlFor="max-budget">Max:</label>
-    <input 
-      type="number" 
-      id="max-budget" 
-      placeholder="Max Budget" 
-      value={maxBudget} 
-      onChange={(e) => setMaxBudget(e.target.value)} 
-    />
-
-  </div>
-
-  <div className={styles.filterSection}>
-    <h3>Preferences</h3>
-    {preferences.map((pref) => (
-      <div key={pref}>
-        <label>
-          <input
-            type="checkbox"
-            checked={selectedPreferences.includes(pref)}
-            onChange={() => handlePreferenceChange(pref)}
-          />
-          {pref}
-        </label>
+            </div>
+          </div>
+  
+          <div className={styles.itineraries}>
+            {displayedItineraries.map((itinerary) => (
+              <div
+                id={itinerary.id}
+                key={itinerary.id}
+                className={styles.itinerary}
+              >
+                <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
+                <div className={styles.activities}>
+                  {itinerary.activities.map((activityId) => (
+                    <div key={activityId} className={styles.activity}>
+                      {activityDetails[activityId] ? (
+                        <>
+                          <h3>Activity</h3>
+                          <p>
+                            <strong>Title:</strong>{" "}
+                            {activityDetails[activityId].title}
+                          </p>
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {activityDetails[activityId].date}
+                          </p>
+                          <p>
+                            <strong>Time:</strong>{" "}
+                            {activityDetails[activityId].time}
+                          </p>
+                          <p>
+                            <strong>Location:</strong>{" "}
+                            {activityDetails[activityId].location}
+                          </p>
+                        </>
+                      ) : (
+                        <p>Loading activity details...</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.locationsContainer}>
+                    <strong className={styles.locationsLabel}>Available locations:</strong>
+                    <div className={styles.locations}>
+                        {itinerary.locations && itinerary.locations.length > 0 ? (
+                        <select className={styles.locationSelect}>
+                            {itinerary.locations.map((location, idx) => (
+                            <option key={idx} value={location}>
+                                {location}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available locations</p>
+                        )}
+                    </div>
+                 </div>
+                <div className={styles.timelineCard}>
+  <h3 className={styles.timelineTitle}>Timeline</h3>
+  <div className={styles.timelineList}>
+    {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
+      <div key={idx} className={styles.timelineEntry}>
+        <strong>Day {idx + 1}:</strong> {entry.trim()}
       </div>
     ))}
   </div>
-
-  <div className={styles.filterSection}>
-    <h3>Language</h3>
-    <select 
-      value={selectedLanguage}
-      onChange={(e) => setSelectedLanguage(e.target.value)}
-    >
-      <option value="">All Languages</option>
-      {languages.map((language) => (
-        <option key={language} value={language}>{language}</option>
-      ))}
-    </select>
-    <button onClick={handleApplyFilters}>Apply</button>
-  </div>
-
-  <div className={styles.filterSection}>
-    <h3>Sorting</h3>
-    <button onClick={handleSortAsc}>Price: Low to High</button>
-    <button onClick={handleSortDesc}>Price: High to Low</button>
-    <button onClick={handleSortRatingAsc}>Rating: Low to High</button>
-    <button onClick={handleSortRatingDesc}>Rating: High to Low</button>
-  </div>
 </div>
-
-      <div className={styles.itineraries} >
-
-      {displayedItineraries.map((itinerary) => (
-        <div  id={itinerary.id} key={itinerary.id} className={styles.itinerary}>
-          <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
-          <div className={styles.activities}>
-            {itinerary.activities.map((activityId) => (
-              <div key={activityId} className={styles.activity}>
-                {activityDetails[activityId] ? (
-                  <>
-                    <h3>Activity</h3>
-                    <p><strong>Title:</strong> {activityDetails[activityId].title}</p>
-                    <p><strong>Date:</strong> {activityDetails[activityId].date}</p>
-                    <p><strong>Time:</strong> {activityDetails[activityId].time}</p>
-                    <p><strong>Location:</strong> {activityDetails[activityId].location}</p>
-                  </>
-                ) : (
-                  <p>Loading activity details...</p>
-                )}
+                <p>
+                  <strong>Duration:</strong> {itinerary.duration}
+                </p>
+                <p>
+                  <strong>Language:</strong> {itinerary.language}
+                </p>
+                <p>
+                  <strong>Price:</strong> ${itinerary.price}
+                </p>
+           
+                <div className={styles.datesContainer}>
+                    <strong className={styles.datesLabel}>Available dates:</strong>
+                    <div className={styles.dates}>
+                        {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
+                        <select className={styles.dateSelect}>
+                            {itinerary.availableDates.map((date, idx) => (
+                            <option key={idx} value={date}>
+                                {new Date(date).toLocaleDateString()}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available dates</p>
+                        )}
+                    </div>
+                 </div>
+                 <div className={styles.timesContainer}>
+                  <strong className={styles.timesLabel}>Available times:</strong>
+                  <div className={styles.times}>
+                    {itinerary.time && itinerary.time.length > 0 ? (
+                      <select className={styles.timeSelect}>
+                        {itinerary.time.map((time, idx) => (
+                          <option key={idx} value={time}>
+                            {time}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <p>No available times</p>
+                    )}
+                  </div>
+                </div>
+                                <p>
+                  <strong>Accessibility:</strong>{" "}
+                  {itinerary.accessibility ? "Yes" : "No"}
+                </p>
+                <p>
+                  <strong>Pick Up Location:</strong> {itinerary.pickUpLocation}
+                </p>
+                <p>
+                  <strong>Drop Off Location:</strong> {itinerary.dropOffLocation}
+                </p>
+                <p>
+                  <strong>Booking Already Made:</strong>{" "}
+                  {itinerary.BookingAlreadyMade ? "Yes" : "No"}
+                </p>
+                <p className={styles.productRating}>
+                        {itinerary.rating && itinerary.rating > 0 ?(<> <Rating
+        name="text-feedback"
+        value={itinerary.rating}
+        readOnly
+        precision={0.5}
+        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
+      /> <Box sx={{ ml: 2 }}>{labels[itinerary.rating]}</Box></>)  : "No rating yet"}
+{/*                         
+                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
+     
+                    </p>
+                <Link href={`iti/${itinerary._id}`} passHref>
+                  <button className={styles.searchbtn}>View</button>
+                </Link>
+             
               </div>
             ))}
           </div>
-          <div className={styles.locations}>
-            {itinerary.locations.map((location, idx) => (
-              <p key={idx}><strong>Location:</strong> {location}</p>
-            ))}
-          </div>
-          <p><strong>Timeline:</strong> {itinerary.timeline}</p>
-          <p><strong>Duration:</strong> {itinerary.duration}</p>
-          <p><strong>Language:</strong> {itinerary.language}</p>
-          <p><strong>Price:</strong> ${itinerary.price}</p>
-          <p><strong>Rating:</strong> {itinerary.rating}</p>
-          <div className={styles.dates}>
-            {itinerary.availableDates.map((date, idx) => (
-              <p key={idx}><strong>Date:</strong> {date}</p>
-            ))}
-          </div>
-          <div className={styles.times}>
-            {itinerary.time.map((time, idx) => (
-              <p key={idx}><strong>Time:</strong> {time}</p>
-            ))}
-          </div>
-          <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
-          <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
-          <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
-          <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-          <Link href={`iti/${itinerary._id}`} className={styles.addticket}>
-              view
-          </Link>
-          <p>{itinerary.id}</p>
-          
-          
-          
         </div>
-        
-      ))}
       </div>
-    </div>
-    </div>
-    </>);
+    </>
+  );
+  
 };
 
 export default ItineraryListpage;

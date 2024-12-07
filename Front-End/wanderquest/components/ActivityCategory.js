@@ -15,7 +15,12 @@ const ActivityCategory = () => {
   useEffect(() => {
     const fetchActs = async () => {
       try {
-        const response = await fetch('http://localhost:4000/admin/categories'); // Adjust URL as needed
+        const response = await fetch('http://localhost:4000/admin/categories',{
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }); // Adjust URL as needed
         if (!response.ok) throw new Error('Failed to fetch categories');
         const data = await response.json();
         setActs(data);
@@ -49,6 +54,7 @@ const ActivityCategory = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ category: actInput }),
+        credentials: 'include',
       });
       if (!response.ok) throw new Error('Failed to add category');
       const newCategory = await response.json();
@@ -67,6 +73,10 @@ const ActivityCategory = () => {
     try {
       const response = await fetch(`http://localhost:4000/admin/deleteCategory/${actId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       });
       if (!response.ok) throw new Error('Failed to delete category');
       setActs(acts.filter((act) => act._id !== actId));
@@ -100,6 +110,7 @@ const ActivityCategory = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ category: isEditing.value }),
       });
       if (!response.ok) throw new Error('Failed to update category');

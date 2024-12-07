@@ -15,25 +15,35 @@ import Link from 'next/link';
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
 import Signin from "../../components/Signin";
-
-import { Chart as ChartJS } from 'chart.js'
+import Foot from "../../components/foot";
+import { Chart } from 'chart.js'
 import { Bar,Doughnut,Line } from 'react-chartjs-2'
 import { motion } from 'framer-motion';
 import Salesrep from "../../components/Salesrep";
+import Salesrepseller from "../../components/Salesrepseller";
+import Salesrepadv from "../../components/Salesrepadv";
 
 
 export default function Home() {
    return (<>
+      <Navbar></Navbar>
+
+      <Foot></Foot>  
+
+{/* 
+            <Salesrep></Salesrep> */}
+
+      {/* <Salesrepadv></Salesrepadv> */}
+{/* <Salesrepseller></Salesrepseller> */}
       {/* <Signin></Signin>
 
-      <Navbar></Navbar>
     
 
 
-      <Link href="/admin">
+      {/* <Link href="/admin">
          <button className='admin'>Admin</button>
       </Link> */}
-      <Salesrep></Salesrep>
+      {/* <Salesrep></Salesrep> */}
       {/* <Link href="/guest">
          <button className='guest'>Guest</button>
       </Link>
