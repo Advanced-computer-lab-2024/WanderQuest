@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Cookie&family=Ms+Madi&family=Playball&display=swap');
+
+
 .container {
     position: relative;
-    padding: 20px;
+    padding: px;
 }
 
 .buttons {
@@ -9,6 +12,88 @@
     gap: 10px;
 }
 
+
+.heroSection {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    overflow: hidden;
+}
+
+.heroImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.heroText {
+    font-family: 'Playball', cursive;
+    font-weight: 400;
+    font-size: 6rem;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    z-index: 1;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.wishlistContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.wishlistContainer.visible {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    visibility: visible;
+}
+
+.wishlistPanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1001;
+    transform: translateX(100%);
+}
+
+.wishlistPanel.open {
+    transform: translateX(0);
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px;
+    color: #333;
+}
+
+.closeButton:hover {
+    color: #666;
+}
 .profileButton {
     position: absolute;
     top: 60px;
@@ -33,3 +118,43 @@
     margin-right: 5px;
     font-size: 20px; /* Adjust icon size as needed */
 }
+
+.complaintsContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.complaintsContainer.visible {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    visibility: visible;
+}
+
+.complaintsPanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1001;
+    transform: translateX(100%);
+}
+
+.complaintsPanel.open {
+    transform: translateX(0);
+}
+

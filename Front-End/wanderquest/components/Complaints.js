@@ -108,7 +108,6 @@ const Complaints = (props) => {
         </>}
     return (
         <div className={styles.container}>
-            <h1>Complaints</h1>
             {role==='Admin'&& (<div className={styles.sortFilterControls}>
                 <button onClick={() => sortComplaintsByDate('asc')}>Sort by Date Ascending</button>
                 <button onClick={() => sortComplaintsByDate('desc')}>Sort by Date Descending</button>
