@@ -36,7 +36,11 @@ const {
     myNotifications,
     clearNotifications,
     deleteNotification,
-    bookingNotification
+    bookingNotification,
+    addToCart,
+    viewCart,
+    removeFromCart,
+    changeAmountInCart
 } = require('../controllers/touristController');
 const { getProducts } = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
@@ -98,5 +102,9 @@ router.delete('/notifications',clearNotifications);
 router.delete('/notification/:id',deleteNotification);
 router.post('/bookingReminder',bookingNotification);
 
+router.post('/cart/add',addToCart);
+router.get('/cart', viewCart);
+router.delete('/cart/remove', removeFromCart);
+router.patch('/cart/change', changeAmountInCart);
 
 module.exports = router;
