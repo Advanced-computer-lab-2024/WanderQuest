@@ -6,11 +6,28 @@ import styles from '../styles/products.module.css';
 import AddRating from './AddRating';
 import AddComment from './AddComment';
 import { motion } from "framer-motion";
-const Products = (props) => {
+
+
+import Box from '@mui/material/Box';
+import Rating from '@mui/material/Rating';
+import Typography from '@mui/material/Typography';
+import StarIcon from '@mui/icons-material/Star'; 
+const labels = {
+    0.5: 'Useless',
+    1: 'Useless+',
+    1.5: 'Poor',
+    2: 'Poor+',
+    2.5: 'Ok',
+    3: 'Ok+',
+    3.5: 'Good',
+    4: 'Good+',
+    4.5: 'Excellent',
+    5: 'Excellent+',
+  };
+const Products = ({ role, refreshWishlist }) => {
     
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const role = props.role;
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
@@ -183,27 +200,31 @@ const Products = (props) => {
     }, []);
 
     const addWishlist = async (id) => {
-        
         try {
             const response = await fetch(`http://localhost:4000/tourist/wishlist/add/${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
             });
-    
+
             if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to add to wishlist');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to add to wishlist');
             }
-    
+
             const result = await response.json();
             console.log('Successfully added to wishlist', result);
+            if (refreshWishlist) {
+                refreshWishlist(); // Call the refresh function when product is added
+            }
+            alert('Product added to wishlist successfully!');
         } catch (error) {
             console.error('Error adding item to wishlist:', error.message);
+            alert('Failed to add product to wishlist');
         }
-        }
+    };
     
     if (loading) {return<>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
@@ -323,11 +344,26 @@ return (
                    
                     <p>Available Quantity: {product.availableAmount}</p>
                     <p className={styles.productRating}>
-                        {product.rating && product.rating > 0 ? `Rating: ${product.rating}/5` : "No rating yet"}
+                        {product.rating && product.rating > 0 ? (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Rating
+                                    name="text-feedback"
+                                    value={product.rating}
+                                    readOnly
+                                    precision={0.5}
+                                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
+                                />
+                                <Box sx={{ ml: 2 }}>{labels[product.rating]}</Box>
+                            </div>
+                        ) : "No rating yet"}
                     </p>
+{/*                         
+                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
+     
+                   
 
                     {/* Render reviews */}
-                    <div className={styles.reviews}>
+                    {/* <div className={styles.reviews}>
                         <h3>Reviews:</h3>
                         {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
                             product.reviews.map((review, index) => (
@@ -341,7 +377,7 @@ return (
                         ) : (
                             <p>No reviews yet.</p>
                         )}
-                    </div>
+                    </div> */}
 
                     {/* Admin-specific actions */}
                     {role === "Admin" && <p>Sales: {product.sales}</p>}
@@ -372,7 +408,7 @@ return (
                             </>
                         )}
 
-                        Tourist-specific actions
+                        {/* Tourist-specific actions
                          {role === "Tourist" && (
                             <>
                                 <AddRating
@@ -400,7 +436,7 @@ return (
                                 </button>
                             
                                 </>
-                                )}
+                                )} */}
                             </div>
                         </div>
                         </div>
@@ -414,9 +450,9 @@ return (
                 </div>
             </div>
         </div>
-        <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
+        {/* <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
                                     Add to Wishlist
-                                </button>
+                                </button> */}
     </>
 );
 

@@ -15,7 +15,7 @@ import Link from 'next/link';
 import Allcreated from "../../components/allcreated";
 import Historicalplaces from "../../components/historicalplaces";
 import Signin from "../../components/Signin";
-
+import Foot from "../../components/foot";
 import { Chart } from 'chart.js'
 import { Bar,Doughnut,Line } from 'react-chartjs-2'
 import { motion } from 'framer-motion';
@@ -28,8 +28,10 @@ export default function Home() {
    return (<>
       <Navbar></Navbar>
 
+      <Foot></Foot>  
 
-            <Salesrep></Salesrep>
+{/* 
+            <Salesrep></Salesrep> */}
 
       {/* <Salesrepadv></Salesrepadv> */}
 {/* <Salesrepseller></Salesrepseller> */}
