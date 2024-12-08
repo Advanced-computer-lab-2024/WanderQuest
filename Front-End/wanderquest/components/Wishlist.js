@@ -7,6 +7,34 @@ const Wishlist = () => {
     const [wishlist, setWishlist] = useState([]);
     const [loading, setLoading] = useState(true);
     const [openItems, setOpenItems] = useState({});
+    const [multiplier, setMultiplier] = useState(1);
+    const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+    // useEffect(() => {
+    //     const fetchPaymentMultiplier = async () => {
+    //         try {
+    //             const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 credentials: 'include', // Automatically include credentials (user session)
+    //             });
+
+    //             if (response.ok) {
+    //                 const result = await response.json();
+    //                 setMultiplier(result.multiplier);
+    //                 setPreferredCurrency(result.currency);
+    //             } else {
+    //                 const errorData = await response.json();
+    //                 alert(`Error: ${errorData.message}`);
+    //             }
+    //         } catch (error) {
+    //             alert(`Error: ${error.message}`);
+    //         }
+    //     };
+    //     fetchPaymentMultiplier();
+    // }, []);
 
     const handleRemove = useCallback(async (id) => {
         try {
@@ -95,7 +123,7 @@ const Wishlist = () => {
                                 <img src={product.picture} alt={product.name} className={styles.itemImage} />
                                 <div className={styles.basicInfo}>
                                     <h3 className={styles.productName}>{product.name}</h3>
-                                    <p className={styles.price}>${product.price.toFixed(2)}</p>
+                                    <p className={styles.price}>{(product.price * multiplier).toFixed(2)} {preferredCurrency}</p>
                                     <button
                                         className={styles.removeButton}
                                         onClick={() => handleRemove(product._id)}

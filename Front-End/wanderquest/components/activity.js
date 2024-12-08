@@ -213,6 +213,29 @@ const handleSelectChange = (selectedOptions) => {
     }));
 };
 
+useEffect(() => {
+    const storedPlace = localStorage.getItem('activityToEdit');
+    if (storedPlace) {
+        const activityToEdit = JSON.parse(storedPlace);
+        const parsedDate = new Date(activityToEdit.formattedDate).toISOString().split('T')[0]; // Convert formattedDate to YYYY-MM-DD format
+
+        setFormData({
+            title: activityToEdit.title || '',
+            date: parsedDate || '',
+            location: activityToEdit.location || '',
+            time: activityToEdit.time || '',
+            price: activityToEdit.price || '',
+            category: activityToEdit.category || '',
+            specialDiscounts: activityToEdit.specialDiscounts || '',
+            bookingIsOpen: activityToEdit.bookingIsOpen || false,
+            tags: Array.isArray(activityToEdit.tags) ? activityToEdit.tags.map(tag => ({ type: tag.type })) : [],
+        });
+        setIsUpdating(true);
+        setCurrentActivityId(activityToEdit._id);
+        localStorage.removeItem('activityToEdit'); // Clean up after loading
+    }
+}, []);
+
 
 
     if (!isLoaded) return <div>Loading...</div>;

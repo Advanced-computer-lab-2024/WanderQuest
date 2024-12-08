@@ -71,16 +71,16 @@ const Navbar = () => {
                         <button className="navbar-button">Activities</button>
                         {showDropdown && (
                             <div className="dropdown-menu">
-                                <a href="/create-activity" className="dropdown-item">
+                                <a href="/advertiser/createactivity" className="dropdown-item">
                                     Create an Activity
                                 </a>
-                                <a href="/my-activities" className="dropdown-item">
+                                <a href="/advertiser/activitys" className="dropdown-item">
                                     View All My Activities
                                 </a>
-                                <a href="/create-transportation" className="dropdown-item">
+                                <a href="/advertiser/createtransportation" className="dropdown-item">
                                     Create a Transportation
                                 </a>
-                                <a href="/my-transportations" className="dropdown-item">
+                                <a href="/advertiser/transportation" className="dropdown-item">
                                     View All My Transportations
                                 </a>
                             </div>
