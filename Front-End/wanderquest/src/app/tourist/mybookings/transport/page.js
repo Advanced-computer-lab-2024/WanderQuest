@@ -7,6 +7,35 @@ function transportpage() {
   const [transportation, setTransportation] = useState([]);
   const [Loading, setLoading] = useState(true);
   const [id1, setid] = useState('');
+
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
   const fetchData = () => {
     fetch(`http://localhost:4000/booking/transportations`, {
       credentials: 'include', // Automatically include user credentials
@@ -27,14 +56,14 @@ function transportpage() {
         setLoading(false);
       });
   };
-  
 
-  
+
+
   useEffect(() => {
     fetchData();
 
   }, []); // No need for `id1` as a dependency, credentials will handle identification
-  
+
 
 
   return (<> <Navbar></Navbar>
@@ -49,7 +78,7 @@ function transportpage() {
             <strong>Type:</strong> {transport.details.type}
           </p>
           <p>
-            <strong>Price:</strong> {transport.details.price}
+            <strong>Price:</strong> {transport.details.price * multiplier} {preferredCurrency}
           </p>
           <p>
             <strong>Departure:</strong> {transport.details.departure}
