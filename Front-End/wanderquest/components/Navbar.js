@@ -46,7 +46,7 @@ return (
                     <button className="navbar-button">Historical Places</button>
                 </div>
                 <div className='navbar-rightside'>
-                    <NotificationButton role={role}/>
+                {role && <NotificationButton role={role} />}
                     <button 
                         className="navbar-wishlist-button" 
                         onClick={() => setIsWishlistOpen(true)}
