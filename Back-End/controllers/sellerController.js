@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const { Types } = require('mongoose');
+const NotificationModel = require('../models/objectModel').notification;
 
 // Collection name in MongoDB
 const collectionName = 'uploads';
@@ -247,13 +248,12 @@ const addProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount, sales })
+        const product = await ProdModel.create({ name, picture, price, description, seller: seller, ratings, rating, reviews, availableAmount, sales })
         res.status(200).json(product)
 
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-
 };
 
 
