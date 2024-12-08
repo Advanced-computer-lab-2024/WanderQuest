@@ -37,7 +37,8 @@ const {
     deletePromocode,
     getProductPhoto,
     seenNotifications,
-    myNotifications
+    myNotifications,
+    getUserStatstics
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -130,6 +131,9 @@ router.patch('/flagItinerary/:id', flagItinerary);
 
 //view sales report
 router.get('/salesReport', viewSalesReport);
+
+router.get('/userStats', getUserStatstics);
+
 
 //Create Promocode
 router.post('/promo', createPromo);

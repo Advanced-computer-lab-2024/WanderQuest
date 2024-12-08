@@ -21,6 +21,7 @@ const { once } = require('events');
 const { Types } = require('mongoose');
 // Collection name in MongoDB
 const collectionName = 'uploads';
+const moment = require('moment'); 
 
 // Initialize GridFS
 let gfs;
@@ -788,6 +789,42 @@ const seenNotifications = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+// Function to get user statistics
+const getUserStatstics = async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const newUsersPerMonth = await User.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: moment().subtract(1, 'year').toDate(), 
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: { $month: "$createdAt" },
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $sort: { _id: 1 }, 
+            },
+        ]);
+        const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+            month: moment().month(i).format('MMMM'),
+            count: newUsersPerMonth.find((m) => m._id === i + 1)?.count || 0,
+        }));
+
+        return res.status(200).json({
+            totalUsers,
+            newUsersPerMonth: monthlyData,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch user statistics' });
+    }
+};
 
 module.exports = {
     getAllAdmins,
@@ -824,5 +861,6 @@ module.exports = {
     promocodes,
     deletePromocode,
     myNotifications,
-    seenNotifications
+    seenNotifications,
+    getUserStatstics
 }
