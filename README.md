@@ -104,6 +104,7 @@ npm run format:fix
 
 <details>
 <summary>Administrator Functions 👩‍💼</summary>
+  
 - Add/remove another administrator.
 - Add/remove a tourism governor.
 - Manage all users.
@@ -122,6 +123,7 @@ npm run format:fix
 
 <details>
 <summary>Account Management 🔄</summary>
+  
 - Change password.
 - Reset forgotten password via email.
 - Request to delete account.
@@ -132,6 +134,7 @@ npm run format:fix
 
 <details>
 <summary>Seller Functions</summary>
+  
 - Accept Terms and Conditions.
 - Create/Read/Update their profile with their information including name and description. If accepted on the system.
 - View a list of all available products.
@@ -148,6 +151,7 @@ npm run format:fix
 
 <details>
 <summary>Advertiser Functions</summary>
+  
 - Accept Terms and Conditions.
 - Create/Read/Update their profile with their information. If accepted on the system.
 - View a list of all advertisers.
@@ -162,6 +166,7 @@ npm run format:fix
 
 <details>
 <summary>Tourist Functions</summary>
+  
 - Read/Update their profile with their information.
 - Book trips.
 - Pay for bookings using wallet or credit card.
@@ -188,6 +193,7 @@ npm run format:fix
 
 <details>
 <summary>Tour Guide Functions</summary>
+  
 - Accept Terms and Conditions.
 - Create/Read/Update their profile with their information. If accepted on the system.
 - View a list of all advertisers.
@@ -201,6 +207,7 @@ npm run format:fix
 
 <details>
 <summary>Tourism Governor Functions</summary>
+  
 - Create/update/delete/view places.
 - Add/view tags.
   
