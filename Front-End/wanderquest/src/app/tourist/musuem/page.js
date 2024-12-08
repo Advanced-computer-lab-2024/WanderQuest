@@ -72,6 +72,11 @@ const Museums = (Props) => {
         });
         setFilteredmuseums(newprod);  // Set the filtered museums based on search
     };
+
+useEffect(() => {
+   handlesearch();
+  }, [search]);
+
     const clearsearch=()=>{
         setFilteredmuseums(museums);
     }
@@ -103,8 +108,8 @@ const Museums = (Props) => {
                        onChange={(e) => setSearch(e.target.value)} 
                        type="text" 
                        placeholder='Enter your text' />
-                <button className={styles.museumsearchbtn} onClick={handlesearch}>Search</button>
-                <button onClick={clearsearch}>clearsearch</button>
+                {/* <button className={styles.museumsearchbtn} onClick={handlesearch}>Search</button> */}
+                {/* <button onClick={clearsearch}>clearsearch</button> */}
                 
             </div>):(<></>
 
@@ -132,8 +137,8 @@ const Museums = (Props) => {
                         <p>{cat}: ${price}</p>
                     </div>
                 ))}
-            </div>
-            <Link href={`museum/${museum._id}`}>view</Link>
+        </div>
+            <Link href={`/tourist/musuem/${museum._id}`}>view</Link>
         </div>
     ))
 ) : (
