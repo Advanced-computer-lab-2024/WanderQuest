@@ -399,27 +399,6 @@ const notificationSchema = new Schema({
 });
 const notification = mongoose.model('notification', notificationSchema);
 
-const promoCodeSchema = new Schema({
-    code: { type: String, required: true, unique: true },
-    type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
-    discount: { type: Number, required: true },
-    expiryDate: { type: Date, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: false },
-    birthday: { type: Boolean, required: false },
-    touristId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tourist",
-        required: false,
-        validate: {
-            validator: function (value) {
-                return !this.birthday || (this.birthday && value);
-            },
-            message: 'touristId is required to create a birthday promocode'
-        }
-    }
-}, { timestamps: true });
-
-const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
 module.exports = {
     Places,
@@ -433,6 +412,5 @@ module.exports = {
     rating,
     transportation,
     Order,
-    notification,
-    PromoCode
+    notification
 }

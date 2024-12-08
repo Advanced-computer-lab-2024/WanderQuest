@@ -1,9 +1,12 @@
 .footer {
-    background-color: #122c34;
-    color: #fff;
-    padding: 4rem 2rem 2rem;
-    margin-top: auto;
-  }
+  background-color: #122c34;
+  color: #fff;
+  padding: 4rem 2rem 2rem;
+  margin-top: auto;
+  bottom: 0;
+  width: 100%;
+  position: relative;
+}
   
   .footerContent {
     max-width: 1200px;

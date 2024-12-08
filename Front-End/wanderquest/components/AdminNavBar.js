@@ -5,6 +5,7 @@ import styles from '../Styles/Navbar.css';
 import { faUser , faBell ,faBars} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NotificationButton from './NotificationsTourGuide';
+import axios from 'axios';
 
 
 const AdminNavbar = () => {
@@ -20,7 +21,18 @@ const AdminNavbar = () => {
         setSidebarOpen(!isSidebarOpen); // Show or hide sidebar
     };
 
-    
+    const handleLogout = async () => {
+      try {
+          await axios.post('http://localhost:4000/authentication/logout', {}, {
+              withCredentials: true,
+          });
+          // Redirect to home page after logout
+          window.location.href = '/';
+      } catch (error) {
+          console.error('Error logging out:', error);
+      }
+  };
+
     
     useEffect(() => {
         // Fetch the logged-in user's info
@@ -78,9 +90,9 @@ const AdminNavbar = () => {
                         <Link href="/admin/changePassword" className="profile-menu-item">
                             Change Password
                         </Link>
-                        <Link href="/" className="profile-menu-item">
+                        <div onClick={handleLogout} className="profile-menu-item">
                             Log out
-                        </Link>
+                        </div>
                     </div>
                 )}
             

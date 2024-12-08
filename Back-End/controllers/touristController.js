@@ -10,7 +10,7 @@ const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
 const orderModel = require('../models/objectModel').Order;
 const BookingModel = require('../models/bookingModel');
-const PromoModel = require('../models/objectModel').PromoCode;
+const PromoModel = require('../models/userModel').PromoCode;
 const { sendEmail } = require('../controllers/authenticationController');
 const mongoose = require('mongoose');
 
@@ -1093,12 +1093,38 @@ const birthDaycode = async (req, res) => {
 };
 
 const redeemPromo = async (req, res) => {
-    const codeToRedeem = req.params;
-    const PromoCode = await PromoModel.find({ code: codeToRedeem });
+    const {code} = req.body
+    const userId = req.user._id;
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const PromoCode = await PromoModel.findOne({ code: code });
     if (!PromoCode) {
         return res.status(404).json({ error: 'Promocode does not exist.' });
     }
 
+    if (PromoCode.expiryDate<=Date.now()){
+        return res.status(404).json({ error: 'Promocode already expired.' });
+    }
+    if (PromoCode.code.startsWith('BIRTHDAY_DISCOUNT_')&&PromoCode.touristId !==null) {
+        const validCode = `BIRTHDAY_DISCOUNT_${currentYear}`;
+        if (PromoCode.touristId.toString()!== userId.toString()) {
+            return res.status(404).json({ error: 'Invalid Promocode for this user.' });
+        }
+    }
+    try {
+        const tourist = await Tourist.findById(userId);
+        // Check if the promo code is already in activePromoCodes
+        if (tourist.activePromoCodes.some(activeCode => activeCode.code === PromoCode.code)) {
+            return res.status(400).json({ error: 'Promocode is already redeemed.' });
+        }
+        // Push the promo code into the activePromoCodes array
+        tourist.activePromoCodes.push(PromoCode);
+        await tourist.save();
+
+        return res.status(200).json({ message: 'Promocode redeemed successfully!', activePromoCodes: tourist.activePromoCodes });
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
 }
 
 module.exports = {
@@ -1147,5 +1173,6 @@ module.exports = {
     changeAmountInCart,
     birthDaycode,
     checkoutOrder,
+    redeemPromo,
     getMyOrders
 };
