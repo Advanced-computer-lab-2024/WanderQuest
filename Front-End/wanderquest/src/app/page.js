@@ -27,11 +27,11 @@ import Salesrepadv from "../../components/Salesrepadv";
 export default function Home() {
    return (<>
       <Navbar></Navbar>
-
-      <Foot></Foot>  
-
 {/* 
-            <Salesrep></Salesrep> */}
+      <Foot></Foot>   */}
+
+
+            {/* <Salesrep></Salesrep> */}
 
       {/* <Salesrepadv></Salesrepadv> */}
 {/* <Salesrepseller></Salesrepseller> */}

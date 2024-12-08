@@ -27,6 +27,13 @@ function BookingsPage() {
     router.push('/tourist/Flights');
   };
 
+
+const handleRedirecttransport = () => {
+  router.push('/tourist/transportation');  // Updated path with capital 'T'
+};
+
+
+
   const handleSearch = async () => {
     setLoading(true);
 
@@ -166,7 +173,7 @@ function BookingsPage() {
               Flights
             </button>
             <button
-              onClick={() => handleChangeColor(3)}
+              onClick={() => { handleChangeColor(3); handleRedirecttransport() }}
               className={`${styles.navbtn} ${activeButton === 3 ? styles.active : ""}`}
             >
               Transportation
