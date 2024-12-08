@@ -59,7 +59,7 @@ const foot = () => {
         </div>
       </div>
       <div className={styles.footerBottom}>
-        <p>©2023 Indotravi, All Rights Reserved</p>
+        <p>©2024 WanderQuest, All Rights Reserved</p>
       </div>
     </footer>
   );
