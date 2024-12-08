@@ -280,7 +280,6 @@ const createItinerary = async (req, res) => {
         bookingIsOpen,
         NoOfBookings,
         touristsCount,
-        revenueOfThisItinerary,
         flagged
     } = req.body;
 
@@ -313,12 +312,11 @@ const createItinerary = async (req, res) => {
             bookingIsOpen,
             NoOfBookings,
             touristsCount,
-            revenueOfThisItinerary,
             createdBy, 
             flagged,
         });
         res.status(200).json(newItinerary);
-        await newItinerary.updateRevenue();
+        //await newItinerary.updateRevenue();
 
     } catch (error) {
 
