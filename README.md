@@ -407,8 +407,8 @@ export interface AddHealthPackageResponse extends HealthPackageResponseBase {}
 - Make sure you have [Node](https://nodejs.org/en) and [Git](https://git-scm.com/) installed
 
 ```bash
-mkdir Copilot-and-Sons
-cd Copilot-and-Sons
+mkdir WanderQuest
+cd WanderQuest
 ```
 
 - Clone this repo
