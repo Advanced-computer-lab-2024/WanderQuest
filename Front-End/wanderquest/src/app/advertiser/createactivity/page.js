@@ -3,14 +3,14 @@ import Navbar from '../../../../components/Navbar';
 import Activity from '../../../../components/activity';
 import Image from 'next/image';
 import Foot from '../../../../components/foot';
+import Waterfall from '../../../../imgs/activities.jpeg'
+
 
 const createactivity = () => {
-
-    return(
+    return (
         <div>
             <Navbar />
-            <Image src="/imgs/types-of-tourism.jpg" alt="Activities" layout="responsive" width={1000} height={500} />
-            <Activity></Activity>
+            <Activity />
             <Foot />
         </div>
     );
