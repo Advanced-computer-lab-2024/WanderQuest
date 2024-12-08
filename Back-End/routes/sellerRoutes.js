@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,viewSalesReport } = require('../controllers/sellerController');
+const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,viewSalesReport,seenNotifications,myNotifications } = require('../controllers/sellerController');
 const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById, getProductPhoto } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
@@ -39,5 +39,7 @@ router.patch('/archiveProduct/:id', archiveProduct);
 router.patch('/unarchiveProduct/:id', unarchiveProduct);
 
 router.get('/salesReport',requireAuth({role: "seller"}),viewSalesReport);
+router.get('/notifs',requireAuth({role: "seller"}), myNotifications);
+router.patch('/notifs',requireAuth({role: "seller"}), seenNotifications);
 
 module.exports = router;

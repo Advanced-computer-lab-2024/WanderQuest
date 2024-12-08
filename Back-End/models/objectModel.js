@@ -52,11 +52,12 @@ const documentSchema = new mongoose.Schema({
     contentType: String,
     fileID: String,
 });
+
 const productSchema = new Schema({
     name:
         { type: String, required: true },
     picture:
-        { type: documentSchema, default: undefined },
+        { type: documentSchema, required: false },
     price:
         { type: Number, required: true },
     description:
@@ -177,17 +178,6 @@ activitySchema.pre('findOne', async function (next) {
     next();
 });
 
-activitySchema.pre('findById', async function (next) {
-    if (!this.getQuery().includeDeleted) {
-        const User = mongoose.model('User');
-        const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
-        this.where({ createdBy: { $nin: usersToExclude } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
 // Virtual property to format the date without the time zone
 activitySchema.virtual('formattedDate').get(function () {
     return this.date.toISOString().split('T')[0];
@@ -202,6 +192,11 @@ activitySchema.methods.updateRevenue = async function () {
     this.revenueOfThisActivity = this.NoOfBooking * this.price;
     await this.save();
 };
+activitySchema.pre('save', function (next) {
+    this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    next();
+});
+
 
 //middleware to update the ratings of activity
 activitySchema.pre('save', function (next) {
@@ -282,17 +277,6 @@ itinerarySchema.pre('findOne', async function (next) {
     next();
 });
 
-itinerarySchema.pre('findById', async function (next) {
-    if (!this.getQuery().includeDeleted) {
-        const User = mongoose.model('User');
-        const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
-        this.where({ createdBy: { $nin: usersToExclude } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
 itinerarySchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {
         const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
@@ -305,12 +289,19 @@ itinerarySchema.pre('save', function (next) {
 
 //middleware to update revenue of itinerary
 itinerarySchema.methods.updateRevenue = async function () {
+    // Fetch all activities related to this itinerary
     const activities = await Activity.find({ _id: { $in: this.activities } });
-    //The revenue for these activities is then summed up
-    const totalActivityRevenue = activities.reduce((total, activity) => total + activity.revenue, 0);
-    this.revenue = totalActivityRevenue + this.bookings * this.price;
+    const totalActivityRevenue = activities.reduce((total, activity) => total + (activity.revenue || 0), 0);
+    this.revenueOfThisItinerary = totalActivityRevenue + (this.NoOfBookings * this.price);
+
+    // Save the updated itinerary revenue
     await this.save();
 };
+itinerarySchema.pre('save', async function (next) {
+    await this.updateRevenue();
+    next();
+});
+
 
 const itinerary = mongoose.model('itinerary', itinerarySchema);
 
@@ -420,27 +411,6 @@ const notificationSchema = new Schema({
 });
 const notification = mongoose.model('notification', notificationSchema);
 
-const promoCodeSchema = new Schema({
-    code: { type: String, required: true, unique: true },
-    type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
-    discount: { type: Number, required: true },
-    expiryDate: { type: Date, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: false },
-    birthday: { type: Boolean, required: false },
-    touristId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tourist",
-        required: false,
-        validate: {
-            validator: function (value) {
-                return !this.birthday || (this.birthday && value);
-            },
-            message: 'touristId is required to create a birthday promocode'
-        }
-    }
-}, { timestamps: true });
-
-const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
 module.exports = {
     Places,
@@ -454,6 +424,5 @@ module.exports = {
     rating,
     transportation,
     Order,
-    notification,
-    PromoCode
+    notification
 }

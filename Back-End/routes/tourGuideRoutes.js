@@ -29,6 +29,10 @@ const {
     viewFilterSalesReport,
     viewTouristReport } = require('../controllers/tourGuideController'); // Assuming the controller is in tourGuideController
 
+const {
+    readActivities
+} = require('../controllers/advertiserController');
+const { getAllTags } = require('../controllers/adminController');
 const router = express.Router();
 const requireAuth = require('../middleware/requireAuth');
 
@@ -55,5 +59,7 @@ router.get('/salesReport', requireAuth({ role: "tourGuide" }), viewSalesReport);
 router.get('/filterReport/:itineraryId/:startDate/:endDate', requireAuth({ role: "tourGuide" }), viewFilterSalesReport);
 router.get('/touristReport', requireAuth({ role: "tourGuide" }), viewTouristReport);
 router.get('/tourGuideInfo/:id', getTourGuideInfo);
+router.get('/tags', getAllTags)
+router.get('/activities', readActivities);
 
 module.exports = router;

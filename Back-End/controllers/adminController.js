@@ -1,5 +1,5 @@
 const AdminModel = require('../models/adminModel');
-const { User, Advertiser, TourGuide, Tourist } = require('../models/userModel');
+const { User, Advertiser, TourGuide, Tourist,PromoCode } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
@@ -8,7 +8,7 @@ const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const ComplaintModel = require('../models/objectModel').complaint;
-const { Activity, itinerary, PromoCode } = require('../models/objectModel');
+const { Activity, itinerary } = require('../models/objectModel');
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
@@ -21,6 +21,7 @@ const { once } = require('events');
 const { Types } = require('mongoose');
 // Collection name in MongoDB
 const collectionName = 'uploads';
+const moment = require('moment'); 
 
 // Initialize GridFS
 let gfs;
@@ -671,24 +672,47 @@ const flagItinerary = async (req, res) => {
 const viewSalesReport = async (req, res) => {
     try {
 
-        const availableProducts = await ProdModel.find({ isArchived: false });
-        const availableActivities = await Activity.find({});
-        const itineraries = await itinerary.find({});
-        const productRevenue = availableProducts.reduce((total, product) => total + product.revenueOfThisProduct, 0);
+        const availableProducts = await ProdModel.find({ isArchived: false }).select('name price createdAt');
+        const availableActivities = await Activity.find({}).select('title price date');
+        const itineraries = await itinerary.find({}).select('title price availableDates');
+       // console.log(itineraries);
+        const productRevenue = availableProducts.reduce((total, product) => total + (product.revenueOfThisProduct || 0),0);
         const activityRevenue = availableActivities.reduce((total, activity) => {
-
-            return total + (activity.revenueOfThisActivity - 0);///////////!!!!check
-        }, 0);
-        const itineraryRevenue = itineraries.reduce((total, itinerary) => {
-
-            return total + (itinerary.revenueOfThisItinerary - 0); ///////////!!!!check
-        }, 0);
+            console.log(`Activity Revenue for "${activity.title}": ${activity.revenueOfThisActivity}`); // Debug log
+            return total + (activity.revenueOfThisActivity || 0);
+        }, 0);      
+         //console.log(activityRevenue);
+        const itineraryRevenue = itineraries.reduce(
+            (total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0), 
+            0
+        );
         const totalRevenue = productRevenue + activityRevenue + itineraryRevenue;
+        const productDetails = availableProducts.map(product => ({
+            name: product.name,
+            price: product.price,
+            date: product.createdAt,
+        }));
+
+        const activityDetails = availableActivities.map(activity => ({
+            title: activity.title,
+            price: activity.price,
+            date: activity.date,
+        }));
+
+        const itineraryDetails = itineraries.map(itinerary => ({
+            title: itinerary.title,
+            price: itinerary.price,
+            availableDates: itinerary.availableDates,
+        }));
+
         const report = {
+            totalRevenue,
             productRevenue,
             activityRevenue,
             itineraryRevenue,
-            totalRevenue
+            productDetails,
+            activityDetails,
+            itineraryDetails,
         };
         res.status(200).json({ message: 'report successfully viewed ', report });
 
@@ -762,7 +786,68 @@ const deletePromocode = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+const myNotifications = async (req, res) => {
+    const { _id } = req.user._id;
 
+    try {
+        const myNotification = await NotificationModel.find({ userID: _id });
+        res.status(200).json(myNotification);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+const seenNotifications = async (req, res) => {
+    const { _id } = req.user._id;
+
+    try {
+        const result = await NotificationModel.updateMany(
+            { userID: _id }, // Match notifications by userID
+            { $set: { seen: true } } // Update the "seen" field to true
+        );
+
+        res.status(200).json({ message: 'Notifications updated', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+// Function to get user statistics
+const getUserStatstics = async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const newUsersPerMonth = await User.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: moment().subtract(1, 'year').toDate(), 
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: { $month: "$createdAt" },
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $sort: { _id: 1 }, 
+            },
+        ]);
+        const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+            month: moment().month(i).format('MMMM'),
+            count: newUsersPerMonth.find((m) => m._id === i + 1)?.count || 0,
+        }));
+
+        return res.status(200).json({
+            totalUsers,
+            newUsersPerMonth: monthlyData,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch user statistics' });
+    }
+};
 
 module.exports = {
     getAllAdmins,
@@ -797,5 +882,8 @@ module.exports = {
     viewSalesReport,
     createPromo,
     promocodes,
-    deletePromocode
+    deletePromocode,
+    myNotifications,
+    seenNotifications,
+    getUserStatstics
 }

@@ -1,4 +1,4 @@
-import styles from '../Styles/Creatprod.css'
+import styles from '../Styles/Creatprod.module.css'
 import Products from './Products'
 import React, { useState } from 'react';
 import { useRef } from 'react';
@@ -79,27 +79,17 @@ const Creatprod = () => {
   };
 
   return (
-    <div className='container'>
-      <h1>Add Product</h1>
-      <label>Product Name</label>
-      <input className='inputfield' type='text' value={productName} onChange={handleProductNameChange} />
-      <br/>
-      <label>Price</label>
-      <input className='inputfield' type='number' value={price} onChange={handlePriceChange} />
-      <br/>
-      <label>Available Quantity</label>
-      <input className='inputfield' type='number' value={quantity} onChange={handleQuantityChange} />
-      <br/>
-      <label>Description</label>
-      <input className='inputfield' type='text' value={description} onChange={handleDescriptionChange} />
-      <br/>
-      <label>Product Picture</label>
-      <input className='inputpic' type='file' onChange={handleProductPictureChange} ref={fileInputRef} />
-      <br/>
-      {productPicturePreview && <img src={productPicturePreview} alt="Preview" style={{ width: '150px', height: '150px', marginTop: '10px' }} />}
-      <br/>
-      <button className='button' onClick={handleSubmit}>ADD</button>
-    </div>
+    <>
+      <div className={styles.container}>
+        <h1 className={styles.h1}>Add product</h1>
+        <p>Product name: <input className={styles.inputfield} type='text' value={productName} onChange={handleProductNameChange}></input></p>
+        <p>Price : <input className={styles.inputfield} type='number' value={price} onChange={handlePriceChange}></input></p>
+        <p>Available quantity: <input className={styles.inputfield} type='number' value={quantity} onChange={handleQuantityChange}></input></p>
+        <p>Description: <input className={styles.inputfield} type='text' value={description} onChange={handleDescriptionChange}></input></p>
+        <p>Product picture: <input className={styles.inputpic} type='file' onChange={handleProductPictureChange}></input></p>
+        <button className={styles.button} onClick={handleSubmit}>ADD</button>
+      </div>
+    </>
   );
 };
 

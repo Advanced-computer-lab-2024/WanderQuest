@@ -3,7 +3,7 @@ const axios = require('axios');
 const User = require('../models/userModel').User;
 const Order = require('../models/objectModel').Order;
 const Booking = require('../models/bookingModel');
-
+const { sendEmail } = require('../controllers/authenticationController');
 // Helper function to convert currency
 async function convertCurrency(amount, fromCurrency, toCurrency) {
     // Fetch exchange rates
@@ -74,7 +74,7 @@ const handleBookingPayment = async (req, res) => {
                 // Deduct the amount from the wallet
                 user.wallet -= amount;
                 await user.save();
-
+                await sendEmail(user.email, "Payment Made", `Your payment of ${amount} ${user.preferredCurrency} was successful`);
                 return res.status(200).json({ message: 'Payment successful using wallet.' });
             } else {
                 // Deduct the wallet amount from the total amount to pay
@@ -154,7 +154,7 @@ const payOrderWithWallet = async (req, res) => {
 
             order.paymentStatus = 'paid';
             await order.save();
-
+            await sendEmail(user.email, "Payment Made", `Your payment of ${amount} ${user.preferredCurrency} was successful`);
             return res.status(200).json({ message: 'Payment successful using wallet.' });
         }
 
@@ -206,6 +206,26 @@ const payOrderWithStripe = async (req, res) => {
     }
 }
 
+const markOrderAsPaid = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
+
+        order.paymentStatus = 'paid';
+        await order.save();
+
+        res.status(200).json({ message: 'Order marked as paid.' });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while marking the order as paid.' });
+    }
+}
+
 const payOrderCashOnDelivery = async (req, res) => {
     try {
         const { orderId } = req.body;
@@ -242,6 +262,7 @@ module.exports = {
     markBookingAsPaid,
     payOrderWithWallet,
     payOrderWithStripe,
+    markOrderAsPaid,
     payOrderCashOnDelivery,
     getPaymentMultiplier,
 };

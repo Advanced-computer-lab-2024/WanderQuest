@@ -359,12 +359,12 @@ async function requestAccountDeletion(req, res) {
             ]
         });
 
-        if (paidBookings.length > 0) {
-            return res.status(400).json({ message: 'You have paid bookings. Please cancel them before requesting account deletion.' });
-        }
-
         user.requestToBeDeleted = true;
         await user.save();
+
+        if (paidBookings.length > 0) {
+            return res.status(400).json({ message: 'Account deletion unsuccessful, you have upcoming bookings that are paid for. Your account will be hidden until the booking are completed.' });
+        }
 
         return res.status(200).json({ message: 'Account deletion requested successfully.' });
 
@@ -458,6 +458,11 @@ async function resetPassword(req, res) {
     }
 }
 
+const logout = (req, res) => {
+    res.cookie('jwt', '', { httpOnly: true, maxAge: 1 }); // Clear the JWT cookie
+    res.status(200).json({ message: 'Logged out successfully' });
+};
+
 module.exports = {
     getUser,
     uploadDocuments,
@@ -472,5 +477,6 @@ module.exports = {
     login,
     sendEmail,
     requestForgetPasswordEmail,
-    resetPassword
+    resetPassword,
+    logout
 };

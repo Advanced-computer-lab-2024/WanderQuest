@@ -54,7 +54,6 @@ const ChangePassword = () => {
             {successMessage && <p className={styles.success}>{successMessage}</p>}
             
             <div className={styles.passwordSection}>
-                <h3 className={styles.h3}>Change Password</h3>
                 <div className={styles.passwordFields}>
                 {passwordMessage && <p className={styles.passwordMessage}>{passwordMessage}</p>}
                     
