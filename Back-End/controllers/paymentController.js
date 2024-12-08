@@ -225,7 +225,7 @@ const payOrderWithStripe = async (req, res) => {
         if (user.preferredCurrency !== 'USD') {
             amount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
         }
-
+        amount = await applyPromoCodes(user._id,amount);
         // Create a payment intent using Stripe
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,
