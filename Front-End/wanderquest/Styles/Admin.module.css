@@ -1,9 +1,76 @@
+/* AdminPage layout */
+.adminPageContainer {
+    position: relative;
+    display: flex;
+}
+
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 120px;
+    height: 100%;
+    width: 250px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin: 15px 0;
+    background: none;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .sidebar ul li a {
+    color: black;
+    text-decoration: none;
+  }
+  
+  .sidebar ul li button {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .sidebar ul li a:hover,
+  .sidebar ul li button:hover {
+    color: #ccc;
+  }
+
+.mainContentContainer {
+    margin-top: 60px; /* Ensure content doesn't overlap with navbar */
+    padding: 20px;
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 250px;
+}
+
+/* When sidebar is open, shift the main content */
+.mainContentContainer.shifted {
+    margin-left: 300px !important; /* Shift content to the right when sidebar is open */
+}
+
+
 /* General Container for the Admin Dashboard */
 .container {
     padding: 20px;
-    background-color: #f5f5f5; /* Light grey background */
     justify-content: space-between; /* Space between the sections */
     gap: 20px; /* Adjusts the spacing between boxes */
+    position: relative;
+    margin-left: 250px;
+    
 }
 
 /* Title of the Admin Dashboard */
@@ -96,93 +163,8 @@
 }
 
 
-/* Add Tourism Governor Card */
-.tourismGovernor {
-    border: 1px solid #122c34; /* Big Stone color */
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
 
-/* Styles for Input Fields and Labels in the Governor Card */
-.tourismGovernor .label {
-    display: block;
-    margin: 10px 0 5px;
-}
 
-.tourismGovernor input[type="text"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #17455c; /* Elephant color */
-    border-radius: 4px;
-}
-
-.tourismGovernor input[type="text"]:focus {
-    border-color: #1a6187; /* Blumine color */
-}
-
-/* Button for Creating Governor */
-.tourismGovernor button {
-    background-color: #1a6187; /* Blumine color */
-    color: white; /* Text color */
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 4px;
-}
-
-.tourismGovernor button:hover {
-    background-color: #17455c; /* Elephant color on hover */
-    color: white; /* Ensure text color stays white on hover */
-}
-
-/* Add New Admin Card */
-.newAdmin {
-    border: 1px solid #122c34; /* Big Stone color */
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-/* Styles for Input Fields and Labels in the Admin Card */
-.newAdmin .label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-.newAdmin input[type="text"],
-.newAdmin input[type="password"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #17455c; /* Elephant color */
-    border-radius: 4px;
-}
-
-.newAdmin input[type="text"]:focus,
-.newAdmin input[type="password"]:focus {
-    border-color: #1a6187; /* Blumine color */
-}
-
-/* Button for Adding Admin */
-.newAdmin button {
-    background-color: #1a6187; /* Blumine color */
-    color: white; /* Text color */
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 4px;
-}
-
-.newAdmin button:hover {
-    background-color: #17455c; /* Elephant color on hover */
-    color: white; /* Ensure text color stays white on hover */
-}
 
 /* Delete Account Section */
 .deleteAccount {
@@ -251,9 +233,8 @@
 }
 
 /* User Account, Tourism Governor, New Admin Sections */
-.userAccounts, 
-.tourismGovernor, 
-.newAdmin {
+.userAccounts
+ {
     flex: 1;
     min-height: 300px;
     display: flex;
@@ -267,16 +248,14 @@
 }
 
 /* Add a bit of spacing to the section headers */
-.userAccounts h2, 
-.tourismGovernor h2, 
-.newAdmin h2 {
+.userAccounts h2
+ {
     margin-bottom: 10px;
 }
 
 /* Remove the extra space between the boxes */
-.userAccounts button,
-.tourismGovernor button,
-.newAdmin button {
+.userAccounts button
+ {
     margin-top: auto; /* Pushes the button to the bottom of the box */
 }
 

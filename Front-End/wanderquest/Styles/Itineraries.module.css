@@ -116,11 +116,26 @@
   display: block;
   margin-left: 33%;
 }
-.productsearch{
-  border-radius:20px ;
+.productsearch {
+  border-radius: 20px;
   width: 500px;
   height: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adjust values as needed */
+}
 
+.searchbtn{
+  background-color: #042335;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 25px;
+  margin-top : 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+  /* Added that to remove the underline feature of the Link tag in Next */
+  text-decoration: none;
 }
 /* Itineraries.module.css */
 
@@ -180,3 +195,154 @@
 .filterSection button:hover {
   background-color: black;
 }
+.reviews {
+  margin-top: 20px; /* Slightly increased for better spacing */
+  border-top: 1px solid #ccc; /* Softer color for the separator */
+  padding-top: 15px; /* More padding for breathing room */
+  font-family: Arial, sans-serif; /* Clean, modern font */
+}
+
+.review {
+  font-size: 15px; /* Slightly larger text for readability */
+  color: #444; /* Darker color for better contrast */
+  background-color: #f9f9f9; /* Light background for distinction */
+  border: 1px solid #ccc; /* Subtle border color */
+  border-radius: 12px; /* Softer corners */
+  padding: 12px 15px; /* Comfortable inner spacing */
+  margin-bottom: 10px; /* More space between reviews */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds depth with a shadow */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+.review:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+.productRating {
+  color: #ff9800;
+  font-size: 20px;
+  margin-bottom: 10px;
+}.datesContainer {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.datesLabel {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.dates {
+  display: flex;
+}
+
+.dateSelect {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.dateSelect option {
+  padding: 10px;
+}
+.timesContainer {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.timesLabel {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.times {
+  display: flex;
+}
+
+.timeSelect {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.timeSelect option {
+  padding: 10px;
+}
+.locationsContainer {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.locationsLabel {
+  font-size: 30px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.locations {
+  display: flex;
+}
+
+.locationSelect {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.locationSelect option {
+  padding: 10px;
+}
+.timelineCard {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 100%;
+  margin: 10px 0;
+  text-align: left; /* Align all text to the left */
+}
+
+.timelineTitle {
+  font-size: 1.8rem; /* Make the title text bigger */
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: left; /* Align the title to the left */
+}
+
+.timelineList {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  margin: 0;
+}
+
+.timelineEntry {
+  font-size: 1.2rem; /* Make the timeline entry text a bit bigger */
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  padding-left: 20px; /* Indentation for the timeline entries */
+}
+
+.timelineEntry strong {
+  color: #333;
+  font-size: 1.2rem; /* Make the Day text slightly bigger */
+}
+

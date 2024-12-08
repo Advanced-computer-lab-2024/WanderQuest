@@ -1,6 +1,6 @@
 "use client";
 import styles from '../Styles/RegistrationForm.module.css';
-import { useState } from "react";
+import { useState ,useRef , useEffect} from "react";
 import { getNames } from 'country-list';
 import UploadDocuments from '../components/UploadDocuments';
 
@@ -20,6 +20,8 @@ const RegistrationForm = () => {
     const [userId,setUserId]=useState(null);
 
     const [message, setMessage] = useState(null);
+
+    const uploadRef = useRef(null);
 
     const countries = getNames();
 
@@ -78,9 +80,12 @@ const RegistrationForm = () => {
             console.error("Error:", err);
         });
     };
+    useEffect(() => {
+        if (userId && uploadRef.current) {
+            uploadRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [userId]);
 
-    
-    
     
     
     return (
@@ -188,7 +193,9 @@ const RegistrationForm = () => {
     <button type="submit">Submit</button>
     
 </form>
-{userId && <UploadDocuments userType={userType} userId={userId} />}
+{userId && <div ref={uploadRef}>
+                    <UploadDocuments userType={userType} userId={userId} />
+                </div>}
 </div>
 
 

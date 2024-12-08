@@ -174,14 +174,14 @@ function BookingsPage() {
           </div>
         </div>
         <h2 className={styles.welcome}>Where to next, Hadwa?</h2>
-        <div className={styles.welcome}>
+        <div className={styles.welcomeq}>
           Wander freely, quest deeply – WanderQuest brings your travel dreams to life.
         </div>
       </div>
 
       <motion.div
         className={styles.searchbar}
-        initial={{ y: -20 }}
+        initial={{ y: -230 }}
         transition={{ duration: 1 }}
       >
         <input
