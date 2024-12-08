@@ -40,6 +40,18 @@ const Navbar = () => {
         fetchUserRole();
     }, []);
 
+    const handleLogout = async () => {
+        try {
+            await axios.post('http://localhost:4000/authentication/logout', {}, {
+                withCredentials: true,
+            });
+            // Redirect to home page after logout
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+
 return (
     <>
         <div className="navbar-container">
@@ -145,9 +157,9 @@ return (
                 <Link href={`/${role}/profile`} className="profile-menu-item">
                 Profile
                 </Link>
-                <Link href="/" className="profile-menu-item">
-                Log out
-                </Link>
+                <div onClick={handleLogout} className="profile-menu-item">
+                    Log out
+                </div>
             </div>
             )}
         </div>
