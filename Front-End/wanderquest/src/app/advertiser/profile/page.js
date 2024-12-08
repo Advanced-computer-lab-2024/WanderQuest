@@ -1,5 +1,7 @@
 import CompanyInfo from "../../../../components/CompanyInfo";
 import Navbar from "../../../../components/Navbar";
+import Foot from "../../../../components/foot";
+
 
 
 
@@ -7,9 +9,11 @@ const ProfileInfo = () => {
   
 
   return (
-    <div>
-            <CompanyInfo/>
-    </div>
+    <>
+    <Navbar/>
+    <CompanyInfo/>
+    <Foot/>
+    </>
   );
 
 }
