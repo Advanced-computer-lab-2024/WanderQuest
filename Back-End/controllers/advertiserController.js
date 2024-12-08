@@ -294,25 +294,19 @@ const myCreatedActivities = async (req, res) => {
 };
 
 
-//Update An Activity
 const updateActivity = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: 'No such workout' })
+        return res.status(404).json({ error: 'No such workout' });
     }
 
     try {
         const theUpdatedActivity = await ActivityModel.findByIdAndUpdate(id, req.body, { new: true });
-        res.status(200).json(theUpdatedActivity)
-
-        // const theUpdatedActivity = await ActivityModel.findOneAndUpdate({_id: id},{
-        //     ...req.body
-        //  })
         await newActivity.updateRevenue();
-
+        res.status(200).json(theUpdatedActivity);
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 }
 
