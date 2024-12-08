@@ -177,17 +177,6 @@ activitySchema.pre('findOne', async function (next) {
     next();
 });
 
-activitySchema.pre('findById', async function (next) {
-    if (!this.getQuery().includeDeleted) {
-        const User = mongoose.model('User');
-        const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
-        this.where({ createdBy: { $nin: usersToExclude } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
 // Virtual property to format the date without the time zone
 activitySchema.virtual('formattedDate').get(function () {
     return this.date.toISOString().split('T')[0];
@@ -272,17 +261,6 @@ itinerarySchema.pre('find', async function (next) {
 });
 
 itinerarySchema.pre('findOne', async function (next) {
-    if (!this.getQuery().includeDeleted) {
-        const User = mongoose.model('User');
-        const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
-        this.where({ createdBy: { $nin: usersToExclude } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
-itinerarySchema.pre('findById', async function (next) {
     if (!this.getQuery().includeDeleted) {
         const User = mongoose.model('User');
         const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
