@@ -634,7 +634,7 @@ const addToCart = async (req, res) => {
             return res.status(400).json({ error: 'Not enough stock for product: ' + product.name })
         }
         const tourist = await Tourist.findById(touristId)
-        if(productId in tourist.cart){
+        if (productId in tourist.cart) {
             return res.status(400).json({ error: 'Product already in cart, you can change the quantity you want to order' })
         }
         tourist.cart = [...tourist.cart, { productId, quantity }]
@@ -860,7 +860,7 @@ const deleteNotification = async (req, res) => {
 
 const clearNotifications = async (req, res) => {
     const userID = req.user._id;
-    
+
     try {
         const result = await NotificationModel.deleteMany({ userID: userID });
 
@@ -1057,13 +1057,13 @@ const birthDaycode = async (req, res) => {
     }
 };
 
-const redeemPromo = async(req,res)=>{
+const redeemPromo = async (req, res) => {
     const codeToRedeem = req.params;
-    const PromoCode = await PromoModel.find({code:codeToRedeem});
-    if(!PromoCode){
-        return res.status(404).json({ error: 'Promocode does not exist.'});
+    const PromoCode = await PromoModel.find({ code: codeToRedeem });
+    if (!PromoCode) {
+        return res.status(404).json({ error: 'Promocode does not exist.' });
     }
-    
+
 }
 
 module.exports = {
@@ -1105,7 +1105,7 @@ module.exports = {
     bookingNotification,
     addDeliveryAddress,
     getDeliveryAddresses,
-    setActiveDeliveryAddress,,
+    setActiveDeliveryAddress,
     addToCart,
     viewCart,
     removeFromCart,

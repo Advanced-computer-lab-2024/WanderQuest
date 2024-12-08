@@ -39,7 +39,7 @@ const {
     bookingNotification,
     addDeliveryAddress,
     getDeliveryAddresses,
-    setActiveDeliveryAddress,,
+    setActiveDeliveryAddress,
     addToCart,
     viewCart,
     removeFromCart,
@@ -108,9 +108,9 @@ router.post('/bookingReminder', bookingNotification);
 router.post('/addDeliveryAddresses', addDeliveryAddress);
 router.get('/deliveryAddresses', getDeliveryAddresses);
 router.patch('/setActiveDeliveryAddress', setActiveDeliveryAddress);
-router.post('/birthday',birthDaycode);
+router.post('/birthday', birthDaycode);
 
-router.post('/cart/add',addToCart);
+router.post('/cart/add', addToCart);
 router.get('/cart', viewCart);
 router.delete('/cart/remove', removeFromCart);
 router.patch('/cart/change', changeAmountInCart);
