@@ -17,21 +17,22 @@ import Historicalplaces from "../../components/historicalplaces";
 import Signin from "../../components/Signin";
 import Foot from "../../components/foot";
 import { Chart } from 'chart.js'
-import { Bar,Doughnut,Line } from 'react-chartjs-2'
+import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import { motion } from 'framer-motion';
 import Salesrep from "../../components/Salesrep";
 import Salesrepseller from "../../components/Salesrepseller";
 import Salesrepadv from "../../components/Salesrepadv";
+import Authentication from "../../components/Authentication";
 
 
 export default function Home() {
    return (<>
       <Navbar></Navbar>
-
-      <Foot></Foot>  
-
 {/* 
-            <Salesrep></Salesrep> */}
+      <Foot></Foot>   */}
+
+
+            {/* <Salesrep></Salesrep> */}
 
       {/* <Salesrepadv></Salesrepadv> */}
 {/* <Salesrepseller></Salesrepseller> */}

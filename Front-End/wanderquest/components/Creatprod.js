@@ -2,20 +2,28 @@
 
 import styles from '../Styles/Creatprod.module.css';
 import React, { useState } from 'react';
+import { useRef } from 'react';
 
 const Creatprod = () => {
   const [productName, setProductName] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
   const [productPicture, setProductPicture] = useState(null);
+  const [productPicturePreview, setProductPicturePreview] = useState(null);
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const fileInputRef = useRef(null);
+
   const handleProductNameChange = (e) => setProductName(e.target.value);
   const handlePriceChange = (e) => setPrice(e.target.value);
   const handleQuantityChange = (e) => setQuantity(e.target.value);
-  const handleProductPictureChange = (e) => setProductPicture(e.target.files[0]);
+  const handleProductPictureChange = (e) => {
+    const file = e.target.files[0];
+    setProductPicture(file);
+    setProductPicturePreview(URL.createObjectURL(file));
+  };
   const handleDescriptionChange = (e) => setDescription(e.target.value);
 
   const handleSubmit = async () => {
@@ -40,7 +48,8 @@ const Creatprod = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add product');
+        alert(errorData.error || 'Failed to add product');
+        return;
       }
 
       const result = await response.json();
@@ -57,6 +66,7 @@ const Creatprod = () => {
       setError(error.message);
       setSuccess('');
       console.error('Error adding product:', error.message);
+      alert('An error occurred while adding the product. Please try again.');
     }
   };
 

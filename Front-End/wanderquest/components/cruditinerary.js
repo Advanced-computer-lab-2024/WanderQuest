@@ -40,7 +40,9 @@ const Cruditinerary = () => {
         // Fetch itineraries from the backend
         const fetchItineraries = async () => {
             try {
-                const response = await fetch('http://localhost:4000/tourGuide/itineraries');
+                const response = await fetch('http://localhost:4000/tourGuide/itineraries', {
+                    credentials: 'include'
+                });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -59,7 +61,9 @@ const Cruditinerary = () => {
         // Fetch activities from the backend
         const fetchActivities = async () => {
             try {
-                const response = await fetch('http://localhost:4000/advertiser/activities');
+                const response = await fetch('http://localhost:4000/tourGuide/activities', {
+                    credentials: 'include'
+                });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -496,7 +500,7 @@ const Cruditinerary = () => {
                     </form>
                 </div>
             </div>
-            <div className={styles.itinerariesContainer}>
+            {/* <div className={styles.itinerariesContainer}>
                 <label className={styles.label}>List of Itineraries</label>
                 <div>
                     {itineraries.map((itinerary, index) => (
@@ -540,7 +544,7 @@ const Cruditinerary = () => {
                         
                     ))}
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }

@@ -102,7 +102,7 @@ function ForgotPassword() {
       {step === 3 && (
         <div className={styles.formContainer}>
           <h2>{message}</h2>
-          <a href="/signin">Go to Sign In</a>
+          <a href="/authentication">Go to Sign In</a>
         </div>
       )}
     </div>
