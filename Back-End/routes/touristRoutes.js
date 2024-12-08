@@ -37,10 +37,17 @@ const {
     clearNotifications,
     deleteNotification,
     bookingNotification,
+    addDeliveryAddress,
+    getDeliveryAddresses,
+    setActiveDeliveryAddress,
     addToCart,
     viewCart,
     removeFromCart,
-    changeAmountInCart
+    changeAmountInCart,
+    birthDaycode,
+    checkoutOrder,
+    redeemPromo,
+    getMyOrders
 } = require('../controllers/touristController');
 const { getProducts } = require('../controllers/adminController')
 const requireAuth = require('../middleware/requireAuth');
@@ -94,17 +101,24 @@ router.delete('/wishlist/remove', removeFromWishlist);
 router.get("/orders", viewOrders)
 router.post("/orders/issue", issueAnOrder)
 router.patch("/orders/cancel/:id", cancelOrder)
-router.patch("/beNotified/:id",beNotified)
-router.post('/savedReminder',bookingIsOpenReminder);
-router.get('/notifs',myNotifications);
-router.patch('/notifs',seenNotifications);
-router.delete('/notifications',clearNotifications);
-router.delete('/notification/:id',deleteNotification);
-router.post('/bookingReminder',bookingNotification);
+router.patch("/beNotified/:id", beNotified)
+router.post('/savedReminder', bookingIsOpenReminder);
+router.get('/notifs', myNotifications);
+router.patch('/notifs', seenNotifications);
+router.delete('/notifications', clearNotifications);
+router.delete('/notification/:id', deleteNotification);
+router.post('/bookingReminder', bookingNotification);
+router.post('/addDeliveryAddresses', addDeliveryAddress);
+router.get('/deliveryAddresses', getDeliveryAddresses);
+router.patch('/setActiveDeliveryAddress', setActiveDeliveryAddress);
+router.post('/birthday', birthDaycode);
+router.patch('/redeemCode',redeemPromo);
 
-router.post('/cart/add',addToCart);
+router.post('/cart/add', addToCart);
 router.get('/cart', viewCart);
 router.delete('/cart/remove', removeFromCart);
 router.patch('/cart/change', changeAmountInCart);
+
+router.post('/cart/checkout', checkoutOrder);
 
 module.exports = router;

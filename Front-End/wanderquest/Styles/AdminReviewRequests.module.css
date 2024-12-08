@@ -1,8 +1,11 @@
 /* Container for the entire component */
 .container {
     background-color: #c6dbe7; /* Tangaroa */
-    color: #ffffff; /* White */
+    color: black; /* White */
     padding: 2rem;
+    width: 800px;
+    justify-self: center;
+    margin-top: 100px;
   }
   
   /* Title styling */
@@ -16,7 +19,7 @@
   .table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #122c34; /* Big Stone */
+    background-color: black; /* Big Stone */
   }
   
   .tableHeader {
@@ -25,7 +28,7 @@
   }
   
   .tableRow {
-    background-color: #122c34; /* Big Stone */
+    background-color: white; /* Big Stone */
   }
   
   .tableCell {

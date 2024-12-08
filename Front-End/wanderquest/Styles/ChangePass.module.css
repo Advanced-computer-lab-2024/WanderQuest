@@ -6,7 +6,7 @@
     width: 100%;
     max-width: 600px;
     margin: 0 auto; 
-    margin-top: 50px;
+    margin-top: 150px;
     padding: 30px;
     background-color: #FAFAF8; /* Light off-white for a soft background */
     border-radius: 10px; 
@@ -46,7 +46,7 @@
     width: 100%;
     padding: 12px;
     margin-top: 10px;
-    background-color: #50e8b8;
+    background-color: #1a6187;
     color: white;
     border: none;
     border-radius: 5px;
@@ -57,7 +57,7 @@
 }
 
 .passwordChangeButton:hover {
-    background-color: #21b19b;
+    background-color: #122c34;
 }
 
 /* Success and error messages */

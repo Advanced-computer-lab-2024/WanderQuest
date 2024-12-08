@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const { Types } = require('mongoose');
+const NotificationModel = require('../models/objectModel').notification;
 
 // Collection name in MongoDB
 const collectionName = 'uploads';
@@ -247,13 +248,12 @@ const addProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount, sales })
+        const product = await ProdModel.create({ name, picture, price, description, seller: seller, ratings, rating, reviews, availableAmount, sales })
         res.status(200).json(product)
 
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-
 };
 
 
@@ -374,4 +374,30 @@ const viewSalesReport = async (req,res) => {
         res.status(404).json({error: error.message});
     }
 }
-module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales, uploadProductPhoto,viewSalesReport };
+const myNotifications = async (req, res) => {
+    const { _id } = req.user._id;
+
+    try {
+        const myNotification = await NotificationModel.find({ userID: _id });
+        res.status(200).json(myNotification);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+const seenNotifications = async (req, res) => {
+    const { _id } = req.user._id;
+
+    try {
+        const result = await NotificationModel.updateMany(
+            { userID: _id }, // Match notifications by userID
+            { $set: { seen: true } } // Update the "seen" field to true
+        );
+
+        res.status(200).json({ message: 'Notifications updated', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales, uploadProductPhoto,viewSalesReport,myNotifications,seenNotifications };

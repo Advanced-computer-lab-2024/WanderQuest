@@ -4,29 +4,95 @@ import Link from 'next/link';
 import WishlistPanel from './WishlistPanel';
 import ComplaintsPanel from './ComplaintsPanel';
 import styles from '../Styles/Navbar.css';
+import NotificationButton from './NotificationsTourGuide';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+
 
 
 const Navbar = () => {
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [role, setRole] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+
+    const toggleProfileMenu = () => {
+        setProfileMenuOpen(!isProfileMenuOpen);
+    };
+
+
+    const fetchUserRole = async () => {
+        try {
+            const response = await axios.get('http://localhost:4000/authentication/user', {
+                withCredentials: true, // Include cookies if required
+            });
+            setRole(response.data.role);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserRole();
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('http://localhost:4000/authentication/logout', {}, {
+                withCredentials: true,
+            });
+            // Redirect to home page after logout
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
 
     return (
         <>
             <div className="navbar-container">
-                <div className='navbar-leftside'> 
+                <div className='navbar-leftside'>
                     <Link href="/">
                         <img className="navbar-logo" src="/logo.png" alt="Logo" />
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    <button className="navbar-button">Products</button>
-                    <button className="navbar-button">Activities</button>
-                    <button className="navbar-button">Itinerary</button>
-                    <button className="navbar-button">Historical Places</button>
+                    {role == "advertiser" && <button className="navbar-button">Reports</button>}
+                    {role != "advertiser" && <button className="navbar-button">Products</button>}
+                    <div
+                        className="navbar-button-container"
+                        onMouseEnter={() => setShowDropdown(true)}
+                        onMouseLeave={() => setShowDropdown(false)}
+                    >
+                        <button className="navbar-button">Activities</button>
+                        {showDropdown && (
+                            <div className="dropdown-menu">
+                                <a href="/create-activity" className="dropdown-item">
+                                    Create an Activity
+                                </a>
+                                <a href="/my-activities" className="dropdown-item">
+                                    View All My Activities
+                                </a>
+                                <a href="/create-transportation" className="dropdown-item">
+                                    Create a Transportation
+                                </a>
+                                <a href="/my-transportations" className="dropdown-item">
+                                    View All My Transportations
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                    {role != "advertiser" && <button className="navbar-button">Itinerary</button>}
+                    {role != "advertiser" && <button className="navbar-button">Historical Places</button>}
                 </div>
                 <div className='navbar-rightside'>
-                    <button 
-                        className="navbar-wishlist-button" 
+                    {role && <NotificationButton role={role} />}
+                    {role != "advertiser" && <button
+                        className="navbar-wishlist-button"
                         onClick={() => setIsWishlistOpen(true)}
                     >
                         <svg 
@@ -44,22 +110,22 @@ const Navbar = () => {
                                 <path d="M9.06,25C7.68,17.3,12.78,10.63,20.73,10c7-.55,10.47,7.93,11.17,9.55a.13.13,0,0,0,.25,0c3.25-8.91,9.17-9.29,11.25-9.5C49,9.45,56.51,13.78,55,23.87c-2.16,14-23.12,29.81-23.12,29.81S11.79,40.05,9.06,25Z"></path>
                             </g>
                         </svg>
-                    </button>
-                    <button 
+                    </button>}
+                    {role != "advertiser" && <button
                         className="navbar-complaints-button"
                         onClick={() => setIsComplaintsOpen(true)}
                     >
-                        <svg 
-                            height="30px" 
-                            width="40px" 
+                        <svg
+                            height="30px"
+                            width="40px"
                             viewBox="0 0 496 496"
                         >
                             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                            <g 
-                                id="SVGRepo_tracerCarrier" 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                stroke="#CCCCCC" 
+                            <g
+                                id="SVGRepo_tracerCarrier"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                stroke="#CCCCCC"
                                 strokeWidth="3.968"
                             ></g>
                             <g id="SVGRepo_iconCarrier">
@@ -75,20 +141,37 @@ const Navbar = () => {
                                 </g>
                             </g>
                         </svg>
-                    </button>
-                    <Link href="/signin">
-                        <button className='navbar-signup'>Sign In</button>
-                    </Link>
+                    </button>}
+                    {role ? (
+                        <FontAwesomeIcon icon={faUser} className="profile-icon" onClick={toggleProfileMenu} />
+
+                    ) : (
+                        <Link href="/authentication">
+                            <button className='navbar-signup'>Sign In</button>
+                        </Link>
+                    )}
+
+                    {/* Profile Menu */}
+                    {isProfileMenuOpen && (
+                        <div className="profile-menu">
+                            <Link href={`/${role}/profile`} className="profile-menu-item">
+                                Profile
+                            </Link>
+                            <div onClick={handleLogout} className="profile-menu-item">
+                                Log out
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <WishlistPanel 
-                isOpen={isWishlistOpen} 
-                onClose={() => setIsWishlistOpen(false)} 
+            <WishlistPanel
+                isOpen={isWishlistOpen}
+                onClose={() => setIsWishlistOpen(false)}
             />
-            <ComplaintsPanel 
-                isOpen={isComplaintsOpen} 
-                onClose={() => setIsComplaintsOpen(false)} 
+            <ComplaintsPanel
+                isOpen={isComplaintsOpen}
+                onClose={() => setIsComplaintsOpen(false)}
             />
         </>
     );

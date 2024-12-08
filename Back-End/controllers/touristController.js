@@ -2,6 +2,7 @@ const { Product } = require('../models/objectModel');
 const { TourGuide } = require('../models/userModel');
 const ProdModel = require('../models/objectModel').Product;
 const Tourist = require('../models/userModel').Tourist;
+const Seller = require('../models/userModel').Seller;
 const PlaceModel = require('../models/objectModel').Places;
 const NotificationModel = require('../models/objectModel').notification;
 const ActivityModel = require('../models/objectModel').Activity;
@@ -9,6 +10,7 @@ const ItineraryModel = require('../models/objectModel').itinerary;
 const ComplaintModel = require('../models/objectModel').complaint;
 const orderModel = require('../models/objectModel').Order;
 const BookingModel = require('../models/bookingModel');
+const PromoModel = require('../models/userModel').PromoCode;
 const { sendEmail } = require('../controllers/authenticationController');
 const mongoose = require('mongoose');
 
@@ -558,7 +560,24 @@ const issueAnOrder = async (req, res) => {
             if (productDet.availableAmount < product.quantity) {
                 return res.status(400).json({ error: 'Not enough stock for product: ' + productDet.name });
             }
+            const seller = await Seller.findById(productDet.seller);
+            if(!seller){
+                return res.status(400).json({ error: 'Seller not found' });
+            }
             totalPrice += productDet.price * product.quantity;
+            productDet.availableAmount = productDet.availableAmount - product.quantity;
+            productDet.save();
+            
+            if(productDet.availableAmount == 0){
+                const notification = await NotificationModel.create({
+                    userID: seller._id,
+                    message: `The product ${productDet.name} is out of stock`,
+                    reason: 'Product Out of Stock',
+                    ReasonID: productDet._id
+                });
+                await sendEmail(seller.email, notification.reason, notification.message);
+                
+            }
         }
         const order = await orderModel.create({ orderedBy: touristId, products: products, totalPrice: totalPrice, date: new Date(), status: 'pending' });
         return res.status(200).json({ message: 'Order placed successfully', order });
@@ -633,7 +652,7 @@ const addToCart = async (req, res) => {
             return res.status(400).json({ error: 'Not enough stock for product: ' + product.name })
         }
         const tourist = await Tourist.findById(touristId)
-        if(productId in tourist.cart){
+        if (productId in tourist.cart) {
             return res.status(400).json({ error: 'Product already in cart, you can change the quantity you want to order' })
         }
         tourist.cart = [...tourist.cart, { productId, quantity }]
@@ -709,6 +728,19 @@ const viewCart = async (req, res) => {
     }
 };
 
+const getMyOrders = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const orders = await orderModel.find({orderedBy: touristId});
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ error: 'No orders found' });
+        }
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 const checkoutOrder = async (req, res) => {
     const touristId = req.user._id;
     const { cart } = req.body;
@@ -730,21 +762,23 @@ const checkoutOrder = async (req, res) => {
             totalPrice += product.price * item.quantity;
         }
 
+        const tourist = await Tourist.findById(touristId);
+        tourist.cart = [];
+        await tourist.save();
         const order = await orderModel.create({ orderedBy: touristId, products: cart, totalPrice: totalPrice, date: new Date(), status: 'pending' });
         return res.status(200).json({ order: order.products })
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
 }
+
 const beNotified = async (req, res) => {
     const eventID = req.params.id;
     const touristID = req.user._id;
     try {
         // Find the tourist by ID
         const tourist = await Tourist.findById(touristID);
-        if (!tourist) {
-            return res.status(400).json({ error: 'Tourist does not exist' });
-        }
+
         // Update the notify property of the specific event
         const updatedTourist = await Tourist.findOneAndUpdate(
             { _id: touristID, 'savedEvents.eventId': eventID },
@@ -764,9 +798,6 @@ const bookingIsOpenReminder = async (req, res) => {
 
     try {
         const tourist = await Tourist.findById(touristID).populate('savedEvents.eventId');
-        if (!tourist) {
-            return res.status(404).json({ error: 'Tourist not found' });
-        }
 
         const notifications = []; // Array to hold notification promises for batch processing
         const emailPromises = []; // Array to hold email promises
@@ -820,14 +851,6 @@ const bookingIsOpenReminder = async (req, res) => {
 const myNotifications = async (req, res) => {
     const { _id } = req.user._id;
 
-    if (!_id) {
-        return res.status(400).json({ error: 'UserID is required' });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
-        return res.status(400).json({ error: 'Invalid UserID format' });
-    }
-
     try {
         const myNotification = await NotificationModel.find({ userID: _id });
         res.status(200).json(myNotification);
@@ -838,14 +861,6 @@ const myNotifications = async (req, res) => {
 }
 const seenNotifications = async (req, res) => {
     const { _id } = req.user._id;
-
-    if (!_id) {
-        return res.status(400).json({ error: 'UserID is required' });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
-        return res.status(400).json({ error: 'Invalid UserID format' });
-    }
 
     try {
         const result = await NotificationModel.updateMany(
@@ -920,6 +935,198 @@ const bookingNotification = async (req, res) => {
     }
 };
 
+
+/**
+ * Adds one or multiple delivery addresses to the user's profile.
+ * 
+ * @param {Object} req - The request object containing user ID and delivery addresses.
+ * @param {Object} res - The response object to send the result.
+ * 
+ * Request body should contain:
+ * - deliveryAddresses: Array of delivery address objects, each with the following fields:
+ *   - street: {String, required}
+ *   - city: {String, required}
+ *   - state: {String, optional}
+ *   - postalCode: {String, required}
+ *   - country: {String, required}
+ *   - googleMapsUrl: {String, required}
+ * 
+ * Example request body:
+ * {
+ *   "deliveryAddresses": [
+ *     {
+ *       "street": "123 Main St",
+ *       "city": "Anytown",
+ *       "postalCode": "12345",
+ *       "country": "USA",
+ *       "googleMapsUrl": "https://maps.google.com/?q=123+Main+St,+Anytown,+CA+12345"
+ *     },
+ *     {
+ *       "street": "456 Elm St",
+ *       "city": "Othertown",
+ *       "state": "TX",
+ *       "postalCode": "67890",
+ *       "country": "USA",
+ *       "googleMapsUrl": "https://maps.google.com/?q=456+Elm+St,+Othertown,+TX+67890"
+ *     }
+ *   ]
+ * }
+ */
+const addDeliveryAddress = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { deliveryAddresses } = req.body;
+
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Add new delivery addresses to the user's existing addresses
+        user.deliveryAddresses.push(...deliveryAddresses);
+        await user.save();
+
+        return res.status(200).json({ message: 'Delivery addresses added successfully.', deliveryAddresses: user.deliveryAddresses });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while adding delivery addresses.' });
+    }
+};
+
+const getDeliveryAddresses = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        return res.status(200).json({
+            deliveryAddresses: user.deliveryAddresses,
+            activeAddress: user.activeAddress
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while fetching delivery addresses.' });
+    }
+}
+
+const setActiveDeliveryAddress = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { addressId } = req.body;
+
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        if (!user.deliveryAddresses.some(address => address._id.equals(addressId))) {
+            return res.status(404).json({ message: 'Address not found.' });
+        } else {
+            user.activeAddress = addressId;
+            await user.save();
+            return res.status(200).json({ message: 'Active address updated successfully.', activeAddress: user.activeAddress });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while setting active delivery address.' });
+    }
+}
+const birthDaycode = async (req, res) => {
+    const userID = req.user._id;
+    try {
+        const tourist = await Tourist.findById(userID);
+
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const expiry = new Date(today);
+        expiry.setDate(today.getDate() + 1);
+
+        // Check if it's the user's birthday
+        const dob = new Date(tourist.dob);
+        if (today.getDate() !== dob.getDate() || today.getMonth() !== dob.getMonth()) {
+            return res.status(200).json({ message: "Not your birthday" });
+        }
+
+        // Check if a promo already exists for this user and year
+        const existingPromo = await PromoModel.findOne({
+            code: `BIRTHDAY_DISCOUNT_${currentYear}`,
+            touristId: userID,
+        });
+        if (existingPromo) {
+            return res.status(400).json({ error: "Promocode already exists" });
+        }
+
+        // Create new promo code
+        const promocode = await PromoModel.create({
+            code: `BIRTHDAY_DISCOUNT_${currentYear}`,
+            type: "PERCENTAGE",
+            discount: 30,
+            expiryDate: expiry,
+            birthday: true,
+            touristId: userID,
+        });
+        const notification = await NotificationModel.create({
+            userID: userID,
+            message: `Dear ${tourist.username}, Here's a Promocode: ${promocode.code} to celebrate.`,
+            reason: "Happy Birthday!",
+            ReasonID: promocode._id,
+        });
+
+        await sendEmail(tourist.email, notification.reason, notification.message);
+
+        return res.status(200).json({
+            message: "Promocode created successfully",
+            promocode,
+            notification,
+        });
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+};
+
+const redeemPromo = async (req, res) => {
+    const {code} = req.body
+    const userId = req.user._id;
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const PromoCode = await PromoModel.findOne({ code: code });
+    if (!PromoCode) {
+        return res.status(404).json({ error: 'Promocode does not exist.' });
+    }
+
+    if (PromoCode.expiryDate<=Date.now()){
+        return res.status(404).json({ error: 'Promocode already expired.' });
+    }
+    if (PromoCode.code.startsWith('BIRTHDAY_DISCOUNT_')&&PromoCode.touristId !==null) {
+        const validCode = `BIRTHDAY_DISCOUNT_${currentYear}`;
+        if (PromoCode.touristId.toString()!== userId.toString()) {
+            return res.status(404).json({ error: 'Invalid Promocode for this user.' });
+        }
+    }
+    try {
+        const tourist = await Tourist.findById(userId);
+        // Check if the promo code is already in activePromoCodes
+        if (tourist.activePromoCodes.some(activeCode => activeCode.code === PromoCode.code)) {
+            return res.status(400).json({ error: 'Promocode is already redeemed.' });
+        }
+        // Push the promo code into the activePromoCodes array
+        tourist.activePromoCodes.push(PromoCode);
+        await tourist.save();
+
+        return res.status(200).json({ message: 'Promocode redeemed successfully!', activePromoCodes: tourist.activePromoCodes });
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+}
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -957,8 +1164,15 @@ module.exports = {
     clearNotifications,
     deleteNotification,
     bookingNotification,
+    addDeliveryAddress,
+    getDeliveryAddresses,
+    setActiveDeliveryAddress,
     addToCart,
     viewCart,
     removeFromCart,
-    changeAmountInCart
+    changeAmountInCart,
+    birthDaycode,
+    checkoutOrder,
+    redeemPromo,
+    getMyOrders
 };

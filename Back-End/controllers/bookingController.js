@@ -4,7 +4,7 @@ const { User } = require('../models/userModel');
 const Activity = require('../models/objectModel').Activity;
 const Itinerary = require('../models/objectModel').itinerary;
 const mongoose = require('mongoose');
-
+const Tourist = require('../models/userModel').Tourist;
 
 const bookActivity = async (req, res) => {
     const { bookingType, activityId } = req.body;
@@ -62,7 +62,7 @@ const bookActivity = async (req, res) => {
 
         //increment no.of booking of activities
         retActivity.NoOfBooking += 1;
-        retActivity.touristsCount = (retActivity.touristsCount || 0)+1;
+        retActivity.touristsCount = (retActivity.touristsCount || 0) + 1;
         // Recalculate revenue assuming that all bookings are online
         const appFee = retActivity.price * 0.10;
         retActivity.revenue = (retActivity.revenue || 0) + (retActivity.price - appFee);
@@ -165,7 +165,7 @@ const bookItinerary = async (req, res) => {
         const appFee = retItinerary.price * 0.10;
         retItinerary.revenue = (retItinerary.revenue || 0) + (retItinerary.price - appFee);
         await retItinerary.save();
-                        
+
         res.status(201).json(savedBooking);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -205,12 +205,17 @@ const cancelBooking = async (req, res) => {
         }
 
         const booking = await Booking.findById(bookingId);
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
         if (!booking) {
             return res.status(404).json({ error: 'Booking not found' });
         }
-        if (booking.userId != userId) {
-            console.log(booking.userId, userId);
-            return res.status(403).json({ error: 'Unauthorized action: can not delete the booking of another user' });
+        if (booking.userId.toString() !== userId.toString()) {
+            console.log(booking.userId.toString(), userId.toString());
+            return res.status(403).json({ error: 'Unauthorized action: cannot delete the booking of another user' });
         }
         if (booking.status === 'cancelled') {
             return res.status(400).json({ error: 'Booking already cancelled' });
@@ -218,6 +223,7 @@ const cancelBooking = async (req, res) => {
         if (booking.startDate < new Date()) {
             return res.status(400).json({ error: 'Cannot cancel this booking' });
         }
+        const retUser = await Tourist.findById(userId);
         const currentDate = new Date();
         const startDate = new Date(booking.startDate);
         const hoursDifference = (startDate - currentDate) / (1000 * 60 * 60);
@@ -227,8 +233,16 @@ const cancelBooking = async (req, res) => {
             return res.status(400).json({ error: 'Cannot cancel a booking within 48 hours of the start date' });
 
         }
+        const prevWallet = retUser.wallet;
+        retUser.wallet += booking.details.price;
+        await retUser.save();
+        if(prevWallet === retUser.wallet){
+            return res.status(500).json({ error: 'Failed to refund the user' });
+        }
         booking.status = 'cancelled';
+        user.wallet += booking.details.price;
         await booking.save();
+        await user.save();
         res.status(200).json({ message: 'Booking successfully cancelled' });
     } catch (error) {
         res.status(500).json({ error: error.message });
