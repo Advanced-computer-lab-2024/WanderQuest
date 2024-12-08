@@ -123,7 +123,7 @@ return (
                             </g>
                         </svg>
                     </button>}
-                    <Link href="/signin">
+                <Link href="/authentication">
                         <button className='navbar-signup'>Sign In</button>
                     </Link>
                 </div>

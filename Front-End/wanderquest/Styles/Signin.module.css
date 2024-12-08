@@ -1,118 +1,139 @@
-.container{
+/* Container Styling */
+.SigninContainer {
+    align-items: center;
     display: flex;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 3%;
-    border: none;
-    width: 600px;
-    height: 700px;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-top: 40px;
-    padding-bottom: 24px;
     flex-direction: column;
+    justify-content: center;
+    width: 94%;
+    height: auto;
+    border-radius: 20px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.5s ease-in-out;
 }
-.top{
-    display: flex;
-    width: 300px;
-    height: 300px;
-    margin-left: auto;
-    margin-right: auto;
-}
-.input{
-    width: 590px;
-    height: 38px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: auto;
-    margin-right: auto;
-    border: 0.1px solid rgb(0, 1, 0);
-    border-radius: 5px;
-}
-.signin{
-    font-size: 30px;
-    font-family: Arial, Helvetica, sans-serif;
-    border-bottom:1px solid #cccccc;
-    margin-bottom: 10px;
-    padding-bottom: 20px;
 
-}
-.label{
-font-size: 20px;
-font-family: Arial, Helvetica, sans-serif;
-}
-.head{
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    height: 80px;
-    width: 600px;
-    object-fit: cover;
-    margin-top: 3%;
-}
-.error{
-    color: red;
-    font-size: 15px;
-}
-.btn{
+.SigninForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 40px;
+}
+
+/* Header Styling */
+.Header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40%;
+}
+
+.Header img {
+    width: 110px;
+    height: auto;
+    padding-bottom: 10px;
+}
+
+.Header p {
+    color: #2C6B5A;
+    font-weight: 700;
+    font-size: large;
+}
+
+.Title {
+    color: #144d6b;
+    margin-bottom: 15px;
+    font-size: xxx-large;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Input Styling */
+.InputWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1%;
+    width: 100%;
+}
+
+.Input {
+    border-radius: 10px;
+    border: 1px solid #1a6187;
+    background-color: white;
+    width: 50%;
+    height: 35px;
+    padding-left: 10px;
+    font-weight: bold;
+    margin-top: 3%;
+    transition: border-color 0.3s;
+    cursor: pointer;
+}
+
+.Input:focus {
+    border-color: #144d6b;
+}
+
+/* Password Wrapper */
+.PasswordWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.TogglePassword {
+    position: absolute;
+    right: 26%;
+    top: 75%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #1a6187;
+}
+
+/* Button Styling */
+.SigninButton {
+    border-radius: 10px;
+    border: none;
     color: white;
     background-color: #1a6187;
-    border-radius: 5px;
-    border: none;
-    font-size: 20px;
-    margin-top: 5px;
-    opacity: 0.8;
+    width: 25%;
+    height: 40px;
+    margin-top: 4%;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    justify-content: center;
 }
-.btn:hover{
-    background-color:#122c34 ;
-    opacity: 0.9;
+
+.SigninButton:hover {
+    background-color: #144d6b;
 }
-.btn:active{
-    opacity: 1;
+
+/* Error Message */
+.Error {
+    color: red;
+    font-weight: normal;
+    margin-bottom: 2%;
 }
-.link{
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-.createaccountInline {
+
+/* Redirect Message */
+.Redirect {
     margin-top: 10px;
-    text-align: center;
-    font-size: 18px;
-  }
-  
-  .createaccountInline span {
-    margin-right: 5px;
-    color: #555; /* Adjust text color */
-  }
-  
-  .createaccountInline a {
-    color: #0070f3; /* Adjust link color */
-    text-decoration: none;
-  }
-  
-  .createaccountInline a:hover {
-    text-decoration: underline;
-  }
-
-.forgetPassInline{
-    margin-top: 6px;
-    margin-bottom: 10px;
-    font-size: 15px;
+    font-weight: bold;
 }
 
-.forgetPassInline span {
-    color: #555; 
-  }
-
-.forgetPassInline a {
-    color: #0070f3; /* Adjust link color */
+.Redirect a {
+    color: #0056b3;
+    cursor: pointer;
     text-decoration: none;
 }
 
-.forgetPassInline a:hover {
+.Redirect a:hover {
     text-decoration: underline;
 }
