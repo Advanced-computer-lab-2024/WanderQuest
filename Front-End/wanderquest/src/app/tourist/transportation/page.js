@@ -233,60 +233,52 @@ function transportpage() {
 
 
 
-        <div className={styles.transportGrid}>
-      {filteredTransportation.map((transport) => (
-        <div className={styles.card} key={transport._id}>
-          <div className={styles.cardContent}>
-            <h3 className={styles.companyName}>{transport.company}</h3>
-            <div className={styles.cardDetails}>
-              <div className={styles.detail}>
-                <span className={styles.label}>Type:</span>
-                <span className={styles.value}>{transport.type}</span>
-              </div>
-              <div className={styles.detail}>
-                <span className={styles.label}>Price:</span>
-                <span className={styles.value}>${transport.price}</span>
-              </div>
-              <div className={styles.detail}>
-                <span className={styles.label}>Departure:</span>
-                <span className={styles.value}>{transport.departure}</span>
-              </div>
-              <div className={styles.detail}>
-                <span className={styles.label}>Arrival:</span>
-                <span className={styles.value}>{transport.arrival}</span>
-              </div>
-              <div className={styles.detail}>
-                <span className={styles.label}>Date:</span>
-                <span className={styles.value}>{new Date(transport.date).toLocaleDateString()}</span>
-              </div>
-              <div className={styles.detail}>
-                <span className={styles.label}>Pick Up:</span>
-                <span className={styles.value}>{transport.pickUpLocation}</span>
-              </div>
-              <div className={styles.detail}>
-                <span className={styles.label}>Drop Off:</span>
-                <span className={styles.value}>{transport.dropOffLocation}</span>
-              </div>
-            </div>
-            <button 
-              className={styles.bookButton}
-              onClick={() => handleBooking(
-                transport.company,
-                transport.type,
-                transport.price,
-                transport.departure,
-                transport.arrival,
-                transport.date,
-                transport.pickUpLocation,
-                transport.dropOffLocation
-              )}
-            >
-              Book Now
-            </button>
-          </div>
+<div className={styles.transportGrid}>
+  {filteredTransportation.map((transport) => (
+    <div className={styles.card} key={transport._id}>
+      <div className={styles.cardHeader}>
+        <div className={styles.busIcon}>🚌</div>
+        <div className={styles.routeName}>{transport.company} ({transport.type})</div>
+      </div>
+      
+      <div className={styles.timelineContainer}>
+        <div className={styles.departureInfo}>
+          <div className={styles.time}>{transport.departure}</div>
+          <div className={styles.location}>{transport.pickUpLocation}</div>
         </div>
-      ))}
+        
+        <div className={styles.timeline}>
+          <div className={styles.duration}>{new Date(transport.date).toLocaleDateString()}</div>
+          <div className={styles.line}></div>
+        </div>
+        
+        <div className={styles.arrivalInfo}>
+          <div className={styles.time}>{transport.arrival}</div>
+          <div className={styles.location}>{transport.dropOffLocation}</div>
+        </div>
+      </div>
+
+      <div className={styles.bottomSection}>
+        <div className={styles.price}>${transport.price}</div>
+        <button 
+          className={styles.buyButton}
+          onClick={() => handleBooking(
+            transport.company,
+            transport.type,
+            transport.price,
+            transport.departure,
+            transport.arrival,
+            transport.date,
+            transport.pickUpLocation,
+            transport.dropOffLocation
+          )}
+        >
+          BUY TICKETS
+        </button>
+      </div>
     </div>
+  ))}
+</div>
 
   </>)
 }
