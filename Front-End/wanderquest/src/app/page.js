@@ -28,11 +28,11 @@ import Authentication from "../../components/Authentication";
 export default function Home() {
    return (<>
       <Navbar></Navbar>
-
-      <Foot></Foot>  
-
 {/* 
-            <Salesrep></Salesrep> */}
+      <Foot></Foot>   */}
+
+
+            {/* <Salesrep></Salesrep> */}
 
       {/* <Salesrepadv></Salesrepadv> */}
 {/* <Salesrepseller></Salesrepseller> */}
