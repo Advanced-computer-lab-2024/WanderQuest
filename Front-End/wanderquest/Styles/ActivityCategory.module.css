@@ -8,6 +8,7 @@
   gap: 20px; /* Adjusts the spacing between boxes */
   border: 1px solid #ccc; /* Add border for visual separation */
   border-radius: 10px;
+  margin-top: 150px;
 }
 
 /* Title of the Admin Dashboard */
