@@ -52,6 +52,15 @@ const Navbar = () => {
         }
     };
 
+    const handleRedirectUpdate = (place) =>{
+        localStorage.setItem('placeToEdit', JSON.stringify(place));
+        router.push('/governer/viewall');
+    }
+
+    const handleRedirectp = () => {
+        router.push('/governer/tagm');
+    };
+
 return (
     <>
         <div className="navbar-container">
@@ -62,7 +71,9 @@ return (
         </div>
         <div className='navbar-middleside'>
             {role == "advertiser" && <button className="navbar-button">Reports</button>}
-            {role!= "advertiser" && <button className="navbar-button">Products</button>}
+            {role!= "advertiser" || role!="Tourism Governer" && <button className="navbar-button">Products</button>}
+            {role == "Tourism Governor" && <button onClick={() => {handleRedirectUpdate(place)}} className="navbar-button">Create Places</button>}
+            {role == "Tourism Governor" && <button onClick={handleRedirectp} className="navbar-button">Tag Management</button>}
             <div
             className="navbar-button-container"
             onMouseEnter={() => setShowDropdown(true)}
@@ -86,8 +97,9 @@ return (
                 </div>
                 )}
             </div>
-            {role!= "advertiser" && <button className="navbar-button">Itinerary</button>}
-            {role!= "advertiser" && <button className="navbar-button">Historical Places</button>}
+            {role!= "advertiser" || role!= "Tourism Governer" && <button className="navbar-button">Itinerary</button>}
+            {role!= "advertiser" || role!= "Tourism Govener" && <button className="navbar-button">Historical Places</button>}
+            
         </div>
         <div className='navbar-rightside'>
         {role && <NotificationButton role={role} />}
