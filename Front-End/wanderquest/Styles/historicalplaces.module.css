@@ -231,7 +231,7 @@
     justify-content: space-between;
     min-height: 80vh;
     padding: 40px;
-    background: #1a6187; /* Light blue-grey for inner section */
+    background: #818a8e; /* Light blue-grey for inner section */
     gap: 20px;
     border-radius: 15px; /* Rounded corners for the container */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
@@ -239,7 +239,7 @@
 .formContainer {
     width: 45%; /* Adjusted for consistency with the image */
     max-width: 600px;
-    background: #1a6187; /* White background for the form */
+    background: #818a8e; /* White background for the form */
     padding: 30px;
     border-radius: 10px; /* Smooth rounded corners */
     display: flex;
