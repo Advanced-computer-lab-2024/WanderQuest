@@ -61,7 +61,7 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    {role == "advertiser" && <button className="navbar-button">Reports</button>}
+                    {role == "advertiser" && <a href="/advertiser"><button className="navbar-button">Reports</button></a>}
                     {role != "advertiser" && <button className="navbar-button">Products</button>}
                     <div
                         className="navbar-button-container"
