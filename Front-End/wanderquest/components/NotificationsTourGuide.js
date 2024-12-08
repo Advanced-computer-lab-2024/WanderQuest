@@ -1,18 +1,40 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 
-const NotificationButton = () => {
+const NotificationButton = ({ role }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    // Determine API URL based on the role
+    const getApiUrl = (endpoint) => {
+        switch (role) {
+            case "tourGuide":
+                return `http://localhost:4000/tourGuide/${endpoint}`;
+            case "tourist":
+                return `http://localhost:4000/tourist/${endpoint}`;
+            case "advertiser":
+                return `http://localhost:4000/advertiser/${endpoint}`;
+            case "seller":
+                return `http://localhost:4000/seller/${endpoint}`;
+            case "Admin":
+                return `http://localhost:4000/admin/${endpoint}`;
+            case "Tourism Governor":
+                return `http://localhost:4000/governer/${endpoint}`;
+            default:
+                throw new Error("Invalid user role");
+        }
+    };
 
     // Fetch notifications
     const fetchNotifications = async () => {
         try {
             setLoading(true);
             setError(null);
-            const { data } = await axios.get("http://localhost:4000/tourist/notifs", {
+            const { data } = await axios.get(getApiUrl("notifs"), {
                 withCredentials: true, // Include cookies if required
             });
             setNotifications(data);
@@ -26,7 +48,7 @@ const NotificationButton = () => {
     // Mark all as read
     const markAllAsRead = async () => {
         try {
-            await axios.patch("http://localhost:4000/notifs", {}, {
+            await axios.patch(getApiUrl("notifs"), {}, {
                 withCredentials: true, // Include cookies if required
             });
             setNotifications((prev) =>
@@ -45,23 +67,50 @@ const NotificationButton = () => {
 
     return (
         <div style={{ position: "relative" }}>
-            {/* Notification Button */}
-            <button onClick={() => setIsOpen((prev) => !prev)} style={{ position: "relative" }}>
-                Notifications
+            <button
+                onClick={() => setIsOpen((prev) => !prev)}
+                style={{
+                    position: "relative",
+                    backgroundColor: "transparent", // Transparent for modern look
+                    border: "none", // Remove border
+                    cursor: "pointer", // Pointer cursor
+                    fontSize: "20px", // Adjust icon size
+                    color: "#122c34", // Icon color
+                    padding: "10px", // Spacing
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "color 0.3s ease", // Smooth hover effect
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#1a6187")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#122c34")}
+            >
+                <FontAwesomeIcon icon={faBell} />
                 {!loading && notifications.some((notif) => !notif.seen) && (
                     <span
                         style={{
                             position: "absolute",
-                            top: 0,
-                            right: 0,
+                            top: "5px", // Adjust position relative to icon
+                            right: "5px",
                             backgroundColor: "red",
+                            color: "white",
+                            fontSize: "12px",
+                            fontWeight: "bold",
                             borderRadius: "50%",
-                            width: "8px",
-                            height: "8px",
+                            width: "18px",
+                            height: "18px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)", // Add depth
                         }}
-                    ></span>
+                    >
+                        {notifications.filter((notif) => !notif.seen).length}
+                    </span>
                 )}
             </button>
+
+
 
             {/* Notification Popup */}
             {isOpen && (
@@ -106,7 +155,7 @@ const NotificationButton = () => {
                             display: "block",
                             width: "100%",
                             padding: "10px",
-                            backgroundColor: "#007bff",
+                            backgroundColor: "#1a6187",
                             color: "white",
                             border: "none",
                             borderRadius: "0 0 4px 4px",
