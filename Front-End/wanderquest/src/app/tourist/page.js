@@ -15,6 +15,7 @@ import {motion} from 'framer-motion';
 import { useEffect } from 'react';
 import Foot from "../../../components/foot";
 
+
 const testimonials = [
     {
         image: "/cat1.jpg",
@@ -51,6 +52,25 @@ export default function Tourist() {
     const router = useRouter();
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [promoCode, setPromoCode] = useState('');
+
+    useEffect(() => {
+        fetch('http://localhost:4000/tourist/birthday', {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then((data) => {
+                setPromoCode(data);
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
 
     const handleRedirect = () => {
         router.push('/tourist/iti');
@@ -112,6 +132,41 @@ export default function Tourist() {
         <>
             <Navbar  />
             <div className={styles.container}>
+                <div style={{
+                    backgroundColor: 'black',
+                    color: 'white',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    paddingTop: '5px',
+                    width: '100%',
+                    height: '30px'
+                }}>
+                    <motion.div
+                        style={{
+                            whiteSpace: 'nowrap',
+                            gap: '10px',
+                            fontSize: '14px',
+                            width: 'max-content' // Added to ensure full width of content
+                        }}
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '100vw' }}
+                        transition={{
+                            duration: 20,
+                            repeat: Infinity,
+                            ease: 'linear'
+                        }}
+                    >
+                        🎉 SPECIAL OFFER: Use code "{promoCode.code}" for 20% OFF on all bookings! <span 
+                            style={{
+                                textDecoration: 'underline',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => navigator.clipboard.writeText(promoCode.code)}
+                        >
+                            Click here
+                        </span> to copy code! Limited time only! 🎉
+                    </motion.div>
+                </div>
                 <div className={styles.heroSection}>
                     {(() => {
                         const [currentImage, setCurrentImage] = useState(0);
@@ -447,129 +502,7 @@ export default function Tourist() {
 
 
 
-<motion.div 
-    className={styles.activitiesSection}
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8 }}
->
-    <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '2rem',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        width: '100%',
-        padding: '0 2rem'
-    }}>
-        <motion.h2 
-            style={{
-                margin: 0,
-                textAlign: 'left',
-                width: '100%'
-            }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-        >
-            Featured Activities
-        </motion.h2>
-        <motion.button 
-            style={{
-                background: 'none',
-                border: 'none',
-                borderBottom: '2px solid #000',
-                padding: '0.5rem 0',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                whiteSpace: 'nowrap'
-            }}
-            onClick={handleRedirectac}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-        >
-            View all activities
-        </motion.button>
-    </div>
-    
-    <motion.div 
-        className={styles.activitiesGrid}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-    >
-        <motion.div 
-            className={styles.activityCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/surfing.jpg" 
-                alt="Surfing in Bali"
-                width={300}
-                height={200}
-                className={styles.activityImage}
-            />
-            <div className={styles.activityContent}>
-                <h3>Surfing in Bali</h3>
-                <p className={styles.price}>$75 per person</p>
-                <p className={styles.description}>
-                    Catch the perfect wave with professional instructors at Bali's most beautiful beaches.
-                </p>
-            </div>
-        </motion.div>
 
-        <motion.div 
-            className={styles.activityCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/hiking.jpg" 
-                alt="Mount Bromo Hiking"
-                width={300}
-                height={200}
-                className={styles.activityImage}
-            />
-            <div className={styles.activityContent}>
-                <h3>Mount Bromo Sunrise Trek</h3>
-                <p className={styles.price}>$120 per person</p>
-                <p className={styles.description}>
-                    Experience breathtaking views with a guided sunrise hike up Mount Bromo.
-                </p>
-            </div>
-        </motion.div>
-
-        <motion.div 
-            className={styles.activityCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/diving.jpg" 
-                alt="Scuba Diving"
-                width={300}
-                height={200}
-                className={styles.activityImage}
-            />
-            <div className={styles.activityContent}>
-                <h3>Raja Ampat Diving</h3>
-                <p className={styles.price}>$150 per person</p>
-                <p className={styles.description}>
-                    Discover the underwater paradise of Raja Ampat with certified diving instructors.
-                </p>
-            </div>
-        </motion.div>
-    </motion.div>
-</motion.div>
 
 
 

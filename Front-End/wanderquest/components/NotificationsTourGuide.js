@@ -74,13 +74,16 @@ const NotificationButton = ({ role }) => {
                     backgroundColor: "transparent", // Transparent for modern look
                     border: "none", // Remove border
                     cursor: "pointer", // Pointer cursor
-                    fontSize: "20px", // Adjust icon size
+                    fontSize: "25px", // Adjust icon size
                     color: "#1a6187", // Icon color
                     padding: "10px", // Spacing
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "color 0.3s ease", // Smooth hover effect
+                    transition: "color 0.3s ease", // Smooth hover effect,
+                    height: "50px",
+                    width: "50px",
+                    marginRight: "20px",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#122c34")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#1a6187")}

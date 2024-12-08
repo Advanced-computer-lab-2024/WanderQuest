@@ -4,6 +4,7 @@
 .container {
     position: relative;
     padding: px;
+    margin-top: 80px;
 }
 
 .buttons {
