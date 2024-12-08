@@ -12,6 +12,29 @@ const documentSchema = new mongoose.Schema({
     fileID: String,
 });
 
+const promoCodeSchema = new Schema({
+    code: { type: String, required: true, unique: true },
+    type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
+    discount: { type: Number, required: true },
+    expiryDate: { type: Date, required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: false },
+    birthday: { type: Boolean, required: false },
+    touristId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tourist",
+        required: false,
+        default:null,
+        validate: {
+            validator: function (value) {
+                return !this.birthday || (this.birthday && value);
+            },
+            message: 'touristId is required to create a birthday promocode'
+        }
+    }
+}, { timestamps: true });
+
+const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
+
 // otp schema
 const otpSchema = new mongoose.Schema({
     otp: { type: String, required: true },
@@ -49,35 +72,6 @@ const UserSchema = new Schema({
     documents: [documentSchema],
     otp: { type: otpSchema, default: undefined }
 }, options);
-
-// Middleware to exclude users with requestToBeDeleted set to true
-UserSchema.pre('find', function (next) {
-    if (!this.getQuery().includeDeleted) {
-        this.where({ requestToBeDeleted: { $ne: true } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
-UserSchema.pre('findOne', function (next) {
-    if (!this.getQuery().includeDeleted) {
-        this.where({ requestToBeDeleted: { $ne: true } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
-UserSchema.pre('findById', function (next) {
-    if (!this.getQuery().includeDeleted) {
-        this.where({ requestToBeDeleted: { $ne: true } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
 
 UserSchema.statics.signup = async function (username, email, password, role) {
 
@@ -141,6 +135,7 @@ const TouristSchema = new Schema({
         eventId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'savedEvents.eventType' },
         notify: { type: Boolean, required: false, default: false }
     }],
+    activePromoCodes:{type:[promoCodeSchema],required:false,default:[]},
     cart: [cartItemSchema],
     deliveryAddresses: { type: [deliveryAddressSchema], required: false, default: [] },
     activeAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'deliveryAddressSchema', required: false, default: null },
@@ -327,5 +322,6 @@ module.exports = {
     Tourist,
     TourGuide,
     Advertiser,
-    Seller
+    Seller,
+    PromoCode
 };
