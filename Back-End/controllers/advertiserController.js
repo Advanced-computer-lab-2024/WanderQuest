@@ -4,6 +4,7 @@ const ActivityModel = require('../models/objectModel').Activity;
 const TagModel = require('../models/objectModel').PrefTag;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const NotificationModel = require('../models/objectModel').notification;
+const ItineraryModel = require('../models/objectModel').itinerary;
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
@@ -311,32 +312,41 @@ const updateActivity = async (req, res) => {
     }
 }
 
-//Delete Activity
+
+// Delete Activity
 const deleteActivity = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: 'No such ID' })
+        return res.status(404).json({ error: 'No such ID' });
     }
 
     try {
-
         const deleteAnActivityD = await ActivityModel.findById(id);
         if (!deleteAnActivityD) {
             return res.status(200).json({ message: 'This activity is not found to be deleted' });
-
         }
+
         const deleteAnActivity = await ActivityModel.findByIdAndDelete(id);
-        if (!deleteActivity) {
-            res.status(200).json({ message: 'This activity is not found to be deleted' });
-
+        if (!deleteAnActivity) {
+            return res.status(200).json({ message: 'This activity is not found to be deleted' });
         }
-        res.status(200).json({ message: 'Successfully Deleted', deleteAnActivity });
 
+        // Remove the activity reference from itineraries
+        await ItineraryModel.updateMany(
+            { activities: id },
+            { $pull: { activities: id } }
+        );
+
+        // Delete itineraries that have no more activities
+        await ItineraryModel.deleteMany({ activities: { $size: 0 } });
+
+        res.status(200).json({ message: 'Successfully Deleted', deleteAnActivity });
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
+};
 
-}
+module.exports = { deleteActivity };
 
 //to get the advertisers
 const getAllAdvertisers = async (req, res) => {
@@ -347,7 +357,7 @@ const getAllAdvertisers = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-const myNotifications = async(req,res)=>{
+const myNotifications = async (req, res) => {
     const { _id } = req.user._id;
 
     if (!_id) {
@@ -391,23 +401,23 @@ const seenNotifications = async (req, res) => {
 };
 
 //view sales Report
-const viewSalesReport = async (req,res) => {
+const viewSalesReport = async (req, res) => {
     const advertiserId = req.user._id;
 
-    try{
+    try {
         if (!mongoose.Types.ObjectId.isValid(advertiserId)) {
             return res.status(400).json({ error: 'Wrong ID format' });
         }
-        const createdActivity = await ActivityModel.find({createdBy: advertiserId});
-        const activityRevenue = createdActivity.reduce((total,activity) => total + (activity.revenueOfThisActivity || 0) , 0);
+        const createdActivity = await ActivityModel.find({ createdBy: advertiserId });
+        const activityRevenue = createdActivity.reduce((total, activity) => total + (activity.revenueOfThisActivity || 0), 0);
 
         const report = {
             activityRevenue,
-            totalRevenue : activityRevenue,
+            totalRevenue: activityRevenue,
         };
         res.status(200).json({ message: "Sales report generated successfully", report });
 
-    }catch(error){
+    } catch (error) {
         res.status(404).json({ error: error.message });
 
     }
@@ -442,4 +452,4 @@ const viewTouristsReport = async (req, res) => {
 };
 
 
-module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities,myNotifications,seenNotifications,viewSalesReport,viewTouristsReport };
+module.exports = { getProfile, updateProfile, uploadLogo, getLogo, getAdvertiserId, createActivity, readActivities, updateActivity, deleteActivity, getAllAdvertisers, readOneActivity, readOneActivityByName, myCreatedActivities, myNotifications, seenNotifications, viewSalesReport, viewTouristsReport };
