@@ -56,8 +56,6 @@ const productSchema = new Schema({
     name:
         { type: String, required: true },
     picture:
-        [{ data: Buffer, type: String, required: false }],
-    picture:
         { type: documentSchema, default: undefined },
     price:
         { type: Number, required: true },
@@ -179,17 +177,6 @@ activitySchema.pre('findOne', async function (next) {
     next();
 });
 
-activitySchema.pre('findById', async function (next) {
-    if (!this.getQuery().includeDeleted) {
-        const User = mongoose.model('User');
-        const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
-        this.where({ createdBy: { $nin: usersToExclude } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
 // Virtual property to format the date without the time zone
 activitySchema.virtual('formattedDate').get(function () {
     return this.date.toISOString().split('T')[0];
@@ -274,17 +261,6 @@ itinerarySchema.pre('find', async function (next) {
 });
 
 itinerarySchema.pre('findOne', async function (next) {
-    if (!this.getQuery().includeDeleted) {
-        const User = mongoose.model('User');
-        const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
-        this.where({ createdBy: { $nin: usersToExclude } });
-    } else {
-        delete this.getQuery().includeDeleted;
-    }
-    next();
-});
-
-itinerarySchema.pre('findById', async function (next) {
     if (!this.getQuery().includeDeleted) {
         const User = mongoose.model('User');
         const usersToExclude = await User.find({ requestToBeDeleted: true }).distinct('_id');
@@ -380,6 +356,11 @@ const orderSchema = new Schema({
         required: true,
         default: 'pending',
         enum: ['pending', 'cancelled', 'sent to delivery', 'delivered']
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['paid', 'cod', 'pending'],
+        default: 'pending'
     }
 });
 
@@ -417,26 +398,6 @@ const notificationSchema = new Schema({
 });
 const notification = mongoose.model('notification', notificationSchema);
 
-// const promoCodeSchema = new Schema({
-//     code: { type: String, required: true, unique: true },
-//     type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
-//     discount: { type: Number, required: true },
-//     expiryDate: { type: Date, required: true },
-//     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
-//     birthday: { type: Boolean, required: true },
-//     touristId: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: "Tourist",
-//         validate: {
-//             validator: function(value) {
-//                 return !this.birthday || (this.birthday && value);
-//             },
-//             message: 'touristId is required to create a birthday promocode'
-//         }
-//     }
-// }, { timestamps: true });
-
-// const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
 
 module.exports = {
     Places,
@@ -451,5 +412,4 @@ module.exports = {
     transportation,
     Order,
     notification
-    // , PromoCode
 }

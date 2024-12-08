@@ -1,7 +1,7 @@
 'use client' 
 import React from 'react'
 import Creatprod from '../../../../components/Creatprod'
-import Navbar from '../../../../components/Navbar'
+import Navbar from '../../../../components/AdminNavBar'
 
 const creatpro = () => {
   return (

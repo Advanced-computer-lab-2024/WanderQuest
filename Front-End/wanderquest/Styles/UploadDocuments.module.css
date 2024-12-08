@@ -36,7 +36,7 @@
 .UploadDocuments button[type="button"] {
     width: 100%;
     padding: 12px;
-    background-color: #042335;
+    background-color: #1a6187;
     color: white;
     border: none;
     border-radius: 5px;
@@ -47,7 +47,7 @@
 }
 
 .UploadDocuments button[type="button"]:hover {
-    background-color: #1a6187;
+    background-color: #122c34;
 }
 
 /* Styling for error/success message */

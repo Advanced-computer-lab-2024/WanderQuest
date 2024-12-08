@@ -15,14 +15,14 @@ const bookingSchema = new Schema({
     itineraryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Itinerary',
-        required: function (){
+        required: function () {
             return this.bookingType === 'itinerary';
         }
     },
     activityId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Activity',
-        required: function (){
+        required: function () {
             return this.bookingType === 'activity';
         }
     },

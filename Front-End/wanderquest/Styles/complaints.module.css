@@ -4,6 +4,7 @@
     align-items: center;
     padding: 20px;
     background-color: #f5f5f5;
+    margin-top: 90px;
   }
   
   .complaintCard {
@@ -84,7 +85,7 @@
   }
   
   .complaintButton {
-    background-color: #007BFF;
+    background-color: #1a6187;
     border: none;
     color: white;
     padding: 10px 30px;
@@ -105,7 +106,7 @@
   }
   
   .complaintButton:hover {
-    background-color: #0056b3;
+    background-color: #122c34;
     box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
   }
   
@@ -124,7 +125,7 @@
     margin-right: 10px;
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff;
+    background-color: #1a6187;
     color: white;
     border: none;
     border-radius: 5px;
@@ -132,7 +133,7 @@
 }
 
 .sortFilterControls button:hover {
-    background-color: #0056b3;
+    background-color: #122c34;
 }
 
 .sortFilterControls select {

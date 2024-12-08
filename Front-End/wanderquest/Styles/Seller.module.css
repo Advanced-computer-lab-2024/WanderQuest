@@ -4,7 +4,7 @@
     right: 50px;
     display: flex;
     align-items: center;
-    background-color: #0070f3;
+    background-color: #1a6187;
     color: white;
     border: none;
     border-radius: 10px;
@@ -15,7 +15,7 @@
 }
 
 .profileButton:hover {
-    background-color: #005bb5;
+    background-color: #122c34;
 }
 
 .profileIcon {
