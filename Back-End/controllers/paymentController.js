@@ -38,6 +38,9 @@ async function applyPromoCodes(userId, amount) {
             }
         }
 
+        user.activePromoCodes = [];
+        await user.save();
+
         return finalAmount;
     } catch (error) {
         console.error('Error applying promo codes:', error);
