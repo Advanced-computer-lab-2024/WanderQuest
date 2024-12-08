@@ -1,11 +1,12 @@
 'use client';
 import Pending from '../../../../components/Pending';
 import Navbar from '../../../../components/Navbar';
+import AdminNavbar from '../../../../components/AdminNavBar';
 
 const PendingPage = () => {
 
   return(<div>
-    <Navbar />
+    <AdminNavbar />
     <div>
         <Pending/>
     </div>

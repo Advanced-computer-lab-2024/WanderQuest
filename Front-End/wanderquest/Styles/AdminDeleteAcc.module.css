@@ -1,116 +1,9 @@
-/* AdminPage layout */
-.adminPageContainer {
-    position: relative;
-    display: flex;
-}
-
-
-/* Sidebar styles */
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 120px;
-    height: 100%;
-    width: 250px;
-    background-color: white;
-    color: black;
-    padding: 20px;
-    transition: transform 0.3s ease;
-  }
-  
-  .sidebar ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .sidebar ul li {
-    margin: 15px 0;
-    background: none;
-    color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .sidebar ul li a {
-    color: black;
-    text-decoration: none;
-  }
-  
-  .sidebar ul li button {
-    background: none;
-    color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .sidebar ul li a:hover,
-  .sidebar ul li button:hover {
-    color: #ccc;
-  }
-
-.mainContentContainer {
-    margin-top: 60px; /* Ensure content doesn't overlap with navbar */
-    padding: 20px;
-    transition: margin-left 0.3s ease-in-out;
-    margin-left: 250px;
-}
-
-/* When sidebar is open, shift the main content */
-.mainContentContainer.shifted {
-    margin-left: 300px !important; /* Shift content to the right when sidebar is open */
-}
-
-
-/* General Container for the Admin Dashboard */
-.container {
-    padding: 20px;
-    justify-content: space-between; /* Space between the sections */
-    gap: 20px; /* Adjusts the spacing between boxes */
-    position: relative;
-    margin-left: 250px;
-    
-}
-
-/* Title of the Admin Dashboard */
-.adminTitle {
-    text-align: center;
-    color: #1a6187; /* Blumine color */
-}
-
-/* Navigation Button Styles */
-.nav {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.nav button {
-    background-color: #17455c; /* Elephant color */
-    color: white; /* Text color */
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 4px;
-}
-
-
-.nav button:hover {
-    background-color: #1a6187; /* Blumine color on hover */
-    color: white; /* Ensure text color stays white on hover */
-}
-
-.basic button {
-    background-color: #1a6187; /* Blumine color */
-    color: white; /* Text color */
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 4px;
+.tableWrapper {
+    width: 60%; /* Adjust as needed */
+    max-width: 1000px; /* Limit the width */
+    margin: 0 auto; /* Center the wrapper */
+    margin-top: 100px;
+    overflow-x: auto; /* Allow horizontal scrolling if content exceeds width */
 }
 
 /* User Accounts Card */
@@ -173,6 +66,7 @@
     padding: 20px;
     border-radius: 5px;
     margin-top: 10px;
+    
 }
 
 /* Search Input in Delete Account */
@@ -193,6 +87,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    
 }
 
 .deleteAccount .table th,

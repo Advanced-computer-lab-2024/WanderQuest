@@ -9,19 +9,22 @@ body {
 }
 
 .navbar-container {
+    position: fixed;
     display: flex;
+    top: 0;
     justify-content: space-between; /* Space out items to left, center, and right */
     align-items: center;
     height: 90px;
     background-color: white;
-    padding: 0 20px; /* Add padding to the sides */
+    padding: 0 30px; /* Add padding to the sides */
     border-radius: 5px;
-    
+    width: 100%;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-middleside {
     display: flex;
+    margin-right: 30px;
     justify-content: center; /* Center the middle buttons */
     flex-grow: 1; /* Allow this section to grow and take available space */
 }
@@ -119,4 +122,141 @@ body {
 .navbar-complaints-button:hover svg {
     transform: scale(1.1);
 }
+
+.notification-icon {
+    font-size: 24px;
+    color: #1a6187; /* Matches the navbar theme */
+    cursor: pointer; /* Makes it interactive */
+    transition: color 0.3s ease;
+    margin-right: 100px;
+}
+
+.notification-icon:hover {
+    color: #122c34; /* Slightly darker on hover */
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: #e74c3c; /* Red for notifications */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 3px 6px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1;
+}
+
+.profile-icon {
+    font-size: 24px;
+    color: #1a6187;
+    cursor: pointer;
+    margin-right: 90px;
+}
+
+.profile-icon:hover {
+    color: #122c34; /* Slightly darker on hover */
+}
+
+.navbar-username {
+    font-size: 16px;
+    color: #122c34;
+    font-weight: bold;
+}
+
+/* Profile Menu Container */
+.profile-menu {
+    position: absolute;
+    top: 80px; /* Adjust based on your navbar height */
+    right: 60px; /* Adjust based on alignment */
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px 0;
+    width: 160px;
+    font-family: Arial, sans-serif;
+}
+
+/* Profile Menu Items */
+.profile-menu-item {
+    display: block;
+    padding: 10px 15px;
+    color: #122c34;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover Effect for Menu Items */
+.profile-menu-item:hover {
+    background-color: #1a6187;
+    color: white;
+}
+.menu-icon {
+    transition: color 0.3s ease;
+    margin-right: 50px;
+}
+
+.menu-icon:hover {
+    color: #1a6187;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 95px;
+    height: 100%;
+    width: 250px;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin: 15px 0;
+  }
+  
+  .sidebar ul li a {
+    color: black;
+    text-decoration: none;
+  }
+  
+  .sidebar ul li button {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .sidebar ul li a:hover,
+  .sidebar ul li button:hover {
+    color: #ccc;
+  }
+  
+  /* Menu icon styles */
+  .menu-icon {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+
+
 

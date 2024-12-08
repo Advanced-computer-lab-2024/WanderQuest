@@ -4,6 +4,7 @@
     align-items: center;
     padding: 20px;
     background-color: #f5f5f5;
+    margin-top: 90px;
   }
   
   .complaintCard {
@@ -79,7 +80,7 @@
   }
   
   .complaintButton {
-    background-color: #007BFF;
+    background-color: #1a6187;
     border: none;
     color: white;
     padding: 10px 30px;
@@ -107,7 +108,7 @@
     box-sizing: border-box;
 }
   .complaintButton2 {
-    background-color: #007BFF;
+    background-color: #1a6187;
     border: none;
     color: white;
     padding: 10px 10px;
@@ -122,7 +123,7 @@
   }
 
   .complaintButton2:hover {
-    background-color: #0056b3;
+    background-color: #122c34;
     box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
   }
   
@@ -139,7 +140,7 @@
   }
   
   .complaintButton:hover {
-    background-color: #0056b3;
+    background-color: #122c34;
     box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
   }
   

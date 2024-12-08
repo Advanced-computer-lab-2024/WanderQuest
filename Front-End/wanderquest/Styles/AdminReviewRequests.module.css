@@ -3,6 +3,9 @@
     background-color: #c6dbe7; /* Tangaroa */
     color: black; /* White */
     padding: 2rem;
+    width: 800px;
+    justify-self: center;
+    margin-top: 100px;
   }
   
   /* Title styling */
