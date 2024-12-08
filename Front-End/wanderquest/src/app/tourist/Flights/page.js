@@ -31,7 +31,10 @@ function BookingsPage() {
   const handleRedirect = () => {
     router.push('/tourist/Hotels');
   };
-
+  const handleRedirecttransport = () => {
+    router.push('/tourist/transportation');  // Updated path with capital 'T'
+  };
+  
   const handleSearch = () => {
     setLoading(true); // Set loading to true when the search starts
 
@@ -174,6 +177,7 @@ function BookingsPage() {
             <button
               onClick={() => {
                 handleChangeColor(3);
+                handleRedirecttransport();
               }}
               className={`${styles.navbtn} ${activeButton === 3 ? styles.active : ""}`}
             >

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef } from 'react';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import styles from "../Styles/Authentication.module.css";

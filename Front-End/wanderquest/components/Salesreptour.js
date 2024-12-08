@@ -16,10 +16,65 @@ import styles from '../styles/Reporttour.module.css';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Salesreptour = () => {
+  const [report,setReport]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const[activities,setActivities]=useState([]);
+  const[itineraries,setItineraries]=useState([]);
+  const[products,setProducts]=useState([]); 
+  const[totalRevenue,setTotalRevenue]=useState(0);
+  const[totalUsers,setTotalUsers]=useState(0);
+  const[newUsers,setNewUsers]=useState(0);
+  const[totalProducts,setTotalProducts]=useState([]);
+  const[totalItineraries,setTotalItineraries]=useState([]);
+  const[totalActivities,setTotalActivities]=useState([]);  
+  const [productRevenue, setProductRevenue] = useState(0);
+  const [activityRevenue, setActivityRevenue] = useState(0);
+  const [itineraryRevenue, setItineraryRevenue] = useState(0);
+
+
     const [productFilter, setProductFilter] = useState("All");
     const [itineraryFilter, setItineraryFilter] = useState("All");
     const [activityFilter, setActivityFilter] = useState("All");
   
+
+    useEffect(() => {
+      const fetchReport = async () => {
+          try {
+              const response = await fetch('http://localhost:4000/admin/salesReport', {
+                  method: 'GET',
+                  credentials: 'include',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              });
+  
+              if (response.ok) {
+                  const data = await response.json();
+                  console.log(data);
+                  setReport(data);
+                  setProductRevenue(data.report.productRevenue || 0);
+                  setActivityRevenue(data.report.activityRevenue || 0); 
+                  setItineraryRevenue(data.report.itineraryRevenue || 0);
+                  setTotalRevenue(data.report.totalRevenue || 0);
+                  // setTotalUsers(data.report.totalUsers || 0);
+                  // setNewUsers(data.report.newUsers || 0);
+                  console.log(data.report.productRevenue);
+                  console.log(data.report.activityRevenue);
+                  console.log(data.report.itineraryRevenue);
+                  console.log(data.report.totalRevenue);
+              } else {
+                  console.error('Failed to fetch report');
+              }
+          } catch (error) {
+              console.error('Error fetching report:', error);
+          }
+      };
+  
+      fetchReport();
+  }, []);
+
+
+
     const blueColors = [
       'rgb(0, 123, 255)',
       'rgb(52, 152, 219)',
