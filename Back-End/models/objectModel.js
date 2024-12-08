@@ -56,8 +56,6 @@ const productSchema = new Schema({
     name:
         { type: String, required: true },
     picture:
-        [{ data: Buffer, type: String, required: false }],
-    picture:
         { type: documentSchema, default: undefined },
     price:
         { type: Number, required: true },
