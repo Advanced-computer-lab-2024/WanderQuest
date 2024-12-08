@@ -29,7 +29,6 @@ const {
     unarchiveProduct,
     viewProductSales,
     viewAllProductSales,
-    /* uploadProductImage,*/
     flagActivity,
     flagItinerary,
     viewSalesReport,

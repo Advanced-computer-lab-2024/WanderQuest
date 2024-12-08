@@ -56,8 +56,6 @@ const productSchema = new Schema({
     name:
         { type: String, required: true },
     picture:
-        [{ data: Buffer, type: String, required: false }],
-    picture:
         { type: documentSchema, default: undefined },
     price:
         { type: Number, required: true },
@@ -380,6 +378,11 @@ const orderSchema = new Schema({
         required: true,
         default: 'pending',
         enum: ['pending', 'cancelled', 'sent to delivery', 'delivered']
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['paid', 'cod', 'pending'],
+        default: 'pending'
     }
 });
 
