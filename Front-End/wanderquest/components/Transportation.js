@@ -1,13 +1,29 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import styles from '../Styles/cruditinerary.module.css';
+import styles from '../Styles/activity.module.css';
 
 
-const CrudTransportation = (props) => {
-    const advertiserId = props.advertiserId;
+const CrudTransportation = () => {
     const [transportation, setTransportation] = useState([]);
+    const [id, setId] = useState('');
+
+    const fetchUserRole = async () => {
+        try {
+            const response = await axios.get('http://localhost:4000/authentication/user', {
+                withCredentials: true, // Include cookies if required
+            });
+            setId(response.data._id);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserRole();
+    }, []);
+
     const [formData, setFormData] = useState({
-        company: "",
         type: "",
         price: "",
         departure: "",
@@ -16,7 +32,7 @@ const CrudTransportation = (props) => {
         BookingAlreadyMade: false,
         pickUpLocation: "",
         dropOffLocation: "",
-        createdBy: advertiserId
+        createdBy: id
         
     });
     const [isUpdating, setIsUpdating] = useState(false);
@@ -24,24 +40,26 @@ const CrudTransportation = (props) => {
 
     const formRef = useRef(null);
 
-
     useEffect(() => {
-        // Fetch itineraries from the backend
         const fetchTransportation = async () => {
             try {
-                const response = await fetch('http://localhost:4000/advertiser/transportations');
+                const response = await fetch('http://localhost:4000/advertiser/transportations', {
+                    credentials:"include"
+                });
+                
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+
                 const data = await response.json();
                 setTransportation(data);
             } catch (error) {
-                console.error('Error fetching Transportations:', error);
+                console.error('Error fetching transportation:', error);
             }
         };
+
         fetchTransportation();
     }, []);
-
 
     const handleSubmit = async (e) => {
 
@@ -53,6 +71,7 @@ const CrudTransportation = (props) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials:"include",
                     body: JSON.stringify(formData)
                 });
 
@@ -76,6 +95,7 @@ const CrudTransportation = (props) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials:"include",
                     body: JSON.stringify(formData)
                 });
 
@@ -93,7 +113,7 @@ const CrudTransportation = (props) => {
 
         }
         setFormData({
-            company: "",
+            company: id.company,
             type: "",
             price: "",
             departure: "",
@@ -102,31 +122,11 @@ const CrudTransportation = (props) => {
             BookingAlreadyMade: false,
             pickUpLocation: "",
             dropOffLocation: "",
-            createdBy: advertiserId
+            createdBy: id
 
         });
     };
 
-    const handleDelete = async (transportation) => {
-        if (transportation.BookingAlreadyMade) {
-            alert('Error: This itinerary has already been booked and cannot be deleted.');
-            return;
-        }
-        try {
-            const response = await fetch(`http://localhost:4000/tourGuide/itineraries/${transportation._id}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Error response:', errorData);
-                throw new Error('Network response was not ok');
-            }
-
-            setTransportation(transportation.filter(item => item._id !== transportation._id));
-        } catch (error) {
-            console.error('Error deleting Transportation:', error);
-        }
-    };
 
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
@@ -136,23 +136,12 @@ const CrudTransportation = (props) => {
         });
     };
 
-    const handleUpdate = (transportation) => {
-        setFormData({
-            ...transportation,
-            BookingAlreadyMade: transportation.BookingAlreadyMade ? true : false
-
-        });
-        setIsUpdating(true);
-        setCurrentTransportationId(transportation._id);
-        formRef.current.scrollIntoView({ behavior: 'smooth' });
-    };
-
 
 
     return (
         <div className={styles.parent}>
             <div className={styles.container}>
-                <div className={styles.createItinerary} ref={formRef}>
+                <div className={styles.createactivity} ref={formRef}>
                     <form className={styles.form} onSubmit={handleSubmit}>
 
                         <div>
@@ -219,11 +208,11 @@ const CrudTransportation = (props) => {
                     </form>
                 </div>
             </div>
-            <div className={styles.itinerariesContainer}>
+            {/* <div className={styles.activitiescontainer} style={{ marginBottom: '100px',marginTop: '100px' }}>
                 <label className={styles.label}>List of Transportations</label>
                 <div>
                     {transportation.map((transportation, index) => (
-                        <div key={transportation._id} className={styles.itineraryBox}>
+                        <div key={transportation._id} className={styles.activitybox}>
                             <p><strong>Company Name: {transportation.company}</strong></p>
                             <p><strong>Type of transportation:</strong> {transportation.type}</p>
                             <p><strong>Price:</strong> {transportation.price}</p>
@@ -238,7 +227,7 @@ const CrudTransportation = (props) => {
                         </div>
                     ))}
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }
