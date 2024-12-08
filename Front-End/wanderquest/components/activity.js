@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styles from '../Styles/activity.module.css';
+
 // import axios from 'axios'; // Removed unused import
 import { useLoadScript, Autocomplete } from '@react-google-maps/api';
 
@@ -296,8 +297,8 @@ const handleSelectChange = (selectedOptions) => {
                         <button type="submit" className={styles.submit}>{isUpdating ? 'Update Activity' : 'Create Activity'}</button>
                     </form>
                 </div>
-            </div>
-            <div className={styles.activitiescontainer}>
+             </div>
+            {/*<div className={styles.activitiescontainer}>
                 <label className={styles.label}>List of activities</label>
                 <div>
                     {activities.map((activity) => (
@@ -324,7 +325,7 @@ const handleSelectChange = (selectedOptions) => {
                         </div>
                     ))}
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

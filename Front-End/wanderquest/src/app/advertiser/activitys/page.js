@@ -3,6 +3,7 @@ import Navbar from '../../../../components/Navbar';
 import React, { useState, useEffect, useRef } from 'react';
 import styles from '../Styles/activity.module.css';
 import { useLoadScript, Autocomplete } from '@react-google-maps/api';
+import Foot from '../../../../components/foot';
 
 const libraries = ['places'];
 
@@ -36,10 +37,11 @@ const activitypage = () => {
         };
         fetchActivities();
     }, []);
-    
+
     return (
         <div>
             <Navbar />
+            <Foot />
         </div>
     );
 };
