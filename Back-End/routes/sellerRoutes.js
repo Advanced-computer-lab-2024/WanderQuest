@@ -1,6 +1,6 @@
 const express = require('express');
-const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,uploadProductPhoto,getProductPhoto,viewSalesReport } = require('../controllers/sellerController');
-const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById } = require('../controllers/adminController');
+const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,viewSalesReport } = require('../controllers/sellerController');
+const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById, getProductPhoto } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
 
@@ -21,13 +21,17 @@ router.get('products/sales',viewProductSales)
 // seller view all product sales
 router.get('/sales', viewAllProductSales);
 
-router.get('/photo/:id', getProductPhoto);
 router.get("/products/:id", getProdById);
-// router.post('/uploadProductPhoto', ensureGridFSInitialized,uploadProductPhoto);
-router.post('/uploadProductPhoto/:id', uploadProductPhoto);
 
-router.post('/addProduct', requireAuth({role: "seller"}), addProduct);
-router.patch('/editProduct/:id', requireAuth({role: "seller"}), editProduct);
+// Route to add a product
+router.post('/addProduct', requireAuth({ role: "seller" }), addProduct);
+
+// Route to edit a product
+router.patch('/editProduct/:id', requireAuth({ role: "seller" }), editProduct);
+
+// Route to get a product photo
+router.get('/productPhoto/:id', requireAuth({ role: "seller" }), getProductPhoto);
+
 router.get('/availableProducts', getAvailableProducts)
 //seller archive and unarchive products
 router.patch('/archiveProduct/:id', archiveProduct);

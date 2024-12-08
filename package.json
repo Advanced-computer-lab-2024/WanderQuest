@@ -1,9 +1,13 @@
 {
   "dependencies": {
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/icons-material": "^6.1.10",
+    "@mui/material": "^6.1.10",
     "@react-google-maps/api": "^2.19.3",
     "@react-spring/web": "^9.7.5",
     "axios": "^1.7.7",
-    "chart.js": "^4.4.6",
+    "chart.js": "^4.4.7",
     "cookie-parser": "^1.4.7",
     "country-list": "^2.3.0",
     "date-fns": "^4.1.0",
@@ -18,8 +22,11 @@
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.4.0",
     "react-router": "^6.27.0",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "react-slick": "^0.30.2",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "json-server": "^1.0.0-beta.3",

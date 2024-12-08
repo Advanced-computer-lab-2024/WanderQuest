@@ -1,6 +1,6 @@
 const Booking = require('../models/bookingModel');
 const axios = require('axios');
-const { User } = require('../models/userModel');
+const { User, Tourist } = require('../models/userModel');
 const Activity = require('../models/objectModel').Activity;
 const Itinerary = require('../models/objectModel').itinerary;
 const mongoose = require('mongoose');
@@ -39,6 +39,11 @@ const bookActivity = async (req, res) => {
             return res.status(404).json({ error: 'Activity not found' });
         }
 
+        
+        if (retUser.wallet < retActivity.price) {
+            return res.status(400).json({ error: 'Insufficient funds' });
+        }
+
         const newBooking = new Booking({
             userId,
             bookingType,
@@ -57,12 +62,11 @@ const bookActivity = async (req, res) => {
 
         //increment no.of booking of activities
         retActivity.NoOfBooking += 1;
-        retActivity.touristsCount = (retActivity.touristsCount || 0)+1;
+        retActivity.touristsCount = (retActivity.touristsCount || 0) + 1;
         // Recalculate revenue assuming that all bookings are online
         const appFee = retActivity.price * 0.10;
         retActivity.revenue = (retActivity.revenue || 0) + (retActivity.price - appFee);
         await retActivity.save();
-
         res.status(201).json(savedBooking);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -123,6 +127,10 @@ const bookItinerary = async (req, res) => {
             return res.status(404).json({ error: 'Itinerary not found' });
         }
 
+        if (retUser.wallet < retItinerary.price) {
+            return res.status(400).json({ error: 'Insufficient funds' });
+        }
+
         // Convert startDate to ISO string without time part
         const startDateISO = new Date(startDate).toISOString().split('T')[0];
 
@@ -157,7 +165,7 @@ const bookItinerary = async (req, res) => {
         const appFee = retItinerary.price * 0.10;
         retItinerary.revenue = (retItinerary.revenue || 0) + (retItinerary.price - appFee);
         await retItinerary.save();
-                        
+
         res.status(201).json(savedBooking);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -197,6 +205,11 @@ const cancelBooking = async (req, res) => {
         }
 
         const booking = await Booking.findById(bookingId);
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
         if (!booking) {
             return res.status(404).json({ error: 'Booking not found' });
         }
@@ -215,10 +228,14 @@ const cancelBooking = async (req, res) => {
         const hoursDifference = (startDate - currentDate) / (1000 * 60 * 60);
 
         if (hoursDifference < 48) {
+            console.log(hoursDifference);
             return res.status(400).json({ error: 'Cannot cancel a booking within 48 hours of the start date' });
+
         }
         booking.status = 'cancelled';
+        user.wallet += booking.details.price;
         await booking.save();
+        await user.save();
         res.status(200).json({ message: 'Booking successfully cancelled' });
     } catch (error) {
         res.status(500).json({ error: error.message });
