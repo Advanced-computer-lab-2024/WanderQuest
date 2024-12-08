@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import styles from '/Styles/GovernorHome.module.css';
 import Image from 'next/image';
 import Historic from '../../../imgs/monument.jpg';
+import Sph from '../../../imgs/Sphinx.jpg';
 
 export default function governer() {
     const router = useRouter();
@@ -12,18 +13,25 @@ export default function governer() {
     const handleRedirect = () => {
         router.push('/governer/viewall');
     };
+
+    const handleRedirectUpdate = (place) =>{
+        localStorage.setItem('placeToEdit', JSON.stringify(place));
+        router.push('/governer/viewall');
+    }
+
     const handleRedirectp = () => {
         router.push('/governer/tagm');
     };
 
     const [place, setPlaces] = useState([]);
     const [governorID, setGovernorID] = useState('');
-
+    const [filteredPlaces, setFilteredPlaces] = useState([]);
+    const [filterEnabled, setFilterEnabled] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchGovernorID = async () => {
-            const response = await fetch('http://localhost:4000/tourismGovernor/profile',
+            const response = await fetch('http://localhost:4000/authentication/user',
                 {
                     credentials: 'include',
                 }
@@ -31,10 +39,39 @@ export default function governer() {
             const data = await response.json();
             const governorID = data._id;
             setGovernorID(governorID);
+            console.log(governorID);
+            console.log(data.role);
         };
         fetchGovernorID();
     }, []);
 
+    const handleFilterToggle = async () => {
+      if (!filterEnabled) {
+        // Fetch myCreatedPlaces from the API
+        setLoading(true);
+        try {
+          const response = await fetch(
+            `http://localhost:4000/tourismGovernor/myPlaces`,
+            {
+              credentials: "include",
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch my created places.");
+          }
+          const data = await response.json();
+          setFilteredPlaces(data); // Show only my created places
+        } catch (error) {
+          console.error("Error fetching my created places:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        // Reset to show all places
+        setFilteredPlaces(places);
+      }
+      setFilterEnabled(!filterEnabled);
+    };
 
 
     useEffect(() => {
@@ -50,6 +87,40 @@ export default function governer() {
         fetchHistorical();
     }, []);
 
+    const handleDelete = async (id) => {
+    
+      const confirmDelete = window.confirm(
+          "Are you sure you want to delete this place? This action is irreversible."
+      );
+  
+      if (!confirmDelete) {
+          return;
+      }
+  
+      try {
+          const response = await fetch(`http://localhost:4000/tourismGovernor/deletePlace/${id}`, {
+              method: 'DELETE',
+              credentials: 'include',
+          });
+          
+          if (!response.ok) {
+              throw new Error(response.statusText);
+          }
+          else{
+              console.log('Place deleted successfully');
+          }
+  
+          // Remove the deleted place from the state
+          setPlaces((prevPlaces) => prevPlaces.filter((place) => place._id !== id));
+  
+          // Optional: Show success alert or message
+          alert('Place successfully deleted.');
+      } catch (error) {
+          console.error('Error deleting Historical Place:', error);
+          alert(error);
+      }
+  };
+  
   
 //useEffect get places
 return (
@@ -108,9 +179,19 @@ return (
                   </div>
                 ))}
             </div>
+            <div className={styles.buttonContainer}>
+   
+               <button className={`${styles.button} ${styles.updateButton}`}onClick={() => handleRedirectUpdate(place)}>
+                  Update
+                </button>
+
+              <button className={`${styles.button} ${styles.deleteButton}`}onClick={() => handleDelete(place._id)}>
+                  Delete
+              </button>
+            </div>
           </div>
-          <img
-            src={place.picture}
+          <Image
+            src={place.picture || Sph}
             alt={"place picture"}
             className={styles.image}
           />

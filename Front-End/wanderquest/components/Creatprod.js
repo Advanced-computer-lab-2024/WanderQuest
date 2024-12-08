@@ -83,21 +83,21 @@ const Creatprod = () => {
       <h1>Add Product</h1>
       <label>Product Name</label>
       <input className='inputfield' type='text' value={productName} onChange={handleProductNameChange} />
-      <></>
+      <br/>
       <label>Price</label>
       <input className='inputfield' type='number' value={price} onChange={handlePriceChange} />
-      <></>
+      <br/>
       <label>Available Quantity</label>
       <input className='inputfield' type='number' value={quantity} onChange={handleQuantityChange} />
-      <></>
+      <br/>
       <label>Description</label>
       <input className='inputfield' type='text' value={description} onChange={handleDescriptionChange} />
-      <></>
+      <br/>
       <label>Product Picture</label>
       <input className='inputpic' type='file' onChange={handleProductPictureChange} ref={fileInputRef} />
-      <></>
+      <br/>
       {productPicturePreview && <img src={productPicturePreview} alt="Preview" style={{ width: '150px', height: '150px', marginTop: '10px' }} />}
-      <></>
+      <br/>
       <button className='button' onClick={handleSubmit}>ADD</button>
     </div>
   );

@@ -11,8 +11,8 @@ const activitypage = () => {
     return (
         <div>
             <Navbar />
-            <h1>view all Page</h1>
-            <Allcreated></Allcreated>
+            {/* <h1>view all Page</h1> */}
+            {/* <Allcreated></Allcreated> */}
             <Historicalplaces/>
 
         </div>
