@@ -233,22 +233,24 @@ const getProductPhoto = async (req, res) => {
 
 //seller addProduct
 const addProduct = async (req, res) => {
+    console.log(0)
     const seller = req.user._id;
-    const { name, picture, price, description, ratings, rating, reviews, availableAmount, sales } = req.body;
+    console.log(seller);
 
+    const { name,  price, description, ratings, rating, reviews, availableAmount, sales } = req.body;
+     console.log(req.body);
     // Validate input
-    if (!name || !picture || !description || !price) {
+    if (!name  || !description || !price) {
         return res.status(400).json({ error: 'Details and prices fields are required' });
     }
     try {
-        // Checking if the username already exists
         const existingProduct = await ProdModel.findOne({ name, price });
 
         if (existingProduct) {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ name, picture, price, description, seller: seller, ratings, rating, reviews, availableAmount, sales })
+        const product = await ProdModel.create({ name,  price, description, seller: seller, ratings, rating, reviews, availableAmount, sales })
         res.status(200).json(product)
 
     } catch (error) {
@@ -362,13 +364,27 @@ const viewSalesReport = async (req,res) => {
     try{
 
         const myProducts = await ProdModel.find({ seller: sellerId});
-        const productsRevenue = myProducts.reduce((total,product) => total + (product.revenueOfThisProduct || 0),0);
-
-        const report = {
-           // productsRevenue,
-            totalRevenue: productsRevenue,
+        let productsRevenue = 0;
+        for (let i = 0; i < myProducts.length; i++) {
+            productsRevenue += myProducts[i].revenueOfThisProduct || 0;
+        }        
+        let totalSales = 0;
+        for (let i = 0; i < myProducts.length; i++) {
+            totalSales += myProducts[i].sales || 0;
         }
-
+        const productDetails = myProducts.map((product) => ({
+            name: product.name,          
+            price: product.price,  
+           // sales: product.sales,      
+            date: product.createdAt,     
+        }));
+        const report = {
+            productsRevenue,
+            totalRevenue: productsRevenue,
+            totalSales,  
+            productDetails,
+        }
+        
         res.status(200).json({message: " sales report generated successfully" ,report});
     }catch(error){
         res.status(404).json({error: error.message});
