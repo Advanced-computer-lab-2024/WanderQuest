@@ -62,9 +62,7 @@ const Products = ({ role, refreshWishlist }) => {
                 alert(`Error: ${error.message}`);
             }
         };
-        if (role === "Tourist") {
-            fetchPaymentMultiplier();
-        }
+        fetchPaymentMultiplier();
     }, []);
 
     const handleProductPictureChange = (e) => setProductPicture(e.target.files[0]);

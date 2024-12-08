@@ -75,9 +75,7 @@ const TouristHistory = () => {
                 alert(`Error: ${error.message}`);
             }
         };
-        if (role === "Tourist") {
-            fetchPaymentMultiplier();
-        }
+        fetchPaymentMultiplier();
     }, []);
 
     //const guideID = "672e33ac93c8d93da59e6f4d"; // Hardcoded for now, will be dynamic in the future
