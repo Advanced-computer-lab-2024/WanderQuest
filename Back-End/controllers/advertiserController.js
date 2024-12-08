@@ -303,13 +303,8 @@ const updateActivity = async (req, res) => {
 
     try {
         const theUpdatedActivity = await ActivityModel.findByIdAndUpdate(id, req.body, { new: true });
-        res.status(200).json(theUpdatedActivity)
-
-        // const theUpdatedActivity = await ActivityModel.findOneAndUpdate({_id: id},{
-        //     ...req.body
-        //  })
         await newActivity.updateRevenue();
-
+        res.status(200).json(theUpdatedActivity);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
