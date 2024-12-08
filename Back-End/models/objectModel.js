@@ -380,6 +380,11 @@ const orderSchema = new Schema({
         required: true,
         default: 'pending',
         enum: ['pending', 'cancelled', 'sent to delivery', 'delivered']
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['paid', 'cod', 'pending'],
+        default: 'pending'
     }
 });
 
