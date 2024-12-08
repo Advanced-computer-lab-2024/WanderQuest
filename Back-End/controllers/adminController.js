@@ -672,21 +672,31 @@ const flagItinerary = async (req, res) => {
 const viewSalesReport = async (req, res) => {
     try {
 
-        const availableProducts = await ProdModel.find({ isArchived: false }).select('name price createdAt');
-        const availableActivities = await Activity.find({}).select('title price date');
-        const itineraries = await itinerary.find({}).select('title price availableDates');
-       // console.log(itineraries);
-        const productRevenue = availableProducts.reduce((total, product) => total + (product.revenueOfThisProduct || 0),0);
-        const activityRevenue = availableActivities.reduce((total, activity) => {
-            console.log(`Activity Revenue for "${activity.title}": ${activity.revenueOfThisActivity}`); // Debug log
-            return total + (activity.revenueOfThisActivity || 0);
-        }, 0);      
-         //console.log(activityRevenue);
-        const itineraryRevenue = itineraries.reduce(
-            (total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0), 
-            0
-        );
+        const availableProducts = await ProdModel.find({ isArchived: false });
+        const availableActivities = await ActivityModel.find({})
+        console.log(availableActivities);
+        const itineraries = await ItineraryModel.find({});
+      //  console.log(itineraries);
+        let productRevenue = 0;
+        for (let i = 0; i < availableProducts.length; i++) {
+            productRevenue += availableProducts[i].revenueOfThisProduct || 0;
+        }        
+        let activityRevenue = 0;
+        for (let i = 0; i < availableActivities.length; i++) {
+            activityRevenue += availableActivities[i].revenueOfThisActivity || 0;
+            console.log(availableActivities[i].revenueOfThisActivity );
+
+        }
+        let itineraryRevenue = 0;
+        for (let i = 0; i < itineraries.length; i++) {
+            itineraryRevenue += itineraries[i].revenueOfThisItinerary || 0;
+        }
+        // console.log(`Product Revenue: ${productRevenue}`);
+        // console.log(`Activity Revenue: ${activityRevenue}`);
+        // console.log(`Itinerary Revenue: ${itineraryRevenue}`);
         const totalRevenue = productRevenue + activityRevenue + itineraryRevenue;
+
+
         const productDetails = availableProducts.map(product => ({
             name: product.name,
             price: product.price,
