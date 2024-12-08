@@ -64,7 +64,7 @@ const AdminNavbar = () => {
                     <button className="navbar-button" onClick={() => (window.location.href = '/admin/products')}>Products</button>
                     <button className="navbar-button" onClick={() => (window.location.href = '/admin/event')}>Activities</button>
                     <button className="navbar-button" onClick={() => (window.location.href = '/admin/iti')}>Itinerary</button>
-                    <button className="navbar-button">Reports</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin')}>Reports</button>
                 </div>
                 <div className='navbar-rightside'>
                     <NotificationButton role="admin"/>
