@@ -1,4 +1,4 @@
-import styles from '../Styles/Creatprod.css'
+import styles from '../Styles/Creatprod.module.css'
 import Products from './Products'
 import React, { useState } from 'react';
 
@@ -49,14 +49,14 @@ const Creatprod = () => {
 
   return (
     <>
-      <div className='container'>
-        <h1>Add product</h1>
-        <p>Product name: <input className='inputfield' type='text' value={productName} onChange={handleProductNameChange}></input></p>
-        <p>Price : <input className='inputfield' type='number' value={price} onChange={handlePriceChange}></input></p>
-        <p>Available quantity: <input className='inputfield' type='number' value={quantity} onChange={handleQuantityChange}></input></p>
-        <p>Description: <input className='inputfield' type='text' value={description} onChange={handleDescriptionChange}></input></p>
-        <p>Product picture: <input className='inputpic' type='file' onChange={handleProductPictureChange}></input></p>
-        <button className='button' onClick={handleSubmit}>ADD</button>
+      <div className={styles.container}>
+        <h1 className={styles.h1}>Add product</h1>
+        <p>Product name: <input className={styles.inputfield} type='text' value={productName} onChange={handleProductNameChange}></input></p>
+        <p>Price : <input className={styles.inputfield} type='number' value={price} onChange={handlePriceChange}></input></p>
+        <p>Available quantity: <input className={styles.inputfield} type='number' value={quantity} onChange={handleQuantityChange}></input></p>
+        <p>Description: <input className={styles.inputfield} type='text' value={description} onChange={handleDescriptionChange}></input></p>
+        <p>Product picture: <input className={styles.inputpic} type='file' onChange={handleProductPictureChange}></input></p>
+        <button className={styles.button} onClick={handleSubmit}>ADD</button>
       </div>
     </>
   );
