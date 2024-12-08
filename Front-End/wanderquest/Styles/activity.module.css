@@ -23,7 +23,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 25px 30px;
-    margin-top: 50px;
+    margin-top: 80px;
 }
 
 .form {
@@ -116,7 +116,6 @@
 .activitiescontainer {
     width: 100%;
     max-width: 700px;
-    min-width: 700px;
     background: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
