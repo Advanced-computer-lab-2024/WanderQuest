@@ -1,6 +1,6 @@
 'use client';
 import Activities from '../../../../components/Activities'; // Adjust the import path as needed
-import Navbar from '../../../../components/Navbar'; // Assuming you have a Navbar component
+import Navbar from '../../../../components/AdminNavBar'; // Assuming you have a Navbar component
 
 const activityguestpage = () => {
     return (
