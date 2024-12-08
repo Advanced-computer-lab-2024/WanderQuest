@@ -52,11 +52,12 @@ const documentSchema = new mongoose.Schema({
     contentType: String,
     fileID: String,
 });
+
 const productSchema = new Schema({
     name:
         { type: String, required: true },
     picture:
-        { type: documentSchema, default: undefined },
+        { type: documentSchema, required: false },
     price:
         { type: Number, required: true },
     description:

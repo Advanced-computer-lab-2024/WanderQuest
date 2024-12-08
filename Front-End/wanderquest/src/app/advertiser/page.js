@@ -4,6 +4,8 @@ import Navbar from '../../../components/Navbar';
 import AcceptTerms from '../../../components/AcceptTerms';
 import { FaUserCircle } from "react-icons/fa";
 import styles from "../../../Styles/Advertiser.module.css";
+import Foot from "../../../components/foot";
+
 
 export default function advertiser() {
     const router = useRouter();
@@ -17,10 +19,6 @@ export default function advertiser() {
     const handleRedirecttransportation = () => {
         router.push('/advertiser/transportation');
     };
-    const handleRedirectProfile = () => {
-        router.push('/advertiser/profile');
-    };
-
 
     return (
         <>
@@ -32,11 +30,8 @@ export default function advertiser() {
             <button onClick={handleRedirect}>View a list of all my created activities/ itineraries / museums and historical places</button>
             <button onClick={handleRedirectp}>crud activity</button>
             <button onClick={handleRedirecttransportation}>crud Transportation</button>
-            <button className={styles.profileButton} onClick={handleRedirectProfile}>
-                <FaUserCircle className={styles.profileIcon} /> Profile
-            </button>
-      
         </div>
+        <Foot/>
         </>
         
     );

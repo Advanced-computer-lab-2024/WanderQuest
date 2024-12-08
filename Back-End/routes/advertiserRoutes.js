@@ -18,6 +18,7 @@ const {
     viewSalesReport,
     viewTouristsReport }
     = require('../controllers/advertiserController');
+const { getCategories, getAllTags } = require('../controllers/adminController');
 const { createTransportation, getAllTransportations } = require('../controllers/transportationController');
 
 const router = express.Router();
@@ -31,15 +32,17 @@ router.post('/uploadLogo', requireAuth({ role: 'advertiser' }), uploadLogo);
 router.get('/logo', requireAuth({ role: 'advertiser' }), getLogo);
 router.get('/allAdvertisers', requireAuth({ role: 'Admin' }), getAllAdvertisers);
 router.post('/activity', requireAuth({ role: 'advertiser' }), createActivity);
-router.get('/activities',requireAuth({ role: 'advertiser' }), readActivities);
+router.get('/activities', requireAuth({ role: 'advertiser' }), readActivities);
 router.put('/activity/:id', requireAuth({ role: 'advertiser' }), updateActivity);
 router.delete('/activity/:id', requireAuth({ role: 'advertiser' }), deleteActivity);
 router.get('/myActivities', requireAuth({ role: 'advertiser' }), myCreatedActivities);
 router.post('/transportation/create', requireAuth({ role: 'advertiser' }), createTransportation);
 router.get('/transportations', getAllTransportations);
-router.get('/notifs',requireAuth({role: "advertiser"}),myNotifications);
-router.patch('/notifs',requireAuth({role: "advertiser"}),seenNotifications);
-router.get('/salesReport',requireAuth({role: "advertiser"}),viewSalesReport);
-router.get('/TouristReport',requireAuth({role: "advertiser"}),viewTouristsReport);
+router.get('/notifs', requireAuth({ role: "advertiser" }), myNotifications);
+router.patch('/notifs', requireAuth({ role: "advertiser" }), seenNotifications);
+router.get('/salesReport', requireAuth({ role: "advertiser" }), viewSalesReport);
+router.get('/TouristReport', requireAuth({ role: "advertiser" }), viewTouristsReport);
+router.get('/categories', getCategories)
+router.get('/tags', getAllTags)
 
 module.exports = router;

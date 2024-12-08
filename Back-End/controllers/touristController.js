@@ -2,6 +2,7 @@ const { Product } = require('../models/objectModel');
 const { TourGuide } = require('../models/userModel');
 const ProdModel = require('../models/objectModel').Product;
 const Tourist = require('../models/userModel').Tourist;
+const Seller = require('../models/userModel').Seller;
 const PlaceModel = require('../models/objectModel').Places;
 const NotificationModel = require('../models/objectModel').notification;
 const ActivityModel = require('../models/objectModel').Activity;
@@ -559,7 +560,24 @@ const issueAnOrder = async (req, res) => {
             if (productDet.availableAmount < product.quantity) {
                 return res.status(400).json({ error: 'Not enough stock for product: ' + productDet.name });
             }
+            const seller = await Seller.findById(productDet.seller);
+            if(!seller){
+                return res.status(400).json({ error: 'Seller not found' });
+            }
             totalPrice += productDet.price * product.quantity;
+            productDet.availableAmount = productDet.availableAmount - product.quantity;
+            productDet.save();
+            
+            if(productDet.availableAmount == 0){
+                const notification = await NotificationModel.create({
+                    userID: seller._id,
+                    message: `The product ${productDet.name} is out of stock`,
+                    reason: 'Product Out of Stock',
+                    ReasonID: productDet._id
+                });
+                await sendEmail(seller.email, notification.reason, notification.message);
+                
+            }
         }
         const order = await orderModel.create({ orderedBy: touristId, products: products, totalPrice: totalPrice, date: new Date(), status: 'pending' });
         return res.status(200).json({ message: 'Order placed successfully', order });
@@ -710,6 +728,19 @@ const viewCart = async (req, res) => {
     }
 };
 
+const getMyOrders = async (req, res) => {
+    const touristId = req.user._id;
+    try {
+        const orders = await orderModel.find({orderedBy: touristId});
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ error: 'No orders found' });
+        }
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
+
 const checkoutOrder = async (req, res) => {
     const touristId = req.user._id;
     const { cart } = req.body;
@@ -731,6 +762,9 @@ const checkoutOrder = async (req, res) => {
             totalPrice += product.price * item.quantity;
         }
 
+        const tourist = await Tourist.findById(touristId);
+        tourist.cart = [];
+        await tourist.save();
         const order = await orderModel.create({ orderedBy: touristId, products: cart, totalPrice: totalPrice, date: new Date(), status: 'pending' });
         return res.status(200).json({ order: order.products })
     } catch (error) {
@@ -1139,5 +1173,6 @@ module.exports = {
     changeAmountInCart,
     birthDaycode,
     checkoutOrder,
-    redeemPromo
+    redeemPromo,
+    getMyOrders
 };
