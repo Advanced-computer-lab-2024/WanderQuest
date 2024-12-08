@@ -227,13 +227,13 @@ const getAvailableProducts = async (req, res) => {
 //Admin addProduct
 
 const addProduct = async (req, res) => {
-    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
+    const { name,picture, price, description, ratings, rating, reviews, availableAmount } = req.body;
     const seller = req.user._id;
 
     // Validate input
-    if (!name || !description || !price) {
-        return res.status(400).json({ error: 'Details and prices fields are required' });
-    }
+    // if (!name || !description || !price) {
+    //     return res.status(400).json({ error: 'Details and prices fields are required' });
+    // }
 
     try {
         // Checking if the product already exists
@@ -268,7 +268,7 @@ const addProduct = async (req, res) => {
                     rating,
                     reviews,
                     availableAmount,
-                    photo: documentMetadata
+                    picture: documentMetadata
                 });
 
                 res.status(200).json(product);

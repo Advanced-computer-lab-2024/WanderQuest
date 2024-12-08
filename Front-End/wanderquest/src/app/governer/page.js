@@ -62,7 +62,6 @@ return (
       </button>
       <button onClick={handleRedirectp}>Tag Manager</button>
   
-      <div className={styles.mainCont}>
 
       <div className={styles.heroSection}>
   <Image
@@ -79,43 +78,49 @@ return (
 </div>
 
 
-        {loading ? (
-  <p className={styles.loading}>Loading...</p>
-) : place && place.length > 0 ? (
-  place.map((place) => (
-    <div className={styles.card} key={place._id}>
-  <div className={styles.textContent}>
-    <h2 className={styles.title}>{place.title}</h2>
-    <p className={styles.description}>{place.description}</p>
-    <p className={styles.location}>{place.location}</p>
-    <p className={styles.hours}>{place.openingHours}</p>
-    <ul className={styles.ticketList}>
-      {place.ticketPrices.map((price, index) => (
-        <li className={styles.ticketItem} key={index}>
-          {price}
-        </li>
-      ))}
-    </ul>
-    <div className={styles.tagsContainer}>
-      {place.tags &&
-        place.tags.map((tag, index) => (
-          <div key={`${tag._id || index}-${place._id}`} className={styles.tag}>
-            <p className={styles.tagText}>{tag.type}</p>
+<div className={styles.mainCont}>
+  {loading ? (
+    <p className={styles.loading}>Loading...</p>
+  ) : place && place.length > 0 ? (
+    <div className={styles.cardContainer}>
+      {place.map((place) => (
+        <div className={styles.card} key={place._id}>
+          <div className={styles.textContent}>
+            <h2 className={styles.title}>{place.title}</h2>
+            <p className={styles.description}>{place.description}</p>
+            <p className={styles.location}>{place.location}</p>
+            <p className={styles.hours}>{place.openingHours}</p>
+            <ul className={styles.ticketList}>
+              {place.ticketPrices.map((price, index) => (
+                <li className={styles.ticketItem} key={index}>
+                  {price}
+                </li>
+              ))}
+            </ul>
+            <div className={styles.tagsContainer}>
+              {place.tags &&
+                place.tags.map((tag, index) => (
+                  <div
+                    key={`${tag._id || index}-${place._id}`}
+                    className={styles.tag}
+                  >
+                    <p className={styles.tagText}>{tag.type}</p>
+                  </div>
+                ))}
+            </div>
           </div>
-        ))}
+          <img
+            src={place.picture}
+            alt={"place picture"}
+            className={styles.image}
+          />
+        </div>
+      ))}
     </div>
-  </div>
-  <img
-    src={place.picture}
-    alt={"place picture"}
-    className={styles.image}
-  />
+  ) : (
+    <p>No places to display</p>
+  )}
 </div>
-  ))
-) : (
-  <p>No places to display</p>
-)}
-      </div>
     </div>
   );
   

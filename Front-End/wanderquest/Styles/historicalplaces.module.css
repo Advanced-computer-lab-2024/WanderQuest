@@ -145,3 +145,9 @@
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.info{
+    font-style: italic;
+    font-size: 16px;
+    color: #c82333;
+}

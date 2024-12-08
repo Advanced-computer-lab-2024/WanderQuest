@@ -1,146 +1,158 @@
 .title {
-    color: #17455C;
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .loading {
-    color: #17455C;
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 20%;
-  }
-  
-  .mainCont {
-    margin-top: 10px;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: #f0f0f0; /* Optional: background color for the parent */
-  }
-  
-/* Adjust card width */
+  color: #17455C;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: left; /* Left-aligned title */
+  margin-top: 20px;
+}
+
+.loading {
+  color: #17455C;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20%;
+}
+
+.mainCont {
+  margin-top: 10px;
+  padding: 20px;
+  background-color: #f0f0f0;
+}
+
+.cardContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+  gap: 20px; /* Space between cards */
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* Card layout */
 .card {
-    width: 100%; /* Ensures it spans the full width of its container */
-    max-width: 800px; /* Increased max width for larger cards */
-    margin: 20px auto;
-    padding: 30px; /* Adjusted padding for better spacing */
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center; /* Aligns content vertically in the center */
-    justify-content: space-between; /* Spaces text and image apart */
-    gap: 20px; /* Adds space between text and image */
-  }
-  
-  /* Adjust text sizes */
-  .textContent {
-    flex: 2;
-    text-align: left;
-    font-size: 18px; /* Increased font size for the main text */
-  }
-  
-  /* Title text size */
-  .title {
-    color: #17455C;
-    font-size: 28px; /* Larger title */
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-  
-  /* Description text size */
-  .description {
-    font-size: 18px; /* Increased description font size */
-    color: #555;
-    margin-bottom: 15px;
-  }
-  
-  /* Location and hours text size */
-  .location,
-  .hours {
-    font-size: 16px; /* Increased font size for location and hours */
-    color: #777;
-    margin-bottom: 10px;
-  }
-  
-  /* Adjust ticket list text size */
-  .ticketList {
-    list-style-type: none;
-    padding: 0;
-    margin: 10px 0;
-  }
-  
-  .ticketItem {
-    font-size: 16px; /* Increased ticket item font size */
-    color: #333;
-    margin: 5px 0;
-  }
-  
-  .image {
-    flex: 1;
-    max-width: 200px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 10px;
-  }
+  display: flex;
+  flex-direction: row; /* Horizontal layout for card */
+  justify-content: space-between; /* Space between text and image */
+  align-items: flex-start; /* Align content at the top */
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 20px; /* Space between text and image */
+}
 
-  /* Tag container and text size */
-  .tagsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  
-  .tag {
-    padding: 7px 12px; /* Adjusted padding for larger tags */
-    background-color: #e6f7ff;
-    border-radius: 5px;
-  }
-  
-  .tagText {
-    font-size: 14px; /* Increased tag text font size */
-    color: #17455C;
-  }
+.image {
+  width: 150px; /* Fixed width for consistency */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Ensure proportional scaling */
+  border-radius: 10px; /* Smooth corners */
+}
 
-  
-  .heroSection {
-    position: relative;
-    width: 100%;
-    height: 60vh; /* Adjust for your desired height */
-    overflow:auto;
+.textContent {
+  text-align: left;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.description {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.location,
+.hours {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.ticketList {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.ticketItem {
+  font-size: 14px;
+  color: #333;
+  margin: 5px 0;
+}
+
+/* Tags */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tag {
+  padding: 7px 12px;
+  background-color: #e6f7ff;
+  border-radius: 5px;
+}
+
+.tagText {
+  font-size: 12px;
+  color: #17455C;
+}
+
+/* Hero Section */
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 60vh; /* Adjust for desired height */
+  overflow: hidden;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit:cover; /* Ensures image fills hero section */
+}
+
+.heroText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 1024px) {
+  .cardContainer {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row for medium screens */
   }
-  
-  .heroImage {
-    position:relative;
-    width: 100%;
-    height: 80%;
-    object-fit:cover;
+}
+
+@media (max-width: 768px) {
+  .cardContainer {
+    grid-template-columns: 1fr; /* 1 card per row for smaller screens */
   }
 
   .heroText {
-    position: absolute; /* Positions text on top of the image */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centers the text */
-    color: white;
-    text-align: center;
-    font-size: 3rem; /* Adjust for the desired size */
-    font-weight: bold;
-    text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.7); /* Adds contrast for better readability */
+    font-size: 2rem;
   }
-  
-  @media (max-width: 768px) {
-    .heroText {
-      font-size: 2rem; /* Adjust text size for smaller screens */
-    }
-    .heroSection{
-        height: 40vh; /* Adjust for smaller screens */
-    }
+
+  .heroSection {
+    height: 40vh; /* Reduce hero height for smaller screens */
   }
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column; /* Stack content vertically */
+    align-items: center; /* Center-align for smaller screens */
+  }
+
+  .image {
+    width: 100%; /* Full width */
+    max-width: 300px; /* Limit width */
+    margin-top: 15px; /* Space between text and image */
+  }
+}

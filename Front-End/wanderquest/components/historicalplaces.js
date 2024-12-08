@@ -57,6 +57,7 @@ const Historicalplaces = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include',
                     body: JSON.stringify(formData),
                 });
                 if (!response.ok) {
@@ -75,6 +76,7 @@ const Historicalplaces = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include',
                     body: JSON.stringify(changedformData),
                 });
                 if (!response.ok) {
@@ -101,6 +103,7 @@ const Historicalplaces = () => {
         try {
             const response = await fetch(`http://localhost:4000/tourismGovernor/deletePlace/${id}`, {
                 method: 'DELETE',
+                credentials: 'include',
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -184,6 +187,9 @@ const Historicalplaces = () => {
                             />
                         </div>
                         
+                        <div className={styles.info}>
+                            <p>*Created/Updated Places will be displayed in your homepage*</p>
+                        </div>
                         
                         <button onClick={handleSubmit} className={styles.submit}>{isUpdating ? 'Update Historical Place' : 'Create Historical Place'}</button>
                     </form>
