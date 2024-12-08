@@ -458,6 +458,11 @@ async function resetPassword(req, res) {
     }
 }
 
+const logout = (req, res) => {
+    res.cookie('jwt', '', { httpOnly: true, maxAge: 1 }); // Clear the JWT cookie
+    res.status(200).json({ message: 'Logged out successfully' });
+};
+
 module.exports = {
     getUser,
     uploadDocuments,
@@ -472,5 +477,6 @@ module.exports = {
     login,
     sendEmail,
     requestForgetPasswordEmail,
-    resetPassword
+    resetPassword,
+    logout
 };

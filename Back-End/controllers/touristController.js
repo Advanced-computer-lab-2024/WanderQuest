@@ -1111,5 +1111,6 @@ module.exports = {
     viewCart,
     removeFromCart,
     changeAmountInCart,
-    birthDaycode
+    birthDaycode,
+    checkoutOrder
 };
