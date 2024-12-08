@@ -73,10 +73,10 @@ const AdminNavbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    <button className="navbar-button">Products</button>
-                    <button className="navbar-button">Activities</button>
-                    <button className="navbar-button">Itinerary</button>
-                    <button className="navbar-button">Reports</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin/products')}>Products</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin/event')}>Activities</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin/iti')}>Itinerary</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin')}>Reports</button>
                 </div>
                 <div className='navbar-rightside'>
                     <NotificationButton role="admin"/>
@@ -119,7 +119,10 @@ const AdminNavbar = () => {
               <Link href="/admin/complaints">Complaints</Link>
             </li>
             <li>
-              <Link href="/admin/reports">Create Promocode</Link>
+              <Link href="/admin/promoCodes">Create Promocode</Link>
+            </li>
+            <li>
+              <Link href="/admin/prefTags">Preference Tags</Link>
             </li>
             
           </ul>

@@ -54,7 +54,7 @@ const deliveryAddressSchema = new mongoose.Schema({
 });
 
 // Base schema
-const options = { discriminatorKey: 'role', collection: 'users' };
+const options = { discriminatorKey: 'role', collection: 'users' ,timestamps: true};
 
 const UserSchema = new Schema({
     username: { type: String, required: true },

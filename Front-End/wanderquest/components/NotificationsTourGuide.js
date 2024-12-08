@@ -75,15 +75,15 @@ const NotificationButton = ({ role }) => {
                     border: "none", // Remove border
                     cursor: "pointer", // Pointer cursor
                     fontSize: "20px", // Adjust icon size
-                    color: "#122c34", // Icon color
+                    color: "#1a6187", // Icon color
                     padding: "10px", // Spacing
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     transition: "color 0.3s ease", // Smooth hover effect
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#1a6187")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#122c34")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#122c34")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#1a6187")}
             >
                 <FontAwesomeIcon icon={faBell} />
                 {!loading && notifications.some((notif) => !notif.seen) && (

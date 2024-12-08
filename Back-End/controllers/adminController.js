@@ -21,6 +21,7 @@ const { once } = require('events');
 const { Types } = require('mongoose');
 // Collection name in MongoDB
 const collectionName = 'uploads';
+const moment = require('moment'); 
 
 // Initialize GridFS
 let gfs;
@@ -671,24 +672,47 @@ const flagItinerary = async (req, res) => {
 const viewSalesReport = async (req, res) => {
     try {
 
-        const availableProducts = await ProdModel.find({ isArchived: false });
-        const availableActivities = await Activity.find({});
-        const itineraries = await itinerary.find({});
-        const productRevenue = availableProducts.reduce((total, product) => total + product.revenueOfThisProduct, 0);
+        const availableProducts = await ProdModel.find({ isArchived: false }).select('name price createdAt');
+        const availableActivities = await Activity.find({}).select('title price date');
+        const itineraries = await itinerary.find({}).select('title price availableDates');
+       // console.log(itineraries);
+        const productRevenue = availableProducts.reduce((total, product) => total + (product.revenueOfThisProduct || 0),0);
         const activityRevenue = availableActivities.reduce((total, activity) => {
-
-            return total + (activity.revenueOfThisActivity - 0);///////////!!!!check
-        }, 0);
-        const itineraryRevenue = itineraries.reduce((total, itinerary) => {
-
-            return total + (itinerary.revenueOfThisItinerary - 0); ///////////!!!!check
-        }, 0);
+            console.log(`Activity Revenue for "${activity.title}": ${activity.revenueOfThisActivity}`); // Debug log
+            return total + (activity.revenueOfThisActivity || 0);
+        }, 0);      
+         //console.log(activityRevenue);
+        const itineraryRevenue = itineraries.reduce(
+            (total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0), 
+            0
+        );
         const totalRevenue = productRevenue + activityRevenue + itineraryRevenue;
+        const productDetails = availableProducts.map(product => ({
+            name: product.name,
+            price: product.price,
+            date: product.createdAt,
+        }));
+
+        const activityDetails = availableActivities.map(activity => ({
+            title: activity.title,
+            price: activity.price,
+            date: activity.date,
+        }));
+
+        const itineraryDetails = itineraries.map(itinerary => ({
+            title: itinerary.title,
+            price: itinerary.price,
+            availableDates: itinerary.availableDates,
+        }));
+
         const report = {
+            totalRevenue,
             productRevenue,
             activityRevenue,
             itineraryRevenue,
-            totalRevenue
+            productDetails,
+            activityDetails,
+            itineraryDetails,
         };
         res.status(200).json({ message: 'report successfully viewed ', report });
 
@@ -788,6 +812,42 @@ const seenNotifications = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+// Function to get user statistics
+const getUserStatstics = async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const newUsersPerMonth = await User.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: moment().subtract(1, 'year').toDate(), 
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: { $month: "$createdAt" },
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $sort: { _id: 1 }, 
+            },
+        ]);
+        const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+            month: moment().month(i).format('MMMM'),
+            count: newUsersPerMonth.find((m) => m._id === i + 1)?.count || 0,
+        }));
+
+        return res.status(200).json({
+            totalUsers,
+            newUsersPerMonth: monthlyData,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch user statistics' });
+    }
+};
 
 module.exports = {
     getAllAdmins,
@@ -824,5 +884,6 @@ module.exports = {
     promocodes,
     deletePromocode,
     myNotifications,
-    seenNotifications
+    seenNotifications,
+    getUserStatstics
 }

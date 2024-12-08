@@ -38,6 +38,7 @@ body {
 .navbar-rightside {
     display: flex; /* Use flex for right side */
     align-items: center; /* Center the signup button vertically */
+    margin-right: 100px;
 }
 
 .navbar-button {
@@ -173,7 +174,7 @@ body {
     color: #1a6187; /* Matches the navbar theme */
     cursor: pointer; /* Makes it interactive */
     transition: color 0.3s ease;
-    margin-right: 100px;
+    margin-right: 50px;
 }
 
 .notification-icon:hover {
@@ -199,7 +200,8 @@ body {
     font-size: 24px;
     color: #1a6187;
     cursor: pointer;
-    margin-right: 90px;
+    margin-right: 10px;
+    margin-left: 20px;
 }
 
 .profile-icon:hover {
@@ -207,7 +209,7 @@ body {
 }
 
 .navbar-username {
-    font-size: 16px;
+    font-size: 15px;
     color: #122c34;
     font-weight: bold;
 }
@@ -225,6 +227,7 @@ body {
     padding: 10px 0;
     width: 160px;
     font-family: Arial, sans-serif;
+    margin-right: 15px;
 }
 
 /* Profile Menu Items */
@@ -257,7 +260,7 @@ body {
 .sidebar {
     position: fixed;
     left: 0;
-    top: 95px;
+    top: 80px;
     height: 100%;
     width: 250px;
     background-color: white;
