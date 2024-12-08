@@ -247,13 +247,12 @@ const addProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product already exists' });
         }
 
-        const product = await ProdModel.create({ name, picture, price, description, seller, ratings, rating, reviews, availableAmount, sales })
+        const product = await ProdModel.create({ name, picture, price, description, seller: seller, ratings, rating, reviews, availableAmount, sales })
         res.status(200).json(product)
 
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-
 };
 
 
