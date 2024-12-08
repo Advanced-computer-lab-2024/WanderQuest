@@ -737,6 +737,7 @@ const checkoutOrder = async (req, res) => {
         return res.status(500).json({ error: error.message })
     }
 }
+
 const beNotified = async (req, res) => {
     const eventID = req.params.id;
     const touristID = req.user._id;

@@ -4,11 +4,11 @@ import Link from 'next/link';
 import styles from '../Styles/Navbar.css';
 import { faUser , faBell ,faBars} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import NotificationButton from './NotificationsTourGuide';
 
 
 const AdminNavbar = () => {
     const [username, setUsername] = useState('');
-    const [notifications, setNotifications] = useState(0);
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
 
@@ -42,27 +42,7 @@ const AdminNavbar = () => {
             }
         };
 
-        // Fetch notifications (Optional)
-        const fetchNotifications = async () => {
-            try {
-                const response = await fetch('http://localhost:4000/notifications', {
-                    method: 'GET',
-                    credentials: 'include',
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setNotifications(data.count); // Assuming the backend returns { count: ... }
-                } else {
-                    console.error('Failed to fetch notifications');
-                }
-            } catch (error) {
-                console.error('Error fetching notifications:', error);
-            }
-        };
-
         fetchUserInfo();
-        fetchNotifications();
     }, []);
 
 
@@ -87,10 +67,8 @@ const AdminNavbar = () => {
                     <button className="navbar-button">Reports</button>
                 </div>
                 <div className='navbar-rightside'>
-                <div className="notification-icon-container" >
-                        <FontAwesomeIcon icon={faBell} className="notification-icon" />
-                        {notifications > 0 && <span className="notification-badge">{notifications}</span>}
-                    </div>
+                    <NotificationButton role="admin"/>
+
                     <FontAwesomeIcon icon={faUser} className="profile-icon" onClick={toggleProfileMenu}/>
                     {username && <span className="navbar-username"> {username}</span>}
                     
