@@ -171,19 +171,20 @@ const getLogo = async (req, res) => {
     }
 }
 
+
 //seller getProducts
 const getProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({},{ availableAmount: 1, sales: 1, revenueOfThisProduct: 1 })
+        const products = await ProdModel.find()
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
 };
+
 //seller getAvailableProducts
 const getAvailableProducts = async (req, res) => {
     try {
-        //?????????????????????????????????????????????availableAmount bi 1 walla 0
         const products = await ProdModel.find({ availableAmount: { $gt: 0 } },  { availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
         res.status(200).json(products);
     } catch (error) {
