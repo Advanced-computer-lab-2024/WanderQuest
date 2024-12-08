@@ -1,7 +1,7 @@
 <p align="center">
 <img src="https://github.com/Advanced-computer-lab-2024/WanderQuest/blob/main/Front-End/wanderquest/public/logo.png" width="400" />
 
-<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=40&pause=1000&color=F7F7F7&center=true&vCenter=true&random=false&width=1200&height=100&lines=WanderQuest%3A+Where+All+Your+Adventures+Come+to+Life" alt="Typing SVG" /></a>
+<a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=40&pause=1000&color=F7F7F7&center=true&vCenter=true&random=false&width=1200&height=100&lines=WanderQuest%3A+Where+Your+Adventures+Come+to+Life" alt="Typing SVG" /></a>
 
 </p>
 
