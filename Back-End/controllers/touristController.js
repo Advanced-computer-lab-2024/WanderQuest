@@ -634,7 +634,7 @@ const addToCart = async (req, res) => {
             return res.status(400).json({ error: 'Not enough stock for product: ' + product.name })
         }
         const tourist = await Tourist.findById(touristId)
-        if(productId in tourist.cart){
+        if (productId in tourist.cart) {
             return res.status(400).json({ error: 'Product already in cart, you can change the quantity you want to order' })
         }
         tourist.cart = [...tourist.cart, { productId, quantity }]
@@ -860,7 +860,7 @@ const deleteNotification = async (req, res) => {
 
 const clearNotifications = async (req, res) => {
     const userID = req.user._id;
-    
+
     try {
         const result = await NotificationModel.deleteMany({ userID: userID });
 
@@ -899,6 +899,111 @@ const bookingNotification = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+
+
+/**
+ * Adds one or multiple delivery addresses to the user's profile.
+ * 
+ * @param {Object} req - The request object containing user ID and delivery addresses.
+ * @param {Object} res - The response object to send the result.
+ * 
+ * Request body should contain:
+ * - deliveryAddresses: Array of delivery address objects, each with the following fields:
+ *   - street: {String, required}
+ *   - city: {String, required}
+ *   - state: {String, optional}
+ *   - postalCode: {String, required}
+ *   - country: {String, required}
+ *   - googleMapsUrl: {String, required}
+ * 
+ * Example request body:
+ * {
+ *   "deliveryAddresses": [
+ *     {
+ *       "street": "123 Main St",
+ *       "city": "Anytown",
+ *       "postalCode": "12345",
+ *       "country": "USA",
+ *       "googleMapsUrl": "https://maps.google.com/?q=123+Main+St,+Anytown,+CA+12345"
+ *     },
+ *     {
+ *       "street": "456 Elm St",
+ *       "city": "Othertown",
+ *       "state": "TX",
+ *       "postalCode": "67890",
+ *       "country": "USA",
+ *       "googleMapsUrl": "https://maps.google.com/?q=456+Elm+St,+Othertown,+TX+67890"
+ *     }
+ *   ]
+ * }
+ */
+const addDeliveryAddress = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { deliveryAddresses } = req.body;
+
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Add new delivery addresses to the user's existing addresses
+        user.deliveryAddresses.push(...deliveryAddresses);
+        await user.save();
+
+        return res.status(200).json({ message: 'Delivery addresses added successfully.', deliveryAddresses: user.deliveryAddresses });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while adding delivery addresses.' });
+    }
+};
+
+const getDeliveryAddresses = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        return res.status(200).json({
+            deliveryAddresses: user.deliveryAddresses,
+            activeAddress: user.activeAddress
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while fetching delivery addresses.' });
+    }
+}
+
+const setActiveDeliveryAddress = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { addressId } = req.body;
+
+        const user = await Tourist.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        if (!user.deliveryAddresses.some(address => address._id.equals(addressId))) {
+            return res.status(404).json({ message: 'Address not found.' });
+        } else {
+            user.activeAddress = addressId;
+            await user.save();
+            return res.status(200).json({ message: 'Active address updated successfully.', activeAddress: user.activeAddress });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while setting active delivery address.' });
+    }
+}
 const birthDaycode = async (req, res) => {
     const userID = req.user._id;
     try {
@@ -952,13 +1057,13 @@ const birthDaycode = async (req, res) => {
     }
 };
 
-const redeemPromo = async(req,res)=>{
+const redeemPromo = async (req, res) => {
     const codeToRedeem = req.params;
-    const PromoCode = await PromoModel.find({code:codeToRedeem});
-    if(!PromoCode){
-        return res.status(404).json({ error: 'Promocode does not exist.'});
+    const PromoCode = await PromoModel.find({ code: codeToRedeem });
+    if (!PromoCode) {
+        return res.status(404).json({ error: 'Promocode does not exist.' });
     }
-    
+
 }
 
 module.exports = {
@@ -998,6 +1103,9 @@ module.exports = {
     clearNotifications,
     deleteNotification,
     bookingNotification,
+    addDeliveryAddress,
+    getDeliveryAddresses,
+    setActiveDeliveryAddress,
     addToCart,
     viewCart,
     removeFromCart,

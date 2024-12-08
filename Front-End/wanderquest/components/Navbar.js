@@ -4,13 +4,34 @@ import Link from 'next/link';
 import WishlistPanel from './WishlistPanel';
 import ComplaintsPanel from './ComplaintsPanel';
 import styles from '../Styles/Navbar.css';
+import NotificationButton from './NotificationsTourGuide';
+import { useEffect } from 'react';
+import axios from 'axios';
+
 
 
 const Navbar = () => {
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [role, setRole] = useState('');
 
-    return (
+    const fetchUserRole = async () => {
+        try {
+            const response = await axios.get('http://localhost:4000/authentication/user', {
+                withCredentials: true, // Include cookies if required
+            });
+            setRole(response.data.role);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserRole();
+    }, []);
+
+return (
         <>
             <div className="navbar-container">
                 <div className='navbar-leftside'> 
@@ -25,6 +46,7 @@ const Navbar = () => {
                     <button className="navbar-button">Historical Places</button>
                 </div>
                 <div className='navbar-rightside'>
+                {role && <NotificationButton role={role} />}
                     <button 
                         className="navbar-wishlist-button" 
                         onClick={() => setIsWishlistOpen(true)}

@@ -1,5 +1,5 @@
 const AdminModel = require('../models/adminModel');
-const { User, Advertiser, TourGuide,Tourist } = require('../models/userModel');
+const { User, Advertiser, TourGuide, Tourist } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
@@ -16,8 +16,9 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
-const { sendEmail  } = require('../controllers/authenticationController');
+const { sendEmail } = require('../controllers/authenticationController');
 const { once } = require('events');
+const { Types } = require('mongoose');
 // Collection name in MongoDB
 const collectionName = 'uploads';
 
@@ -175,64 +176,13 @@ const getProdById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-//Admin getAvailableProducts
-const getAvailableProducts = async (req, res) => {
-    try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ },  { isArchived: 1, availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
-        res.status(200).json(products);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-//Admin addProduct
-
-const addProduct = async (req, res) => {
-    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
-    const seller = req.user._id;
-    //   const picture = req.file;
-
-    // Validate input
-    if (!name /*|| !picture*/ || !description || !price) {
-        return res.status(400).json({ error: 'Details and prices fields are required' });
-    }
-    try {
-        // Checking if the username already exists
-        const existingProduct = await ProdModel.findOne({ name, price });
-
-        if (existingProduct) {
-            return res.status(400).json({ error: 'Product already exists' });
-        }
-
-        const product = await ProdModel.create({
-            name,
-            price,
-            description,
-            seller,
-            ratings,
-            rating,
-            reviews,
-            availableAmount,
-            // picture: {
-            //     data: picture.buffer,
-            //     type: picture.mimetype
-            // },
-
-        });
-        res.status(200).json(product)
-
-    } catch (error) {
-        res.status(400).json({ error: error.message })
-    }
-
-};
 
 const getProductPhoto = async (req, res) => {
     try {
         const product = await ProdModel.findById(req.params.id);
         if (!product) {
-            return res.status(404).json({ error: 'product not found' });
+            return res.status(404).json({ error: 'Product not found' });
         }
-
 
         const photo = product.picture;
 
@@ -240,7 +190,7 @@ const getProductPhoto = async (req, res) => {
 
         // Stream the file from MongoDB GridFS
         const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-            bucketName: collectionName,
+            bucketName: 'uploads', // Replace with your bucket name if different
         });
 
         const downloadStream = bucket.openDownloadStream(fileID);
@@ -266,42 +216,74 @@ const getProductPhoto = async (req, res) => {
     }
 }
 
-const uploadProductPhoto = async (req, res) => {
+//Admin getAvailableProducts
+const getAvailableProducts = async (req, res) => {
+    try {
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ }, { isArchived: 1, availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+//Admin addProduct
+
+const addProduct = async (req, res) => {
     upload(req, res, async (err) => {
         if (err) {
             return res.status(400).json({ error: err.message });
         }
 
+        const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
+        const seller = req.user._id;
+
+        // Validate input
+        if (!name || !description || !price) {
+            return res.status(400).json({ error: 'Details and prices fields are required' });
+        }
+
         try {
-            const product = await ProdModel.findById(req.params.id);
-            if (!product) {
-                return res.status(404).json({ error: 'product not found' });
+            // Checking if the product already exists
+            const existingProduct = await ProdModel.findOne({ name, price });
+
+            if (existingProduct) {
+                return res.status(400).json({ error: 'Product already exists' });
             }
 
+            try {
+                const file = req.files[0];
 
-            const file = req.files[0];
+                const documentMetadata = {
+                    filename: file.filename,
+                    contentType: file.contentType,
+                    fileID: file.id
+                };
 
-            const documentMetadata = {
-                filename: file.filename,
-                contentType: file.contentType,
-                fileID: file.id
-            };
+                // Create the product with the uploaded photo metadata
+                const product = await ProdModel.create({
+                    name,
+                    price,
+                    description,
+                    seller,
+                    ratings,
+                    rating,
+                    reviews,
+                    availableAmount,
+                    picture: documentMetadata
+                });
 
-            product.picture = documentMetadata;
-
-            await product.save();
-
-            res.json({ message: 'product photo uploaded' });
-        } catch (err) {
-            res.status(500).json({ error: err.message });
+                res.status(200).json(product);
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        } catch (error) {
+            res.status(400).json({ error: error.message });
         }
     });
 };
-// Admin editProduct
+
 const editProduct = async (req, res) => {
     const { id } = req.params;
     const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
-    const picture = req.file;
 
     try {
         let updatedProd = await ProdModel.findById(id);
@@ -309,24 +291,38 @@ const editProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product not found' });
         }
 
-        // Update fields if they are provided
-        if (name) updatedProd.name = name;
-        if (price) updatedProd.price = price;
-        if (description) updatedProd.description = description;
-        if (ratings) updatedProd.ratings = ratings;
-        if (rating) updatedProd.rating = rating;
-        if (reviews) updatedProd.reviews = reviews;
-        if (availableAmount) updatedProd.availableAmount = availableAmount;
-        if (picture) {
-            updatedProd.picture = {
-                filename: picture.filename,  // Set filename from the uploaded file
-                contentType: picture.mimetype, // Use file's MIME type
-                fileID: picture.id // Assuming multer-gridfs-storage provides file ID in `picture.id`
-            };
-        }
+        // Handle file upload
+        upload(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ error: err.message });
+            }
 
-        await updatedProd.save();
-        res.status(200).json(updatedProd);
+            // Update fields if they are provided
+            if (name) updatedProd.name = name;
+            if (price) updatedProd.price = price;
+            if (description) updatedProd.description = description;
+            if (ratings) updatedProd.ratings = ratings;
+            if (rating) updatedProd.rating = rating;
+            if (reviews) updatedProd.reviews = reviews;
+            if (availableAmount) updatedProd.availableAmount = availableAmount;
+
+            // Update picture if a new one is uploaded
+            if (req.files && req.files.length > 0) {
+                const file = req.files[0];
+                updatedProd.picture = {
+                    filename: file.filename,
+                    contentType: file.contentType,
+                    fileID: file.id
+                };
+            }
+
+            try {
+                await updatedProd.save();
+                res.status(200).json(updatedProd);
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -602,7 +598,7 @@ const flagActivity = async (req, res) => {
         try {
             // Step 1: Find the activity by its ID
             const activity = await ActivityModel.findById(activityId);
-            
+
             if (!activity) {
                 return res.status(404).json({ message: 'Activity not found.' });
             }
@@ -614,11 +610,13 @@ const flagActivity = async (req, res) => {
                 reason: 'Inappropriate content',
                 ReasonID: activityId // Set the ReasonID to the Itinerary ID
             });
-            await sendEmail(advertiser.email,notification.reason,notification.message);
-    
+            await sendEmail(advertiser.email, notification.reason, notification.message);
+
             // Respond with success
-            return res.status(201).json({  message: 'Event flagged successfully', activity ,
-                                        message: 'Notification created successfully.', notification });
+            return res.status(201).json({
+                message: 'Event flagged successfully', activity,
+                message: 'Notification created successfully.', notification
+            });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'An error occurred while creating the notification.' });
@@ -639,7 +637,7 @@ const flagItinerary = async (req, res) => {
         try {
             // Step 1: Find the itinerary by its ID
             const itinerary = await ItineraryModel.findById(id);
-            
+
             if (!itinerary) {
                 return res.status(404).json({ message: 'Itinerary not found.' });
             }
@@ -651,10 +649,12 @@ const flagItinerary = async (req, res) => {
                 reason: 'Inappropriate content',
                 ReasonID: id // Set the ReasonID to the Itinerary ID
             });
-            await sendEmail(tourGuide.email,notification.reason,notification.message);
+            await sendEmail(tourGuide.email, notification.reason, notification.message);
             // Respond with success
-            return res.status(201).json({ message: 'Itinerary flagged successfully', retItinerary,
-                message: 'Notification created successfully.', notification });
+            return res.status(201).json({
+                message: 'Itinerary flagged successfully', retItinerary,
+                message: 'Notification created successfully.', notification
+            });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'An error occurred while creating the notification.' });
@@ -668,10 +668,10 @@ const flagItinerary = async (req, res) => {
 // }
 
 //view sales report
-const viewSalesReport = async (req,res) => {
-    try{
-        
-        const availableProducts = await ProdModel.find({ isArchived: false});
+const viewSalesReport = async (req, res) => {
+    try {
+
+        const availableProducts = await ProdModel.find({ isArchived: false });
         const availableActivities = await Activity.find({});
         const itineraries = await itinerary.find({});
         const productRevenue = availableProducts.reduce((total, product) => total + product.revenueOfThisProduct, 0);
@@ -680,7 +680,7 @@ const viewSalesReport = async (req,res) => {
             return total + (activity.revenueOfThisActivity - 0);///////////!!!!check
         }, 0);
         const itineraryRevenue = itineraries.reduce((total, itinerary) => {
-            
+
             return total + (itinerary.revenueOfThisItinerary - 0); ///////////!!!!check
         }, 0);
         const totalRevenue = productRevenue + activityRevenue + itineraryRevenue;
@@ -691,23 +691,23 @@ const viewSalesReport = async (req,res) => {
             totalRevenue
         };
         res.status(200).json({ message: 'report successfully viewed ', report });
-        
-    }catch(error){
+
+    } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Unable to generate sales report', error });
     }
 }
-const createPromo = async (req,res)=>{
-    const { code,type,discount,birthday,touristId } = req.body;
+const createPromo = async (req, res) => {
+    const { code, type, discount, birthday, touristId } = req.body;
     const admin = req.user._id;
     const expiry = Date.now() + (7 * 24 * 60 * 60 * 1000);
     // Validate input
-    if ( !code||!type||!discount) {
+    if (!code || !type || !discount) {
         return res.status(400).json({ error: ' fields are required' });
     }
     try {
         // Checking if the username already exists
-        const existingPromo = await PromoCode.findOne({code});
+        const existingPromo = await PromoCode.findOne({ code });
 
         if (existingPromo) {
             return res.status(400).json({ error: 'Promocode already exists' });
@@ -717,8 +717,8 @@ const createPromo = async (req,res)=>{
             code,
             type,
             discount,
-            expiryDate:expiry,
-            createdBy:admin
+            expiryDate: expiry,
+            createdBy: admin
         });
         const tourists = await Tourist.find();
 
@@ -739,7 +739,7 @@ const createPromo = async (req,res)=>{
         res.status(400).json({ error: error.message })
     }
 };
-const promocodes = async(req,res)=>{
+const promocodes = async (req, res) => {
     const promos = await PromoCode.find({});
     res.status(200).json(promos);
 
@@ -793,7 +793,6 @@ module.exports = {
     flagActivity,
     flagItinerary,
     viewAllProductSales,
-    uploadProductPhoto,
     getProductPhoto,
     viewSalesReport,
     createPromo,

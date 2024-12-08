@@ -15,25 +15,25 @@ const requireAuth = require("../middleware/requireAuth")
 const router = express.Router()
 
 //Get Places
-router.get("/places",getAllPlaces)
+router.get("/places", getAllPlaces)
 //Get Place by ID
-router.get("/places/:id",getPlaceById)
+router.get("/places/:id", getPlaceById)
 //Get my Places
-router.get("/myPlaces", requireAuth({role:"tourGov"}), myCreatedPlaces)
+router.get("/myPlaces", requireAuth({ role: 'Tourism Governor' }), myCreatedPlaces)
 
 //Tourism Governor create Place
-router.post("/addPlace", requireAuth({role:"tourGov"}), addPlace)
+router.post("/addPlace", requireAuth({ role: 'Tourism Governor' }), addPlace)
 
 //Tourism Governor update Place
-router.patch("/updatePlace/:id",updatePlace)
+router.patch("/updatePlace/:id", updatePlace)
 
 //Tourism Governor delete Place
-router.delete("/deletePlace/:id", requireAuth({role:"tourGov"}), deletePlace)
+router.delete("/deletePlace/:id", requireAuth({ role: 'Tourism Governor' }), deletePlace)
 
 //Tourism Governor create Tag
-router.post("/addTag",createTag)
+router.post("/addTag", createTag)
 
 //Tourism Governor get Tags
-router.get("/tags",getAllTags)
+router.get("/tags", getAllTags)
 
 module.exports = router
