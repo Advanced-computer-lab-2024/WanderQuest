@@ -18,6 +18,7 @@ const {
     viewSalesReport,
     viewTouristsReport }
     = require('../controllers/advertiserController');
+const { getCategories, getAllTags } = require('../controllers/adminController');
 const { createTransportation, getAllTransportations } = require('../controllers/transportationController');
 
 const router = express.Router();
@@ -41,5 +42,7 @@ router.get('/notifs', requireAuth({ role: "advertiser" }), myNotifications);
 router.patch('/notifs', requireAuth({ role: "advertiser" }), seenNotifications);
 router.get('/salesReport', requireAuth({ role: "advertiser" }), viewSalesReport);
 router.get('/TouristReport', requireAuth({ role: "advertiser" }), viewTouristsReport);
+router.get('/categories', getCategories)
+router.get('/tags', getAllTags)
 
 module.exports = router;
