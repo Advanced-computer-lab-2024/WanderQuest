@@ -119,7 +119,10 @@ const AdminNavbar = () => {
               <Link href="/admin/complaints">Complaints</Link>
             </li>
             <li>
-              <Link href="/admin/reports">Create Promocode</Link>
+              <Link href="/admin/promoCodes">Create Promocode</Link>
+            </li>
+            <li>
+              <Link href="/admin/prefTags">Preference Tags</Link>
             </li>
             
           </ul>
