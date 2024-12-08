@@ -81,9 +81,9 @@ const AdminNavbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    <button className="navbar-button">Products</button>
-                    <button className="navbar-button">Activities</button>
-                    <button className="navbar-button">Itinerary</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin/products')}>Products</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin/event')}>Activities</button>
+                    <button className="navbar-button" onClick={() => (window.location.href = '/admin/iti')}>Itinerary</button>
                     <button className="navbar-button">Reports</button>
                 </div>
                 <div className='navbar-rightside'>
