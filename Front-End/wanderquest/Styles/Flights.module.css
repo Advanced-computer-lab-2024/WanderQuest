@@ -1,12 +1,17 @@
 .all{
     font-family:Arial, Helvetica, sans-serif ;
 }
-.top{
-    width: 100%;
-    height:250px;
-    background-color: #003580	;
-    color: white;
+.top {
+  width: 100%;
+  height: 530px;
+  background-image: url("/airports.png");
+  background-size: cover; /* Ensures the image covers the entire div */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents repeating the image */
+  color: white;
+ 
 }
+
 .container{
     margin-left: auto;
     margin-right: auto;
@@ -37,18 +42,19 @@
     cursor: pointer;
   }
 .active {
-    background-color: #0a4ca7;
+
     border: 1px solid white;
   }
 .searchbar{
-    padding: 3px;
-    border: 1px solid black;
-    margin-left: auto;
-    margin-right: auto;
-    width: 70%;
-    background-color: #ffb700;
-    height: 45px;
-    border-radius: 8px;
+  padding: 3px;
+  border: 1px solid black;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+  background-color: whitesmoke;
+  height: 45px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
 
 }
 .input{
@@ -59,15 +65,20 @@
     border: none;
 }
 .search{
-    width: 6.8%;
-    height: 95%;
-    margin-left: 5px;
-    background-color: #0579cc;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin-right: 0;
-    font-size: 15px;
+  width: 6.4%;
+  height: 95%;
+  margin-left: 5px;
+  background-color: #042335;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-right: 0;
+  font-size: 15px;
+}  
+.hotelImage{
+  width: 100%;
+  height: 60%;
+  object-fit: cover;
 }
 .search:hover{
     background-color: #0f4288;
@@ -87,7 +98,7 @@
     transition: transform 0.4s ease;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     padding: 20px;
-    height: 250px; /* Optional: adds padding inside the card */
+    height: 650px;  /* Optional: adds padding inside the card */
   }
   
   .card:hover {
@@ -96,8 +107,9 @@
   .welcome{
     margin-left:auto ;
     margin-right: auto;
+    font-size: 65px;
     /* border: 1px solid black; */
-    width: 50%;
+    width: 70%;
   }
   .suggestions {
     position: absolute;
@@ -128,7 +140,7 @@
     background-color: #e0e0e0; /* Active effect */
   }
   .button{
-    background-color: #007BFF;
+    background-color: #042335;
     border: none;
     color: white;
     padding: 10px 30px;
@@ -141,4 +153,11 @@
     /* Added that to remove the underline feature of the Link tag in Next */
     text-decoration: none;
   }
-  
+  .welcomeq{
+    margin-top: -50px;
+    margin-left:auto ;
+    margin-right: auto;
+    font-size: 45px;
+
+       width: 70%;
+  }

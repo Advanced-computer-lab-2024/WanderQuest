@@ -4,13 +4,36 @@ import Link from 'next/link';
 import WishlistPanel from './WishlistPanel';
 import ComplaintsPanel from './ComplaintsPanel';
 import styles from '../Styles/Navbar.css';
+import NotificationButton from './NotificationsTourGuide';
+import { useEffect } from 'react';
+import axios from 'axios';
+
 
 
 const Navbar = () => {
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [role, setRole] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
 
-    return (
+
+    const fetchUserRole = async () => {
+        try {
+            const response = await axios.get('http://localhost:4000/authentication/user', {
+                withCredentials: true, // Include cookies if required
+            });
+            setRole(response.data.role);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserRole();
+    }, []);
+
+return (
         <>
             <div className="navbar-container">
                 <div className='navbar-leftside'> 
@@ -19,33 +42,57 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    <button className="navbar-button">Products</button>
-                    <button className="navbar-button">Activities</button>
-                    <button className="navbar-button">Itinerary</button>
-                    <button className="navbar-button">Historical Places</button>
+                    {role == "advertiser" && <button className="navbar-button">Reports</button>}
+                    {role!= "advertiser" && <button className="navbar-button">Products</button>}
+                    <div
+                        className="navbar-button-container"
+                        onMouseEnter={() => setShowDropdown(true)}
+                        onMouseLeave={() => setShowDropdown(false)}
+                    >
+                        <button className="navbar-button">Activities</button>
+                            {showDropdown && (
+                            <div className="dropdown-menu">
+                                <a href="/create-activity" className="dropdown-item">
+                                Create an Activity
+                                </a>
+                                <a href="/my-activities" className="dropdown-item">
+                                View All My Activities
+                                </a>
+                                <a href="/create-transportation" className="dropdown-item">
+                                Create a Transportation
+                                </a>
+                                <a href="/my-transportations" className="dropdown-item">
+                                View All My Transportations
+                                </a>
+                            </div>
+                            )}
+                    </div>
+                    {role!= "advertiser" && <button className="navbar-button">Itinerary</button>}
+                    {role!= "advertiser" && <button className="navbar-button">Historical Places</button>}
                 </div>
                 <div className='navbar-rightside'>
-                    <button 
+                {role && <NotificationButton role={role} />}
+                    {role != "advertiser" && <button 
                         className="navbar-wishlist-button" 
                         onClick={() => setIsWishlistOpen(true)}
                     >
                         <svg 
-                            height="24px" 
-                            width="50px" 
+                            viewBox="0 0 64 64" 
                             xmlns="http://www.w3.org/2000/svg" 
-                            shapeRendering="geometricPrecision" 
-                            textRendering="geometricPrecision" 
-                            imageRendering="optimizeQuality" 
-                            fillRule="evenodd" 
-                            clipRule="evenodd" 
-                            viewBox="0 0 512 456.081"
+                            stroke-width="3.84" 
+                            stroke="#000000" 
+                            fill="none"
+                            height="30px"
+                            width="30px"
                         >
-                            <path fill="#F44336" d="M253.648 83.482c130.392-219.055 509.908 65.493-.513 372.599-514.788-328.941-101.874-598.696.513-372.599z"/>
-                            <path fill="#C62828" d="M344.488 10.579c146.331-39.079 316.84 185.128-65.02 429.134 282.18-224.165 190.925-403.563 65.02-429.134zM121.413.646c48.667-4.845 100.025 17.921 129.336 76.929 1.259 3.71 2.44 7.571 3.537 11.586 10.541 34.29.094 49.643-12.872 50.552-18.136 1.271-20.215-14.85-24.966-27.643C192.689 48.096 158.774 12.621 116.43 1.863c1.653-.435 3.314-.841 4.983-1.217z"/>
-                            <path fill="#FF847A" d="M130.558 35.502C87.9 31.255 42.906 59.4 31.385 101.568c-7.868 25.593-.07 37.052 9.607 37.731 13.537.949 15.088-11.084 18.634-20.632 17.733-47.749 43.046-74.227 74.651-82.257a104.925 104.925 0 00-3.719-.908z"/>
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M9.06,25C7.68,17.3,12.78,10.63,20.73,10c7-.55,10.47,7.93,11.17,9.55a.13.13,0,0,0,.25,0c3.25-8.91,9.17-9.29,11.25-9.5C49,9.45,56.51,13.78,55,23.87c-2.16,14-23.12,29.81-23.12,29.81S11.79,40.05,9.06,25Z"></path>
+                            </g>
                         </svg>
-                    </button>
-                    <button 
+                    </button>}
+                    {role != "advertiser" && <button 
                         className="navbar-complaints-button"
                         onClick={() => setIsComplaintsOpen(true)}
                     >
@@ -75,7 +122,7 @@ const Navbar = () => {
                                 </g>
                             </g>
                         </svg>
-                    </button>
+                    </button>}
                     <Link href="/signin">
                         <button className='navbar-signup'>Sign In</button>
                     </Link>

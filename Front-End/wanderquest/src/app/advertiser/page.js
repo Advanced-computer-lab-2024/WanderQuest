@@ -23,6 +23,8 @@ export default function advertiser() {
 
 
     return (
+        <>
+        <Navbar/>
         <div>
             <AcceptTerms/>
             <h1>Advertiser Page</h1>
@@ -35,5 +37,7 @@ export default function advertiser() {
             </button>
       
         </div>
+        </>
+        
     );
 };

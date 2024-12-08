@@ -29,10 +29,13 @@ const {
     unarchiveProduct,
     viewProductSales,
     viewAllProductSales,
-    /* uploadProductImage,*/
     flagActivity,
     flagItinerary,
-    viewSalesReport
+    viewSalesReport,
+    createPromo,
+    promocodes,
+    deletePromocode,
+    getProductPhoto,
 } = require("../controllers/adminController");
 
 const router = express.Router()
@@ -68,11 +71,15 @@ router.get('/products/sales/:id', viewProductSales)
 // Admin view all product sales
 router.get('/sales', viewAllProductSales);
 
-//Admin addProduct
-router.post('/addProduct', upload.single('picture'), addProduct);
+// Route to add a product
+router.post('/addProduct', addProduct);
 
-// Use multer middleware to handle file upload
-router.patch('/editProduct/:id', upload.single('picture'), editProduct);
+// Route to edit a product
+router.patch('/editProduct/:id', editProduct);
+
+// Route to get a product photo
+router.get('/productPhoto/:id', getProductPhoto);
+
 //Admin addActivityCategory
 router.post('/addCategory', addCategory)
 
@@ -122,5 +129,10 @@ router.patch('/flagItinerary/:id', flagItinerary);
 //view sales report
 router.get('/salesReport', viewSalesReport);
 
+//Create Promocode
+router.post('/promo', createPromo);
+//promocodes
+router.get('/promocodes', promocodes);
+router.delete('/promocodes/:id', deletePromocode)
 //Admin filterByStatus
 module.exports = router
