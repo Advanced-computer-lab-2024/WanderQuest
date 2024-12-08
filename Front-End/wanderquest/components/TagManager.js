@@ -101,9 +101,9 @@ const TagManager = () => {
         <div className={styles.tagScroll}>
           <ul className={styles.tagGrid}>
             {tags.map((tag) => (
-              <li key={tag._id} className={styles.tagItem}>
+              <p key={tag._id} className={styles.tagItem}>
                 <span>{tag.type}</span>
-              </li>
+              </p>
             ))}
           </ul>
         </div>
