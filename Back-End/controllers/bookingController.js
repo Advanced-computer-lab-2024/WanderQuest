@@ -1,11 +1,10 @@
 const Booking = require('../models/bookingModel');
 const axios = require('axios');
-const { User, Tourist } = require('../models/userModel');
+const { User } = require('../models/userModel');
 const Activity = require('../models/objectModel').Activity;
 const Itinerary = require('../models/objectModel').itinerary;
 const mongoose = require('mongoose');
 const Tourist = require('../models/userModel').Tourist;
-
 
 const bookActivity = async (req, res) => {
     const { bookingType, activityId } = req.body;
