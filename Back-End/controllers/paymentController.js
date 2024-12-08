@@ -72,14 +72,13 @@ const handleBookingPayment = async (req, res) => {
 
             if (walletAmountInPreferredCurrency >= amount) {
                 // Deduct the amount from the wallet
-                user.wallet -= amount;
-                await user.save();
+                user.deduceFromWallet(amount);
                 await sendEmail(user.email, "Payment Made", `Your payment of ${amount} ${user.preferredCurrency} was successful`);
                 return res.status(200).json({ message: 'Payment successful using wallet.' });
             } else {
                 // Deduct the wallet amount from the total amount to pay
                 amount -= walletAmountInPreferredCurrency;
-                user.wallet = 0;
+                user.deduceFromWallet(walletAmountInPreferredCurrency);
             }
         }
 
@@ -149,8 +148,7 @@ const payOrderWithWallet = async (req, res) => {
         // Check if the user is a tourist and has sufficient funds in their wallet
         if (user.wallet >= amount) {
             // Deduct the amount from the wallet
-            user.wallet -= amount;
-            await user.save();
+            user.deduceFromWallet(amount);
 
             order.paymentStatus = 'paid';
             await order.save();
