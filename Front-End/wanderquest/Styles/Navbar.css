@@ -120,3 +120,47 @@ body {
     transform: scale(1.1);
 }
 
+.navbar-button-container {
+    position: relative;
+    display: inline-block; /* Ensures it behaves well with other navbar elements */
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%; /* Aligns the menu directly below the button */
+    left: 0;
+    background-color: #ffffff; /* Clean white background */
+    border: 1px solid #ccc; /* Subtle border for definition */
+    border-radius: 8px; /* Rounded corners for a modern look */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Softer shadow for depth */
+    z-index: 10;
+    min-width: 200px;
+    padding: 5px 0; /* Adds spacing between items */
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; /* Smooth appearance */
+    opacity: 0;
+    transform: translateY(10px); /* Slight slide effect */
+    pointer-events: none; /* Prevent interaction when hidden */
+  }
+  
+  .navbar-button-container:hover .dropdown-menu {
+    opacity: 1; /* Make visible on hover */
+    transform: translateY(0); /* Reset slide effect */
+    pointer-events: auto; /* Allow interaction */
+  }
+  
+  .dropdown-item {
+    display: block;
+    padding: 10px 20px; /* Larger clickable area for better UX */
+    color: #122c34; /* Dark, readable text */
+    text-decoration: none;
+    font-size: 14px; /* Readable font size */
+    font-weight: 500; /* Slightly bold for emphasis */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Smooth hover effect */
+  }
+  
+  .dropdown-item:hover {
+    background-color: #1a6187; /* Highlight on hover */
+    color: #ffffff; /* Contrast text color */
+    border-radius: 4px; /* Slight rounding for hover effect */
+  }
+  
