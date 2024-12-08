@@ -22,7 +22,9 @@ const Activity = () => {
         // Fetch tags from the backend
         const fetchTags = async () => {
             try {
-                const response = await fetch('http://localhost:4000/admin/tags');
+                const response = await fetch('http://localhost:4000/advertiser/tags', {
+                    credentials: 'include'
+                });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -39,7 +41,9 @@ const Activity = () => {
         // Fetch categories from the backend
         const fetchCategories = async () => {
             try {
-                const response = await fetch('http://localhost:4000/admin/categories');
+                const response = await fetch('http://localhost:4000/advertiser/categories', {
+                    credentials: 'include'
+                });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -72,7 +76,9 @@ const Activity = () => {
         // Fetch activities from the backend
         const fetchActivities = async () => {
             try {
-                const response = await fetch('http://localhost:4000/advertiser/activities');
+                const response = await fetch('http://localhost:4000/activityRoutes/myActivities', {
+                    credentials: 'include'
+                });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -110,6 +116,7 @@ const Activity = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials:"include",
                     body: JSON.stringify(formData),
                 });
                 if (!response.ok) {
@@ -130,6 +137,7 @@ const Activity = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials:"include",
                     body: JSON.stringify(formData),
                 });
                 if (!response.ok) {
@@ -159,6 +167,7 @@ const Activity = () => {
         try {
             const response = await fetch(`http://localhost:4000/activityRoutes/activity/${id}`, {
                 method: 'DELETE',
+                credentials:"include"
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -196,6 +205,14 @@ const handleCheckboxChange = (event) => {
     });
 };
 
+const handleSelectChange = (selectedOptions) => {
+    setFormData((prevFormData) => ({
+        ...prevFormData,
+        tags: tags.filter((tag) => selectedOptions.includes(tag.type)),
+    }));
+};
+
+
 
     if (!isLoaded) return <div>Loading...</div>;
 
@@ -226,42 +243,47 @@ const handleCheckboxChange = (event) => {
                             <label className={styles.label}>Price</label>
                             <input className={styles.input} placeholder="Price" name="price" type="number" value={formData.price} onChange={handleChange} required />
                         </div>
-                        
                         <div>
                             <label className={styles.label}>Category</label>
-                            {categories.map((category) => (
-                                <div key={category._id}>
-                                    <input
-                                        type="radio"
-                                        name="category"
-                                        value={category.category}
-                                        checked={formData.category === category.category}
-                                        onChange={(e) => {
-                                            const { value } = e.target;
-                                            setFormData((prevFormData) => ({
-                                                ...prevFormData,
-                                                category: value,
-                                            }));
-                                        }}
-                                    />
-                                    <label>{category.category}</label>
-                                </div>
-                            ))}
+                            <select
+                                className={styles.input}
+                                name="category"
+                                value={formData.category}
+                                onChange={(e) => {
+                                    const { value } = e.target;
+                                    setFormData((prevFormData) => ({
+                                        ...prevFormData,
+                                        category: value,
+                                    }));
+                                }}
+                                required
+                            >
+                                <option value="" disabled>Select a category</option>
+                                {categories.map((category) => (
+                                    <option key={category._id} value={category.category}>
+                                        {category.category}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className={styles.label}>Tags</label>
-                            {tags.map((tag) => (
-                                <div key={tag._id}>
-                                    <input
-                                        type="checkbox"
-                                        name="tags"
-                                        value={tag.type}
-                                        checked={formData.tags.some((formTag) => formTag.type === tag.type)}
-                                        onChange={handleCheckboxChange}
-                                    />
-                                    <label>{tag.type}</label>
-                                </div>
-                            ))}
+                            <select
+                                className={styles.multiselect}
+                                name="tags"
+                                value={formData.tags.map((tag) => tag.type)} // Ensure this maps correctly to the selected values
+                                onChange={(e) => {
+                                    const selectedOptions = Array.from(e.target.selectedOptions).map((option) => option.value);
+                                    handleSelectChange(selectedOptions);
+                                }}
+                                multiple
+                            >
+                                {tags.map((tag) => (
+                                    <option key={tag._id} value={tag.type}>
+                                        {tag.type}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className={styles.label}>Special Discounts</label>

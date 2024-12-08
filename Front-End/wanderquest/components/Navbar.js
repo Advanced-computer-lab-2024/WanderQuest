@@ -71,7 +71,7 @@ return (
             <button className="navbar-button">Activities</button>
                 {showDropdown && (
                 <div className="dropdown-menu">
-                <a href="/create-activity" className="dropdown-item">
+                <a href="/advertiser/createactivity" className="dropdown-item">
                 Create an Activity
                 </a>
                 <a href="/my-activities" className="dropdown-item">
