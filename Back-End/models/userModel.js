@@ -136,6 +136,7 @@ const TouristSchema = new Schema({
         notify: { type: Boolean, required: false, default: false }
     }],
     activePromoCodes:{type:[promoCodeSchema],required:false,default:[]},
+    redeemedPromoCodes:{type:[promoCodeSchema],required:false,default:[]},
     cart: [cartItemSchema],
     deliveryAddresses: { type: [deliveryAddressSchema], required: false, default: [] },
     activeAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'deliveryAddressSchema', required: false, default: null },

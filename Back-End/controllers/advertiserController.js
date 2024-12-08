@@ -212,7 +212,7 @@ const createActivity = async (req, res) => {
             title, date, time, location, price, priceRange, ratings, category, tags, specialDiscounts, bookingIsOpen, createdBy, comments,NoOfBooking
 
         });
-        await newActivity.updateRevenue();
+       // await newActivity.updateRevenue();
 
         res.status(200).json(newActivity);
     } catch (error) {
@@ -303,8 +303,13 @@ const updateActivity = async (req, res) => {
 
     try {
         const theUpdatedActivity = await ActivityModel.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json(theUpdatedActivity)
+
+        // const theUpdatedActivity = await ActivityModel.findOneAndUpdate({_id: id},{
+        //     ...req.body
+        //  })
         await newActivity.updateRevenue();
-        res.status(200).json(theUpdatedActivity);
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -330,13 +335,13 @@ const deleteActivity = async (req, res) => {
         }
 
         // Remove the activity reference from itineraries
-        await ItineraryModel.updateMany(
+        await ActivityModel.updateMany(
             { activities: id },
             { $pull: { activities: id } }
         );
 
         // Delete itineraries that have no more activities
-        await ItineraryModel.deleteMany({ activities: { $size: 0 } });
+        await ActivityModel.deleteMany({ activities: { $size: 0 } });
 
         res.status(200).json({ message: 'Successfully Deleted', deleteAnActivity });
     } catch (error) {
@@ -408,10 +413,17 @@ const viewSalesReport = async (req, res) => {
         }
         const createdActivity = await ActivityModel.find({ createdBy: advertiserId });
         const activityRevenue = createdActivity.reduce((total, activity) => total + (activity.revenueOfThisActivity || 0), 0);
+        const activityDetails = createdActivity.map((activity) => ({
+            name: activity.title,
+            price: activity.price,
+            numberOfUsers: activity.NoOfBooking, 
+            date: activity.createdAt 
 
+        }));
         const report = {
             activityRevenue,
             totalRevenue: activityRevenue,
+            activityDetails 
         };
         res.status(200).json({ message: "Sales report generated successfully", report });
 
