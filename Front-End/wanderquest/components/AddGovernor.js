@@ -49,7 +49,7 @@ const AddTourismGovernor = () => {
       };
 
 return(   
-  <div class={styles.tourismGovernorWrapper}>
+  <div className={styles.tourismGovernorWrapper}>
     <div className={styles.tourismGovernor}>
     <h2>Add Tourism Governor</h2>
     <form onSubmit={handleCreateGovernor}>

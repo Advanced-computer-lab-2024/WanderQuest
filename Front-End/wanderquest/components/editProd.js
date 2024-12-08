@@ -1,4 +1,4 @@
-import styles from '../Styles/Creatprod.css'
+import styles from '../Styles/Creatprod.module.css'
 import Products from './Products'
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
@@ -60,6 +60,7 @@ const EditProd = () => {
       const response = await fetch(`http://localhost:4000/admin/editProduct/${id}`, {
         method: 'PATCH',
         body: formData,
+        credentials:"include"
       });
 
       if (!response.ok) {

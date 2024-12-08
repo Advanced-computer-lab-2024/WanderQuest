@@ -114,10 +114,9 @@ export default function governer() {
           setPlaces((prevPlaces) => prevPlaces.filter((place) => place._id !== id));
   
           // Optional: Show success alert or message
-          alert('Place successfully deleted.');
       } catch (error) {
           console.error('Error deleting Historical Place:', error);
-          alert(error);
+          alert("Only an Admin can delete this place");
       }
   };
   
@@ -126,13 +125,6 @@ export default function governer() {
 return (
     <div>
       <Navbar />
-      <h1>Governor Page</h1>
-      <p>Welcome to the Governor page!</p>
-      <button onClick={handleRedirect}>
-        View a list of all my created activities/itineraries/museums and historical places
-      </button>
-      <button onClick={handleRedirectp}>Tag Manager</button>
-  
 
       <div className={styles.heroSection}>
   <Image
@@ -147,6 +139,14 @@ return (
     <h1>Historical Places</h1>
   </div>
 </div>
+      <div className={styles.buttonContainer}>
+                <button onClick={handleRedirect} className={styles.primaryButton}>
+                    Create Historical Place
+                </button>
+                <button onClick={handleRedirectp} className={styles.secondaryButton}>
+                    Tag Manager
+                </button>
+            </div>
 
 
 <div className={styles.mainCont}>

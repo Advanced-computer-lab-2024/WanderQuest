@@ -189,7 +189,9 @@ activitySchema.set('toObject', { virtuals: true });
 
 //middleware to update revenue when bookings are incremented
 activitySchema.methods.updateRevenue = async function () {
-    this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    if (this.NoOfBooking !== undefined && this.price !== undefined) {
+        this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    }
     await this.save();
 };
 activitySchema.pre('save', function (next) {
@@ -208,7 +210,20 @@ activitySchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
+activitySchema.pre('findOneAndUpdate', async function (next) {
+    const update = this.getUpdate();
+    const activity = await this.model.findOne(this.getQuery());
+
+    if (update.NoOfBooking !== undefined || update.price !== undefined) {
+        const newRevenue = (update.NoOfBooking ?? activity.NoOfBooking) * (update.price ?? activity.price);
+        update.revenueOfThisActivity = newRevenue;
+    }
+
+    next();
+});
+
 const Activity = mongoose.model('Activity', activitySchema);
+
 
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({

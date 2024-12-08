@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import styles from '/Styles/Itineraries.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Navbar from '../../../../components/Admin';
+import Navbar from '../../../../components/AdminNavBar';
 import { motion } from "framer-motion";
 import * as React from 'react';
 import Box from '@mui/material/Box';
