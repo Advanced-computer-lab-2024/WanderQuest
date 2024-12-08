@@ -11,6 +11,43 @@ async function convertCurrency(amount, fromCurrency, toCurrency) {
     const rate = response.data.conversion_rates[toCurrency];
     return amount * rate;
 }
+async function applyPromoCodes(userId, amount) {
+    try {
+        const user = await User.findById(userId);
+
+        if (!user || !user.activePromoCodes || user.activePromoCodes.length === 0) {
+            console.log('No active promo codes found for this user.');
+            return amount; // Return original amount if no promo codes
+        }
+
+        let finalAmount = amount;
+
+        for (const promo of user.activePromoCodes) {
+            switch (promo.type) {
+                case 'FIXED':
+                    const fixedDiscount = await convertCurrency(promo.discount, 'USD', user.preferredCurrency);
+                    finalAmount = Math.max(0, finalAmount - fixedDiscount);
+                    break;
+
+                case 'PERCENTAGE':
+                    finalAmount = Math.max(0, finalAmount - (finalAmount * promo.discount) / 100);
+                    break;
+
+                default:
+                    console.log('Unknown promo type:', promo.type);
+            }
+        }
+
+        user.activePromoCodes = [];
+        await user.save();
+
+        return finalAmount;
+    } catch (error) {
+        console.error('Error applying promo codes:', error);
+        throw error;
+    }
+}
+
 
 const getPaymentMultiplier = async (req, res) => {
     try {
@@ -61,10 +98,11 @@ const handleBookingPayment = async (req, res) => {
         const usdPrice = booking.details.price;
 
         // Convert the price to the user's preferred currency
-        let amount = usdPrice;
+        let oldAmount = usdPrice;
         if (user.preferredCurrency !== 'USD') {
-            amount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
+            oldAmount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
         }
+        const amount = await applyPromoCodes(user._id,oldAmount);
 
         // Check if the user is a tourist and has sufficient funds in their wallet
         if (user.wallet > 0) {
@@ -140,11 +178,11 @@ const payOrderWithWallet = async (req, res) => {
         const usdPrice = order.totalPrice;
 
         // Convert the price to the user's preferred currency
-        let amount = usdPrice;
+        let oldAmount = usdPrice;
         if (user.preferredCurrency !== 'USD') {
-            amount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
+            oldAmount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
         }
-
+        const amount = await applyPromoCodes(user._id,oldAmount);
         // Check if the user is a tourist and has sufficient funds in their wallet
         if (user.wallet >= amount) {
             // Deduct the amount from the wallet
@@ -190,7 +228,7 @@ const payOrderWithStripe = async (req, res) => {
         if (user.preferredCurrency !== 'USD') {
             amount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
         }
-
+        amount = await applyPromoCodes(user._id,amount);
         // Create a payment intent using Stripe
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,

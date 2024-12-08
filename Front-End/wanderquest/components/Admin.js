@@ -12,7 +12,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 export default function AdminPage() {
   
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
 
   
   

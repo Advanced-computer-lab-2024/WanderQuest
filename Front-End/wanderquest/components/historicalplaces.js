@@ -221,13 +221,15 @@ const Historicalplaces = () => {
     return (
         <div className={styles.parent}>
             <div className={styles.header}>
+                <br/>
+                <br/>
                 <h1>Create Historical Places</h1>
                 <p>This page will allow you as a Tourism Governor to promote historical places effectively.</p>
             </div>
             <div className={styles.pageContainer}>
     <div className={styles.formContainer}>
-        <h2>Create Historical Places</h2>
-        <p>This page will allow you as a Tourism Governor to promote historical places effectively.</p>
+        {/* <h2>Create Historical Places</h2>
+        <p>This page will allow you as a Tourism Governor to promote historical places effectively.</p> */}
         <form className={styles.form} onSubmit={handleSubmit}>
             <div>
                 <label className={styles.label}>Title</label>
