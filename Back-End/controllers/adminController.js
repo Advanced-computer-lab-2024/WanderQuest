@@ -1,5 +1,5 @@
 const AdminModel = require('../models/adminModel');
-const { User, Advertiser, TourGuide, Tourist } = require('../models/userModel');
+const { User, Advertiser, TourGuide, Tourist,PromoCode } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
@@ -8,7 +8,7 @@ const ProdModel = require('../models/objectModel').Product;
 const CategoryModel = require('../models/objectModel').ActivityCategory;
 const TagModel = require('../models/objectModel').PrefTag;
 const ComplaintModel = require('../models/objectModel').complaint;
-const { Activity, itinerary, PromoCode } = require('../models/objectModel');
+const { Activity, itinerary } = require('../models/objectModel');
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
@@ -762,7 +762,32 @@ const deletePromocode = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+const myNotifications = async (req, res) => {
+    const { _id } = req.user._id;
 
+    try {
+        const myNotification = await NotificationModel.find({ userID: _id });
+        res.status(200).json(myNotification);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+const seenNotifications = async (req, res) => {
+    const { _id } = req.user._id;
+
+    try {
+        const result = await NotificationModel.updateMany(
+            { userID: _id }, // Match notifications by userID
+            { $set: { seen: true } } // Update the "seen" field to true
+        );
+
+        res.status(200).json({ message: 'Notifications updated', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
 
 module.exports = {
     getAllAdmins,
@@ -797,5 +822,7 @@ module.exports = {
     viewSalesReport,
     createPromo,
     promocodes,
-    deletePromocode
+    deletePromocode,
+    myNotifications,
+    seenNotifications
 }
