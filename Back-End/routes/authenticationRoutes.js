@@ -2,7 +2,22 @@ const express = require('express');
 const requireAuth = require('../middleware/requireAuth');
 
 // controller functions
-const { getUser, registerUser, login, uploadDocuments, getUserDocuments, getUsersRequestingAcceptance, getDocumentByFileID, changePassword, acceptUser, acceptTerms, requestAccountDeletion, requestForgetPasswordEmail, resetPassword } = require('../controllers/authenticationController');
+const {
+    getUser,
+    registerUser,
+    login,
+    uploadDocuments,
+    getUserDocuments,
+    getUsersRequestingAcceptance,
+    getDocumentByFileID,
+    changePassword,
+    acceptUser,
+    acceptTerms,
+    requestAccountDeletion,
+    requestForgetPasswordEmail,
+    resetPassword,
+    logout
+} = require('../controllers/authenticationController');
 
 const router = express.Router();
 
@@ -20,5 +35,6 @@ router.patch('/acceptTerms', requireAuth(), acceptTerms);
 router.patch('/requestAccountDeletion', requireAuth(), requestAccountDeletion);
 router.post('/requestForgetPasswordEmail', requestForgetPasswordEmail);
 router.post('/resetPassword', resetPassword);
+router.post('/logout', logout);
 
 module.exports = router;

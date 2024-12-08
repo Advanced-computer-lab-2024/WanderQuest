@@ -45,6 +45,7 @@ const {
     removeFromCart,
     changeAmountInCart,
     birthDaycode,
+    checkoutOrder,
     redeemPromo
 } = require('../controllers/touristController');
 const { getProducts } = require('../controllers/adminController')
@@ -116,5 +117,7 @@ router.post('/cart/add', addToCart);
 router.get('/cart', viewCart);
 router.delete('/cart/remove', removeFromCart);
 router.patch('/cart/change', changeAmountInCart);
+
+router.post('/checkout', checkoutOrder);
 
 module.exports = router;

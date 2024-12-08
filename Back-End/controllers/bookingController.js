@@ -1,10 +1,10 @@
 const Booking = require('../models/bookingModel');
 const axios = require('axios');
-const { User, Tourist } = require('../models/userModel');
+const { User } = require('../models/userModel');
 const Activity = require('../models/objectModel').Activity;
 const Itinerary = require('../models/objectModel').itinerary;
 const mongoose = require('mongoose');
-
+const Tourist = require('../models/userModel').Tourist;
 
 const bookActivity = async (req, res) => {
     const { bookingType, activityId } = req.body;
@@ -213,9 +213,9 @@ const cancelBooking = async (req, res) => {
         if (!booking) {
             return res.status(404).json({ error: 'Booking not found' });
         }
-        if (booking.userId != userId) {
-            console.log(booking.userId, userId);
-            return res.status(403).json({ error: 'Unauthorized action: can not delete the booking of another user' });
+        if (booking.userId.toString() !== userId.toString()) {
+            console.log(booking.userId.toString(), userId.toString());
+            return res.status(403).json({ error: 'Unauthorized action: cannot delete the booking of another user' });
         }
         if (booking.status === 'cancelled') {
             return res.status(400).json({ error: 'Booking already cancelled' });
@@ -223,6 +223,7 @@ const cancelBooking = async (req, res) => {
         if (booking.startDate < new Date()) {
             return res.status(400).json({ error: 'Cannot cancel this booking' });
         }
+        const retUser = await Tourist.findById(userId);
         const currentDate = new Date();
         const startDate = new Date(booking.startDate);
         const hoursDifference = (startDate - currentDate) / (1000 * 60 * 60);
@@ -231,6 +232,12 @@ const cancelBooking = async (req, res) => {
             console.log(hoursDifference);
             return res.status(400).json({ error: 'Cannot cancel a booking within 48 hours of the start date' });
 
+        }
+        const prevWallet = retUser.wallet;
+        retUser.wallet += booking.details.price;
+        await retUser.save();
+        if(prevWallet === retUser.wallet){
+            return res.status(500).json({ error: 'Failed to refund the user' });
         }
         booking.status = 'cancelled';
         user.wallet += booking.details.price;
