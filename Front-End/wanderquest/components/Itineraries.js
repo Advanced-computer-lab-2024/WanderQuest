@@ -5,18 +5,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AddRating from './AddRating';
 import AddComment from './AddComment';
-
+import { motion } from "framer-motion";
 const ItineraryList = (Props) => {
 
-
   const [selectedLanguage, setSelectedLanguage] = useState('');
-  const role=Props.role;
+  const role='Tourist';
   const [activityDetails, setActivityDetails] = useState({});
   const [allItineraries, setAllItineraries] = useState([]);
   const [displayedItineraries, setDisplayedItineraries] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
 
   const [search, setSearch] = useState('');
@@ -27,82 +25,82 @@ const ItineraryList = (Props) => {
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
   const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Japanese", "Russian"];
+    const share=()=>{
+        navigator.share({
+            url:'http://localhost:3000/tourist/iti'
+        })
+    }
 
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
-
-  const fetchActivityDetails = (activityId) => {
-    if (activityDetails[activityId]) return; // Avoid refetching
-
-    fetch(`http://localhost:4000/advertiser/activity/${activityId}`)
+    const fetchActivityDetails = (activityId) => {
+      if (activityDetails[activityId]) return; // Avoid refetching
+  
+      fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
+          method: 'GET',
+          credentials: 'include', // Include credentials (cookies)
+          headers: {
+              "Content-Type": "application/json", // Ensure headers are set correctly
+          },
+      })
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
-        }
-        return res.json();
+          if (!res.ok) {
+              throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
+          }
+          return res.json();
       })
       .then(data => {
-        setActivityDetails(prevDetails => ({
-          ...prevDetails,
-          [activityId]: data,
-        }));
+          setActivityDetails(prevDetails => ({
+              ...prevDetails,
+              [activityId]: data,
+          }));
       })
       .catch(error => {
-        setError(error.message);
+          setError(error.message);
       });
-  };
-
-  const handleflag = async (actid) => {
-    try {
-      const response = await fetch(`http://localhost:4000/admin/flagItinerary/${actid}`, {
-        method: 'PATCH',
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!response.ok) {
-        throw new Error('flag failed');
-      }
-      alert('flag successful!');
-    } catch (error) {
-      console.error('Error booking activity:', error);
-      alert('flag failed');
-    }
   };
   
-
-
-
   const fetchItineraries = () => {
-    fetch('http://localhost:4000/tourist/upcomingItineraries')
+      fetch('http://localhost:4000/tourist/upcomingItineraries', {
+          method: 'GET',
+          credentials: 'include', // Include credentials (cookies)
+          headers: {
+              "Content-Type": "application/json", // Ensure headers are set correctly
+          },
+      })
       .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
+          if (!res.ok) {
+              throw new Error(`Error fetching itineraries: ${res.statusText}`);
+          }
+          return res.json();
       })
       .then(data => {
-        setAllItineraries(data);
-        setDisplayedItineraries(data);
-        setTimeout(() => console.log("First"), 10000)
-        setLoading(false);
-        
-        // Fetch details for all activities
-        data.forEach(itinerary => {
-          itinerary.activities.forEach(activityId => {
-            fetchActivityDetails(activityId);
+          setAllItineraries(data);
+          setDisplayedItineraries(data);
+          setTimeout(() => console.log("First"), 10000);
+          setLoading(false);
+  
+          // Fetch details for all activities
+          data.forEach(itinerary => {
+              itinerary.activities.forEach(activityId => {
+                  fetchActivityDetails(activityId);
+              });
           });
-        });
       })
       .catch(error => {
-        setError(error.message);
-        setTimeout(() => console.log("First"), 10000)
-        setLoading(false);
+          setError(error.message);
+          setTimeout(() => console.log("First"), 10000);
+          setLoading(false);
       });
   };
+  
+  useEffect(() => {
+      fetchItineraries();
+      
+  }, []);
 
   useEffect(() => {
-    fetchItineraries();
-  }, [search]);
 
+    handleSearch();
+}, [search]);
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
         return search.toLowerCase() === '' || 
@@ -111,30 +109,6 @@ const ItineraryList = (Props) => {
     });
     setDisplayedItineraries(newprod);  // Set the filtered museums based on search
 };
-
-const handleFeedback = async (e) => {
-  e.preventDefault();
-    const ratingFeedback = await fetch('http://localhost:4000/bagarab7aga', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ rating }),
-    });
-    const commentFeedback = await fetch('http://localhost:4000/bagarab7agtein', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ comment }),
-    });
-    console.log('Rating:', rating);
-    console.log('Comment:', comment);
-    if (commentFeedback.ok && ratingFeedback.ok) {
-      console.log('Feedback sent successfully');
-      feedbackFlag = true;
-    }
-}
 const clearsearch=()=>{
   setDisplayedItineraries(allItineraries);
 }
@@ -233,156 +207,233 @@ const clearsearch=()=>{
   }
 
   return (
-    <div className={styles.container}>
-      
-      <h1 className={styles.title}>Itinerary List</h1>
-      {role==="Tourist"?(
-      <div className={styles.searchcom}>
-        <input 
-          className={styles.productsearch} 
-          value={search}
-          onChange={(e) => setSearch(e.target.value)} 
-          type="text" 
-          placeholder='Enter your text' 
-        />
-        <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
-        <button onClick={clearsearch}>clearsearch</button>
-      </div>):(<></>)}
+    <>
 
-      <div className={styles.filterContainer}>
-        <div className={styles.dateFilter}>
-          <label htmlFor="date-filter">Date:</label>
-          <input 
-            type="date" 
-            id="date-filter"
-            value={dateFilter} 
-            onChange={(e) => setDateFilter(e.target.value)} 
-          />
-        </div>
-
-        <div className={styles.budgetFilter}>
-          <label htmlFor="min-budget">Min Budget:</label>
-          <input 
-            type="number" 
-            id="min-budget"
-            placeholder="Min Budget" 
-            value={minBudget} 
-            onChange={(e) => setMinBudget(e.target.value)} 
-          />
-          
-          <label htmlFor="max-budget">Max Budget:</label>
-          <input 
-            type="number" 
-            id="max-budget"
-            placeholder="Max Budget" 
-            value={maxBudget} 
-            onChange={(e) => setMaxBudget(e.target.value)} 
-          />
-        </div>
-
-        <div className={styles.preferenceFilter}>
-          <h3>Preferences:</h3>
-          {preferences.map((pref) => (
-            <div key={pref}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selectedPreferences.includes(pref)}
-                  onChange={() => handlePreferenceChange(pref)}
-                />
-                {pref}
-              </label>
+      <img src="/1.png" className={styles.travelplan} alt="iti" />
+      <div className={styles.container}>
+        {role === "Tourist" ? (
+          <motion.div
+            className={styles.searchcom}
+            initial={{ y: -170 }}
+            transition={{ duration: 1 }}
+          >
+            <input
+              className={styles.productsearch}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              type="text"
+              placeholder="Search for your next journey"
+            />
+          </motion.div>
+        ) : (
+          <></>
+        )}
+        <div className={styles.pageLayout}>
+          <div className={styles.sidebar}>
+            <div className={styles.filterSection}>
+              <h3>Date</h3>
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              />
             </div>
-          ))}
-        </div>
-        <div className={styles.languageFilter}>
-  <label htmlFor="language-filter">Language:</label>
-  <select 
-    id="language-filter"
-    value={selectedLanguage}
-    onChange={(e) => setSelectedLanguage(e.target.value)}
-  >
-    <option value="">All Languages</option>
-    {languages.map((language) => (
-      <option key={language} value={language}>{language}</option>
+  
+            <div className={styles.filterSection}>
+              <h3>Budget</h3>
+              <label htmlFor="min-budget">Min:</label>
+              <input
+                type="number"
+                id="min-budget"
+                placeholder="Min Budget"
+                value={minBudget}
+                onChange={(e) => setMinBudget(e.target.value)}
+              />
+              <label htmlFor="max-budget">Max:</label>
+              <input
+                type="number"
+                id="max-budget"
+                placeholder="Max Budget"
+                value={maxBudget}
+                onChange={(e) => setMaxBudget(e.target.value)}
+              />
+            </div>
+  
+            <div className={styles.filterSection}>
+              <h3>Preferences</h3>
+              {preferences.map((pref) => (
+                <div key={pref}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedPreferences.includes(pref)}
+                      onChange={() => handlePreferenceChange(pref)}
+                    />
+                    {pref}
+                  </label>
+                </div>
+              ))}
+            </div>
+  
+            <div className={styles.filterSection}>
+              <h3>Language</h3>
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+              >
+                <option value="">All Languages</option>
+                {languages.map((language) => (
+                  <option key={language} value={language}>
+                    {language}
+                  </option>
+                ))}
+              </select>
+              <button onClick={handleApplyFilters}>Apply</button>
+              <button onClick={handleClearFilters}>Apply</button>
+            </div>
+  
+            <div className={styles.filterSection}>
+              <h3 style={{ marginBottom: '5px' }}>Sorting</h3>
+              <button onClick={handleSortAsc} style={{ margin: '5px' }}>Price: Low to High</button>
+              <button onClick={handleSortDesc} style={{ margin: '5px' }}>Price: High to Low</button>
+              <button onClick={handleSortRatingAsc} style={{ margin: '5px' }}>Rating: Low to High</button>
+              <button onClick={handleSortRatingDesc} style={{ margin: '5px' }}>Rating: High to Low</button>
+
+            </div>
+          </div>
+  
+          <div className={styles.itineraries}>
+            {displayedItineraries.map((itinerary) => (
+              <div
+                id={itinerary.id}
+                key={itinerary.id}
+                className={styles.itinerary}
+              >
+                <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
+                <div className={styles.activities}>
+                  {itinerary.activities.map((activityId) => (
+                    <div key={activityId} className={styles.activity}>
+                      {activityDetails[activityId] ? (
+                        <>
+                          <h3>Activity</h3>
+                          <p>
+                            <strong>Title:</strong>{" "}
+                            {activityDetails[activityId].title}
+                          </p>
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {activityDetails[activityId].date}
+                          </p>
+                          <p>
+                            <strong>Time:</strong>{" "}
+                            {activityDetails[activityId].time}
+                          </p>
+                          <p>
+                            <strong>Location:</strong>{" "}
+                            {activityDetails[activityId].location}
+                          </p>
+                        </>
+                      ) : (
+                        <p>Loading activity details...</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.locationsContainer}>
+                    <strong className={styles.locationsLabel}>Available locations:</strong>
+                    <div className={styles.locations}>
+                        {itinerary.locations && itinerary.locations.length > 0 ? (
+                        <select className={styles.locationSelect}>
+                            {itinerary.locations.map((location, idx) => (
+                            <option key={idx} value={location}>
+                                {location}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available locations</p>
+                        )}
+                    </div>
+                 </div>
+                <div className={styles.timelineCard}>
+  <h3 className={styles.timelineTitle}>Timeline</h3>
+  <div className={styles.timelineList}>
+    {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
+      <div key={idx} className={styles.timelineEntry}>
+        <strong>Day {idx + 1}:</strong> {entry.trim()}
+      </div>
     ))}
-  </select>
+  </div>
 </div>
-        <div className={styles.filterButtons}>
-          <button onClick={handleApplyFilters}>Apply Filters</button>
-          <button onClick={handleClearFilters}>Clear Filters</button>
-        </div>
-      </div>
-
-      <div className={styles.sortButtons}>
-        <button onClick={handleSortAsc}>Sort on Price Asc</button>
-        <button onClick={handleSortDesc}>Sort on Price Desc</button>
-        <button onClick={handleSortRatingAsc}>Sort on Rating Asc</button>
-        <button onClick={handleSortRatingDesc}>Sort on Rating Desc</button>
-      </div>
-      <br/>
-
-      {displayedItineraries.map((itinerary) => (
-        <div id={itinerary.id} key={itinerary.id} className={styles.itinerary}>
-          <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
-          <div className={styles.activities}>
-            {itinerary.activities.map((activityId) => (
-              <div key={activityId} className={styles.activity}>
-                {activityDetails[activityId] ? (
-                  <>
-                    <h3>Activity</h3>
-                    <p><strong>Title:</strong> {activityDetails[activityId].title}</p>
-                    <p><strong>Date:</strong> {activityDetails[activityId].date}</p>
-                    <p><strong>Time:</strong> {activityDetails[activityId].time}</p>
-                    <p><strong>Location:</strong> {activityDetails[activityId].location}</p>
-                  </>
-                ) : (
-                  <p>Loading activity details...</p>
-                )}
+                <p>
+                  <strong>Duration:</strong> {itinerary.duration}
+                </p>
+                <p>
+                  <strong>Language:</strong> {itinerary.language}
+                </p>
+                <p>
+                  <strong>Price:</strong> ${itinerary.price}
+                </p>
+           
+                <div className={styles.datesContainer}>
+                    <strong className={styles.datesLabel}>Available dates:</strong>
+                    <div className={styles.dates}>
+                        {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
+                        <select className={styles.dateSelect}>
+                            {itinerary.availableDates.map((date, idx) => (
+                            <option key={idx} value={date}>
+                                {new Date(date).toLocaleDateString()}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available dates</p>
+                        )}
+                    </div>
+                 </div>
+                 <div className={styles.timesContainer}>
+                  <strong className={styles.timesLabel}>Available times:</strong>
+                  <div className={styles.times}>
+                    {itinerary.time && itinerary.time.length > 0 ? (
+                      <select className={styles.timeSelect}>
+                        {itinerary.time.map((time, idx) => (
+                          <option key={idx} value={time}>
+                            {time}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <p>No available times</p>
+                    )}
+                  </div>
+                </div>
+                                <p>
+                  <strong>Accessibility:</strong>{" "}
+                  {itinerary.accessibility ? "Yes" : "No"}
+                </p>
+                <p>
+                  <strong>Pick Up Location:</strong> {itinerary.pickUpLocation}
+                </p>
+                <p>
+                  <strong>Drop Off Location:</strong> {itinerary.dropOffLocation}
+                </p>
+                <p>
+                  <strong>Booking Already Made:</strong>{" "}
+                  {itinerary.BookingAlreadyMade ? "Yes" : "No"}
+                </p>
+                <p className={styles.productRating}>
+                        {itinerary.rating && itinerary.rating > 0 ? `Rating: ${itinerary.rating}/5` : "No rating yet"}
+                    </p>
+                <Link href={`iti/${itinerary._id}`} passHref>
+                  <button className={styles.searchbtn}>View</button>
+                </Link>
+             
               </div>
             ))}
           </div>
-          <div className={styles.locations}>
-            {itinerary.locations.map((location, idx) => (
-              <p key={idx}><strong>Location:</strong> {location}</p>
-            ))}
-          </div>
-          <p><strong>Timeline:</strong> {itinerary.timeline}</p>
-          <p><strong>Duration:</strong> {itinerary.duration}</p>
-          <p><strong>Language:</strong> {itinerary.language}</p>
-          <p><strong>Price:</strong> ${itinerary.price}</p>
-          <p><strong>Rating:</strong> {itinerary.rating}</p>
-          <div className={styles.dates}>
-            {itinerary.availableDates.map((date, idx) => (
-              <p key={idx}><strong>Date:</strong> {date}</p>
-            ))}
-          </div>
-          <div className={styles.times}>
-            {itinerary.time.map((time, idx) => (
-              <p key={idx}><strong>Time:</strong> {time}</p>
-            ))}
-          </div>
-          <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
-          <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
-          <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
-          <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-          { role === "Tourist" ? (
-          <div>
-              <AddRating rating={rating} setRating={setRating} />
-              <AddComment comment={comment} setComment={setComment} />
-              <button className={styles.btnFeedback} onClick={handleFeedback} >Send Feedback</button> 
-          </div>) : (null)
-          }
-          <p>this{itinerary._id}</p>
-{role === "Admin"?(<button onClick={()=>{handleflag(itinerary._id)}}>flag</button>):(null)}
-          
-
-          
         </div>
-        
-      ))}
-      
-    </div>
+      </div>
+    </>
   );
 };
 

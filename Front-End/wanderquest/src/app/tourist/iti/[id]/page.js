@@ -134,35 +134,122 @@ const ItinerarydetailsPage = ({ params }) => {
                         </div>
                     ))}
                 </div>
-                <div className={styles.locations}>
-                    {itinerary.locations && itinerary.locations.map((location, idx) => (
-                        <p key={idx}><strong>Location:</strong> {location}</p>
-                    ))}
-                </div>
-                <p><strong>Timeline:</strong> {itinerary.timeline}</p>
+                <div className={styles.locationsContainer}>
+                    <strong className={styles.locationsLabel}>Available locations:</strong>
+                    <div className={styles.locations}>
+                        {itinerary.locations && itinerary.locations.length > 0 ? (
+                        <select className={styles.locationSelect}>
+                            {itinerary.locations.map((location, idx) => (
+                            <option key={idx} value={location}>
+                                {location}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available locations</p>
+                        )}
+                    </div>
+                 </div>
+                 <div className={styles.timelineCard}>
+                        <h3 className={styles.timelineTitle}>Timeline</h3>
+                        <div className={styles.timelineList}>
+                            {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
+                            <div key={idx} className={styles.timelineEntry}>
+                                <strong>Day {idx + 1}:</strong> {entry.trim()}
+                            </div>
+                            ))}
+                        </div>
+                        </div>
+
+
+
                 <p><strong>Duration:</strong> {itinerary.duration}</p>
                 <p><strong>Language:</strong> {itinerary.language}</p>
                 <p><strong>Price:</strong> ${itinerary.price}</p>
                 <p><strong>Rating:</strong> {itinerary.rating}</p>
-                <div className={styles.dates}>
-                    {itinerary.availableDates && itinerary.availableDates.map((date, idx) => (
-                        <p key={idx}><strong>Date:</strong> {new Date(date).toLocaleDateString()}</p>
-                    ))}
+                <div className={styles.datesContainer}>
+                    <strong className={styles.datesLabel}>Available dates:</strong>
+                    <div className={styles.dates}>
+                        {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
+                        <select className={styles.dateSelect}>
+                            {itinerary.availableDates.map((date, idx) => (
+                            <option key={idx} value={date}>
+                                {new Date(date).toLocaleDateString()}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available dates</p>
+                        )}
+                    </div>
+                 </div>
 
-                </div>
-                <div className={styles.times}>
-                    {itinerary.time && itinerary.time.map((time, idx) => (
-                        <p key={idx}><strong>Time:</strong> {time}</p>
-                    ))}
-                </div>
+
+                 <div className={styles.timesContainer}>
+  <strong className={styles.timesLabel}>Available times:</strong>
+  <div className={styles.times}>
+    {itinerary.time && itinerary.time.length > 0 ? (
+      <select className={styles.timeSelect}>
+        {itinerary.time.map((time, idx) => (
+          <option key={idx} value={time}>
+            {time}
+          </option>
+        ))}
+      </select>
+    ) : (
+      <p>No available times</p>
+    )}
+  </div>
+</div>
+
                 <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
                 <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
                 <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
                 <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-                <button className={styles.addticket} onClick={() => { handleBooking(itinerary.availableDates[0]) }} >
+                
+                <div className={styles.reviews}>
+                        <h3>Ratings & Reviews</h3>
+
+                        {/* Check if there are no ratings or comments */}
+                        {(!itinerary.ratings.length && !itinerary.comments.length) ? (
+                            <p>No reviews and ratings</p>
+                        ) : (
+                            [
+                            ...new Set([
+                                ...itinerary.ratings.map((rat) => rat.touristId),
+                                ...itinerary.comments.map((comm) => comm.touristId),
+                            ])
+                            ].map((touristId, idx) => {
+                            const rating = itinerary.ratings.find((rat) => rat.touristId === touristId);
+                            const comment = itinerary.comments.find((comm) => comm.touristId === touristId);
+
+                            return (
+                                <div className={styles.review} key={idx}>
+                                <p>
+                                    <strong>{touristId}:</strong>
+                                </p>
+                                {rating && (
+                                    <p>
+                                    <strong>Rating:</strong> {rating.rating} stars
+                                    </p>
+                                )}
+                                {comment && (
+                                    <p>
+                                    <strong>Review:</strong> {comment.comment}
+                                    </p>
+                                )}
+                                </div>
+                            );
+                            })
+                        )}
+                    </div>
+
+
+                    <button className={styles.searchbtn} onClick={() => { handleBooking(itinerary.availableDates[0]) }} >
                     Book
-                </button>
-                <button onClick={share}>share link</button>
+                     </button>
+         
+                    <button className={styles.searchbtn} onClick={share}>share link</button>
 
             </div>
         </>

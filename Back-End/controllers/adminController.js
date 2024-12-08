@@ -1,5 +1,5 @@
 const AdminModel = require('../models/adminModel');
-const { User, Advertiser, TourGuide } = require('../models/userModel');
+const { User, Advertiser, TourGuide,Tourist } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
@@ -17,6 +17,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
 const { sendEmail  } = require('../controllers/authenticationController');
+const { once } = require('events');
 // Collection name in MongoDB
 const collectionName = 'uploads';
 
@@ -174,72 +175,21 @@ const getProdById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-//Admin getAvailableProducts
-const getAvailableProducts = async (req, res) => {
-    try {
-        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ },  { isArchived: 1, availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
-        res.status(200).json(products);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-//Admin addProduct
-
-const addProduct = async (req, res) => {
-    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
-    const seller = req.user._id;
-    //   const picture = req.file;
-
-    // Validate input
-    if (!name /*|| !picture*/ || !description || !price) {
-        return res.status(400).json({ error: 'Details and prices fields are required' });
-    }
-    try {
-        // Checking if the username already exists
-        const existingProduct = await ProdModel.findOne({ name, price });
-
-        if (existingProduct) {
-            return res.status(400).json({ error: 'Product already exists' });
-        }
-
-        const product = await ProdModel.create({
-            name,
-            price,
-            description,
-            seller,
-            ratings,
-            rating,
-            reviews,
-            availableAmount,
-            // picture: {
-            //     data: picture.buffer,
-            //     type: picture.mimetype
-            // },
-
-        });
-        res.status(200).json(product)
-
-    } catch (error) {
-        res.status(400).json({ error: error.message })
-    }
-
-};
 
 const getProductPhoto = async (req, res) => {
     try {
         const product = await ProdModel.findById(req.params.id);
         if (!product) {
-            return res.status(404).json({ error: 'product not found' });
+            return res.status(404).json({ error: 'Product not found' });
         }
 
+        const photo = product.photo;
 
-        const photo = product.picture;
-
-        const fileID = new Types.ObjectId(photo.fileID);
+        const fileID = new mongoose.Types.ObjectId(photo.fileID);
 
         // Stream the file from MongoDB GridFS
         const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-            bucketName: collectionName,
+            bucketName: 'photos', // Replace with your bucket name if different
         });
 
         const downloadStream = bucket.openDownloadStream(fileID);
@@ -265,42 +215,76 @@ const getProductPhoto = async (req, res) => {
     }
 }
 
-const uploadProductPhoto = async (req, res) => {
-    upload(req, res, async (err) => {
-        if (err) {
-            return res.status(400).json({ error: err.message });
+//Admin getAvailableProducts
+const getAvailableProducts = async (req, res) => {
+    try {
+        const products = await ProdModel.find({ availableAmount: { $gt: 0 } /*, isArchived: false*/ },  { isArchived: 1, availableAmount: 1, sales: 1, revenueOfThisProduct: 1 });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+//Admin addProduct
+
+const addProduct = async (req, res) => {
+    const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
+    const seller = req.user._id;
+
+    // Validate input
+    if (!name || !description || !price) {
+        return res.status(400).json({ error: 'Details and prices fields are required' });
+    }
+
+    try {
+        // Checking if the product already exists
+        const existingProduct = await ProdModel.findOne({ name, price });
+
+        if (existingProduct) {
+            return res.status(400).json({ error: 'Product already exists' });
         }
 
-        try {
-            const product = await ProdModel.findById(req.params.id);
-            if (!product) {
-                return res.status(404).json({ error: 'product not found' });
+        // Handle file upload
+        upload(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ error: err.message });
             }
 
+            try {
+                const file = req.files[0];
 
-            const file = req.files[0];
+                const documentMetadata = {
+                    filename: file.filename,
+                    contentType: file.contentType,
+                    fileID: file.id
+                };
 
-            const documentMetadata = {
-                filename: file.filename,
-                contentType: file.contentType,
-                fileID: file.id
-            };
+                // Create the product with the uploaded photo metadata
+                const product = await ProdModel.create({
+                    name,
+                    price,
+                    description,
+                    seller,
+                    ratings,
+                    rating,
+                    reviews,
+                    availableAmount,
+                    photo: documentMetadata
+                });
 
-            product.picture = documentMetadata;
-
-            await product.save();
-
-            res.json({ message: 'product photo uploaded' });
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
-    });
+                res.status(200).json(product);
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };
-// Admin editProduct
+
+
 const editProduct = async (req, res) => {
     const { id } = req.params;
     const { name, price, description, ratings, rating, reviews, availableAmount } = req.body;
-    const picture = req.file;
 
     try {
         let updatedProd = await ProdModel.findById(id);
@@ -308,24 +292,38 @@ const editProduct = async (req, res) => {
             return res.status(400).json({ error: 'Product not found' });
         }
 
-        // Update fields if they are provided
-        if (name) updatedProd.name = name;
-        if (price) updatedProd.price = price;
-        if (description) updatedProd.description = description;
-        if (ratings) updatedProd.ratings = ratings;
-        if (rating) updatedProd.rating = rating;
-        if (reviews) updatedProd.reviews = reviews;
-        if (availableAmount) updatedProd.availableAmount = availableAmount;
-        if (picture) {
-            updatedProd.picture = {
-                filename: picture.filename,  // Set filename from the uploaded file
-                contentType: picture.mimetype, // Use file's MIME type
-                fileID: picture.id // Assuming multer-gridfs-storage provides file ID in `picture.id`
-            };
-        }
+        // Handle file upload
+        upload(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ error: err.message });
+            }
 
-        await updatedProd.save();
-        res.status(200).json(updatedProd);
+            // Update fields if they are provided
+            if (name) updatedProd.name = name;
+            if (price) updatedProd.price = price;
+            if (description) updatedProd.description = description;
+            if (ratings) updatedProd.ratings = ratings;
+            if (rating) updatedProd.rating = rating;
+            if (reviews) updatedProd.reviews = reviews;
+            if (availableAmount) updatedProd.availableAmount = availableAmount;
+
+            // Update picture if a new one is uploaded
+            if (req.files && req.files.length > 0) {
+                const file = req.files[0];
+                updatedProd.photo = {
+                    filename: file.filename,
+                    contentType: file.contentType,
+                    fileID: file.id
+                };
+            }
+
+            try {
+                await updatedProd.save();
+                res.status(200).json(updatedProd);
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -696,6 +694,73 @@ const viewSalesReport = async (req,res) => {
         res.status(500).json({ success: false, message: 'Unable to generate sales report', error });
     }
 }
+const createPromo = async (req,res)=>{
+    const { code,type,discount,birthday,touristId } = req.body;
+    const admin = req.user._id;
+    const expiry = Date.now() + (7 * 24 * 60 * 60 * 1000);
+    // Validate input
+    if ( !code||!type||!discount) {
+        return res.status(400).json({ error: ' fields are required' });
+    }
+    try {
+        // Checking if the username already exists
+        const existingPromo = await PromoCode.findOne({code});
+
+        if (existingPromo) {
+            return res.status(400).json({ error: 'Promocode already exists' });
+        }
+
+        const promocode = await PromoCode.create({
+            code,
+            type,
+            discount,
+            expiryDate:expiry,
+            createdBy:admin
+        });
+        const tourists = await Tourist.find();
+
+        // Create notifications for each tourist
+        const notifications = tourists.map(tourist => ({
+            userID: tourist._id,
+            message: `New promo code available: ${code}`,
+            reason: 'New Promo Code',
+            ReasonID: promocode._id // Optional reference to the promo code
+        }));
+
+        // Insert all notifications at once
+        await NotificationModel.insertMany(notifications);
+
+        res.status(200).json(promocode)
+
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+const promocodes = async(req,res)=>{
+    const promos = await PromoCode.find({});
+    res.status(200).json(promos);
+
+}
+const deletePromocode = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Check if the promocode exists
+        const promocode = await PromoCode.findById(id);
+        if (!promocode) {
+            return res.status(404).json({ error: "Promocode not found" });
+        }
+
+        // Delete the promocode
+        await PromoCode.findByIdAndDelete(id);
+
+        return res.status(200).json({ message: "Promocode deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+
 module.exports = {
     getAllAdmins,
     getUsers,
@@ -725,7 +790,9 @@ module.exports = {
     flagActivity,
     flagItinerary,
     viewAllProductSales,
-    uploadProductPhoto,
     getProductPhoto,
-    viewSalesReport
+    viewSalesReport,
+    createPromo,
+    promocodes,
+    deletePromocode
 }

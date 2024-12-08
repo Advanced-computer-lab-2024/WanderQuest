@@ -18,6 +18,18 @@ const otpSchema = new mongoose.Schema({
     expiry: { type: Date, required: true }
 });
 
+// delivery address schema
+const deliveryAddressSchema = new mongoose.Schema({
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: false }, //optional
+    postalCode: { type: String, required: true },
+    country: { type: String, required: true },
+    googleMapsUrl: { type: String, required: true },
+
+});
+
 // Base schema
 const options = { discriminatorKey: 'role', collection: 'users' };
 
@@ -107,6 +119,11 @@ const User = mongoose.model('User', UserSchema);
 
 // Disciminator schemas
 
+const cartItemSchema = new Schema({
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, min: 1 }
+});
+
 // Tourist schema
 const TouristSchema = new Schema({
     nationality: { type: String, required: true },
@@ -122,9 +139,11 @@ const TouristSchema = new Schema({
     savedEvents: [{
         eventType: { type: String, enum: ['Activity', 'itinerary'], required: true },
         eventId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'savedEvents.eventType' },
-        notify:{type:Boolean,required:false,default:false}
+        notify: { type: Boolean, required: false, default: false }
     }],
-    cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true, default: [] }],
+    cart: [cartItemSchema],
+    deliveryAddresses: { type: [deliveryAddressSchema], required: false, default: [] },
+    activeAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'deliveryAddressSchema', required: false, default: null },
 });
 
 TouristSchema.pre('save', function (next) {

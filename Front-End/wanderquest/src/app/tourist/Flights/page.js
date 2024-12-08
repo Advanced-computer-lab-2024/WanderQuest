@@ -182,11 +182,11 @@ function BookingsPage() {
           </div>
         </div>
         <h2 className={styles.welcome}>Where to next, Haslas?</h2>
-        <div className={styles.welcome}>
+        <div className={styles.welcomeq}>
           Wander freely, quest deeply – WanderQuest brings your travel dreams to life.
         </div>
       </div>
-      <motion.div className={styles.searchbar} initial={{ y: -20 }} transition={{ duration: 1 }}>
+      <motion.div className={styles.searchbar} initial={{ y: -230 }} transition={{ duration: 1 }}>
         <input
           className={styles.input}
           style={{ marginLeft: "0", height: '41px' }}
@@ -306,6 +306,7 @@ function BookingsPage() {
           const pricetotal = `${price.grandTotal}`
           return (
             <div key={index} className={styles.card}>
+              <img src="/plane2.png" alt="" className={styles.hotelImage}/>
               <p>
                 <strong>From:</strong> {departureInfo.iataCode} at {formattedDepartureDate} at {formattedDepartureTime}
               </p>
