@@ -73,6 +73,7 @@ const Archive = (props) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials:"include"
             });
     
             if (response.ok) {
@@ -92,13 +93,13 @@ const Archive = (props) => {
     
 
     useEffect(() => {
-        fetch('http://localhost:4000/admin/products')
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return res.json();
-            })
+        fetch('http://localhost:4000/admin/products', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Include credentials here
+        })
             .then((data) => {
                 setProduct(data);
                 console.log(data);

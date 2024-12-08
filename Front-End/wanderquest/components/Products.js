@@ -388,7 +388,7 @@ return (
                                     onClick={() => onUpdateClick(product._id)}
                                     className={styles.productArchive}
                                 >
-                                    Update
+                                    Edit
                                 </button>
                                 <label className={styles.uploadButton}>
                                     Upload Picture
