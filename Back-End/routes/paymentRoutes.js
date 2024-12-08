@@ -4,6 +4,7 @@ const {
     markBookingAsPaid,
     payOrderWithWallet,
     payOrderWithStripe,
+    markOrderAsPaid,
     payOrderCashOnDelivery,
     getPaymentMultiplier
 } = require('../controllers/paymentController');
@@ -22,6 +23,9 @@ router.post('/payOrderWithWallet', requireAuth(), payOrderWithWallet);
 
 // Route to pay order with Stripe
 router.post('/payOrderWithStripe', requireAuth(), payOrderWithStripe);
+
+// Route to mark order as paid
+router.post('/markOrderAsPaid', requireAuth(), markOrderAsPaid);
 
 // Route to pay order with cash on delivery
 router.post('/payOrderCashOnDelivery', requireAuth(), payOrderCashOnDelivery);
