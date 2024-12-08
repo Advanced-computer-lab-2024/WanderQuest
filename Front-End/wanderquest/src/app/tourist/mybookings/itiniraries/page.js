@@ -1,28 +1,35 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import styles from "/Styles/itineraries.module.css";
+import styles from "/Styles/Bookings.module.css";
 import { motion } from "framer-motion";
 import { useRouter } from 'next/navigation';
 import Navbar from "../../../../../components/Navbar";
+import Foot from "../../../../../components/foot";
 
-function ititpage() {
-  const [activities, setActivities] = useState([]);
-  const [activityDetails, setActivityDetails] = useState({});
+
+function ItinerariesPage() {
   const [allItineraries, setAllItineraries] = useState([]);
-  const [displayedItineraries, setDisplayedItineraries] = useState([]);
-  const [error, setError] = useState(null);
+  const [activityDetails, setActivityDetails] = useState({});
   const [loading, setLoading] = useState(true);
-  const [id1, setid] = useState('');
+  const [error, setError] = useState(null);
+  const [activeButton, setActiveButton] = useState(4); // Set to 4 for itineraries
+  const router = useRouter();
+
+  // Navigation functions
+  const handleRedirect = (path, buttonId) => {
+    setActiveButton(buttonId);
+    router.push(`/tourist/mybookings/${path}`);
+  };
 
   const fetchActivityDetails = (activityId) => {
-    if (activityDetails[activityId]) return; // Avoid refetching
-  
+    if (activityDetails[activityId]) return;
+
     fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
-      credentials: 'include', // Include credentials in the request
+      credentials: 'include',
     })
       .then(res => {
         if (!res.ok) {
-          throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
+          throw new Error(`Error fetching activity ${activityId}`);
         }
         return res.json();
       })
@@ -33,41 +40,15 @@ function ititpage() {
         }));
       })
       .catch(error => {
-        setError(error.message);
+        console.error('Error fetching activity details:', error);
       });
   };
-  
-  const fetchid = () => {
-    fetch(`http://localhost:4000/tourist/touristId`, {
-      credentials: 'include', // Include credentials in the request
-    })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error fetching itineraries: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setid(data);
-        setLoading(false);
-  
-        // Fetch details for all activities
-      })
-      .catch(error => {
-        setError(error.message);
-        setLoading(false);
-      });
-  };
-  
+
   useEffect(() => {
-    fetchid();
-  }, [id1]);
-  
-  const fetchData = () => {
-    fetch(`http://localhost:4000/booking/itineraries/${id1}`, {
-      credentials: 'include', // Include credentials in the request
+    fetch(`http://localhost:4000/booking/itineraries`, {
+      credentials: 'include',
     })
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -75,8 +56,6 @@ function ititpage() {
       })
       .then(data => {
         setAllItineraries(data);
-        setDisplayedItineraries(data);
-        setTimeout(() => console.log("First"), 10000)
         setLoading(false);
         
         // Fetch details for all activities
@@ -86,100 +65,146 @@ function ititpage() {
           });
         });
       })
-      .catch((error) => {
-        console.error('Error fetching activities:', error);
+      .catch(error => {
+        setError(error.message);
         setLoading(false);
       });
-  };
-  
-  const handlecancel = async (actid) => {
-    const bookingId = actid;
-  
-    const cancel = { bookingId };
-  
+  }, []);
+
+  const handleCancel = async (itineraryId) => {
     try {
       const response = await fetch('http://localhost:4000/booking/cancel', {
         method: 'PATCH',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cancel),
-        credentials: 'include', // Include credentials in the request
+        body: JSON.stringify({ bookingId: itineraryId }),
+        credentials: 'include',
       });
+      
       if (!response.ok) {
-        throw new Error('Booking failed');
+        throw new Error('Cancel failed');
       }
+      
       alert('Cancel successful!');
+      // Update the UI to reflect the cancellation
+      setAllItineraries(prevItineraries =>
+        prevItineraries.map(itinerary =>
+          itinerary._id === itineraryId
+            ? { ...itinerary, status: "cancelled" }
+            : itinerary
+        )
+      );
     } catch (error) {
-      console.error('Error canceling activity:', error);
-      alert('Cancel failed. Cannot cancel a booking within 48 hours of the start date.');
+      console.error('Error canceling itinerary:', error);
+      alert('Cancel failed');
     }
   };
-  
-  useEffect(() => {
-    fetchData();
-  }, [id1]);
-  
 
+  return (
+    <div className={styles.all}>
+      <Navbar />
+      <div className={styles.top}>
+        <div className={styles.container}>
+          <div className={styles.navbtns}>
+            <button
+              onClick={() => handleRedirect('flights', 1)}
+              className={`${styles.navbtn} ${activeButton === 1 ? styles.active : ""}`}
+            >
+              Flights
+            </button>
+            <button
+              onClick={() => handleRedirect('transport', 2)}
+              className={`${styles.navbtn} ${activeButton === 2 ? styles.active : ""}`}
+            >
+              Transportation
+            </button>
+            <button
+              onClick={() => handleRedirect('activities', 3)}
+              className={`${styles.navbtn} ${activeButton === 3 ? styles.active : ""}`}
+            >
+              Activities
+            </button>
+            <button
+              onClick={() => handleRedirect('itiniraries', 4)}
+              className={`${styles.navbtn} ${activeButton === 4 ? styles.active : ""}`}
+            >
+              Itineraries
+            </button>
+            <button
+              onClick={() => handleRedirect('myhotels', 5)}
+              className={`${styles.navbtn} ${activeButton === 5 ? styles.active : ""}`}
+            >
+              Hotels
+            </button>
+            <button
+              onClick={() => handleRedirect('orders', 6)}
+              className={`${styles.navbtn} ${activeButton === 6 ? styles.active : ""}`}
+            >
+              Orders
+            </button>
+          </div>
+        </div>
+        <h2 className={styles.welcome}>My Bookings</h2>
+        <div className={styles.welcomeq}>
+          Track and manage all your travel arrangements in one place.
+        </div>
+      </div>
 
+      <motion.div 
+        className={styles.bookingsContainer}
+        initial={{ y: 0, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className={styles.bookingsList}>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>Error: {error}</p>
+          ) : allItineraries.length === 0 ? (
+            <p>No itineraries found</p>
+          ) : (
+            allItineraries.map((itinerary) => (
+              <div key={itinerary._id} className={styles.bookingCard}>
+                <h3>{itinerary.details.title}</h3>
+                <p><strong>Duration:</strong> {itinerary.details.duration}</p>
+                <p><strong>Language:</strong> {itinerary.details.language}</p>
+                <p><strong>Price:</strong> ${itinerary.details.price}</p>
+                <p><strong>Rating:</strong> {itinerary.details.rating}</p>
+                <p><strong>Status:</strong> {itinerary.status}</p>
+                
+                <div className={styles.activities}>
+                  <h4>Activities:</h4>
+                  {itinerary.details.activities.map((activityId) => (
+                    <div key={activityId}>
+                      {activityDetails[activityId] ? (
+                        <>
+                          <p>{activityDetails[activityId].title}</p>
+                          <p>Time: {activityDetails[activityId].time}</p>
+                          <p>Location: {activityDetails[activityId].location}</p>
+                        </>
+                      ) : (
+                        <p>Loading activity details...</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
 
-
-  
-  return (<>
-    <Navbar></Navbar>
-
-    {displayedItineraries.map((itinerary) => (
-        <div id={itinerary.id} key={itinerary.details._id} className={styles.itinerary}>
-          <h2 className={styles.itineraryTitle}>{itinerary.details.title}</h2>
-          <div className={styles.activities}>
-            {itinerary.details.activities.map((activityId) => (
-              <div key={activityId} className={styles.activity}>
-                {activityDetails[activityId] ? (
-                  <>
-                    <h3>Activity</h3>
-                    <p><strong>Title:</strong> {activityDetails[activityId].title}</p>
-                    <p><strong>Date:</strong> {activityDetails[activityId].date}</p>
-                    <p><strong>Time:</strong> {activityDetails[activityId].time}</p>
-                    <p><strong>Location:</strong> {activityDetails[activityId].location}</p>
-                  </>
-                ) : (
-                  <p>Loading activity details...</p>
+                {itinerary.status !== "cancelled" && (
+                  <button 
+                    className={styles.cancelButton}
+                    onClick={() => handleCancel(itinerary._id)}
+                  >
+                    Cancel Booking
+                  </button>
                 )}
               </div>
-            ))}
-          </div>
-          <div className={styles.locations}>
-            {itinerary.details.locations.map((location, idx) => (
-              <p key={idx}><strong>Location:</strong> {location}</p>
-            ))}
-          </div>
-          <p><strong>Timeline:</strong> {itinerary.details.timeline}</p>
-          <p><strong>Duration:</strong> {itinerary.details.duration}</p>
-          <p><strong>Language:</strong> {itinerary.details.language}</p>
-          <p><strong>Price:</strong> ${itinerary.details.price}</p>
-          <p><strong>Rating:</strong> {itinerary.details.rating}</p>
-          <div className={styles.dates}>
-            {itinerary.details.availableDates.map((date, idx) => (
-              <p key={idx}><strong>Date:</strong> {date}</p>
-            ))}
-          </div>
-          <div className={styles.times}>
-            {itinerary.details.time.map((time, idx) => (
-              <p key={idx}><strong>Time:</strong> {time}</p>
-            ))}
-          </div>
-          <p><strong>Accessibility:</strong> {itinerary.details.accessibility ? 'Yes' : 'No'}</p>
-          <p><strong>Pick Up Location:</strong> {itinerary.details.pickUpLocation}</p>
-          <p><strong>Drop Off Location:</strong> {itinerary.details.dropOffLocation}</p>
-          <p><strong>Booking Already Made:</strong> {itinerary.details.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-          <p><strong>status:</strong> {itinerary.status}</p>
-
-          {itinerary.status === "cancelled" ?(<></>):(<button onClick={() => handlecancel(itinerary._id)}>Cancel Booking</button>)}
-          
-          
+            ))
+          )}
         </div>
-        
-      ))}
-
-    </>)
+      </motion.div>
+      <Foot />
+    </div>
+  );
 }
 
-export default ititpage
+export default ItinerariesPage;
