@@ -14,6 +14,34 @@ function ItinerariesPage() {
   const [error, setError] = useState(null);
   const [activeButton, setActiveButton] = useState(4); // Set to 4 for itineraries
   const router = useRouter();
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
 
   // Navigation functions
   const handleRedirect = (path, buttonId) => {
@@ -57,7 +85,7 @@ function ItinerariesPage() {
       .then(data => {
         setAllItineraries(data);
         setLoading(false);
-        
+
         // Fetch details for all activities
         data.forEach(itinerary => {
           itinerary.details.activities.forEach(activityId => {
@@ -79,11 +107,11 @@ function ItinerariesPage() {
         body: JSON.stringify({ bookingId: itineraryId }),
         credentials: 'include',
       });
-      
+
       if (!response.ok) {
         throw new Error('Cancel failed');
       }
-      
+
       alert('Cancel successful!');
       // Update the UI to reflect the cancellation
       setAllItineraries(prevItineraries =>
@@ -149,7 +177,7 @@ function ItinerariesPage() {
         </div>
       </div>
 
-      <motion.div 
+      <motion.div
         className={styles.bookingsContainer}
         initial={{ y: 0, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -168,10 +196,10 @@ function ItinerariesPage() {
                 <h3>{itinerary.details.title}</h3>
                 <p><strong>Duration:</strong> {itinerary.details.duration}</p>
                 <p><strong>Language:</strong> {itinerary.details.language}</p>
-                <p><strong>Price:</strong> ${itinerary.details.price}</p>
+                <p><strong>Price:</strong> {itinerary.details.price * multiplier} {preferredCurrency}</p>
                 <p><strong>Rating:</strong> {itinerary.details.rating}</p>
                 <p><strong>Status:</strong> {itinerary.status}</p>
-                
+
                 <div className={styles.activities}>
                   <h4>Activities:</h4>
                   {itinerary.details.activities.map((activityId) => (
@@ -190,7 +218,7 @@ function ItinerariesPage() {
                 </div>
 
                 {itinerary.status !== "cancelled" && (
-                  <button 
+                  <button
                     className={styles.cancelButton}
                     onClick={() => handleCancel(itinerary._id)}
                   >

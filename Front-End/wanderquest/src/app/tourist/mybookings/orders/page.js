@@ -14,6 +14,35 @@ function OrdersPage() {
   const [activeButton, setActiveButton] = useState(6); // Set to 6 for orders
   const router = useRouter();
 
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
+
   // Navigation functions
   const handleRedirect = (path, buttonId) => {
     setActiveButton(buttonId);
@@ -27,7 +56,7 @@ function OrdersPage() {
           credentials: 'include',
         });
         const data = await response.json();
-        
+
         const activeOrders = [];
         const completedOrders = [];
 
@@ -130,7 +159,7 @@ function OrdersPage() {
         </div>
       </div>
 
-      <motion.div 
+      <motion.div
         className={styles.bookingsContainer}
         initial={{ y: 0, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -161,9 +190,9 @@ function OrdersPage() {
                     month: 'long',
                     day: 'numeric'
                   })}</p>
-                  <p><strong>Total Price:</strong> ${order.totalPrice}</p>
+                  <p><strong>Total Price:</strong> {order.totalPrice * multiplier} {preferredCurrency}</p>
                   <p><strong>Status:</strong> {order.status}</p>
-                  <button 
+                  <button
                     className={styles.cancelButton}
                     onClick={(e) => handleOrderCancel(e, order._id)}
                   >
@@ -200,7 +229,7 @@ function OrdersPage() {
                     month: 'long',
                     day: 'numeric'
                   })}</p>
-                  <p><strong>Total Price:</strong> ${order.totalPrice}</p>
+                  <p><strong>Total Price:</strong> {order.totalPrice * multiplier} {preferredCurrency}</p>
                   <p><strong>Status:</strong> {order.status}</p>
                 </div>
               ))
