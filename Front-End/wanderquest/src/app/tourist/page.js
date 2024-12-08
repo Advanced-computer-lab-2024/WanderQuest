@@ -15,6 +15,7 @@ import {motion} from 'framer-motion';
 import { useEffect } from 'react';
 import Foot from "../../../components/foot";
 
+
 const testimonials = [
     {
         image: "/cat1.jpg",
@@ -51,6 +52,25 @@ export default function Tourist() {
     const router = useRouter();
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [promoCode, setPromoCode] = useState('');
+
+    useEffect(() => {
+        fetch('http://localhost:4000/tourist/birthday', {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then((data) => {
+                setPromoCode(data);
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
 
     const handleRedirect = () => {
         router.push('/tourist/iti');
@@ -112,6 +132,41 @@ export default function Tourist() {
         <>
             <Navbar  />
             <div className={styles.container}>
+                <div style={{
+                    backgroundColor: 'black',
+                    color: 'white',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    paddingTop: '5px',
+                    width: '100%',
+                    height: '30px'
+                }}>
+                    <motion.div
+                        style={{
+                            whiteSpace: 'nowrap',
+                            gap: '10px',
+                            fontSize: '14px',
+                            width: 'max-content' // Added to ensure full width of content
+                        }}
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '100vw' }}
+                        transition={{
+                            duration: 20,
+                            repeat: Infinity,
+                            ease: 'linear'
+                        }}
+                    >
+                        🎉 SPECIAL OFFER: Use code "{promoCode.code}" for 20% OFF on all bookings! <span 
+                            style={{
+                                textDecoration: 'underline',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => navigator.clipboard.writeText(promoCode.code)}
+                        >
+                            Click here
+                        </span> to copy code! Limited time only! 🎉
+                    </motion.div>
+                </div>
                 <div className={styles.heroSection}>
                     {(() => {
                         const [currentImage, setCurrentImage] = useState(0);

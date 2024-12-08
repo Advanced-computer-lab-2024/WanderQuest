@@ -1,88 +1,166 @@
-/* General Form Styling */
-.Registration {
+/* Container Styling */
+.RegistrationContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto; 
-    margin-top: 100px;
-    padding: 30px;
-    background-color: #f9f9f9; 
-    border-radius: 10px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    font-family: Arial, sans-serif;
+    height: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 90vh;
 }
-.Registration input[type="text"],
-.Registration input[type="password"],  /* Ensure password inputs are styled the same */
-.Registration input[type="date"],
-.Registration select {
+
+/* Form Styling */
+.RegistrationForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #fff;
-    box-sizing: border-box; /* Ensures padding doesn't affect the element's width */
 }
 
-/* Style for form labels */
-.Registration label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #122c34;
-    margin-top: 8px; 
+/* Header Styling */
+.register-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40%;
 }
 
-
-
-.Registration button[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #1a6187; 
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.register-header img {
+    width: 110px;
+    height: auto;
+    padding-bottom: 10px;
 }
 
-.Registration button[type="submit"]:hover {
-    background-color: #122c34; 
+.register-header p {
+    color: #144d6b;
+    font-weight: 700;
+    font-size: large;
 }
 
-
-.Registration select {
-    margin-bottom: 25px; 
-}
-
-.Registration input[type="date"] {
-    margin-bottom: 15px; 
-}
-
-
-
-
-.h1 {
+/* Title Styling */
+.Title {
+    color: #144d6b;
+    margin-bottom: 15px;
+    font-size: xx-large;
+    font-weight: 700;
     text-align: center;
-    color: #17455c;
-    margin-bottom: 40px;
 }
 
-.error {
-    color: red; 
-    margin-top: 10px; 
-    font-size: 14px; 
+/* Input Styling */
+.RegistrationContainer input[type="text"],
+.RegistrationContainer input[type="password"],
+.RegistrationContainer input[type="date"],
+.RegistrationContainer select {
+    border-radius: 10px;
+    border: 1px solid #1a6187;
+    background-color: white;
+    width: 50%;
+    height: 35px;
+    padding-left: 10px;
+    margin-top: 3%;
+    font-weight: bold;
+    transition: border-color 0.3s;
 }
 
-/* Responsive Design for Mobile Devices */
-@media (max-width: 600px) {
-    .Registration {
-        padding: 15px;
-    }
+.RegistrationContainer input[type="text"]:focus,
+.RegistrationContainer input[type="password"]:focus,
+.RegistrationContainer input[type="date"]:focus,
+.RegistrationContainer select:focus {
+    border-color: #144d6b;
+}
 
-    .Registration button[type="submit"] {
-        font-size: 14px;
-    }
+/* Input Styling */
+.styledInput {
+    border-radius: 10px;
+    border: 1px solid #1a6187;
+    background-color: white;
+    width: 50%;
+    height: 35px;
+    padding-left: 10px;
+    margin-top: 3%;
+    font-weight: bold;
+    transition: border-color 0.3s;
+}
+
+.styledInput:focus {
+    border-color: #144d6b;
+}
+
+/* Password Wrapper */
+.PasswordWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.TogglePassword {
+    position: absolute;
+    right: 26%;
+    top: 75%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #1a6187;
+}
+
+/* Button Styling */
+.RegisterButton {
+    border-radius: 10px;
+    border: none;
+    color: #fff;
+    background-color: #1a6187;
+    width: 25%;
+    height: 40px;
+    margin-top: 4%;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.RegisterButton:hover {
+    background-color: #144d6b;
+}
+
+/* Error and Redirect Messages */
+.Error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.LoginRedirect {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.LoginRedirect a {
+    color: #0056b3;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.LoginRedirect a:hover {
+    text-decoration: underline;
+}
+
+/* Scrollbar Customization */
+.RegistrationContainer::-webkit-scrollbar {
+    width: 10px;
+}
+
+.RegistrationContainer::-webkit-scrollbar-track {
+    background-color: #F5F5F5;
+}
+
+.RegistrationContainer::-webkit-scrollbar-thumb {
+    background-color: #1a6187;
+    border-radius: 13px;
 }

@@ -1,0 +1,91 @@
+/* Parent Component */
+.Authentication {
+    display: flex;
+    height: 100vh;
+    background-color: #0A2A3A;
+    overflow: hidden;
+}
+
+/* Background Section */
+.Background {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #0A2A3A;
+    transition: transform 0.8s ease-in-out;
+}
+
+.Background.Registering {
+    transform: translateX(100%);
+}
+
+/* Welcome Section */
+.Welcome {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.Welcome img {
+    width: 300px;
+    height: auto;
+    object-fit: contain;
+}
+
+.WelcomeText {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.WelcomeText h1 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.WelcomeText p {
+    color: whitesmoke;
+    font-size: 1rem;
+}
+
+/* Right-Side Section */
+.RightSideOuter {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 20px;
+    transition: transform 0.8s ease-in-out;
+}
+
+.RightSideOuter.Registering {
+    transform: translateX(-100%);
+}
+
+/* Transition Effects */
+.Enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.EnterActive {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 300ms ease-in-out;
+}
+
+.Exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ExitActive {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 300ms ease-in-out;
+}

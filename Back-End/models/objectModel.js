@@ -189,9 +189,16 @@ activitySchema.set('toObject', { virtuals: true });
 
 //middleware to update revenue when bookings are incremented
 activitySchema.methods.updateRevenue = async function () {
-    this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    if (this.NoOfBooking !== undefined && this.price !== undefined) {
+        this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    }
     await this.save();
 };
+activitySchema.pre('save', function (next) {
+    this.revenueOfThisActivity = this.NoOfBooking * this.price;
+    next();
+});
+
 
 //middleware to update the ratings of activity
 activitySchema.pre('save', function (next) {
@@ -203,7 +210,20 @@ activitySchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
+activitySchema.pre('findOneAndUpdate', async function (next) {
+    const update = this.getUpdate();
+    const activity = await this.model.findOne(this.getQuery());
+
+    if (update.NoOfBooking !== undefined || update.price !== undefined) {
+        const newRevenue = (update.NoOfBooking ?? activity.NoOfBooking) * (update.price ?? activity.price);
+        update.revenueOfThisActivity = newRevenue;
+    }
+
+    next();
+});
+
 const Activity = mongoose.model('Activity', activitySchema);
+
 
 //itinerary Schema
 const itinerarySchema = new mongoose.Schema({
@@ -271,7 +291,7 @@ itinerarySchema.pre('findOne', async function (next) {
     }
     next();
 });
-
+/*
 itinerarySchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {
         const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
@@ -281,15 +301,38 @@ itinerarySchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
-
+*/
 //middleware to update revenue of itinerary
 itinerarySchema.methods.updateRevenue = async function () {
+    // Fetch all activities related to this itinerary
     const activities = await Activity.find({ _id: { $in: this.activities } });
-    //The revenue for these activities is then summed up
-    const totalActivityRevenue = activities.reduce((total, activity) => total + activity.revenue, 0);
-    this.revenue = totalActivityRevenue + this.bookings * this.price;
+    const totalActivityRevenue = activities.reduce((total, activity) => total + (activity.revenue || 0), 0);
+    this.revenueOfThisItinerary = totalActivityRevenue + (this.NoOfBookings * this.price);
+    
+    // Save the updated itinerary revenue
     await this.save();
 };
+itinerarySchema.pre('save', async function (next) {
+    // Update average rating if ratings exist
+    if (this.ratings && this.ratings.length > 0) {
+        const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
+        this.rating = total / this.ratings.length; // Calculate average
+    } else {
+        this.rating = null; // Set to null if no ratings
+    }
+
+    // Update itinerary revenue
+    if (this.activities && this.activities.length > 0) {
+        const activities = await Activity.find({ _id: { $in: this.activities } });
+        const totalActivityRevenue = activities.reduce((total, activity) => total + (activity.revenue || 0), 0);
+        this.revenueOfThisItinerary = totalActivityRevenue + (this.NoOfBookings * this.price);
+    } else {
+        this.revenueOfThisItinerary = this.NoOfBookings * this.price; // Base revenue if no activities
+    }
+
+    next(); // Proceed with the save operation
+});
+
 
 const itinerary = mongoose.model('itinerary', itinerarySchema);
 

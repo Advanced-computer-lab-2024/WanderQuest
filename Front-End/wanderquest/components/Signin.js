@@ -1,25 +1,25 @@
-"use client"
-import React,{ useState } from 'react';
-import styles from '../styles/Signin.module.css';
+"use client";
+import React, { useState } from 'react';
+import styles from "../styles/Signin.module.css";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
-import {motion} from 'framer-motion';
-function Signin() {
+function Signin({ toggleForm }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
 
     try {
       const response = await fetch("http://localhost:4000/authentication/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", 
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ username, password }),
       });
 
@@ -27,7 +27,7 @@ function Signin() {
         const data = await response.json();
         setSuccess("Login successful!");
         setError("");
-        console.log("User data:", data);
+
         switch (data.role) {
           case "tourist":
             window.location.href = "/tourist";
@@ -48,9 +48,8 @@ function Signin() {
             window.location.href = "/governer";
             break;
           default:
-            setError("Unknown role. Please contact support.")}
-        
-
+            setError("Unknown role. Please contact support.")
+        }
       } else {
         const errorData = await response.json();
         setError(errorData.error || "Login failed. Please try again.");
@@ -62,72 +61,43 @@ function Signin() {
       setSuccess("");
     }
   };
-  return (<>
-    <motion.img 
-    initial={{scale:0.4,y:0,opacity:0.5}}
-    animate={{scale:1,y:0,opacity:1}}
-    transition={{duration:0.5}}
-    className={styles.head} src="/image.png" alt="" />
-    <motion.div 
-    initial={{scale:0.4,y:0,opacity:0.5}}
-    animate={{scale:1,y:0,opacity:1}}
-    transition={{duration:1}}
-    className={styles.container}>
-      <div className={styles.top}>
-        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-        <dotlottie-player 
-          src="https://lottie.host/d400beb3-6daa-4691-9259-d010c2d9dfe0/gNoniLxuhl.json" 
-          background="transparent" 
-          speed="1" 
-          style={{ width: '300px', height: '300px' }} 
-          direction="1" 
-          playMode="normal" 
-          loop 
-          autoplay 
-        />
-      </div>
-      <form onSubmit={handleLogin}>
-      <div className={styles.bottom}>
-        <p className={styles.signin}>Sign in</p>
-        <div className={styles.username}>
-  <label className={styles.label} htmlFor="username">Username</label>
-  <br />
-  <input 
-    className={styles.input} 
-    type="text" 
-    id="username"
-    value={username}
-    onChange={(e) => setUsername(e.target.value)}
-  />
-</div>
-<div className={styles.password}>
-  <label className={styles.label} htmlFor="password">Password</label>
-  <br />
-  <input 
-    className={styles.input} 
-    type="password" 
-    id="password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    required 
-  />
-  <div className={styles.forgetPassInline}>
-  <a className={styles.link} href="/forgotPassword">Forgot Password?</a>
-</div>
 
-</div>
-      </div>
-      <div className={styles.createaccount}>
-        <button className={styles.btn}>Sign in</button>
-        <p className={styles.error}>{error}</p>
-      </div>
+  return (
+    <div className={styles.SigninContainer}>
+      <form className={styles.SigninForm} onSubmit={handleLogin}>
+        <h1 className={styles.Title}>Sign in</h1>
+        <div className={styles.InputWrapper}>
+          <input
+            type="text"
+            placeholder="Username"
+            className={styles.Input}
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div className={styles.PasswordWrapper}>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className={styles.Input}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <i onClick={toggleShowPassword} className={styles.TogglePassword}>
+            {showPassword ? <FiEye /> : <FiEyeOff />}
+          </i>
+        </div>
+        {error && <p className={styles.Error}>{error}</p>}
+        <button type="submit" className={styles.SigninButton}>Sign in</button>
       </form>
-      <div className={styles.createaccountInline}>
-    <span className={styles.noAccount}>Don't have an account?</span>
-    <a className={styles.link} href="/register">Create Account</a>
-  </div>
-    </motion.div>
-    </>);
+      <div className={styles.Redirect}>
+        Don't have an account? &nbsp;
+        <a onClick={toggleForm} style={{ cursor: 'pointer' }}>Register</a>
+      </div>
+    </div>
+  );
 }
 
 export default Signin;

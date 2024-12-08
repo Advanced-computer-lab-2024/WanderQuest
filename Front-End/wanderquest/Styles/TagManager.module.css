@@ -1,135 +1,197 @@
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .form {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .tagsList {
-    margin-top: 20px;
-  }
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  .addTag{
-    background-color: #1A6187;
-    color: white;
-    border-radius: 4px;
-  }
-  .addTag:hover{
-    background-color: #17455C;
-    color: white;
-  }
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 60vh; /* Adjust for desired height */
+  overflow: hidden;
+}
 
-  .showTags{
-    background-color: #038b1c;
-    color: white;
-    border-radius: 4px;
-  }
-  
-  .showTags:hover{
-    background-color: #036b14;
-    color: white;
-  }
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit:cover; /* Ensures image fills hero section */
+}
 
-  
-  .tagScroll {
-    max-height: 200px; /* Set a max height for scrolling */
-    overflow-y: auto;  /* Enable vertical scrolling */
-  }
-  
-  .ul {
-    padding: 0;
-    list-style-type: none;
-  }
-  
-  .tagGrid {
-    padding: 0;
-    list-style-type: none;
-  }
-  
-  .tagItem {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    position: relative;
-  }
-  
-  .editInput {
-    width: 100%;
-    transition: width 0.3s ease;
-  }
-  
-  .tagButtons {
-    display: flex;
-    gap: 5px;
-    margin-top: 5px;
-  }
-  
-  .button {
-    padding: 5px 10px;
-    font-size: 12px;
-    background-color: #1A6187;
-  }
-  
-  .editButton {
-    background-color: #1A6187;
-    color: white;
-    border-radius: 4px;
-  }
+.heroText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.7);
+}
 
-  .editButton:hover {
-    background-color: #17455C;
-    color: white;
-  }
-  
-  .cancelButton {
-    background-color: #f44336;
-    color: white;
-    border-radius: 4px;
-  }
+.layout {
+  display: flex;
+  margin-top: 20px;
+  padding: 20px;
+  gap: 20px;
+  flex-grow: 1;
+}
 
-  .cancelButton:hover {
-    background-color: #ff0000;
-    color: white;
-  }
-  
-  .deleteButton {
-    background-color: #f44336;
-    color: white;
-    border-radius: 4px;
-  }
+.formSection {
+  width: 30%; /* Adjust size of the form */
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+.input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  .deleteButton:hover {
-    background-color: #ff0000;
-    color: white;
-  }
-  
-  .success {
-    color: green;
-    margin-top: 10px;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-  
-  .editing .editInput {
-    width: 40%;
-  }
-  
+
+.buttonWrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+/* General button styles */
+.button {
+  padding: 12px 20px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  flex: 1; /* Ensure buttons take equal space */
+  text-align: center;
+  background-color: #17455C;
+  color: white;
+}
+
+.addTag {
+  background-color: #1A6187;
+  color: white;
+}
+
+.addTag:hover {
+  background-color: #17455C;
+}
+
+.showTags, .hideTags {
+  background-color: #038b1c;
+  color: white;
+}
+
+.showTags:hover, .hideTags:hover {
+  background-color: #036b14;
+}
+
+/* Button hover scaling */
+.button:hover {
+  background-color: #1A6187;
+}
+
+.showTags {
+  background-color: #1A6187;
+  color: white;
+}
+
+.showTags:hover {
+  background-color: #17455C;
+}
+
+.hideTags {
+  background-color: #038b1c;
+  color: white;
+}
+
+.hideTags:hover {
+  background-color: #036b14;
+}
+
+.cancelTags {
+  background-color: #f44336;
+  color: white;
+}
+
+.cancelTags:hover {
+  background-color: #d32f2f;
+}
+
+/* Add a distinct background color, padding, and hover effects */
+.showTagsButton {
+  padding: 12px 20px;
+  background-color: #1A6187;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+  margin: 10px 0;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.showTagsButton:hover {
+  background-color: #17455C;
+  transform: scale(1.05);
+}
+
+/* Ensure proper layout of the button */
+.tagsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+
+.tagsSection {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tagGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.tagItem {
+  padding: 8px 12px;
+  background-color: #eef2f7;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.3s;
+}
+
+.tagItem:hover {
+  background-color: #d6e4ff;
+}
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.tagsList {
+  width: 70%; /* Right section takes up more space */
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}

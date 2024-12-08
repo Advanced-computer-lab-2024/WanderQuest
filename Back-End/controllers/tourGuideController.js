@@ -277,6 +277,10 @@ const createItinerary = async (req, res) => {
         tags,
         comments,
         BookingAlreadyMade,
+        bookingIsOpen,
+        NoOfBookings,
+        touristsCount,
+        flagged
     } = req.body;
 
     try {
@@ -305,9 +309,15 @@ const createItinerary = async (req, res) => {
             tags,
             comments,
             BookingAlreadyMade,
-            createdBy
+            bookingIsOpen,
+            NoOfBookings,
+            touristsCount,
+            createdBy, 
+            flagged,
         });
         res.status(200).json(newItinerary);
+        //await newItinerary.updateRevenue();
+
     } catch (error) {
 
         res.status(404).json({ error: error.message });
@@ -611,10 +621,18 @@ const viewSalesReport = async (req, res) => {
             return res.status(404).json({ error: 'Tour guide not found' });
         }
         const myCreatedItineraries = await Itinerary.find({ createdBy: tourGuide });
+        const itineraryDetails = myCreatedItineraries.map((itinerary) => ({
+            name: itinerary.title,  
+           // activitiesIncluded: itinerary.activities,
+            price: itinerary.price,
+            numberOfUsers: itinerary.NoOfBookings, 
+            date: itinerary.createdAt,  
+        }));
         const itineraryRevenue = myCreatedItineraries.reduce((total, itinerary) => total + (itinerary.revenueOfThisItinerary || 0), 0);
         const report = {
             itineraryRevenue,
-            totalRevenue: itineraryRevenue
+            totalRevenue: itineraryRevenue,
+            itineraryDetails
 
         };
 

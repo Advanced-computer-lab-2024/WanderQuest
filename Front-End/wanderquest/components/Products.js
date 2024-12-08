@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
-import StarIcon from '@mui/icons-material/Star'; 
+import StarIcon from '@mui/icons-material/Star';
 const labels = {
     0.5: 'Useless',
     1: 'Useless+',
@@ -23,9 +23,9 @@ const labels = {
     4: 'Good+',
     4.5: 'Excellent',
     5: 'Excellent+',
-  };
+};
 const Products = ({ role, refreshWishlist }) => {
-    
+
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState('');
@@ -36,7 +36,35 @@ const Products = ({ role, refreshWishlist }) => {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const [productPicture, setProductPicture] = useState(null);
-    
+    const [multiplier, setMultiplier] = useState(1);
+    const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+    useEffect(() => {
+        const fetchPaymentMultiplier = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Automatically include credentials (user session)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    setMultiplier(result.multiplier);
+                    setPreferredCurrency(result.currency);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.message}`);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        };
+        fetchPaymentMultiplier();
+    }, []);
+
     const handleProductPictureChange = (e) => setProductPicture(e.target.files[0]);
 
     const onUpdateClick = (id) => {
@@ -50,10 +78,10 @@ const Products = ({ role, refreshWishlist }) => {
         });
         setFilteredProducts(newprod);
     };
-    const clearsearch=()=>{
+    const clearsearch = () => {
         setFilteredProducts(products);
     }
-    const ClearFilters=()=>{
+    const ClearFilters = () => {
         setFilteredProducts(products);
     }
     const handlesortasc = () => {
@@ -65,15 +93,15 @@ const Products = ({ role, refreshWishlist }) => {
         const editedprod = [...filteredProducts].sort((a, b) => b.price - a.price);
         setFilteredProducts(editedprod);
     };
-    const handleratingfilterasc=()=>{
-        const sortedprod=[...filteredProducts].sort((a,b)=>a.rating-b.rating)
+    const handleratingfilterasc = () => {
+        const sortedprod = [...filteredProducts].sort((a, b) => a.rating - b.rating)
         setFilteredProducts(sortedprod);
     };
-    const handleratingdsc=()=>{
-        const sorteddsc=[...filteredProducts].sort((a,b)=>b.rating-a.rating);
+    const handleratingdsc = () => {
+        const sorteddsc = [...filteredProducts].sort((a, b) => b.rating - a.rating);
         setFilteredProducts(sorteddsc);
     }
-    
+
 
     useEffect(() => {
 
@@ -81,7 +109,7 @@ const Products = ({ role, refreshWishlist }) => {
     }, [search]);
     const handlePriceFilter = () => {
         const filtered = products.filter((product) => {
-            const price = product.price;
+            const price = product.price * multiplier;
             return (
                 (minPrice === '' || price >= minPrice) &&
                 (maxPrice === '' || price <= maxPrice)
@@ -92,7 +120,7 @@ const Products = ({ role, refreshWishlist }) => {
 
     const updateRating = async (productId, newRating) => {
         console.log(`Product ID: ${productId}, New Rating: ${newRating}`);
-    
+
         try {
             const response = await fetch(`http://localhost:4000/tourist/rateProduct/${productId}`, {
                 method: 'POST',
@@ -102,7 +130,7 @@ const Products = ({ role, refreshWishlist }) => {
                 body: JSON.stringify({ rating: newRating }),  // touristId will be inferred from credentials
                 credentials: 'include', // Automatically include tourist ID from session/cookie
             });
-    
+
             if (response.ok) {
                 const result = await response.json();
                 alert('Rating updated successfully!');
@@ -118,10 +146,10 @@ const Products = ({ role, refreshWishlist }) => {
             alert(`Error: ${error.message}`);
         }
     };
-    
+
     const addComment = async (productId, comment) => {
         console.log("comments", comments);
-    
+
         try {
             const response = await fetch(`http://localhost:4000/tourist/reviewProduct/${productId}`, {
                 method: 'POST',
@@ -133,7 +161,7 @@ const Products = ({ role, refreshWishlist }) => {
                 }),
                 credentials: 'include', // Automatically include tourist ID from session/cookie
             });
-    
+
             if (response.ok) {
                 const result = await response.json();
                 alert(result.message);
@@ -150,7 +178,7 @@ const Products = ({ role, refreshWishlist }) => {
             alert(`Error: ${error.message}`);
         }
     };
-    
+
     const onArchiveClick = async (productId) => {
         try {
             const response = await fetch(`http://localhost:4000/admin/products/archive/${productId}`, {
@@ -160,7 +188,7 @@ const Products = ({ role, refreshWishlist }) => {
                 },
                 credentials: 'include', // Automatically include credentials (admin session)
             });
-    
+
             if (response.ok) {
                 const result = await response.json();
                 alert(result.message);  // Notify the user of success
@@ -174,7 +202,7 @@ const Products = ({ role, refreshWishlist }) => {
             alert(`Error: ${error.message}`);
         }
     };
-    
+
     useEffect(() => {
         fetch('http://localhost:4000/tourist/products', {
             credentials: 'include', // Include admin credentials
@@ -225,97 +253,99 @@ const Products = ({ role, refreshWishlist }) => {
             alert('Failed to add product to wishlist');
         }
     };
-    
-    if (loading) {return<>
-        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
-        <dotlottie-player style={{
-    width: '300px',
-    height: '300px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 'auto'
-    }}
-    src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
-        </>}
-return (
-    <>
-    <img src="/1.png" className={styles.travelplan} alt="iti" />
-    <motion.div
-            className={styles.searchcom}
-            initial={{ y: -170 }}
-            transition={{ duration: 1 }}
-          >
-            <input
-                        className={styles.productsearch}
-                        onChange={(e) => setSearch(e.target.value)}
-                        type="text"
-                        placeholder="Enter your text"
-                    />
-          </motion.div>
-        <div className={styles.filterSection}>
-            <div className={styles.pageLayout}>
-                <div className={styles.sidebar}>
-                    <h1>Products</h1>
-                    <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
-                    <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
-                    <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
-                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
 
-                    <div className={styles.priceFilter}>
-                        <h3>Price Filter</h3>
-                        <div>
-                            <label>
-                                Min Price:
+    if (loading) {
+        return <>
+            <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+            <dotlottie-player style={{
+                width: '300px',
+                height: '300px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 'auto'
+            }}
+                src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        </>
+    }
+    return (
+        <>
+            <img src="/1.png" className={styles.travelplan} alt="iti" />
+            <motion.div
+                className={styles.searchcom}
+                initial={{ y: -170 }}
+                transition={{ duration: 1 }}
+            >
+                <input
+                    className={styles.productsearch}
+                    onChange={(e) => setSearch(e.target.value)}
+                    type="text"
+                    placeholder="Enter your text"
+                />
+            </motion.div>
+            <div className={styles.filterSection}>
+                <div className={styles.pageLayout}>
+                    <div className={styles.sidebar}>
+                        <h1>Products</h1>
+                        <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
+                        <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
+                        <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
+                        <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
+
+                        <div className={styles.priceFilter}>
+                            <h3>Price Filter</h3>
+                            <div>
+                                <label>
+                                    Min Price:
+                                    <input
+                                        type="number"
+                                        className={styles.min}
+                                        value={minPrice}
+                                        onChange={(e) => setMinPrice(e.target.value)}
+                                        placeholder="0"
+                                    />
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Max Price:
+                                    <input
+                                        type="number"
+                                        className={styles.max}
+                                        value={maxPrice}
+                                        onChange={(e) => setMaxPrice(e.target.value)}
+                                        placeholder="1000"
+                                    />
+                                </label>
+                            </div>
+                            <div className={styles.slider}>
+                                <label>Min</label>
                                 <input
-                                    type="number"
-                                    className={styles.min}
+                                    type="range"
+                                    className={styles.rangeMin}
+                                    min="0"
+                                    max="10000"
                                     value={minPrice}
                                     onChange={(e) => setMinPrice(e.target.value)}
-                                    placeholder="0"
+                                    step="100"
                                 />
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                Max Price:
+                                <label>Max</label>
                                 <input
-                                    type="number"
-                                    className={styles.max}
+                                    type="range"
+                                    className={styles.rangeMax}
+                                    min="0"
+                                    max="10000"
                                     value={maxPrice}
                                     onChange={(e) => setMaxPrice(e.target.value)}
-                                    placeholder="1000"
+                                    step="100"
                                 />
-                            </label>
+                            </div>
+                            <button style={{ margin: '5px' }} onClick={handlePriceFilter}>Apply Filter</button>
+                            <button style={{ margin: '5px' }} className={styles.productArchive} onClick={ClearFilters}>Clear Filters</button>
                         </div>
-                        <div className={styles.slider}>
-                            <label>Min</label>
-                            <input
-                                type="range"
-                                className={styles.rangeMin}
-                                min="0"
-                                max="10000"
-                                value={minPrice}
-                                onChange={(e) => setMinPrice(e.target.value)}
-                                step="100"
-                            />
-                            <label>Max</label>
-                            <input
-                                type="range"
-                                className={styles.rangeMax}
-                                min="0"
-                                max="10000"
-                                value={maxPrice}
-                                onChange={(e) => setMaxPrice(e.target.value)}
-                                step="100"
-                            />
-                        </div>
-                        <button style={{ margin: '5px' }} onClick={handlePriceFilter}>Apply Filter</button>
-                        <button  style={{ margin: '5px' }} className={styles.productArchive} onClick={ClearFilters}>Clear Filters</button>
                     </div>
-                </div>
 
-                {/* <div className={styles.searchcom}>
+                    {/* <div className={styles.searchcom}>
                     <input
                         className={styles.productsearch}
                         onChange={(e) => setSearch(e.target.value)}
@@ -323,47 +353,47 @@ return (
                         placeholder="Enter your text"
                     />
                 </div> */}
-                <div className={styles.cardscontainer}>
-                {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-                        filteredProducts
-                         .filter(product => !product.isArchived)
-                    .map((product) => (
-                <div className={styles.productCard} key={product._id}>
-                <img
-                    src={product.picture}
-                    alt={product.name}
-                    className={styles.productImage}
-                />
-                <div className={styles.productInfo}>
-                    <h2>{product.name}</h2>
-                    <p className={styles.productPrice}>
-                        ${product.price.toFixed(2)}
-                    </p>
-                    <p>{product.description}</p>
-                    <p>Seller: {product.seller}</p>
-                   
-                    <p>Available Quantity: {product.availableAmount}</p>
-                    <p className={styles.productRating}>
-                        {product.rating && product.rating > 0 ? (
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Rating
-                                    name="text-feedback"
-                                    value={product.rating}
-                                    readOnly
-                                    precision={0.5}
-                                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
-                                />
-                                <Box sx={{ ml: 2 }}>{labels[product.rating]}</Box>
-                            </div>
-                        ) : "No rating yet"}
-                    </p>
-{/*                         
-                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
-     
-                   
+                    <div className={styles.cardscontainer}>
+                        {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
+                            filteredProducts
+                                .filter(product => !product.isArchived)
+                                .map((product) => (
+                                    <div className={styles.productCard} key={product._id}>
+                                        <img
+                                            src={product.picture}
+                                            alt={product.name}
+                                            className={styles.productImage}
+                                        />
+                                        <div className={styles.productInfo}>
+                                            <h2>{product.name}</h2>
+                                            <p className={styles.productPrice}>
+                                                {(product.price * multiplier).toFixed(2)} {preferredCurrency}
+                                            </p>
+                                            <p>{product.description}</p>
+                                            <p>Seller: {product.seller}</p>
 
-                    {/* Render reviews */}
-                    {/* <div className={styles.reviews}>
+                                            <p>Available Quantity: {product.availableAmount}</p>
+                                            <p className={styles.productRating}>
+                                                {product.rating && product.rating > 0 ? (
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <Rating
+                                                            name="text-feedback"
+                                                            value={product.rating}
+                                                            readOnly
+                                                            precision={0.5}
+                                                            emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
+                                                        />
+                                                        <Box sx={{ ml: 2 }}>{labels[product.rating]}</Box>
+                                                    </div>
+                                                ) : "No rating yet"}
+                                            </p>
+                                            {/*                         
+                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
+
+
+
+                                            {/* Render reviews */}
+                                            {/* <div className={styles.reviews}>
                         <h3>Reviews:</h3>
                         {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
                             product.reviews.map((review, index) => (
@@ -379,36 +409,36 @@ return (
                         )}
                     </div> */}
 
-                    {/* Admin-specific actions */}
-                    {role === "Admin" && <p>Sales: {product.sales}</p>}
-                    <div className={styles.actions}>
-                        {role === "Admin" && (
-                            <>
-                                <button
-                                    onClick={() => onUpdateClick(product._id)}
-                                    className={styles.productArchive}
-                                >
-                                    Update
-                                </button>
-                                <label className={styles.uploadButton}>
-                                    Upload Picture
-                                    <input
-                                        type="file"
-                                        onChange={(e) =>
-                                            onUploadClick(e, product._id)
-                                        }
-                                    />
-                                </label>
-                                <button
-                                    onClick={() => onArchiveClick(product._id)}
-                                    className={styles.productArchive}
-                                >
-                                    Archive
-                                </button>
-                            </>
-                        )}
+                                            {/* Admin-specific actions */}
+                                            {role === "Admin" && <p>Sales: {product.sales}</p>}
+                                            <div className={styles.actions}>
+                                                {role === "Admin" && (
+                                                    <>
+                                                        <button
+                                                            onClick={() => onUpdateClick(product._id)}
+                                                            className={styles.productArchive}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <label className={styles.uploadButton}>
+                                                            Upload Picture
+                                                            <input
+                                                                type="file"
+                                                                onChange={(e) =>
+                                                                    onUploadClick(e, product._id)
+                                                                }
+                                                            />
+                                                        </label>
+                                                        <button
+                                                            onClick={() => onArchiveClick(product._id)}
+                                                            className={styles.productArchive}
+                                                        >
+                                                            Archive
+                                                        </button>
+                                                    </>
+                                                )}
 
-                        {/* Tourist-specific actions
+                                                {/* Tourist-specific actions
                          {role === "Tourist" && (
                             <>
                                 <AddRating
@@ -437,24 +467,24 @@ return (
                             
                                 </>
                                 )} */}
-                            </div>
-                        </div>
-                        </div>
-              
-            
-        ))
-) : (
-    <p>No products available.</p>
-)}
+                                            </div>
+                                        </div>
+                                    </div>
 
+
+                                ))
+                        ) : (
+                            <p>No products available.</p>
+                        )}
+
+                    </div>
                 </div>
             </div>
-        </div>
-        {/* <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
+            {/* <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
                                     Add to Wishlist
                                 </button> */}
-    </>
-);
+        </>
+    );
 
 };
 

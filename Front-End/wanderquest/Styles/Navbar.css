@@ -25,7 +25,7 @@ body {
 
 .navbar-middleside {
     display: flex;
-    margin-right: 30px;
+    margin-left: 9%;
     justify-content: center; /* Center the middle buttons */
     flex-grow: 1; /* Allow this section to grow and take available space */
 }
@@ -38,6 +38,7 @@ body {
 .navbar-rightside {
     display: flex; /* Use flex for right side */
     align-items: center; /* Center the signup button vertically */
+    margin-right: 40px;
 }
 
 .navbar-button {
@@ -168,17 +169,8 @@ body {
     border-radius: 4px; /* Slight rounding for hover effect */
   }
 
-.notification-icon {
-    font-size: 24px;
-    color: #1a6187; /* Matches the navbar theme */
-    cursor: pointer; /* Makes it interactive */
-    transition: color 0.3s ease;
-    margin-right: 100px;
-}
 
-.notification-icon:hover {
-    color: #122c34; /* Slightly darker on hover */
-}
+
 
 .notification-badge {
     position: absolute;
@@ -199,15 +191,14 @@ body {
     font-size: 24px;
     color: #1a6187;
     cursor: pointer;
-    margin-right: 90px;
+    margin-right: 10px;
+    margin-left: 20px;
 }
 
-.profile-icon:hover {
-    color: #122c34; /* Slightly darker on hover */
-}
+
 
 .navbar-username {
-    font-size: 16px;
+    font-size: 15px;
     color: #122c34;
     font-weight: bold;
 }
@@ -225,6 +216,7 @@ body {
     padding: 10px 0;
     width: 160px;
     font-family: Arial, sans-serif;
+    margin-right: 15px;
 }
 
 /* Profile Menu Items */
@@ -257,7 +249,7 @@ body {
 .sidebar {
     position: fixed;
     left: 0;
-    top: 95px;
+    top: 80px;
     height: 100%;
     width: 250px;
     background-color: white;
@@ -302,6 +294,61 @@ body {
     cursor: pointer;
   }
   
+.navbar-history-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-history-button:hover {
+    opacity: 0.8;
+}
+
+/* Common button styles for all navbar icons */
+.navbar-history-button,
+.navbar-wishlist-button,
+.navbar-complaints-button,
+.profile-icon,
+.notification-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
+.profile-icon {
+    margin-left: -3px;
+}
+
+.navbar-history-button:hover,
+.navbar-wishlist-button:hover,
+.navbar-complaints-button:hover,
+.profile-icon:hover,
+.notification-icon:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    transform: translateY(-2px);
+}
+
+
+/* Adjust icon sizes to be consistent */
+.navbar-history-button svg,
+.navbar-wishlist-button svg,
+.navbar-complaints-button svg,
+.profile-icon,
+.notification-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+
 
 
   

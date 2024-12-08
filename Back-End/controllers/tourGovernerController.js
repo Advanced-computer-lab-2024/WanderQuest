@@ -1,7 +1,7 @@
 const TagModel = require('../models/objectModel').Tags; 
 const PlaceModel = require('../models/objectModel').Places; 
 const {default:mongoose} = require('mongoose');
-
+const tourGoverner = require('../models/tourGovernerModel');
 
 //tourism Governor getAllPlaces
 const getAllPlaces = async (req, res) => {
@@ -43,7 +43,7 @@ const addPlace = async (req, res) => {
     }
 
     try {
-        const tourGovUser = await User.findById(createdBy);
+        const tourGovUser = await tourGoverner.findById(createdBy);
         if (!tourGovUser) {
             return res.status(400).json({ error: 'User not found' });
         }

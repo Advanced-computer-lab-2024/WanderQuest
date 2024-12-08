@@ -1,65 +1,129 @@
-import styles from '../Styles/Creatprod.module.css'
-import Products from './Products'
+'use client';
+
+import styles from '../Styles/Creatprod.module.css';
 import React, { useState } from 'react';
+import { useRef } from 'react';
 
 const Creatprod = () => {
   const [productName, setProductName] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
   const [productPicture, setProductPicture] = useState(null);
+  const [productPicturePreview, setProductPicturePreview] = useState(null);
   const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const fileInputRef = useRef(null);
 
   const handleProductNameChange = (e) => setProductName(e.target.value);
   const handlePriceChange = (e) => setPrice(e.target.value);
   const handleQuantityChange = (e) => setQuantity(e.target.value);
-  const handleProductPictureChange = (e) => setProductPicture(e.target.files[0]);
+  const handleProductPictureChange = (e) => {
+    const file = e.target.files[0];
+    setProductPicture(file);
+    setProductPicturePreview(URL.createObjectURL(file));
+  };
   const handleDescriptionChange = (e) => setDescription(e.target.value);
 
   const handleSubmit = async () => {
     if (!productName || !price || !description || !productPicture) {
-      console.error('All required fields must be filled');
+      setError('All required fields must be filled');
       return;
     }
 
     const formData = new FormData();
     formData.append('name', productName);
     formData.append('price', price);
-    formData.append('availableAmount', quantity);
-    formData.append('picture', productPicture);
     formData.append('description', description);
-    formData.append('seller', '6702b523fed809576ad64eb8'); // Hardcoded seller
+    formData.append('availableAmount', quantity || 0); // Default to 0 if not specified
+    formData.append('documents', productPicture);
 
     try {
       const response = await fetch('http://localhost:4000/admin/addProduct', {
         method: 'POST',
         body: formData,
+        credentials: 'include', // Include credentials for authentication
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add product');
+        alert(errorData.error || 'Failed to add product');
+        return;
       }
 
       const result = await response.json();
-      console.log('Product added successfully:', result);
+      setSuccess('Product added successfully');
+      setError('');
+      console.log('Product added:', result);
+      // Reset form fields
+      setProductName('');
+      setPrice('');
+      setQuantity('');
+      setProductPicture(null);
+      setDescription('');
     } catch (error) {
+      setError(error.message);
+      setSuccess('');
       console.error('Error adding product:', error.message);
+      alert('An error occurred while adding the product. Please try again.');
     }
-  }
+  };
 
   return (
-    <>
-      <div className={styles.container}>
-        <h1 className={styles.h1}>Add product</h1>
-        <p>Product name: <input className={styles.inputfield} type='text' value={productName} onChange={handleProductNameChange}></input></p>
-        <p>Price : <input className={styles.inputfield} type='number' value={price} onChange={handlePriceChange}></input></p>
-        <p>Available quantity: <input className={styles.inputfield} type='number' value={quantity} onChange={handleQuantityChange}></input></p>
-        <p>Description: <input className={styles.inputfield} type='text' value={description} onChange={handleDescriptionChange}></input></p>
-        <p>Product picture: <input className={styles.inputpic} type='file' onChange={handleProductPictureChange}></input></p>
-        <button className={styles.button} onClick={handleSubmit}>ADD</button>
-      </div>
-    </>
+    <div className={styles.container}>
+      <h1 className={styles.h1}>Add Product</h1>
+      {error && <p className={styles.error}>{error}</p>}
+      {success && <p className={styles.success}>{success}</p>}
+      <p>
+        Product Name:{' '}
+        <input
+          className={styles.inputfield}
+          type="text"
+          value={productName}
+          onChange={handleProductNameChange}
+        />
+      </p>
+      <p>
+        Price:{' '}
+        <input
+          className={styles.inputfield}
+          type="number"
+          value={price}
+          onChange={handlePriceChange}
+        />
+      </p>
+      <p>
+        Available Quantity:{' '}
+        <input
+          className={styles.inputfield}
+          type="number"
+          value={quantity}
+          onChange={handleQuantityChange}
+        />
+      </p>
+      <p>
+        Description:{' '}
+        <input
+          className={styles.inputfield}
+          type="text"
+          value={description}
+          onChange={handleDescriptionChange}
+        />
+      </p>
+      <p>
+        Product Picture:{' '}
+        <input
+          className={styles.inputpic}
+          type="file"
+          onChange={handleProductPictureChange}
+        />
+      </p>
+      <button className={styles.button} onClick={handleSubmit}>
+        ADD
+      </button>
+    </div>
   );
-}
+};
 
 export default Creatprod;
