@@ -57,10 +57,15 @@ const getPaymentMultiplier = async (req, res) => {
             return res.status(404).json({ message: 'User not found.' });
         }
 
+        if (user.role !== 'tourist') {
+            return res.status(200).json({ multiplier: 1, currency: 'USD' });
+        }
+
         const preferredCurrency = user.preferredCurrency;
+        const fromCurrency = req.query.fromCurrency || 'USD';
 
         // Fetch exchange rates
-        const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/latest/USD`);
+        const response = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/latest/${fromCurrency}`);
         const rates = response.data.conversion_rates;
 
         if (!rates[preferredCurrency]) {
@@ -69,7 +74,7 @@ const getPaymentMultiplier = async (req, res) => {
 
         const multiplier = rates[preferredCurrency];
 
-        res.status(200).json({ multiplier });
+        res.status(200).json({ multiplier, currency: preferredCurrency });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred while fetching the exchange rate.' });
@@ -102,7 +107,7 @@ const handleBookingPayment = async (req, res) => {
         if (user.preferredCurrency !== 'USD') {
             oldAmount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
         }
-        const amount = await applyPromoCodes(user._id,oldAmount);
+        const amount = await applyPromoCodes(user._id, oldAmount);
 
         // Check if the user is a tourist and has sufficient funds in their wallet
         if (user.wallet > 0) {
@@ -182,7 +187,7 @@ const payOrderWithWallet = async (req, res) => {
         if (user.preferredCurrency !== 'USD') {
             oldAmount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
         }
-        const amount = await applyPromoCodes(user._id,oldAmount);
+        const amount = await applyPromoCodes(user._id, oldAmount);
         // Check if the user is a tourist and has sufficient funds in their wallet
         if (user.wallet >= amount) {
             // Deduct the amount from the wallet
@@ -228,7 +233,7 @@ const payOrderWithStripe = async (req, res) => {
         if (user.preferredCurrency !== 'USD') {
             amount = await convertCurrency(usdPrice, 'USD', user.preferredCurrency);
         }
-        amount = await applyPromoCodes(user._id,amount);
+        amount = await applyPromoCodes(user._id, amount);
         // Create a payment intent using Stripe
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,

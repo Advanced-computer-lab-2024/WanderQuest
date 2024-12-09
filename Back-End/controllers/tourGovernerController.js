@@ -63,7 +63,7 @@ const addPlace = async (req, res) => {
         if (existingPlace) {
             return res.status(400).json({ error: 'Place already exists' });
         }
-
+        
         const newPlace = await PlaceModel.create({ title, description, pictures, location, openingHours, ticketPrices, tags, createdBy });
         res.status(200).json(newPlace);
     } catch (error) {
@@ -97,7 +97,7 @@ const deletePlace = async (req,res)=>{
         res.status(400).json({error:'Place not found.'});
     }else{
         try {
-            if(deletedPlace.createdBy !== tourGovId){
+            if(deletedPlace.createdBy.toString() != tourGovId.toString()){
                 return res.status(400).json({error:'You are not authorized to delete this place.'});
             }
             deletedPlace = await PlaceModel.findByIdAndDelete(id)

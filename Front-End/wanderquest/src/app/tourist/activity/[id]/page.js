@@ -10,6 +10,34 @@ function Page({ params }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [id1, setid] = useState('');
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
   const share = () => {
     navigator.share({
       url: `http://localhost:3000/tourist/activity/${id}`,
@@ -33,7 +61,7 @@ function Page({ params }) {
       setLoading(false);
     }
   };
-  
+
   const fetchid = () => {
     fetch(`http://localhost:4000/tourist/touristId`, {
       credentials: 'include', // Include credentials in the request
@@ -47,25 +75,25 @@ function Page({ params }) {
       .then(data => {
         setid(data);
         setLoading(false);
-  
+
         // Fetch details for all activities
       })
       .catch(error => {
         setLoading(false);
       });
   };
-  
+
   useEffect(() => {
     fetchData();
     fetchid();
   }, [id1]);
-  
+
   const handleBooking = async () => {
     const activityId = id;
-  
+
     // User ID is fetched from the credentials in the cookies (handled by the backend)
     const act = { bookingType, activityId };
-  
+
     try {
       const response = await fetch('http://localhost:4000/booking/activity', {
         method: 'POST',
@@ -82,7 +110,7 @@ function Page({ params }) {
       alert('Booking failed, already booked');
     }
   };
-  
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -99,47 +127,47 @@ function Page({ params }) {
             <a href='' target="_blank" rel="noopener noreferrer">
               {activity.location}
             </a><br />
-            <strong>Price:</strong> {activity.price}<br />
+            <strong>Price:</strong> {activity.price * multiplier} {preferredCurrency}<br />
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
             <div className={styles.reviews}>
-                        <h3>Ratings & Reviews</h3>
+              <h3>Ratings & Reviews</h3>
 
-                        {/* Check if there are no ratings or comments */}
-                        {(!activity.ratings.length && !activity.comments.length) ? (
-                            <p>No reviews and ratings</p>
-                        ) : (
-                            [
-                            ...new Set([
-                                ...activity.ratings.map((rat) => rat.touristId),
-                                ...activity.comments.map((comm) => comm.touristId),
-                            ])
-                            ].map((touristId, idx) => {
-                            const rating = activity.ratings.find((rat) => rat.touristId === touristId);
-                            const comment = activity.comments.find((comm) => comm.touristId === touristId);
+              {/* Check if there are no ratings or comments */}
+              {(!activity.ratings.length && !activity.comments.length) ? (
+                <p>No reviews and ratings</p>
+              ) : (
+                [
+                  ...new Set([
+                    ...activity.ratings.map((rat) => rat.touristId),
+                    ...activity.comments.map((comm) => comm.touristId),
+                  ])
+                ].map((touristId, idx) => {
+                  const rating = activity.ratings.find((rat) => rat.touristId === touristId);
+                  const comment = activity.comments.find((comm) => comm.touristId === touristId);
 
-                            return (
-                                <div className={styles.review} key={idx}>
-                                <p>
-                                    <strong>{touristId}:</strong>
-                                </p>
-                                {rating && (
-                                    <p>
-                                    <strong>Rating:</strong> {rating.rating} stars
-                                    </p>
-                                )}
-                                {comment && (
-                                    <p>
-                                    <strong>Review:</strong> {comment.comment}
-                                    </p>
-                                )}
-                                </div>
-                            );
-                            })
-                        )}
+                  return (
+                    <div className={styles.review} key={idx}>
+                      <p>
+                        <strong>{touristId}:</strong>
+                      </p>
+                      {rating && (
+                        <p>
+                          <strong>Rating:</strong> {rating.rating} stars
+                        </p>
+                      )}
+                      {comment && (
+                        <p>
+                          <strong>Review:</strong> {comment.comment}
+                        </p>
+                      )}
                     </div>
+                  );
+                })
+              )}
+            </div>
 
           </p>
           <button onClick={share}>Share Link</button>

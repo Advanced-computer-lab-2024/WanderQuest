@@ -8,8 +8,8 @@ const PrefTag = () => {
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [isEditing, setIsEditing] = useState({ id: null, value: '' });
-  const [showTags, setShowTags] = useState(false); // State to control visibility of the tags list
-
+  const [showTags, setShowTags] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null); // State to handle confirmation for delete action
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -20,8 +20,8 @@ const PrefTag = () => {
             'Content-Type': 'application/json',
           },
           credentials: 'include',
-        }); 
-        if(!response.ok) throw new Error('Failed to fetch Preference Tags');
+        });
+        if (!response.ok) throw new Error('Failed to fetch Preference Tags');
         const fetched = await response.json();
         setTags(fetched);
       } catch (error) {
@@ -40,197 +40,196 @@ const PrefTag = () => {
   // Handle form submission to add a new tag
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!tagInput.trim()) {
       setMessage({ type: 'error', text: 'Tag cannot be empty.' });
       return;
     }
-  
+
     try {
-      // POST request to add a new tag
-      console.log(tagInput);
       const response = await fetch('http://localhost:4000/admin/addTag', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({type: tagInput}),
-
-      }); 
-      if(!response.ok) throw new Error('Cannot Create Tag!');
+        body: JSON.stringify({ type: tagInput }),
+      });
+      if (!response.ok) throw new Error('Cannot Create Tag!');
       const newTag = await response.json();
-      setTags([...tags, newTag]); // Assuming the response contains the new tag object
+      setTags([...tags, newTag]);
       setMessage({ type: 'success', text: 'Tag added successfully!' });
-      setTagInput(''); // Clear input
-      setIsInputVisible(false); // Hide input field after submission
+      setTagInput('');
+      setIsInputVisible(false);
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000); // Clear message after 3 seconds
     } catch (error) {
-      console.error('Error adding tag:', error.response ? error.response.data : error.message);
+      console.error('Error adding tag:', error);
       setMessage({ type: 'error', text: 'Error adding tag.' });
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     }
   };
-  
-  
+
   // Handle deleting a tag
   const handleDelete = async (tagId) => {
+    setConfirmDelete(tagId); // Trigger confirmation popup
+  };
+
+  const confirmDeletion = async (tagId) => {
     try {
-      const response = await fetch(`http://localhost:4000/admin/deleteTag/${tagId}`,{
+      const response = await fetch(`http://localhost:4000/admin/deleteTag/${tagId}`, {
         method: 'DELETE',
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
       });
-      if(!response.ok) throw new Error('Cannot Delete Tag!');
-      setTags(tags.filter((tag)=> tag._id !== tagId));
-      setMessage({type: 'success', text: 'Preference Tag deleted successfully!'});
+      if (!response.ok) throw new Error('Cannot Delete Tag!');
+      setTags(tags.filter((tag) => tag._id !== tagId));
+      setMessage({ type: 'success', text: 'Preference Tag deleted successfully!' });
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      setConfirmDelete(null); // Close the confirmation
     } catch (error) {
       console.error('Error deleting tag:', error);
       setMessage({ type: 'error', text: 'Error deleting tag.' });
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      setConfirmDelete(null);
     }
   };
-  
-  
 
   // Handle initiating edit mode for a tag
   const handleEdit = (tag) => {
     setIsEditing({ id: tag._id, value: tag.type });
   };
 
-  // Handle input change while editing a tag
   const handleEditChange = (e) => {
     setIsEditing({ ...isEditing, value: e.target.value });
   };
 
-  // Handle submitting the edited tag
   const handleEditSubmit = async (tagId) => {
     if (!isEditing.value.trim()) {
       setMessage({ type: 'error', text: 'Tag cannot be empty.' });
       return;
     }
-  
+
     try {
-      // PATCH request to update the tag
-      const response = await fetch(`http://localhost:4000/admin/editTag/${tagId}`, { 
+      const response = await fetch(`http://localhost:4000/admin/editTag/${tagId}`, {
         method: 'PATCH',
-        headers:{
-          'Contetnt-type': 'application/json',
+        headers: {
+          'Content-type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({type: isEditing.value}),
-       });
-      if( !response.ok) throw new Error('Cannot Update Tag!');
-      const updatedTags = tags.map((tag) => 
-        (tag._id === tagId ? {...tag, type: isEditing.value } : tag)); // Update the tag in the state
+        body: JSON.stringify({ type: isEditing.value }),
+      });
+      if (!response.ok) throw new Error('Cannot Update Tag!');
+      const updatedTags = tags.map((tag) =>
+        tag._id === tagId ? { ...tag, type: isEditing.value } : tag
+      );
       setTags(updatedTags);
       setMessage({ type: 'success', text: 'Tag updated successfully!' });
-      setIsEditing({ id: null, value: '' }); // Exit editing mode
-
+      setIsEditing({ id: null, value: '' });
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     } catch (error) {
       console.error('Error updating tag:', error);
       setMessage({ type: 'error', text: 'Error updating tag.' });
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     }
   };
-  
 
-  // Handle cancelling the edit mode
   const handleCancelEdit = () => {
     setIsEditing({ id: null, value: '' });
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>Preference Tag Manager</h1>
-        <button className={styles.addTag} onClick={() => setIsInputVisible(!isInputVisible)}>
-          {isInputVisible ? 'Cancel' : 'Add Tag'}
-        </button>
-        <button className={styles.showTags} onClick={() => setShowTags(!showTags)}>
-          {showTags ? 'Hide Tags' : 'Show Tags'}
-        </button>
-      </div>
+      <h1 className={styles.adminTitle}>Manage Preference Tags</h1>
 
-      {/* Add Tag Form */}
-      {isInputVisible && (
-        <form onSubmit={handleSubmit} className={styles.form}>
+      {/* Tag Input */}
+      <div className={styles.form}>
+        <div className={styles.inputWrapper}>
           <input
             type="text"
             value={tagInput}
             onChange={handleInputChange}
             placeholder="Enter a new tag"
           />
-          <button className={styles.editButton} type="submit">Submit</button>
-        </form>
-      )}
+          <button className={styles.addTagButton} onClick={handleSubmit}>
+            Add Tag
+          </button>
+        </div>
+      </div>
 
       {/* Feedback Messages */}
       {message.text && (
-        <div className={message.type === 'error' ? styles.error : styles.success}>
+        <div
+          className={message.type === 'error' ? styles.error : styles.success}
+        >
           {message.text}
         </div>
       )}
 
-      {/* Tags List Panel */}
+      {/* Show Tags Button */}
+      <button className={styles.showTagsButton} onClick={() => setShowTags(!showTags)}>
+        {showTags ? 'Hide Tags' : 'Show Tags'}
+      </button>
+
+      {/* Tags List */}
       {showTags && (
         <div className={styles.tagsList}>
-          <h2>Existing Tags</h2>
           {tags.length === 0 ? (
             <p>No tags found.</p>
           ) : (
-            <div className={styles.tagScroll}>
-              <ul className={styles.tagGrid}>
-                {tags.map((tag) => (
-                  <li
-                    key={tag._id}
-                    className={`${styles.tagItem} ${isEditing.id === tag ? styles.editing : ''}`}
-                  >
-                    {isEditing.id === tag._id ? (
-                      <>
-                        <input
-                          type="text"
-                          value={isEditing.value}
-                          onChange={handleEditChange}
-                          className={styles.editInput}
-                        />
-                        <div className={styles.tagButtons}>
-                          <button
-                            onClick={() => handleEditSubmit(tag._id)}
-                            className={`${styles.button} ${styles.editButton}`}
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={handleCancelEdit}
-                            className={`${styles.button} ${styles.cancelButton}`}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <span>{tag.type}</span>
-                        <div className={styles.tagButtons}>
-                          <button
-                            onClick={() => handleEdit(tag)}
-                            className={`${styles.button} ${styles.editButton}`}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(tag._id)}
-                            className={`${styles.button} ${styles.deleteButton}`}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul>
+              {tags.map((tag) => (
+                <li key={tag._id} className={styles.tagItem}>
+                  {isEditing.id === tag._id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={isEditing.value}
+                        onChange={handleEditChange}
+                        className={styles.editInput}
+                      />
+                      <div className={styles.tagButtons}>
+                        <button
+                          onClick={() => handleEditSubmit(tag._id)}
+                          className={styles.editButton}
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <span>{tag.type}</span>
+                      <div className={styles.tagButtons}>
+                        <button
+                          onClick={() => handleEdit(tag)}
+                          className={styles.editButton}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(tag._id)}
+                          className={styles.deleteButton}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
           )}
+        </div>
+      )}
+
+      {/* Confirmation Popup */}
+      {confirmDelete && (
+        <div className={styles.confirmPopup}>
+          <p>Are you sure you want to delete this tag?</p>
+          <button onClick={() => confirmDeletion(confirmDelete)} className={styles.confirmButton}>Yes</button>
+          <button onClick={() => setConfirmDelete(null)} className={styles.cancelButton}>No</button>
         </div>
       )}
     </div>
@@ -238,6 +237,3 @@ const PrefTag = () => {
 };
 
 export default PrefTag;
-
-
-

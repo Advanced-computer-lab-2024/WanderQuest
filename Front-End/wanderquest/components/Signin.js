@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import styles from "../styles/Signin.module.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import Image from 'next/image';
+import wander from '../public/logo.png'
 
 function Signin({ toggleForm }) {
   const [username, setUsername] = useState("");
@@ -64,6 +66,7 @@ function Signin({ toggleForm }) {
 
   return (
     <div className={styles.SigninContainer}>
+      <Image src={wander} alt="WanderQuest Logo" className={styles.logo} />
       <form className={styles.SigninForm} onSubmit={handleLogin}>
         <h1 className={styles.Title}>Sign in</h1>
         <div className={styles.InputWrapper}>
