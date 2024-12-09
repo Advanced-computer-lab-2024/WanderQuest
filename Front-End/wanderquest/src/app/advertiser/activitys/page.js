@@ -230,13 +230,10 @@ const handleSelectChange = (selectedOptions) => {
                         {activities.map((activity) => (
                             <div key={activity._id} className={styles.activitybox}>
                                 <p><strong>{activity.title}</strong></p>
-                                <div className={styles.topcard}>
                                     <p><strong>Date:</strong> {activity.formattedDate}</p>
                                     <p><strong>Time:</strong> {activity.time}</p>
                                     <p><strong>Location:</strong> {activity.location}</p>
                                     <p><strong>Price:</strong> {activity.price}</p>
-                                </div>
-                                <div className={styles.bottomcard}>
                                     <p><strong>Category:</strong> {activity.category}</p>
                                     <p><strong>Tags:</strong> {
                                         Array.isArray(activity.tags)
@@ -245,7 +242,6 @@ const handleSelectChange = (selectedOptions) => {
                                     }</p>
                                     <p><strong>Special Discount:</strong> {activity.specialDiscounts}</p>
                                     <p><strong>{activity.bookingIsOpen ? 'Booking is open' : 'Booking is Closed'}</strong></p>
-                                </div>
                                 <button className={styles.update} onClick={() => handleRedirectUpdate(activity)}>Update</button>
                                 <button className={styles.delete} onClick={() => handleDelete(activity._id)}>Delete</button>
                             </div>
