@@ -104,7 +104,7 @@ const Navbar = () => {
     const handleRedirect = () => window.location.href = '/tourist/iti';
     const handleRedirectac = () => window.location.href = '/tourist/activity';
     const handleRedirectp = () => window.location.href = '/tourist/products';
-    const handleRedirectm = () => window.location.href = '/tourist/museum';
+    const handleRedirectm = () => window.location.href = '/tourist/musuem';
     const handleRedirec = () => window.location.href = '/tourist/mybookings';
     const handleRedirechotel = () => window.location.href = '/tourist/Hotels';
     const handleRedirecflight = () => window.location.href = '/tourist/Flights';
