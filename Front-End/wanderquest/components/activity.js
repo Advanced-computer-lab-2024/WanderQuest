@@ -18,6 +18,18 @@ const Activity = () => {
     const [activities, setActivities] = useState([]);
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
+    const [notification, setNotification] = useState({ message: '', type: '' }); // State for notifications
+
+
+    useEffect(() => {
+        if (notification.message) {
+            const timer = setTimeout(() => {
+                setNotification({ message: '', type: '' });
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [notification]);
+    
 
     useEffect(() => {
         // Fetch tags from the backend
@@ -70,6 +82,7 @@ const Activity = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentActivityId, setCurrentActivityId] = useState(null);
 
+
     const autocompleteRef = useRef(null);
     const formRef = useRef(null);
 
@@ -120,15 +133,16 @@ const Activity = () => {
                     credentials:"include",
                     body: JSON.stringify(formData),
                 });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const updatedActivity = await response.json();
+                
+                await response.json();
                 setActivities(activities.map(activity => activity._id === currentActivityId ? { ...activity, ...formData } : activity));
+                setNotification({ message: 'Activity updated successfully!', type: 'success' });
                 setIsUpdating(false);
                 setCurrentActivityId(null);
             } catch (error) {
                 console.error('Error updating activity:', error);
+                setNotification({ message: `Error: ${error.message}`, type: 'error' });
+
             }
         } else {
             try {
@@ -147,8 +161,12 @@ const Activity = () => {
                 const newActivity = await response.json();
                 console.log(newActivity);
                 setActivities([...activities, newActivity]);
+                setNotification({ message: 'Activity created successfully!', type: 'success' });
+
             } catch (error) {
                 console.error('Error creating activity:', error);
+                setNotification({ message: `Error: ${error.message}`, type: 'error' });
+
             }
         }
         setFormData({
@@ -174,8 +192,12 @@ const Activity = () => {
                 throw new Error('Network response was not ok');
             }
             setActivities(activities.filter(activity => activity._id !== id));
+            setNotification({ message: 'Activity deleted successfully!', type: 'success' });
+
         } catch (error) {
             console.error('Error deleting activity:', error);
+            setNotification({ message: `Error: ${error.message}`, type: 'error' });
+
         }
     };
 
@@ -242,6 +264,7 @@ useEffect(() => {
 
     return (
         <div className={styles.parent}>
+        
             <div className={styles.container}>
                 <div className={styles.createactivity} ref={formRef}>
                     <form className={styles.form} onSubmit={handleSubmit}>
@@ -321,6 +344,18 @@ useEffect(() => {
                     </form>
                 </div>
              </div>
+
+             {notification.message && (
+                <div
+                    className={
+                        notification.type === 'success'
+                            ? styles.successMessage
+                            : styles.errorMessage
+                    }
+                >
+                    {notification.message}
+                </div>
+            )}
             {/*<div className={styles.activitiescontainer}>
                 <label className={styles.label}>List of activities</label>
                 <div>

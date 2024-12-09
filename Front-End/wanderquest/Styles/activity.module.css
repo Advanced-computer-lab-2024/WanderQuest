@@ -154,3 +154,17 @@
     margin-right: 10px;
 }
 
+.successMessage {
+    color: green;
+    background-color: #e6ffe6;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.errorMessage {
+    color: red;
+    background-color: #ffe6e6;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
