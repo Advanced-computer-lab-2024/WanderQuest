@@ -97,7 +97,7 @@ router.delete('/removeSavedEvents', removeSavedEvents);
 
 router.post('/wishlist/add/:id', addToWishlist);
 router.get('/wishlist', viewWishlist);
-router.delete('/wishlist/remove', removeFromWishlist);
+router.delete('/wishlist/remove/:id', removeFromWishlist);
 
 router.get("/orders", viewOrders)
 router.post("/orders/issue", issueAnOrder)
