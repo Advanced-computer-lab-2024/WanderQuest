@@ -23,13 +23,17 @@ import Salesrep from "../../components/Salesrep";
 import Salesrepseller from "../../components/Salesrepseller";
 import Salesrepadv from "../../components/Salesrepadv";
 import Authentication from "../../components/Authentication";
+import Salesreptour from "../../components/Salesreptour";
 import LandingPage from "../../components/LandingPage";
+import { useEffect } from 'react';
 
 export default function Home() {
    return (
    <>
       <Navbar></Navbar>
 
+{/* 
+      <Salesreptour></Salesreptour> */}
 {/* 
       <Foot></Foot>   */}
 
