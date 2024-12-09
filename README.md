@@ -1788,6 +1788,22 @@ cd Back-End
 npm run dev
 ```
 
+## 🤝 Contribute
+
+We welcome contributions to Copilot & Sons El7a2ny Clinic. If you want to contribute, it's as easy as:
+
+1. Fork the repo
+2. Create a new branch (`git checkout -b my-new-feature`)
+3. Make changes
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create a new Pull Request
+7. Wait for your PR to be reviewed and merged
+
+> **NOTE**
+>
+> We welcome all contributions, but please make sure to follow our code style and linting rules. You can check the [Code Style](#-code-style) section for more details.
+
 ## 🫡 Credits
 
 ### Docs

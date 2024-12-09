@@ -14,7 +14,7 @@ const Activities = (Props) => {
   ];
 
   var feedbackFlag = false;
-  const role=Props.role;
+  const role = Props.role;
   const [category, setCategory] = useState([]);
   const [selecttedfilters, setSelectedfilers] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -26,24 +26,51 @@ const Activities = (Props) => {
   const [dateFilter, setDateFilter] = useState(''); // State for the selected date
   const [minBudget, setMinBudget] = useState(''); // State for minimum budget
   const [maxBudget, setMaxBudget] = useState(''); // State for maximum budget
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+      fetchPaymentMultiplier();
+  }, []);
 
 
-
-const handleflag = async (actid) => {
-  try {
-    const response = await fetch(`http://localhost:4000/admin/flagActivity/${actid}`, {
-      method: 'PATCH',
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!response.ok) {
-      throw new Error('flag failed');
+  const handleflag = async (actid) => {
+    try {
+      const response = await fetch(`http://localhost:4000/admin/flagActivity/${actid}`, {
+        method: 'PATCH',
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        throw new Error('flag failed');
+      }
+      alert('flag successful!');
+    } catch (error) {
+      console.error('Error booking activity:', error);
+      alert('flag failed');
     }
-    alert('flag successful!');
-  } catch (error) {
-    console.error('Error booking activity:', error);
-    alert('flag failed');
-  }
-};
+  };
 
 
 
@@ -57,9 +84,9 @@ const handleflag = async (actid) => {
     });
     setActivities(filteredActivities);
   };
-  const clearsearch=()=>{
+  const clearsearch = () => {
     setActivities(allActivities);
-}
+  }
   const handleRatingChange = (rating) => {
     setRatingFilter(ratingFilter === rating ? null : rating);
   };
@@ -101,7 +128,7 @@ const handleflag = async (actid) => {
     // Filter activities based on the budget range
     if (minBudget !== '' || maxBudget !== '') {
       updatedActivities = updatedActivities.filter((activity) => {
-        const price = activity.price;
+        const price = activity.price * multiplier;
         return (minBudget === '' || price >= minBudget) && (maxBudget === '' || price <= maxBudget);
       });
     }
@@ -137,38 +164,38 @@ const handleflag = async (actid) => {
       setSelectedfilers([...selecttedfilters, catg]);
     }
   };
-//   const handlefilter = (tag) => {
-//     if (filteredtags.includes(tag)) {
-//         const temp = filteredtags.filter(t => t !== tag);
-//         setFilteredtags(temp);
-//     } else {
-//         setFilteredtags([...filteredtags, tag]);
-//     }
-// };
-const handleFeedback = async (e, id) => {
-  e.preventDefault();
-  const { rating = '', comment = '' } = activityFeedback[id] || {};
+  //   const handlefilter = (tag) => {
+  //     if (filteredtags.includes(tag)) {
+  //         const temp = filteredtags.filter(t => t !== tag);
+  //         setFilteredtags(temp);
+  //     } else {
+  //         setFilteredtags([...filteredtags, tag]);
+  //     }
+  // };
+  const handleFeedback = async (e, id) => {
+    e.preventDefault();
+    const { rating = '', comment = '' } = activityFeedback[id] || {};
 
-  const ratingFeedback = await fetch('http://localhost:4000/bagarab7aga', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ rating }),
-  });
+    const ratingFeedback = await fetch('http://localhost:4000/bagarab7aga', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rating }),
+    });
 
-  const commentFeedback = await fetch('http://localhost:4000/bagarab7agtein', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ comment }),
-  });
+    const commentFeedback = await fetch('http://localhost:4000/bagarab7agtein', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ comment }),
+    });
 
-  if (commentFeedback.ok && ratingFeedback.ok) {
-    console.log('Feedback sent successfully for activity ID:', id);
-  }
-};
+    if (commentFeedback.ok && ratingFeedback.ok) {
+      console.log('Feedback sent successfully for activity ID:', id);
+    }
+  };
 
   const filteritemscat = () => {
     if (selecttedfilters.length > 0) {
@@ -182,7 +209,7 @@ const handleFeedback = async (e, id) => {
     }
   };
 
-  
+
   useEffect(() => {
     fetch('http://localhost:4000/admin/categories')
       .then(res => res.json())
@@ -250,26 +277,26 @@ const handleFeedback = async (e, id) => {
       <h1 className={styles.title}>Activities</h1>
 
       {Array.isArray(category) && category.map((cat, index3) => (
-  <div key={index3}>
-    <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
-    <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
-  </div>
-))}
+        <div key={index3}>
+          <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
+          <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
+        </div>
+      ))}
 
-{role === "Tourist" ? (
-  <div className={styles.searchcom}>
-    <input
-      className={styles.productsearch}
-      onChange={(e) => setSearch(e.target.value)}
-      type="text"
-      placeholder="Search activities..."
-    />
-    <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
-    <button onClick={clearsearch}>Clear Search</button>
-  </div>
-) : (
-  <div></div>
-)}
+      {role === "Tourist" ? (
+        <div className={styles.searchcom}>
+          <input
+            className={styles.productsearch}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search activities..."
+          />
+          <button className={styles.searchbtn} onClick={handleSearch}>Search</button>
+          <button onClick={clearsearch}>Clear Search</button>
+        </div>
+      ) : (
+        <div></div>
+      )}
 
       <div className={styles.sortButtons}>
         <button onClick={handlesortPriceAsc}>Sort Price Asc</button>
@@ -311,8 +338,8 @@ const handleFeedback = async (e, id) => {
 
       {/* Date filter input */}
       <div className={styles.dateFilter}>
-        <input 
-          type="date" 
+        <input
+          type="date"
           onChange={(e) => setDateFilter(e.target.value)} // Update date filter state on date change
         />
       </div>
@@ -320,25 +347,25 @@ const handleFeedback = async (e, id) => {
       {/* Budget filter inputs */}
       <div className={styles.budgetFilter}>
         <label>
-          Min Budget: 
-          <input 
-            type="number" 
-            value={minBudget} 
-            onChange={(e) => setMinBudget(e.target.value)} 
-            placeholder="Min" 
+          Min Budget:
+          <input
+            type="number"
+            value={minBudget}
+            onChange={(e) => setMinBudget(e.target.value)}
+            placeholder="Min"
           />
         </label>
         <label>
-          Max Budget: 
-          <input 
-            type="number" 
-            value={maxBudget} 
-            onChange={(e) => setMaxBudget(e.target.value)} 
-            placeholder="Max" 
+          Max Budget:
+          <input
+            type="number"
+            value={maxBudget}
+            onChange={(e) => setMaxBudget(e.target.value)}
+            placeholder="Max"
           />
         </label>
       </div>
-      <br/>
+      <br />
       {activities.map((activity) => (
         <div key={activity.id} className={styles.activity}>
           <h3>{activity.title}</h3>
@@ -349,36 +376,36 @@ const handleFeedback = async (e, id) => {
             <a href={activity.location} target="_blank" rel="noopener noreferrer">
               {activity.location}
             </a><br />
-            <strong>Price:</strong> {activity.price}<br />
+            <strong>Price:</strong> {activity.price * multiplier} {preferredCurrency}<br />
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
             <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'} <br />
-            <strong>flagged:</strong> {activity.flagged ? 'Yes' : 'No'} 
-            </p>
-{role === "Admin"?(<button onClick={()=>{handleflag(activity._id)}}>flag</button>):(null)}
+            <strong>flagged:</strong> {activity.flagged ? 'Yes' : 'No'}
+          </p>
+          {role === "Admin" ? (<button onClick={() => { handleflag(activity._id) }}>flag</button>) : (null)}
 
 
 
           {role === "Tourist" ? (
             <div>
-              <AddRating 
-                rating={activityFeedback[activity.id]?.rating || ''} 
-                setRating={(value) => handleFeedbackChange(activity.id, 'rating', value)} 
+              <AddRating
+                rating={activityFeedback[activity.id]?.rating || ''}
+                setRating={(value) => handleFeedbackChange(activity.id, 'rating', value)}
               />
-              <AddComment 
-                comment={activityFeedback[activity.id]?.comment || ''} 
-                setComment={(value) => handleFeedbackChange(activity.id, 'comment', value)} 
+              <AddComment
+                comment={activityFeedback[activity.id]?.comment || ''}
+                setComment={(value) => handleFeedbackChange(activity.id, 'comment', value)}
               />
-              <button 
-                className={styles.btnFeedback} 
+              <button
+                className={styles.btnFeedback}
                 onClick={(e) => handleFeedback(e, activity.id)}
               >
                 Send Feedback
               </button>
             </div>
           ) : null}
-        
+
         </div>
       ))}
     </div>

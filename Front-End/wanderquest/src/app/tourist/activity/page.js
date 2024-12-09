@@ -13,7 +13,7 @@ const Activitiespage = (Props) => {
     "Family",
     "Luxury"
   ];
-  const role='Tourist';
+  const role = 'Tourist';
   const [category, setCategory] = useState([]);
   const [selecttedfilters, setSelectedfilers] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -26,6 +26,35 @@ const Activitiespage = (Props) => {
   const [minBudget, setMinBudget] = useState(''); // State for minimum budget
   const [maxBudget, setMaxBudget] = useState(''); // State for maximum budget
 
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
+
   const handleSearch = () => {
     const filteredActivities = allActivities.filter((prod) => {
       return search.toLowerCase() === '' ||
@@ -35,9 +64,9 @@ const Activitiespage = (Props) => {
     });
     setActivities(filteredActivities);
   };
-//   const clearsearch=()=>{
-//     setActivities(allActivities);
-// }
+  //   const clearsearch=()=>{
+  //     setActivities(allActivities);
+  // }
   const handleRatingChange = (rating) => {
     setRatingFilter(ratingFilter === rating ? null : rating);
   };
@@ -64,7 +93,7 @@ const Activitiespage = (Props) => {
     // Filter activities based on the budget range
     if (minBudget !== '' || maxBudget !== '') {
       updatedActivities = updatedActivities.filter((activity) => {
-        const price = activity.price;
+        const price = activity.price * multiplier;
         return (minBudget === '' || price >= minBudget) && (maxBudget === '' || price <= maxBudget);
       });
     }
@@ -100,14 +129,14 @@ const Activitiespage = (Props) => {
       setSelectedfilers([...selecttedfilters, catg]);
     }
   };
-//   const handlefilter = (tag) => {
-//     if (filteredtags.includes(tag)) {
-//         const temp = filteredtags.filter(t => t !== tag);
-//         setFilteredtags(temp);
-//     } else {
-//         setFilteredtags([...filteredtags, tag]);
-//     }
-// };
+  //   const handlefilter = (tag) => {
+  //     if (filteredtags.includes(tag)) {
+  //         const temp = filteredtags.filter(t => t !== tag);
+  //         setFilteredtags(temp);
+  //     } else {
+  //         setFilteredtags([...filteredtags, tag]);
+  //     }
+  // };
 
   const filteritemscat = () => {
     if (selecttedfilters.length > 0) {
@@ -134,11 +163,11 @@ const Activitiespage = (Props) => {
         setCategory([]); // Set to an empty array on error
       });
   }, []);
-  
+
   useEffect(() => {
     filteritemscat();
   }, [selecttedfilters]);
-  
+
   const fetchData = () => {
     fetch('http://localhost:4000/tourist/upcomingActivities', {
       credentials: 'include', // Include credentials (cookies) in the request
@@ -160,7 +189,7 @@ const Activitiespage = (Props) => {
         setLoading(false);
       });
   };
-  
+
 
   useEffect(() => {
     fetchData();
@@ -173,46 +202,46 @@ const Activitiespage = (Props) => {
 
   const handleApplyFilters = () => {
     let updatedActivities = [...allActivities];
-  
+
     // Apply category filters
     if (selecttedfilters.length > 0) {
-      updatedActivities = updatedActivities.filter((item) => 
+      updatedActivities = updatedActivities.filter((item) =>
         selecttedfilters.includes(item.category)
       );
     }
-  
+
     // Apply search filter
     if (search.toLowerCase() !== '') {
-      updatedActivities = updatedActivities.filter((prod) => 
+      updatedActivities = updatedActivities.filter((prod) =>
         prod.title.toLowerCase().includes(search.toLowerCase()) ||
         prod.category.toLowerCase().includes(search.toLowerCase()) ||
         (prod.tags && prod.tags.some(tag => tag.type.toLowerCase().includes(search.toLowerCase())))
       );
     }
-  
+
     // Apply rating filter
     if (ratingFilter !== null) {
-      updatedActivities = updatedActivities.filter((activity) => 
+      updatedActivities = updatedActivities.filter((activity) =>
         activity.rating >= ratingFilter
       );
     }
-  
+
     // Apply date filter
     if (dateFilter) {
-      updatedActivities = updatedActivities.filter((activity) => 
+      updatedActivities = updatedActivities.filter((activity) =>
         activity.date === dateFilter
       );
     }
-  
+
     // Apply budget filter
     if (minBudget !== '' || maxBudget !== '') {
       updatedActivities = updatedActivities.filter((activity) => {
-        const price = activity.price;
-        return (minBudget === '' || price >= parseFloat(minBudget)) && 
-               (maxBudget === '' || price <= parseFloat(maxBudget));
+        const price = activity.price * multiplier;
+        return (minBudget === '' || price >= parseFloat(minBudget)) &&
+          (maxBudget === '' || price <= parseFloat(maxBudget));
       });
     }
-  
+
     // Set the filtered activities
     setActivities(updatedActivities);
   };
@@ -224,7 +253,7 @@ const Activitiespage = (Props) => {
     setDateFilter('');
     setMinBudget('');
     setMaxBudget('');
-  
+
     // Reset activities to the original list
     setActivities([...allActivities]);
   };
@@ -250,191 +279,164 @@ const Activitiespage = (Props) => {
     return <p className={styles.error}>Error: {error}</p>;
   }
 
-  return (<>
-    <Navbar></Navbar>
-    <img src="/1.png" className={styles.travelplan} alt="iti" />
-    <div className={styles.container}>
+  return (
+    <>
+      <Navbar />
+      <img src="/1.png" className={styles.travelplan} alt="iti" />
+      <div className={styles.container}>
+        {role === "Tourist" ? (
+          <motion.div
+            className={styles.searchcom}
+            initial={{ y: -170 }}
+            transition={{ duration: 1 }}
+          >
+            <input
+              className={styles.productsearch}
+              onChange={(e) => setSearch(e.target.value)}
+              type="text"
+              placeholder="Search activities..."
+            />
+          </motion.div>
+        ) : (
+          <div></div>
+        )}
 
+        <div className={styles.pageLayout}>
+          <div className={styles.sidebar}>
+            <h1>Products</h1>
+            <div className={styles.filterSection}>
+              <button style={{ margin: '5px' }} onClick={handlesortPriceAsc}>Sort Price Asc</button>
+              <button style={{ margin: '5px' }} onClick={handlesortPriceDsc}>Sort Price Desc</button>
+              <button style={{ margin: '5px' }} onClick={handlesortRatingAsc}>Sort Rating Asc</button>
+              <button style={{ margin: '5px' }} onClick={handlesortRatingDsc}>Sort Rating Desc</button>
+              <div className={styles.ratingFilters}>
+                <label>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleRatingChange(1)}
+                    checked={ratingFilter === 1}
+                  /> 1 or higher
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleRatingChange(2)}
+                    checked={ratingFilter === 2}
+                  /> 2 or higher
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleRatingChange(3)}
+                    checked={ratingFilter === 3}
+                  /> 3 or higher
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleRatingChange(4)}
+                    checked={ratingFilter === 4}
+                  /> 4 or higher
+                </label>
+              </div>
+            </div>
 
-      {Array.isArray(category) && category.map((cat, index3) => (
-  <div key={index3}>
-    <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
-    <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
-  </div>
-))}
-
-{role === "Tourist" ? (
-  < motion.div
-  className={styles.searchcom}
-  initial={{ y: -170 }}
-  transition={{ duration: 1 }} >
-    <input
-      className={styles.productsearch}
-      onChange={(e) => setSearch(e.target.value)}
-      type="text"
-      placeholder="Search activities..."
-    />
-    {/* <button className={styles.searchbtn} onClick={handleSearch}>Search</button> */}
-    {/* <button onClick={clearsearch}>Clear Search</button> */}
-  </motion.div>
-) : (
-  <div></div>
-)}
-{/* 
-      <div className={styles.sortButtons}>
-        <button onClick={handlesortPriceAsc}>Sort Price Asc</button>
-        <button onClick={handlesortPriceDsc}>Sort Price Desc</button>
-        <button onClick={handlesortRatingAsc}>Sort Rating Asc</button>
-        <button onClick={handlesortRatingDsc}>Sort Rating Desc</button>
-      </div> */}
-
-     
-      {/* Date filter input */}
-      {/* <div className={styles.dateFilter}>
-        <input 
-          type="date" 
-          onChange={(e) => setDateFilter(e.target.value)} // Update date filter state on date change
-        />
-      </div> */}
-
-      {/* Budget filter inputs */}
-      {/* <div className={styles.budgetFilter}>
-        <label>
-          Min Budget: 
-          <input 
-            type="number" 
-            value={minBudget} 
-            onChange={(e) => setMinBudget(e.target.value)} 
-            placeholder="Min" 
-          />
-        </label>
-        <label>
-          Max Budget: 
-          <input 
-            type="number" 
-            value={maxBudget} 
-            onChange={(e) => setMaxBudget(e.target.value)} 
-            placeholder="Max" 
-          />
-        </label>
-      </div> */} <div className={styles.pageLayout}>
-      <div className={styles.sidebar}>
-                    <h1>Products</h1>
-                    <div className={styles.filterSection}>
-                    <button  style={{ margin: '5px' }} onClick={handlesortPriceAsc}>Sort Price Asc</button>
-                    <button  style={{ margin: '5px' }}  onClick={handlesortPriceDsc}>Sort Price Desc</button>
-                    <button style={{ margin: '5px' }} onClick={handlesortRatingAsc}>Sort Rating Asc</button>
-                    <button  style={{ margin: '5px' }}onClick={handlesortRatingDsc}>Sort Rating Desc</button>
-                    <div className={styles.ratingFilters}></div>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(1)}
-                          checked={ratingFilter === 1}
-                        /> 1 or higher
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(2)}
-                          checked={ratingFilter === 2}
-                        /> 2 or higher
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(3)}
-                          checked={ratingFilter === 3}
-                        /> 3 or higher
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(4)}
-                          checked={ratingFilter === 4}
-                        /> 4 or higher
-                      </label>
-                    </div>
-                    
-                    <div className={styles.priceFilter}>
-                        <h3>Price Filter</h3>
-                        <div>
-                            <label>
-                                Min Price:
-                                <input
-                                    type="number"
-                                    className={styles.min}
-                                    value={minBudget}
-                                    onChange={(e) => setMinBudget(e.target.value)}
-                                    placeholder="0"
-                                />
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                Max Price:
-                                <input
-                                    type="number"
-                                    className={styles.max}
-                                    value={maxBudget}
-                                    onChange={(e) => setMaxBudget(e.target.value)}
-                                    placeholder="1000"
-                                />
-                            </label>
-                        </div>
-                        <div className={styles.slider}>
-                            <label>Min</label>
-                            <input
-                                type="range"
-                                className={styles.rangeMin}
-                                min="0"
-                                max="10000"
-                                value={minBudget}
-                                onChange={(e) => setMinBudget(e.target.value)}
-                                step="100"
-                            />
-                            <label>Max</label>
-                            <input
-                                type="range"
-                                className={styles.rangeMax}
-                                min="0"
-                                max="10000"
-                                value={maxBudget}
-                                onChange={(e) => setMaxBudget(e.target.value)}
-                                step="100"
-                            />
-                        </div><div className={styles.filterSection}>
-                        <button  style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply Filter</button>
-                        <button  style={{ margin: '5px' }} className={styles.productArchive} onClick={clearFilters }>Clear Filters</button>
-                    </div></div>
+            <div className={styles.categoryFilter}>
+              <h3>Categories</h3>
+              {Array.isArray(category) && category.map((cat, index3) => (
+                <div key={index3} className={styles.categoryItem}>
+                  <input
+                    type="checkbox"
+                    id={`category-${index3}`}
+                    onClick={() => handlefiltercat(cat.category)}
+                  />
+                  <label htmlFor={`category-${index3}`}>{cat.category}</label>
                 </div>
-                <div className={styles.activities}>
-      {activities.map((activity) => (
-        <div key={activity.id} className={styles.activity}>
-          <h3>{activity.title}</h3>
-          <p>
-            <strong>Date:</strong> {activity.date}<br />
-            <strong>Time:</strong> {activity.time}<br />
-            <strong>Location:</strong>{' '}
-            <a href={activity.location} target="_blank" rel="noopener noreferrer">
-              {activity.location}
-            </a><br />
-            <strong>Price:</strong> {activity.price}<br />
-            <strong>Category:</strong> {activity.category}<br />
-            <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
-            <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-            <p></p>
-            <Link href={`activity/${activity._id}`} className={styles.addticket}>
-            <button className={styles.searchbtn}>View</button>
-          </Link>
-          </p>
-          
+              ))}
+            </div>
+
+            <div className={styles.priceFilter}>
+              <h3>Price Filter</h3>
+              <div>
+                <label>
+                  Min Price:
+                  <input
+                    type="number"
+                    className={styles.min}
+                    value={minBudget}
+                    onChange={(e) => setMinBudget(e.target.value)}
+                    placeholder="0"
+                  />
+                </label>
+              </div>
+              <div>
+                <label>
+                  Max Price:
+                  <input
+                    type="number"
+                    className={styles.max}
+                    value={maxBudget}
+                    onChange={(e) => setMaxBudget(e.target.value)}
+                    placeholder="1000"
+                  />
+                </label>
+              </div>
+              <div className={styles.slider}>
+                <label>Min</label>
+                <input
+                  type="range"
+                  className={styles.rangeMin}
+                  min="0"
+                  max="10000"
+                  value={minBudget}
+                  onChange={(e) => setMinBudget(e.target.value)}
+                  step="100"
+                />
+                <label>Max</label>
+                <input
+                  type="range"
+                  className={styles.rangeMax}
+                  min="0"
+                  max="10000"
+                  value={maxBudget}
+                  onChange={(e) => setMaxBudget(e.target.value)}
+                  step="100"
+                />
+              </div>
+              <div className={styles.filterSection}>
+                <button style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply Filter</button>
+                <button style={{ margin: '5px' }} className={styles.productArchive} onClick={clearFilters}>Clear Filters</button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.activities}>
+            {activities.map((activity) => (
+              <div key={activity.id} className={styles.activity}>
+                <h3>{activity.title}</h3>
+                <p>
+                  <strong>Date:</strong> {activity.date}<br />
+                  <strong>Time:</strong> {activity.time}<br />
+                  <strong>Location:</strong>{' '}
+                  <a href={activity.location} target="_blank" rel="noopener noreferrer">
+                    {activity.location}
+                  </a><br />
+                  <strong>Price:</strong> {activity.price * multiplier} {preferredCurrency}<br />
+                  <strong>Category:</strong> {activity.category}<br />
+                  <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
+                  <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
+                  <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
+                  <p></p>
+                  <Link href={`activity/${activity._id}`} className={styles.addticket}>
+                    <button className={styles.searchbtn}>View</button>
+                  </Link>
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-        
-      ))}</div>
-    </div></div>
-    </>);
+      </div>
+    </>
+  );
 };
 
 export default Activitiespage;

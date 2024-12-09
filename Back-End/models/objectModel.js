@@ -291,7 +291,7 @@ itinerarySchema.pre('findOne', async function (next) {
     }
     next();
 });
-
+/*
 itinerarySchema.pre('save', function (next) {
     if (this.ratings && this.ratings.length > 0) {
         const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
@@ -301,20 +301,36 @@ itinerarySchema.pre('save', function (next) {
     }
     next(); // Proceed with the save operation
 });
-
+*/
 //middleware to update revenue of itinerary
 itinerarySchema.methods.updateRevenue = async function () {
     // Fetch all activities related to this itinerary
     const activities = await Activity.find({ _id: { $in: this.activities } });
     const totalActivityRevenue = activities.reduce((total, activity) => total + (activity.revenue || 0), 0);
     this.revenueOfThisItinerary = totalActivityRevenue + (this.NoOfBookings * this.price);
-
+    
     // Save the updated itinerary revenue
     await this.save();
 };
 itinerarySchema.pre('save', async function (next) {
-    await this.updateRevenue();
-    next();
+    // Update average rating if ratings exist
+    if (this.ratings && this.ratings.length > 0) {
+        const total = this.ratings.reduce((acc, val) => acc + (val.rating || 0), 0);
+        this.rating = total / this.ratings.length; // Calculate average
+    } else {
+        this.rating = null; // Set to null if no ratings
+    }
+
+    // Update itinerary revenue
+    if (this.activities && this.activities.length > 0) {
+        const activities = await Activity.find({ _id: { $in: this.activities } });
+        const totalActivityRevenue = activities.reduce((total, activity) => total + (activity.revenue || 0), 0);
+        this.revenueOfThisItinerary = totalActivityRevenue + (this.NoOfBookings * this.price);
+    } else {
+        this.revenueOfThisItinerary = this.NoOfBookings * this.price; // Base revenue if no activities
+    }
+
+    next(); // Proceed with the save operation
 });
 
 

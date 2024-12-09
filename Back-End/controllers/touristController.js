@@ -1114,11 +1114,12 @@ const redeemPromo = async (req, res) => {
     try {
         const tourist = await Tourist.findById(userId);
         // Check if the promo code is already in activePromoCodes
-        if (tourist.activePromoCodes.some(activeCode => activeCode.code === PromoCode.code)) {
+        if (tourist.redeemedPromoCodes.some(redeemedCode => redeemedCode.code === PromoCode.code)) {
             return res.status(400).json({ error: 'Promocode is already redeemed.' });
         }
         // Push the promo code into the activePromoCodes array
         tourist.activePromoCodes.push(PromoCode);
+        tourist.redeemedPromoCodes.push(PromoCode);
         await tourist.save();
 
         return res.status(200).json({ message: 'Promocode redeemed successfully!', activePromoCodes: tourist.activePromoCodes });
@@ -1126,6 +1127,28 @@ const redeemPromo = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error.' });
     }
 }
+const availableCodes = async (req, res) => {
+    try {
+        const { userID } = req.user._id; 
+        const today = new Date();
+
+        const promoCodes = await PromoModel.find({
+            $and: [
+                { expiryDate: { $gt: today } }, 
+                {
+                    $or: [
+                        { createdBy: { $ne: null } },
+                        { touristId: userID } 
+                    ]
+                }
+            ]
+        });
+        return res.status(200).json({ success: true, promoCodes });
+    } catch (error) {
+        console.error('Error fetching promo codes:', error);
+        return res.status(500).json({ success: false, message: 'Server Error', error });
+    }
+};
 
 module.exports = {
     getProfile,
@@ -1174,5 +1197,6 @@ module.exports = {
     birthDaycode,
     checkoutOrder,
     redeemPromo,
-    getMyOrders
+    getMyOrders,
+    availableCodes
 };
