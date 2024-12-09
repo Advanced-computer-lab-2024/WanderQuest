@@ -373,7 +373,7 @@ const Products = ({ role, refreshWishlist }) => {
                                             <p>Seller: {product.seller}</p>
 
                                             <p>Available Quantity: {product.availableAmount}</p>
-                                            <p className={styles.productRating}>
+                                            <div className={styles.productRating}>
                                                 {product.rating && product.rating > 0 ? (
                                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                                         <Rating
@@ -386,7 +386,10 @@ const Products = ({ role, refreshWishlist }) => {
                                                         <Box sx={{ ml: 2 }}>{labels[product.rating]}</Box>
                                                     </div>
                                                 ) : "No rating yet"}
-                                            </p>
+                                            </div>
+                                                        <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
+                                    Add to Wishlist
+                                </button>
                                             {/*                         
                         <Rating name="read-only" value={itinerary.rating} readOnly /> */}
 
@@ -480,9 +483,7 @@ const Products = ({ role, refreshWishlist }) => {
                     </div>
                 </div>
             </div>
-            {/* <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
-                                    Add to Wishlist
-                                </button> */}
+
         </>
     );
 

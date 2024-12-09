@@ -1,3 +1,7 @@
+.body{
+  margin-top: 100px;
+}
+
 .cardscontainer {
   flex: 1; /* Take up remaining space */
   display: grid;
@@ -368,9 +372,11 @@
 }.travelplan {
   width: 100%;
   height: 550px;
-/* Removes padding if any */
-  display: block; /* Ensures it behaves like a block element */
-}.searchcom{
+  margin-top: 80px;
+  display: block;
+}
+
+.searchcom{
   display: block;
   margin-left: 33%;
 }.productsearch{
