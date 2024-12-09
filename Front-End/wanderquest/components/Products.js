@@ -39,33 +39,33 @@ const Products = ({ role, refreshWishlist }) => {
     const [multiplier, setMultiplier] = useState(1);
     const [preferredCurrency, setPreferredCurrency] = useState('USD');
 
-    useEffect(() => {
-        const fetchPaymentMultiplier = async () => {
-            try {
-                const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // Automatically include credentials (user session)
-                });
+    // useEffect(() => {
+    //     const fetchPaymentMultiplier = async () => {
+    //         try {
+    //             const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 credentials: 'include', // Automatically include credentials (user session)
+    //             });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    setMultiplier(result.multiplier);
-                    setPreferredCurrency(result.currency);
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.message}`);
-                }
-            } catch (error) {
-                alert(`Error: ${error.message}`);
-            }
-        };
-        if (role === "Tourist") {
-            fetchPaymentMultiplier();
-        }
-    }, []);
+    //             if (response.ok) {
+    //                 const result = await response.json();
+    //                 setMultiplier(result.multiplier);
+    //                 setPreferredCurrency(result.currency);
+    //             } else {
+    //                 const errorData = await response.json();
+    //                 alert(`Error: ${errorData.message}`);
+    //             }
+    //         } catch (error) {
+    //             alert(`Error: ${error.message}`);
+    //         }
+    //     };
+    //     if (role === "Tourist") {
+    //         fetchPaymentMultiplier();
+    //     }
+    // }, []);
 
     const handleProductPictureChange = (e) => setProductPicture(e.target.files[0]);
 
@@ -375,7 +375,7 @@ const Products = ({ role, refreshWishlist }) => {
                                             <p>Seller: {product.seller}</p>
 
                                             <p>Available Quantity: {product.availableAmount}</p>
-                                            <p className={styles.productRating}>
+                                            <div className={styles.productRating}>
                                                 {product.rating && product.rating > 0 ? (
                                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                                         <Rating
@@ -388,7 +388,10 @@ const Products = ({ role, refreshWishlist }) => {
                                                         <Box sx={{ ml: 2 }}>{labels[product.rating]}</Box>
                                                     </div>
                                                 ) : "No rating yet"}
-                                            </p>
+                                            </div>
+                                                        <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
+                                    Add to Wishlist
+                                </button>
                                             {/*                         
                         <Rating name="read-only" value={itinerary.rating} readOnly /> */}
 
@@ -482,9 +485,7 @@ const Products = ({ role, refreshWishlist }) => {
                     </div>
                 </div>
             </div>
-            {/* <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
-                                    Add to Wishlist
-                                </button> */}
+
         </>
     );
 
