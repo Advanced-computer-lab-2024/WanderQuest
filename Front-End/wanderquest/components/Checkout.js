@@ -4,7 +4,7 @@ import { Elements, CardElement, useStripe, useElements } from "@stripe/react-str
 import styles from "../Styles/Checkout.module.css";
 
 // Stripe public key (replace with your actual key)
-const stripePromise = loadStripe("your-stripe-public-key");
+const stripePromise = loadStripe("pk_test_51QRfekFYbqa6jLuaRMO4BVWeTT2vPcWgVjQUcs09vEM6gcSRWBSm3gJ2VDpRvqpyXO7sCCqycrkJ5kyh1L08Z9jY00s1CRFhtE");
 
 const Checkout = () => {
     const [cartItems, setCartItems] = useState([]);
@@ -27,12 +27,16 @@ const Checkout = () => {
         const fetchCartAndAddresses = async () => {
             try {
                 // Fetch cart items
-                const cartResponse = await fetch("/api/cart");
+                const cartResponse = await fetch("http://localhost:4000/tourist/cart",{
+                    credentials:"include"
+                });
                 const cartData = await cartResponse.json();
                 setCartItems(cartData.cartItems);
 
                 // Fetch delivery addresses
-                const addressResponse = await fetch("http://localhost:4000/tourist/addDeliveryAddresses");
+                const addressResponse = await fetch("http://localhost:4000/tourist/deliveryAddresses",{
+                    credentials:"include"
+                });
                 const addressData = await addressResponse.json();
                 setDeliveryAddresses(addressData.deliveryAddresses);
                 setActiveAddress(addressData.activeAddress);
@@ -70,6 +74,7 @@ const Checkout = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(orderData),
+                credentials:"include"
             });
             const checkoutData = await checkoutResponse.json();
             if (checkoutResponse.ok) {
@@ -133,7 +138,7 @@ const Checkout = () => {
             }
 
             try {
-                const response = await fetch("/api/payment", {
+                const response = await fetch("http://localhost:4000/tourist/cart/checkout", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -142,6 +147,7 @@ const Checkout = () => {
                         paymentMethodId: paymentMethod.id,
                         totalPrice: totalPrice,
                     }),
+                    credentials:"include"
                 });
 
                 const paymentData = await response.json();
