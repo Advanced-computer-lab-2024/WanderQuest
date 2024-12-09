@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import Navbar from '../../../../components/Navbar'; 
 import React, { useState, useEffect, useRef } from 'react';
-import styles from '../../../../Styles/activity.module.css';
+import styles from '../../../../Styles/advertisercards.module.css';
 import { useLoadScript, Autocomplete } from '@react-google-maps/api';
 import Foot from '../../../../components/foot';
 
@@ -224,32 +224,33 @@ const handleSelectChange = (selectedOptions) => {
     return (
         <div className={styles.parent}>
             <Navbar />
-                <div className={styles.activitiescontainer} style={{ marginBottom: '100px',marginTop: '100px' }}>
-                    <label className={styles.label}>List of activities</label>
-                    <div>
-                        {activities.map((activity) => (
-                            <div key={activity._id} className={styles.activitybox}>
-                                <p><strong>{activity.title}</strong></p>
-                                    <p><strong>Date:</strong> {activity.formattedDate}</p>
-                                    <p><strong>Time:</strong> {activity.time}</p>
-                                    <p><strong>Location:</strong> {activity.location}</p>
-                                    <p><strong>Price:</strong> {activity.price}</p>
-                                    <p><strong>Category:</strong> {activity.category}</p>
-                                    <p><strong>Tags:</strong> {
-                                        Array.isArray(activity.tags)
-                                            ? activity.tags.map(tag => tag.type).join(', ')
-                                            : activity.tags
-                                    }</p>
-                                    <p><strong>Special Discount:</strong> {activity.specialDiscounts}</p>
-                                    <p><strong>{activity.bookingIsOpen ? 'Booking is open' : 'Booking is Closed'}</strong></p>
-                                <button className={styles.update} onClick={() => handleRedirectUpdate(activity)}>Update</button>
-                                <button className={styles.delete} onClick={() => handleDelete(activity._id)}>Delete</button>
-                            </div>
-                        ))}
+            <div className={styles.activitiescontainer} style={{marginTop: '100px'}}>
+                <label className={styles.label}>List of Activities</label>
+                {activities.map((activity) => (
+                    <div key={activity._id} className={styles.activitybox}>
+                        <p><strong>{activity.title}</strong></p>
+                        <p><strong>Date:</strong> {activity.formattedDate}</p>
+                        <p><strong>Time:</strong> {activity.time}</p>
+                        <p><strong>Location:</strong> {activity.location}</p>
+                        <p><strong>Price:</strong> {activity.price}</p>
+                        <p><strong>Category:</strong> {activity.category}</p>
+                        <p><strong>Tags:</strong> {
+                            Array.isArray(activity.tags)
+                                ? activity.tags.map(tag => tag.type).join(', ')
+                                : activity.tags
+                        }</p>
+                        <p><strong>Special Discount:</strong> {activity.specialDiscounts}</p>
+                        <p><strong>{activity.bookingIsOpen ? 'Booking is open' : 'Booking is Closed'}</strong></p>
+                        <div className={styles.buttonContainer}>
+                            <button className={styles.update} onClick={() => handleRedirectUpdate(activity)}>Update</button>
+                            <button className={styles.delete} onClick={() => handleDelete(activity._id)}>Delete</button>
+                        </div>
                     </div>
-                </div>
+                ))}
+            </div>
             <Foot />
         </div>
+
     );
 };
 
