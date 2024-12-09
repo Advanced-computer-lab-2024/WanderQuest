@@ -161,14 +161,14 @@ const Navbar = () => {
                     )}
                     {role == "" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/itineitirary'}>Go to Itinerary</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/iti'}>Go to Itinerary</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/guest/musuem'}>Go to museums</button>
                         </div>
                     )}
                     {role == "seller" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={() => window.location.href = '/seller/createprod'}>Create Product</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/seller/creatprod'}>Create Product</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/seller/products'}>View Products</button>
                         </div>
                     )}
