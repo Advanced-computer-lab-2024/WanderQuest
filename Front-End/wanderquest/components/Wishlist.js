@@ -1,7 +1,7 @@
 'use client';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../Styles/Wishlist.module.css';
-import { FaChevronDown } from 'react-icons/fa';
+import { FaChevronDown, FaTrash } from 'react-icons/fa';
 
 const Wishlist = () => {
     const [wishlist, setWishlist] = useState([]);
@@ -9,33 +9,6 @@ const Wishlist = () => {
     const [openItems, setOpenItems] = useState({});
     const [multiplier, setMultiplier] = useState(1);
     const [preferredCurrency, setPreferredCurrency] = useState('USD');
-    const [user, setUser] = useState({});
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch('http://localhost:4000/authentication/user', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // Automatically include credentials (user session)
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    setUser(result);
-                } else {
-                    const errorData = await response.json();
-                    setUser({});
-                }
-            } catch (error) {
-                setUser({});
-            }
-        };
-
-        fetchUserData();
-    }, []);
 
     useEffect(() => {
         const fetchPaymentMultiplier = async () => {
@@ -60,12 +33,11 @@ const Wishlist = () => {
                 alert(`Error: ${error.message}`);
             }
         };
-        if (user && user.role === 'tourist') {
-            fetchPaymentMultiplier();
-        }
-    }, [user]);
 
-    const handleRemove = useCallback(async (id) => {
+        fetchPaymentMultiplier();
+    }, []);
+
+    const handleRemove = async (id) => {
         try {
             if (!id) throw new Error('Product ID is required');
 
@@ -82,36 +54,30 @@ const Wishlist = () => {
 
             const data = await response.json();
             console.log('Product removed successfully:', data);
-
-            // Update the state to remove the product
             setWishlist((prevWishlist) => prevWishlist.filter((product) => product._id !== id));
         } catch (error) {
             console.error('Error removing product:', error.message);
         }
-    }, []);
+    };
 
     useEffect(() => {
-        if (user && user.role === 'tourist') {
-            setLoading(true);
-            fetch('http://localhost:4000/tourist/wishlist', {
-                credentials: 'include',
+        setLoading(true);
+        fetch('http://localhost:4000/tourist/wishlist', {
+            credentials: 'include',
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
             })
-                .then((res) => {
-                    if (!res.ok) throw new Error('Network response was not ok');
-                    return res.json();
-                })
-                .then((data) => {
-                    setWishlist(data);
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.error('Error fetching data:', error);
-                    setLoading(false);
-                });
-        } else {
-            setLoading(false);
-        }
-    }, [user]);
+            .then((data) => {
+                setWishlist(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+                setLoading(false);
+            });
+    }, []);
 
     const toggleDetails = (productId) => {
         setOpenItems(prev => ({
@@ -123,10 +89,7 @@ const Wishlist = () => {
     if (loading) {
         return (
             <>
-                <script
-                    src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
-                    type="module"
-                ></script>
+                <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
                 <dotlottie-player
                     style={{
                         width: '300px',
@@ -150,40 +113,52 @@ const Wishlist = () => {
         <div className={styles.wishlistContainer}>
             {Array.isArray(wishlist) && wishlist.length > 0 ? (
                 wishlist.filter((product) => !product.isArchived).map((product) => (
-                    <div key={product._id}>
-                        <div className={styles.wishlistItem}>
-                            <div className={styles.leftSection}>
-                                <img src={product.picture} alt={product.name} className={styles.itemImage} />
-                                <div className={styles.basicInfo}>
-                                    <h3 className={styles.productName}>{product.name}</h3>
-                                    <p className={styles.price}>{(product.price * multiplier).toFixed(2)} {preferredCurrency}</p>
-                                    <button
-                                        className={styles.removeButton}
-                                        onClick={() => handleRemove(product._id)}
-                                    >
-                                        Remove
-                                    </button>
+                    <div key={product._id} className={styles.wishlistItem}>
+                        <div className={styles.wishlistHeader}>
+                            <div className={styles.headerInfo}>
+                                <img src={product.picture} alt={product.name} className={styles.itemThumbnail} />
+                                <div className={styles.productInfo}>
+                                    <h3>{product.name}</h3>
+                                    <span className={styles.price}>
+                                        {(product.price * multiplier).toFixed(2)} {preferredCurrency}
+                                    </span>
                                 </div>
                             </div>
-                            <div className={styles.dropdownSection}>
-                                <FaChevronDown
-                                    className={`${styles.dropdownIcon} ${openItems[product._id] ? styles.open : ''}`}
-                                    onClick={() => toggleDetails(product._id)}
-                                />
-                            </div>
+                            <button
+                                className={styles.removeButton}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemove(product._id);
+                                }}
+                                title="Remove from Wishlist"
+                            >
+                                <FaTrash />
+                            </button>
                         </div>
-                        <div className={`${styles.detailsPanel} ${openItems[product._id] ? styles.open : ''}`}>
-                            <div className={styles.detailsGrid}>
-                                <p className={styles.detailItem}><strong>Seller:</strong> {product.seller}</p>
-                                <p className={styles.detailItem}><strong>Available:</strong> {product.availableAmount}</p>
-                                <p className={styles.detailItem}><strong>Rating:</strong> {product.rating} / 5</p>
-                                <p className={styles.detailItem}><strong>Description:</strong> {product.description}</p>
-                            </div>
+                        
+                        <div 
+                            className={styles.dropdownButton}
+                            onClick={() => toggleDetails(product._id)}
+                        >
+                            <FaChevronDown 
+                                className={`${styles.dropdownIcon} ${openItems[product._id] ? styles.open : ''}`}
+                            />
                         </div>
+                        
+                        {openItems[product._id] && (
+                            <div className={styles.wishlistDetails}>
+                                <div className={styles.detailsGrid}>
+                                    <p><strong>Seller:</strong> {product.seller}</p>
+                                    <p><strong>Available:</strong> {product.availableAmount}</p>
+                                    <p><strong>Rating:</strong> {product.rating} / 5</p>
+                                    <p><strong>Description:</strong> {product.description}</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))
             ) : (
-                <p className={styles.emptyMessage}>No products available in Wishlist.</p>
+                <p className={styles.emptyMessage}>No products in your wishlist.</p>
             )}
         </div>
     );
