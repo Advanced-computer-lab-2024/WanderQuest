@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+'use client'
+import React, { useState, useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,18 +17,20 @@ import styles from '../styles/Reporttour.module.css';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Salesrepadv = () => {
-  const [report,setReport]=useState([]);
+  const [revenueMonthFilter, setRevenueMonthFilter] = useState("All");
+  const [dateFilter, setDateFilter] = useState("All");
+  const [monthFilter, setMonthFilter] = useState("All");
+
+
   const [loading,setLoading]=useState(false);
   const[activities,setActivities]=useState([]);
-  const[itineraries,setItineraries]=useState([]);
-  const[products,setProducts]=useState([]); 
   const[totalRevenue,setTotalRevenue]=useState(0);
   const[totalUsers,setTotalUsers]=useState(0);
   const[newUsers,setNewUsers]=useState(0);
   const[totalProducts,setTotalProducts]=useState([]);
   const[totalItineraries,setTotalItineraries]=useState([]);
   const[totalActivities,setTotalActivities]=useState([]);  
-  const [productRevenue, setProductRevenue] = useState(0);
+
   const [activityRevenue, setActivityRevenue] = useState(0);
   const [itineraryRevenue, setItineraryRevenue] = useState(0);
 
@@ -39,10 +42,88 @@ const Salesrepadv = () => {
 
 
 
+  const getUniqueMonths = () => {
+    const months = activities.map(activity => {
+      const date = new Date(activity.date);
+      return `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+    });
+    return [...new Set(months)];
+  };
+
+  // Helper function to get unique dates from activities
+  const getUniqueDates = () => {
+    return [...new Set(activities.map(activity => 
+      new Date(activity.date).toLocaleDateString()
+    ))];
+  };
+
+
+  const createActivityUsersData = () => {
+    let filteredActivities = [...activities];
+
+    if (monthFilter !== "All") {
+      filteredActivities = filteredActivities.filter(activity => {
+        const date = new Date(activity.date);
+        const monthYear = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+        return monthYear === monthFilter;
+      });
+    }
+
+    // Group by activity name and sum users
+    const groupedData = filteredActivities.reduce((acc, activity) => {
+      if (!acc[activity.name]) {
+        acc[activity.name] = 0;
+      }
+      acc[activity.name] += activity.numberOfUsers;
+      return acc;
+    }, {});
+
+    return {
+      labels: Object.keys(groupedData),
+      datasets: [{
+        label: "Number of Users",
+        data: Object.values(groupedData),
+        backgroundColor: blueColors,
+        borderColor: blueColors,
+        borderWidth: 1
+      }]
+    };
+  };
+
+  const createActivityRevenueData = () => {
+    let filteredActivities = [...activities];
+
+    // Filter by date if selected
+    if (dateFilter !== "All") {
+      filteredActivities = filteredActivities.filter(activity => 
+        new Date(activity.date).toLocaleDateString() === dateFilter
+      );
+    }
+
+    // Filter by month if selected
+    if (revenueMonthFilter !== "All") {
+      filteredActivities = filteredActivities.filter(activity => {
+        const date = new Date(activity.date);
+        const monthYear = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+        return monthYear === revenueMonthFilter;
+      });
+    }
+
+    return {
+      labels: filteredActivities.map(activity => activity.name),
+      datasets: [{
+        label: "Revenue",
+        data: filteredActivities.map(activity => activity.price),
+        backgroundColor: blueColors,
+        borderColor: blueColors,
+        borderWidth: 1
+      }]
+    };
+  };
   useEffect(() => {
     const fetchReport = async () => {
         try {
-            const response = await fetch('http://localhost:4000/admin/salesReport', {
+            const response = await fetch('http://localhost:4000/advertiser/salesReport', {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -53,17 +134,15 @@ const Salesrepadv = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log(data);
-                setReport(data);
-                setProductRevenue(data.report.productRevenue || 0);
+               
+
                 setActivityRevenue(data.report.activityRevenue || 0); 
-                setItineraryRevenue(data.report.itineraryRevenue || 0);
+
                 setTotalRevenue(data.report.totalRevenue || 0);
+                setActivities(data.report.activityDetails || []);
                 // setTotalUsers(data.report.totalUsers || 0);
                 // setNewUsers(data.report.newUsers || 0);
-                console.log(data.report.productRevenue);
-                console.log(data.report.activityRevenue);
-                console.log(data.report.itineraryRevenue);
-                console.log(data.report.totalRevenue);
+          
             } else {
                 console.error('Failed to fetch report');
             }
@@ -77,6 +156,18 @@ const Salesrepadv = () => {
 
 
 
+useEffect(() => {
+    const fetchTouristReport = async () => {
+        const response = await fetch('http://localhost:4000/advertiser/TouristReport', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        const data = await response.json();
+        console.log(data);
+        setTotalUsers(data.report.totalTouristsFromActivities || 0);
+    }
+    fetchTouristReport();
+}, []); 
 
 
 
@@ -102,24 +193,17 @@ const Salesrepadv = () => {
     ],
   };
 
-  const filterData = (filter) => {
+  const filterData = (filter, dataType = 'revenue') => {
+    const sourceData = dataType === 'revenue' ? createActivityRevenueData() : createActivityUsersData();
+    if (filter === "All") return sourceData;
+
+    const filterIndex = sourceData.labels.findIndex(label => label.includes(filter));
     return {
-      ...allData,
-      labels:
-        filter === "All"
-          ? allData.labels
-          : allData.labels.filter((label, index) => label === filter),
-      datasets: [
-        {
-          ...allData.datasets[0],
-          data:
-            filter === "All"
-              ? allData.datasets[0].data
-              : allData.datasets[0].data.filter(
-                  (_, index) => allData.labels[index] === filter
-                ),
-        },
-      ],
+      labels: [sourceData.labels[filterIndex]],
+      datasets: [{
+        ...sourceData.datasets[0],
+        data: [sourceData.datasets[0].data[filterIndex]]
+      }]
     };
   };
 
@@ -179,147 +263,107 @@ const Salesrepadv = () => {
   return (
     <div className={styles.container}>
       <h1>Sales Report </h1>
-      <div className={styles.totals}>
-        <div className={styles.total}>
-          <p className={styles.text}>Total Revenue</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
+   
+
+<div className={styles.totals}>
+  <div className={styles.total}>
+    <p className={styles.text}>Total Revenue</p>
+    <animated.span className={styles.nums}>
+      ${totalRevenue.toFixed(2)}
+    </animated.span>
+  </div>
+  <div className={styles.total}>
+    <p className={styles.text}>Total users</p>
+    <animated.span className={styles.nums}>
+      {totalUsers}
+    </animated.span>
+  </div>
+
+  <div className={styles.total}>
+    <p className={styles.text}>Activities Revenue</p>
+    <animated.span className={styles.nums}>
+    ${activityRevenue}
+    </animated.span>
+  </div>
+</div>
+
+
+
+<div className={styles.graphscontainer}>
+        <div>
+          <div className={styles.filters}>
+            <label>
+              Filter by Month:
+              <select
+                value={revenueMonthFilter}
+                onChange={(e) => setRevenueMonthFilter(e.target.value)}
+              >
+                <option value="All">All Months</option>
+                {getUniqueMonths().map(month => (
+                  <option key={month} value={month}>{month}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Filter by Date:
+              <select
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                disabled={revenueMonthFilter !== "All"} // Disable date filter when month is selected
+              >
+                <option value="All">All Dates</option>
+                {getUniqueDates().map(date => (
+                  <option key={date} value={date}>{date}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className={styles.graph}>
+            <h2>Activities Revenue</h2>
+            <Bar
+              data={createActivityRevenueData()}
+              options={{
+                ...chartOptions,
+                plugins: {
+                  ...chartOptions.plugins,
+                  title: { text: "Activity Revenue by Date/Month" },
+                },
+              }}
+            />
+          </div>
         </div>
-        <div className={styles.total}>
-          <p className={styles.text}>Total users</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total}>
-          <p className={styles.text}>Itineraries sales</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total}>
-          <p className={styles.text}>Activities sales</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
+
+
+        <div>
+          <div className={styles.filters}>
+            <label>
+              Filter by Month:
+              <select
+                value={monthFilter}
+                onChange={(e) => setMonthFilter(e.target.value)}
+              >
+                <option value="All">All Months</option>
+                {getUniqueMonths().map(month => (
+                  <option key={month} value={month}>{month}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className={styles.graph}>
+            <h2>Activities Users</h2>
+            <Bar
+              data={createActivityUsersData()}
+              options={{
+                ...chartOptions,
+                plugins: {
+                  ...chartOptions.plugins,
+                  title: { text: "Activity Users by Month" },
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
-
-      <div className={styles.graphscontainer}>
-
-        <div>
-          <label>
-            Itinerary Filter:
-            <select
-              value={itineraryFilter}
-              onChange={(e) => setItineraryFilter(e.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </label>
-          <div className={styles.graph}>
-          <h2>Itiniraries</h2>
-            <Bar
-              data={filterData(itineraryFilter)}
-              options={{
-                ...chartOptions,
-                plugins: {
-                  ...chartOptions.plugins,
-                  title: { text: "Itinerary Chart" },
-                },
-              }}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label>
-            Activities Filter:
-            <select
-              value={itineraryFilter}
-              onChange={(e) => setItineraryFilter(e.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </label>
-          <div className={styles.graph}>
-          <h2>Activities</h2>
-            <Bar
-              data={filterData(itineraryFilter)}
-              options={{
-                ...chartOptions,
-                plugins: {
-                  ...chartOptions.plugins,
-                  title: { text: "Itinerary Chart" },
-                },
-              }}
-            />
-          </div>
-        </div>
-
-
-      </div>
-      <div className={styles.graphscontainer}>
-      <div>
-          <label>
-            Itinerary Filter:
-            <select
-              value={itineraryFilter}
-              onChange={(e) => setItineraryFilter(e.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </label>
-          <div className={styles.graph}>
-          <h2>Itiniraries</h2>
-            <Bar
-              data={filterData(itineraryFilter)}
-              options={{
-                ...chartOptions,
-                plugins: {
-                  ...chartOptions.plugins,
-                  title: { text: "Itinerary Chart" },
-                },
-              }}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label>
-            Activity Filter:
-            <select 
-              value={activityFilter}
-              onChange={(e) => setActivityFilter(e.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </label>
-          <div className={styles.graph}>
-          <h2>Activities</h2>
-            <Bar
-              data={filterData(activityFilter)}
-              options={{
-                ...chartOptions,
-                plugins: {
-                  ...chartOptions.plugins,
-                  title: {
-                     text: "Activity Chart" },
-                },
-              }}
-            />
-          </div>
-        </div>
-        </div>
     </div>
   );
 };

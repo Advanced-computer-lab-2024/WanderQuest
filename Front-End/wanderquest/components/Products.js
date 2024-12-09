@@ -41,30 +41,21 @@ const Products = ({ role, refreshWishlist }) => {
     
 
     useEffect(() => {
-        const fetchPaymentMultiplier = async () => {
-            try {
-                const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // Automatically include credentials (user session)
-                });
+        const storedMultiplier = localStorage.getItem('multiplier');
+        let multiplier = 1;
+        console.log('Stored Multiplier:', storedMultiplier);
+        if (storedMultiplier) {
+            console.log('Setting Multiplier:', storedMultiplier);
+            setMultiplier(storedMultiplier);
+        }
 
-                if (response.ok) {
-                    const result = await response.json();
-                    setMultiplier(result.multiplier);
-                    setPreferredCurrency(result.currency);
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.message}`);
-                }
-            } catch (error) {
-                alert(`Error: ${error.message}`);
-            }
-        };
-        fetchPaymentMultiplier();
+        const preferredCurrency = localStorage.getItem('preferredCurrency') || 'USD';
+        console.log('Preferred Currency:', preferredCurrency);
+        if (preferredCurrency) {
+            setPreferredCurrency(preferredCurrency);
+        }
     }, []);
+
 
     const handleProductPictureChange = (e) => setProductPicture(e.target.files[0]);
 
@@ -254,43 +245,45 @@ const Products = ({ role, refreshWishlist }) => {
             alert('Failed to add product to wishlist');
         }
     };
-    
-    if (loading) {return<>
-        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
-        <dotlottie-player style={{
-    width: '300px',
-    height: '300px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 'auto'
-    }}
-    src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
-        </>}
-return (
-    <>
-    <img src="/prod.png" className={styles.travelplan} alt="iti" />
-    <motion.div
-            className={styles.searchcom}
-            initial={{ y: 20 }}
-            transition={{ duration: 1 }}
-          >
-            <input
-                        className={styles.productsearch}
-                        onChange={(e) => setSearch(e.target.value)}
-                        type="text"
-                        placeholder="Search for products..."
-                    />
-          </motion.div>
-        <div className={styles.filterSection}>
-            <div className={styles.pageLayout}>
-                <div className={styles.sidebar}>
-                    <h1>Sorting</h1>
-                    <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
-                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
-                    <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
-                    <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
-                   
+
+    if (loading) {
+        return <>
+            <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+            <dotlottie-player style={{
+                width: '300px',
+                height: '300px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 'auto'
+            }}
+                src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        </>
+    }
+    return (
+        <>
+            <img src="/prod.png" className={styles.travelplan} alt="iti" />
+            <motion.div
+                className={styles.searchcom}
+                initial={{ y: 20 }}
+                transition={{ duration: 1 }}
+            >
+                <input
+                    className={styles.productsearch}
+                    onChange={(e) => setSearch(e.target.value)}
+                    type="text"
+                    placeholder="Search for products..."
+                />
+            </motion.div>
+            <div className={styles.filterSection}>
+                <div className={styles.pageLayout}>
+                    <div className={styles.sidebar}>
+                        <h1>Sorting</h1>
+                        <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
+                        <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
+                        <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
+                        <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
+
 
                         <div className={styles.priceFilter}>
                             <h3>Price Filter</h3>
@@ -353,39 +346,39 @@ return (
                         placeholder="Enter your text"
                     />
                 </div> */}
-                <div className={styles.cardscontainer}>
-                {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-                        filteredProducts
-                         .filter(product => !product.isArchived)
-                    .map((product) => (
-                <div className={styles.productCard} key={product._id}>
-                    <div className={styles.productImageContainer}>
-                        <img
-                            src={product.picture}
-                            alt={product.name}
-                            className={styles.productImage}
-                        />
-                    </div>
-                    <div className={styles.productInfo}>
-                        <h2 className={styles.productTitle}>{product.name}</h2>
-                        
-                        <div className={styles.productMeta}>
-                            <div className={styles.priceAndStock}>
-                                <span className={styles.productPrice}>
-                                    {(product.price * multiplier).toFixed(2)} {preferredCurrency}
-                                </span>
-                                <span className={styles.stockInfo}>
-                                    {product.availableAmount > 0 
-                                        ? `${product.availableAmount} in stock` 
-                                        : "Out of stock"}
-                                </span>
-                            </div>
-                            
-                            <div className={styles.sellerInfo}>
-                                <span className={styles.sellerLabel}>Sold by:</span>
-                                <span className={styles.sellerName}>{product.seller}</span>
-                            </div>
-                        </div>
+                    <div className={styles.cardscontainer}>
+                        {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
+                            filteredProducts
+                                .filter(product => !product.isArchived)
+                                .map((product) => (
+                                    <div className={styles.productCard} key={product._id}>
+                                        <div className={styles.productImageContainer}>
+                                            <img
+                                                src={product.picture}
+                                                alt={product.name}
+                                                className={styles.productImage}
+                                            />
+                                        </div>
+                                        <div className={styles.productInfo}>
+                                            <h2 className={styles.productTitle}>{product.name}</h2>
+
+                                            <div className={styles.productMeta}>
+                                                <div className={styles.priceAndStock}>
+                                                    <span className={styles.productPrice}>
+                                                        {(product.price * multiplier).toFixed(2)} {preferredCurrency}
+                                                    </span>
+                                                    <span className={styles.stockInfo}>
+                                                        {product.availableAmount > 0
+                                                            ? `${product.availableAmount} in stock`
+                                                            : "Out of stock"}
+                                                    </span>
+                                                </div>
+
+                                                <div className={styles.sellerInfo}>
+                                                    <span className={styles.sellerLabel}>Sold by:</span>
+                                                    <span className={styles.sellerName}>{product.seller}</span>
+                                                </div>
+                                            </div>
 
                         <p className={styles.productDescription}>{product.description}</p>
                         
