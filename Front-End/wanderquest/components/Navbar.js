@@ -180,11 +180,11 @@ const Navbar = () => {
                         </div>
                     )}
                     {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && (
-                        <>
-                            <button className="navbar-button">Products</button>
-                            <button className="navbar-button">Itinerary</button>
-                            <button className="navbar-button">Historical Places</button>
-                        </>
+                        <div className={styles.buttons}>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/iti'}>Go to Itinerary</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/musuem'}>Go to museums</button>
+                        </div>
                     )}
                 </div>
                 <div className='navbar-rightside'>
