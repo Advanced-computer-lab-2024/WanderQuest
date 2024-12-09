@@ -13,31 +13,48 @@ const Complaints = (props) => {
     const [openComplaints, setOpenComplaints] = useState({});
     const router = useRouter();
 
-    // Keep existing fetch logic for both roles
     useEffect(() => {
-        const fetchUrl = role === 'Admin' 
-            ? 'http://localhost:4000/admin/complaints'
-            : 'http://localhost:4000/tourist/myComplaints';
-
-        fetch(fetchUrl, {
-            credentials: 'include'
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
+        const fetchComplaints = async () => {
+            try {
+                let response;
+                
+                if (role === 'Admin') {
+                    response = await fetch('http://localhost:4000/admin/complaints', {
+                        credentials: 'include'
+                    });
+                } else if (role === 'Tourist') {
+                    response = await fetch('http://localhost:4000/tourist/myComplaints', {
+                        credentials: 'include'
+                    });
+                } else {
+                    setLoading(false);
+                    return;
                 }
-                return res.json();
-            })
-            .then((data) => {
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
                 setComplaints(data);
                 setLoading(false);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
+            } catch (err) {
+                console.log('Error fetching complaints:', err.message);
                 setComplaints([]);
                 setLoading(false);
-            });
+            }
+        };
+
+        if (role === 'Admin' || role === 'Tourist') {
+            fetchComplaints();
+        } else {
+            setLoading(false);
+        }
     }, [role]);
+
+    if (!role || (role !== 'Tourist' && role !== 'Admin')) {
+        return null;
+    }
 
     const handleViewComplaint = (complaintId) => {
         if (role === 'Admin') {
@@ -142,7 +159,7 @@ const Complaints = (props) => {
             </div>
         );
     }
-
+if (role === "Admin") {
     // Admin View (Original)
     return (
         <div className={styles.container}>
@@ -182,6 +199,7 @@ const Complaints = (props) => {
             </div>
         </div>
     );
+}
 };
 
 export default Complaints;

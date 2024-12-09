@@ -3,10 +3,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import styles from '../Styles/Cart.module.css';
 import { FaTrash } from 'react-icons/fa';
 
-const Cart = () => {
+const Cart = (props) => {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const role = props.role;
+    if(role === 'Tourist'){
     const fetchCart = useCallback(() => {
         setLoading(true);
         fetch('http://localhost:4000/tourist/cart', { credentials: 'include' })
@@ -73,6 +74,7 @@ const Cart = () => {
     if (loading) {
         return <p>Loading cart...</p>;
     }
+}
 
     return (
         <div className={styles.cartContainer}>
