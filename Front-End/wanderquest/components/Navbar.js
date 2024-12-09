@@ -34,7 +34,7 @@ const Navbar = () => {
                 if (response.ok) {
                     const result = await response.json();
                     setUser(result);
-                    setRole(response.data.role);
+                    setRole(result.role);
                 } else {
                     const errorData = await response.json();
                     setUser({});
