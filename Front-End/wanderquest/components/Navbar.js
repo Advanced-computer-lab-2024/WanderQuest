@@ -202,7 +202,7 @@ const Navbar = () => {
                     )}
                 </div>
             </div>
-
+            
             <WishlistPanel
                 isOpen={isWishlistOpen}
                 onClose={() => setIsWishlistOpen(false)}
