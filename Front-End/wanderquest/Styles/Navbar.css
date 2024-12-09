@@ -97,7 +97,8 @@ body {
 }
 
 .navbar-wishlist-button,
-.navbar-complaints-button {
+.navbar-complaints-button,
+.navbar-cart-button {
     background: none;
     border: none;
     cursor: pointer;
@@ -111,17 +112,20 @@ body {
 }
 
 .navbar-wishlist-button:hover,
-.navbar-complaints-button:hover {
+.navbar-complaints-button:hover,
+.navbar-cart-button:hover{
     background-color: rgba(0, 0, 0, 0.05);
 }
 
 .navbar-wishlist-button svg,
-.navbar-complaints-button svg {
+.navbar-complaints-button svg,
+.navbar-cart-button svg {
     transition: transform 0.2s;
 }
 
 .navbar-wishlist-button:hover svg,
-.navbar-complaints-button:hover svg {
+.navbar-complaints-button:hover svg
+.navbar-cart-button:hover svg {
     transform: scale(1.1);
 }
 

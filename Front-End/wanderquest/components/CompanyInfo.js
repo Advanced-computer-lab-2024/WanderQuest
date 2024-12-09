@@ -77,6 +77,7 @@ const CompanyInfo = () => {
             companyAddress,
             companyDescription,
         };
+        console.log(updatedData);
     
         try {
             const response = await fetch(
@@ -86,13 +87,14 @@ const CompanyInfo = () => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    credentials: "include", // Include cookies in the request
                     body: JSON.stringify(updatedData),
+                    credentials: "include", // Include cookies in the request
                 }
             );
     
             if (response.ok) {
                 const data = await response.json();
+                console.log(data);
                 setSuccessMessage("Profile updated successfully!");
                 setError(""); // Clear any error message
             } else {
@@ -104,9 +106,6 @@ const CompanyInfo = () => {
             setError("An error occurred while updating the profile");
         }
     };
-    
-
-    
 
     // Handle logo file selection
     const handleLogoChange = (e) => {

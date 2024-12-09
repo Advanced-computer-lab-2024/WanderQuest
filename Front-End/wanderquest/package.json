@@ -17,6 +17,8 @@
     "@mui/material": "^6.1.10",
     "@react-google-maps/api": "^2.19.3",
     "@react-spring/web": "^9.7.5",
+    "@stripe/react-stripe-js": "^3.0.0",
+    "@stripe/stripe-js": "^5.2.0",
     "amadeus": "^11.0.0",
     "axios": "^1.7.7",
     "chart": "^0.1.2",
