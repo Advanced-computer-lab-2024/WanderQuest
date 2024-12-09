@@ -638,8 +638,9 @@ const cancelOrder = async (req, res) => {
 }
 
 const addToCart = async (req, res) => {
-    const touristId = req.user._id
-    const { productId, quantity } = req.body
+    const touristId = req.user._id 
+    const productId = req.params.id
+    const { quantity } = req.body
     if (!productId || !quantity) {
         return res.status(400).json({ error: 'Missing product ID or quantity' })
     }
