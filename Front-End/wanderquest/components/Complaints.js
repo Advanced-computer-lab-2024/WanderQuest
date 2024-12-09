@@ -137,34 +137,44 @@ const Complaints = (props) => {
     }
     return (
         <div className={styles.container}>
-            {role === 'Admin' && (<div className={styles.sortFilterControls}>
-                <button onClick={() => sortComplaintsByDate('asc')}>Sort by Date Ascending</button>
-                <button onClick={() => sortComplaintsByDate('desc')}>Sort by Date Descending</button>
-                <select onChange={(e) => filterComplaintsByStatus(e.target.value)} value={filterStatus}>
-                    <option value="">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Resolved">Resolved</option>
-                </select>
-            </div>)}
-            {Array.isArray(filteredComplaints) && filteredComplaints.length > 0 ? (
-                filteredComplaints.map((complaint) => (
-                    <div className={styles.complaintCard} key={complaint._id}>
-                        <div className={styles.complaintInfo}>
-                            <h2>{complaint.title}</h2>
-                            <p>{complaint.body}</p>
-                            <p>Date: {complaint.date}</p>
-                            <div>
-                                <p>Status: </p>
-                                <p className={complaint.status === 'Pending' ? styles.complaintRating : styles.complaintRating2}>{complaint.status}</p>
-                            </div>
-                            <button className={styles.complaintButton} onClick={() => handleViewComplaint(complaint._id)}>View Complaint</button>
-                        </div>
-                    </div>
-                ))
-            ) : (
-                <p>No complaints available.</p>
-            )}
+    {role === 'Admin' && (
+        <div className={styles.sortFilterControls}>
+            <button onClick={() => sortComplaintsByDate('asc')}>Sort by Date Ascending</button>
+            <button onClick={() => sortComplaintsByDate('desc')}>Sort by Date Descending</button>
+            <select onChange={(e) => filterComplaintsByStatus(e.target.value)} value={filterStatus}>
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Resolved">Resolved</option>
+            </select>
         </div>
+    )}
+
+    <div className={styles.complaintsGrid}>
+        {Array.isArray(filteredComplaints) && filteredComplaints.length > 0 ? (
+            filteredComplaints.map((complaint) => (
+                <div className={styles.complaintCard} key={complaint._id}>
+                    <div className={styles.complaintInfo}>
+                        <h2>{complaint.title}</h2>
+                        <p>{complaint.body}</p>
+                        <p>Date: {complaint.date}</p>
+                        <div>
+                            <p>Status: </p>
+                            <p className={complaint.status === 'Pending' ? styles.complaintRating : styles.complaintRating2}>
+                                {complaint.status}
+                            </p>
+                        </div>
+                        <button className={styles.complaintButton} onClick={() => handleViewComplaint(complaint._id)}>
+                            View Complaint
+                        </button>
+                    </div>
+                </div>
+            ))
+        ) : (
+            <p>No complaints available.</p>
+        )}
+    </div>
+</div>
+
     );
 };
 
