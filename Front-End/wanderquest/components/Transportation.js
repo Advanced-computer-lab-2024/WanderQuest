@@ -7,6 +7,16 @@ import axios from 'axios';
 const CrudTransportation = () => {
     const [transportation, setTransportation] = useState([]);
     const [id, setId] = useState('');
+    const [notification, setNotification] = useState({ message: '', type: '' }); // State for notifications
+
+    useEffect(() => {
+        if (notification.message) {
+            const timer = setTimeout(() => {
+                setNotification({ message: '', type: '' });
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [notification]);
 
     const fetchUserRole = async () => {
         try {
@@ -106,10 +116,12 @@ const CrudTransportation = () => {
 
                 const data = await response.json();
                 setTransportation([...transportation, data]);
-
+                setNotification({ message: 'Transportation created successfully!', type: 'success' });
             }
             catch (error) {
                 console.error('Error creating Transportation:', error);
+                setNotification({ message: `Error: ${error.message}`, type: 'error' });
+
             }
 
         }
@@ -209,6 +221,18 @@ const CrudTransportation = () => {
                     </form>
                 </div>
             </div>
+
+            {notification.message && (
+                <div
+                    className={
+                        notification.type === 'success'
+                            ? styles.successMessage
+                            : styles.errorMessage
+                    }
+                >
+                    {notification.message}
+                </div>
+            )}
             {/* <div className={styles.activitiescontainer} style={{ marginBottom: '100px',marginTop: '100px' }}>
                 <label className={styles.label}>List of Transportations</label>
                 <div>
