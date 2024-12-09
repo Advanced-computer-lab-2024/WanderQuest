@@ -3,10 +3,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import styles from '../Styles/Cart.module.css';
 import { FaTrash } from 'react-icons/fa';
 
-const Cart = () => {
+const Cart = (props) => {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const role = props.role;
+    if(role === 'Tourist'){
     const fetchCart = useCallback(() => {
         setLoading(true);
         fetch('http://localhost:4000/tourist/cart', { credentials: 'include' })
@@ -73,6 +74,7 @@ const Cart = () => {
     if (loading) {
         return <p>Loading cart...</p>;
     }
+}
 
     return (
         <div className={styles.cartContainer}>
@@ -82,7 +84,6 @@ const Cart = () => {
                         <img src={item.picture} alt={item.name} className={styles.itemImage} />
                         <div className={styles.itemDetails}>
                             <h3 className={styles.productName}>{item.name}</h3>
-                            <p className={styles.price}>${item.price.toFixed(2)}</p>
                             <div className={styles.quantityControls}>
                                 <label htmlFor={`quantity-${item.id}`}>Quantity:</label>
                                 <input
@@ -107,6 +108,8 @@ const Cart = () => {
             ) : (
                 <p className={styles.emptyMessage}>Your cart is empty.</p>
             )}
+
+            <button onClick={() => (window.location.href = '/tourist/checkout')}>Checkout</button>
         </div>
     );
 };

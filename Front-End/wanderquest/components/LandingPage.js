@@ -5,8 +5,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useState } from 'react';
 import Image from 'next/image';
-import Wishlist from "./Wishlist";
-import Complaints from "./Complaints";
 import Mountains from '../imgs/Mountains.jpg';
 import { Cookie } from 'next/font/google';
 import {motion} from 'framer-motion';
@@ -51,47 +49,6 @@ const LandingPage = () => {
     const router = useRouter();
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
-    const [promoCode, setPromoCode] = useState({ code: '', discount: '', type: '' });
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        setIsLoading(true);
-        fetch('http://localhost:4000/tourist/codes', {
-            method: 'GET',
-            credentials: 'include',
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error('Network response was not ok');
-                return res.json();
-            })
-            .then((data) => {
-                setPromoCode(data);
-                setIsLoading(false);
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-                setIsLoading(false);
-            });
-    }, []);
-
-    useEffect(() => {
-        fetch('http://localhost:4000/tourist/birthday', {
-            method: 'POST',
-            credentials: 'include',
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error('Network response was not ok');
-                return res.json();
-            })
-            .then((data) => {
-                console.log('Birthday data:', data);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-            });
-    }, []);
-
 
 
     const handleRedirect = () => {
@@ -513,33 +470,7 @@ const LandingPage = () => {
 
             </div>
 
-            {/* Updated Wishlist Sliding Panel */}
-            <div className={`${styles.wishlistContainer} ${isWishlistOpen ? styles.visible : ''}`}>
-                <div className={`${styles.wishlistPanel} ${isWishlistOpen ? styles.open : ''}`}>
-                    <button 
-                        className={styles.closeButton}
-                        onClick={() => setIsWishlistOpen(false)}
-                    >
-                        <IoClose />
-                    </button>
-                    <h2>My Wishlist</h2>
-                    <Wishlist />
-                </div>
-            </div>
 
-            {/* Complaints Sliding Panel */}
-            <div className={`${styles.complaintsContainer} ${isComplaintsOpen ? styles.visible : ''}`}>
-                <div className={`${styles.complaintsPanel} ${isComplaintsOpen ? styles.open : ''}`}>
-                    <button 
-                        className={styles.closeButton}
-                        onClick={() => setIsComplaintsOpen(false)}
-                    >
-                        <IoClose />
-                    </button>
-                    <h2>My Complaints</h2>
-                    <Complaints role='Tourist' />
-                </div>
-            </div>
             <Foot />
         </>
     );
