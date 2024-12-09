@@ -104,7 +104,7 @@ const Navbar = () => {
     const handleRedirect = () => window.location.href = '/tourist/iti';
     const handleRedirectac = () => window.location.href = '/tourist/activity';
     const handleRedirectp = () => window.location.href = '/tourist/products';
-    const handleRedirectm = () => window.location.href = '/tourist/museum';
+    const handleRedirectm = () => window.location.href = '/tourist/musuem';
     const handleRedirec = () => window.location.href = '/tourist/mybookings';
     const handleRedirechotel = () => window.location.href = '/tourist/Hotels';
     const handleRedirecflight = () => window.location.href = '/tourist/Flights';
@@ -150,10 +150,9 @@ const Navbar = () => {
                     }
                     {role == "tourist" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={handleRedirect}>Go to Itinerary</button>
-                            <button className="navbar-button" onClick={handleRedirectac}>Go to activity</button>
-                            <button className="navbar-button" onClick={handleRedirectp}>Go to products</button>
-                            <button className="navbar-button" onClick={handleRedirectm}>Go to museums</button>
+                            <button className="navbar-button" onClick={handleRedirect}>Itinerary</button>
+
+                            <button className="navbar-button" onClick={handleRedirectm}>Museums</button>
                             <button className="navbar-button" onClick={handleRedirec}>My Bookings</button>
                             <button className="navbar-button" onClick={handleRedirechotel}>Hotels</button>
                             <button className="navbar-button" onClick={handleRedirecflight}>Flights</button>
@@ -162,14 +161,14 @@ const Navbar = () => {
                     )}
                     {role == "" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/itineitirary'}>Go to Itinerary</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/iti'}>Go to Itinerary</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/museum'}>Go to museums</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/musuem'}>Go to museums</button>
                         </div>
                     )}
                     {role == "seller" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={() => window.location.href = '/seller/createprod'}>Create Product</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/seller/creatprod'}>Create Product</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/seller/products'}>View Products</button>
                         </div>
                     )}
@@ -180,11 +179,11 @@ const Navbar = () => {
                         </div>
                     )}
                     {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && (
-                        <>
-                            <button className="navbar-button">Products</button>
-                            <button className="navbar-button">Itinerary</button>
-                            <button className="navbar-button">Historical Places</button>
-                        </>
+                        <div className={styles.buttons}>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/iti'}>Go to Itinerary</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/musuem'}>Go to museums</button>
+                        </div>
                     )}
                 </div>
                 <div className='navbar-rightside'>

@@ -16,18 +16,22 @@ body {
     align-items: center;
     height: 80px;
     background-color: white;
-    padding: 0 30px; /* Add padding to the sides */
+    padding: 0 20px; /* Add padding to the sides */
     border-radius: 5px;
     width: 100%;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
     z-index:10;
+    box-sizing: border-box;
 }
 
 .navbar-middleside {
     display: flex;
-    margin-left: 9%;
-    justify-content: center; /* Center the middle buttons */
-    flex-grow: 1; /* Allow this section to grow and take available space */
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    gap: 10px; /* Add consistent spacing between items */
+    margin: 0 20px;
+    flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 .navbar-leftside {
@@ -46,11 +50,13 @@ body {
     border: none;
     font-family: "DM Sans", sans-serif;
     font-optical-sizing: auto;
-    font-weight: 300;
+    font-weight: 400;
     font-style: normal;
-    font-size: 20px;
-    min-width: 120px;
-    cursor: pointer; /* Change cursor to pointer */
+    font-size: 18px; /* Decreased from 20px */
+    min-width: 100px; /* Decreased from 120px */
+    cursor: pointer;
+    padding: 8px 12px; /* Add some padding */
+    white-space: nowrap; /* Prevent text wrapping */
     margin: 0 10px; /* Add some horizontal margin for spacing */
 }
 
@@ -370,6 +376,14 @@ body {
 .navbar-cart-button svg {
     width: 30px;
     height: 30px;
+}
+
+/* If you have buttons in a container, ensure they stay in line */
+.buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
 }
 
 
