@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import WishlistPanel from './WishlistPanel';
 import ComplaintsPanel from './ComplaintsPanel';
+import CartPanel from './CartPanel';
 import styles from '../Styles/Navbar.css';
 import NotificationButton from './NotificationsTourGuide';
 import { useEffect } from 'react';
@@ -12,9 +13,11 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 
 
+
 const Navbar = () => {
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(false);
     const [role, setRole] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -216,6 +219,26 @@ const Navbar = () => {
                             </button>
                         </>
                     )}
+
+                    {role != "advertiser" && (
+    <button
+    className="navbar-cart-button"
+    onClick={() => setIsCartOpen(true)}
+>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="30px"
+        width="30px"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+    >
+        <path d="M7 4h-2c-.55 0-1 .45-1 1s.45 1 1 1h2l3.6 7.59-1.35 2.45c-.16.29-.25.63-.25.96 0 1.11.89 2 2 2h9c.55 0 1-.45 1-1s-.45-1-1-1h-8.68c-.09 0-.17-.07-.22-.16l.03-.03 1.1-1.96h5.83c.38 0 .72-.21.89-.55l3.58-6.42c.2-.36.08-.8-.24-1.05-.32-.25-.77-.24-1.09.01l-3.06 5.48h-5.73l-3.3-6.92c-.14-.3-.44-.51-.78-.51zm1.79 14.5c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79zm11.92 0c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79z"></path>
+    </svg>
+</button>
+
+)}
+
+
                     {role ? (
                         <FontAwesomeIcon icon={faUser} className="profile-icon" onClick={toggleProfileMenu} />
 
@@ -246,6 +269,10 @@ const Navbar = () => {
             <ComplaintsPanel
                 isOpen={isComplaintsOpen}
                 onClose={() => setIsComplaintsOpen(false)}
+            />
+            <CartPanel
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
             />
         </>
     );

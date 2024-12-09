@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from '../../../../Styles/activity.module.css';
 import Navbar from '../../../../components/Navbar'; // Assuming you have a Navbar component
 import Foot from '../../../../components/foot';
+import axios from 'axios';
 
 
 const Transportation = () => {
@@ -14,8 +15,8 @@ const Transportation = () => {
             const response = await axios.get('http://localhost:4000/authentication/user', {
                 withCredentials: true, // Include cookies if required
             });
-            setId(response.data._id);
-            console.log(response.data);
+            setId(response.data);
+            console.log(response.data.companyName);
         } catch (error) {
             console.error('Error fetching user role:', error);
         }
@@ -34,8 +35,8 @@ const Transportation = () => {
         BookingAlreadyMade: false,
         pickUpLocation: "",
         dropOffLocation: "",
-        createdBy: id
-        
+        createdBy: id._id,
+        company:id.companyName
     });
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentTransportationId, setCurrentTransportationId] = useState(null);
@@ -124,8 +125,8 @@ const Transportation = () => {
             BookingAlreadyMade: false,
             pickUpLocation: "",
             dropOffLocation: "",
-            createdBy: id
-
+            createdBy: id._id,
+            company: id.companyName
         });
     };
 
@@ -143,26 +144,26 @@ const Transportation = () => {
     return (
         <div className={styles.parent}>
             <Navbar/>
-                <div className={styles.activitiescontainer} style={{ marginBottom: '100px',marginTop: '100px' }}>
-                    <label className={styles.label}>List of Transportations</label>
-                    <div>
-                        {transportation.map((transportation, index) => (
-                            <div key={transportation._id} className={styles.activitybox} style={{ marginBottom: '20px'}}>
-                                <p><strong>Company Name: {transportation.company}</strong></p>
-                                <p><strong>Type of transportation:</strong> {transportation.type}</p>
-                                <p><strong>Price:</strong> {transportation.price}</p>
-                                <p><strong>Date:</strong> {transportation.date}</p>
-                                <p><strong>Departure Time:</strong> {transportation.departure}</p>
-                                <p><strong>Arrival Time:</strong> {transportation.arrival}</p>
-                                <p><strong>Pick Up Location:</strong> {transportation.pickUpLocation}</p>
-                                <p><strong>Drop Off Location:</strong> {transportation.dropOffLocation}</p>
-                                <p><strong>Booking Already Made:</strong> {transportation.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-                                <p><strong>Created By:</strong> {transportation.createdBy}</p>                      
-                                
-                            </div>
-                        ))}
-                    </div>
+            <div className={styles.activitiescontainer} style={{ marginBottom: '100px',marginTop: '100px' }}>
+                <label className={styles.label}>List of Transportations</label>
+                <div>
+                    {transportation.map((transportation, index) => (
+                        <div key={transportation._id} className={styles.activitybox}>
+                            <p><strong>Company Name: {transportation.company}</strong></p>
+                            <p><strong>Type of transportation:</strong> {transportation.type}</p>
+                            <p><strong>Price:</strong> {transportation.price}</p>
+                            <p><strong>Date:</strong> {transportation.date.split('T')[0]}</p>
+                            <p><strong>Departure Time:</strong> {transportation.departure}</p>
+                            <p><strong>Arrival Time:</strong> {transportation.arrival}</p>
+                            <p><strong>Pick Up Location:</strong> {transportation.pickUpLocation}</p>
+                            <p><strong>Drop Off Location:</strong> {transportation.dropOffLocation}</p>
+                            <p><strong>Booking Already Made:</strong> {transportation.BookingAlreadyMade ? 'Yes' : 'No'}</p>
+                            <p><strong>Created By:</strong> {transportation.createdBy}</p>                      
+                            
+                        </div>
+                    ))}
                 </div>
+            </div>
             <Foot/>
         </div>
     );

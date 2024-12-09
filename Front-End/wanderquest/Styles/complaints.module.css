@@ -1,11 +1,7 @@
 /* Main container styling */
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
-  background-color: #f5f5f5;
-  margin-top: 90px; /* Adjusted to leave space for the navbar */
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
 /* Sort and filter controls */
@@ -53,16 +49,41 @@
 /* Complaint card styling */
 .complaintCard {
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  width: 400px; /* Increased card width */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  width: 100%;
 }
 
-.complaintCard:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 16px rgba(0, 0, 0, 0.2);
+.complaintCard h1 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+.complaintInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.complaintInfo > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.complaintInfo label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.complaintInfo p {
+  margin: 0;
+  color: #333;
 }
 
 /* Responsive layout adjustments */
@@ -86,136 +107,443 @@
   }
 }
 
-
-/* Styling for complaint info section inside the card */
-.complaintInfo {
-  padding: 15px;
-  text-align: left;
-  font-size: 16px;
-  line-height: 1.6;
+/* Add this to your existing CSS */
+.successMessage {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in;
 }
 
-.complaintInfo h2 {
-  font-size: 22px;
-  color: #1a6187;
-  margin-bottom: 10px;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.complaintInfo p {
-  color: #555;
-  margin-bottom: 12px;
+.complaintsContainer {
+    padding: 20px;
 }
 
-.complaintInfo .date {
-  color: #888;
-  font-size: 14px;
+.complaintItem {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: visible;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* Styling for complaint status section */
-.complaintInfo div {
-  margin-top: 15px;
-  display: flex;
-  align-items: center;
-  gap: 5px; /* Adjust spacing between "Status:" and its value */
+
+
+.complaintHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+    gap: 10px;
 }
 
-/* Styling for status labels */
-.complaintInfo div p:first-child {
-  font-weight: bold;
-  color: #333;
-  margin: 0;
+.complaintHeader:hover {
+    background-color: #f1f3f5;
 }
 
-/* Styling for status values */
-.complaintRating {
-  color: #ff9800; /* Orange for Pending */
-  font-weight: bold;
-  background-color: rgba(255, 152, 0, 0.2);
-  padding: 5px 10px;
-  border-radius: 8px;
+.headerInfo {
+    text-align: center;
+    width: 100%;
 }
 
-.complaintRating2 {
-  color: #4CAF50; /* Green for Resolved */
-  font-weight: bold;
-  background-color: rgba(76, 175, 80, 0.2);
-  padding: 5px 10px;
-  border-radius: 8px;
+.complaintInfo h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
 }
 
-/* Styling for the complaint button */
-.complaintButton {
-  background-color: #1a6187;
-  border: none;
-  color: white;
-  padding: 12px 35px;
-  border-radius: 30px;
-  margin-top: 20px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  text-decoration: none;
-  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+.statusContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #666;
+    font-size: 0.9rem;
 }
 
-.complaintButton:hover {
-  background-color: #122c34;
-  box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
+.statusNew {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    min-width: 80px;
+    text-align: center;
 }
 
-.complaintButton:focus {
-  outline: none;
+.statusPending {
+    display: inline-block;
+    background-color: #ffd700;
+    color: #000;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    min-width: 80px;
+    text-align: center;
 }
 
-/* Sort and filter controls */
+.statusResolved {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    min-width: 80px;
+    text-align: center;
+}
+
+.dropdownIcon {
+    transition: transform 0.3s ease;
+    color: #666;
+}
+
+.dropdownIcon.open {
+    transform: rotate(180deg);
+}
+
+.complaintDetails {
+    padding: 15px;
+    border-top: 1px solid #eee;
+    background-color: white;
+}
+
+.complaintDetails p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.complaintDetails strong {
+    color: #333;
+}
+
+.emptyMessage {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
+
+/* Add these new styles */
+.hasReplyIcon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    color: #4CAF50;
+    font-size: 0.8rem;
+}
+
+.replySection {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+.replySection h4 {
+    color: #333;
+    margin: 0 0 10px 0;
+    font-size: 0.95rem;
+}
+
+.replyContent {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    position: relative;
+}
+
+.replyContent p {
+    margin: 0;
+    color: #444;
+}
+
+.replyDate {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 8px;
+    text-align: right;
+}
+
+.detailsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dropdownButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+/* Tourist View Styles */
+.complaintsContainer {
+    padding: 20px;
+}
+
+.complaintItem {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: visible;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.complaintItem:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.complaintHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+    gap: 10px;
+}
+
+.headerInfo {
+    text-align: center;
+    width: 100%;
+}
+
+.complaintInfo h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.statusContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.dropdownButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+.dropdownIcon {
+    transition: transform 0.3s ease;
+    color: #666;
+}
+
+.dropdownIcon.open {
+    transform: rotate(180deg);
+}
+
+.complaintDetails {
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.detailsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.replySection {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.replyDate {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    text-align: right;
+    margin-top: 8px;
+}
+
+/* Original Admin Styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #f5f5f5;
+    margin-top: 90px;
+}
+
 .sortFilterControls {
-  margin-bottom: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 .sortFilterControls button {
-  padding: 12px 25px;
-  font-size: 16px;
-  background-color: #1a6187;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #1a6187;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
 }
 
 .sortFilterControls button:hover {
-  background-color: #122c34;
+    background-color: #122c34;
 }
 
 .sortFilterControls select {
-  padding: 12px 20px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  cursor: pointer;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-/* Ensure the cards adjust correctly in the responsive layout */
+.complaintsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    justify-items: center;
+    padding: 0 20px;
+}
+
+.complaintCard {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+
+.complaintCard .complaintInfo {
+    padding: 15px;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.complaintCard .complaintInfo h2 {
+    font-size: 22px;
+    color: #1a6187;
+    margin-bottom: 10px;
+}
+
+.complaintCard .complaintInfo p {
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.complaintCard .complaintInfo div {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.complaintRating {
+    color: #ff9800;
+    font-weight: bold;
+    background-color: rgba(255, 152, 0, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.complaintRating2 {
+    color: #4CAF50;
+    font-weight: bold;
+    background-color: rgba(76, 175, 80, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.complaintButton {
+    background-color: #1a6187;
+    border: none;
+    color: white;
+    padding: 12px 35px;
+    border-radius: 30px;
+    margin-top: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+}
+
+.complaintButton:hover {
+    background-color: #122c34;
+    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
-  .container {
-      padding: 20px;
-  }
+    .complaintsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
-  .complaintCard {
-      width: 90%;
-  }
+    .complaintCard {
+        width: 90%;
+    }
 
-  .sortFilterControls {
-      flex-direction: column;
-      align-items: center;
-  }
+    .sortFilterControls {
+        flex-direction: column;
+        align-items: center;
+    }
 
-  .complaintButton {
-      width: 100%;
-      padding: 12px 0;
-  }
+    .complaintButton {
+        width: 100%;
+        padding: 12px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .complaintsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .complaintCard {
+        width: 90%;
+    }
 }
