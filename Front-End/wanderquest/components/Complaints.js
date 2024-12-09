@@ -1,94 +1,51 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from '../styles/complaints.module.css';
+import { FaChevronDown } from 'react-icons/fa';
 
 const Complaints = (props) => {
-
     const role = props.role;
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sortOrder, setSortOrder] = useState('asc');
     const [filterStatus, setFilterStatus] = useState('');
+    const [openComplaints, setOpenComplaints] = useState({});
     const router = useRouter();
-    const [user, setUser] = useState({});
 
+    // Keep existing fetch logic for both roles
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch('http://localhost:4000/authentication/user', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // Automatically include credentials (user session)
-                });
+        const fetchUrl = role === 'Admin' 
+            ? 'http://localhost:4000/admin/complaints'
+            : 'http://localhost:4000/tourist/myComplaints';
 
-                if (response.ok) {
-                    const result = await response.json();
-                    setUser(result);
-                } else {
-                    setUser({});
+        fetch(fetchUrl, {
+            credentials: 'include'
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            } catch (error) {
-                setUser({});
-            }
-        };
-
-        fetchUserData();
-    }, []);
-
-
-
-    useEffect(() => {
-        const fetchComplaints = async () => {
-            try {
-                let url = '';
-                if (user && user.role === 'Admin') {
-                    url = 'http://localhost:4000/admin/complaints';
-                } else if (user && user.role === 'tourist') {
-                    url = 'http://localhost:4000/tourist/myComplaints';
-                }
-
-                if (url) {
-                    const response = await fetch(url, {
-                        credentials: 'include'
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-
-                    const data = await response.json();
-                    setComplaints(data);
-                    console.log(data);
-                }
-            } catch (error) {
+                return res.json();
+            })
+            .then((data) => {
+                setComplaints(data);
+                setLoading(false);
+            })
+            .catch((error) => {
                 console.error('Error fetching data:', error);
                 setComplaints([]);
-            } finally {
                 setLoading(false);
-            }
-        };
-
-        if (user && user.role === 'tourist') {
-            fetchComplaints();
-        }
-    }, [user]);
-
+            });
+    }, [role]);
 
     const handleViewComplaint = (complaintId) => {
-        if (user && user.role === 'Admin') {
+        if (role === 'Admin') {
             router.push(`/admin/complaints/${complaintId}`);
-        } else if (user && user.role === 'tourist') {
+        } else if (role === 'Tourist') {
             router.push(`/tourist/viewComplaint/${complaintId}`);
         }
     };
-
-
-
-
 
     const sortComplaintsByDate = (order) => {
         const sortedComplaints = [...complaints].sort((a, b) => {
@@ -104,9 +61,16 @@ const Complaints = (props) => {
         setFilterStatus(status);
     };
 
-    const filteredComplaints = complaints.filter((complaint) => {
+    const toggleComplaint = (complaintId) => {
+        setOpenComplaints(prev => ({
+            ...prev,
+            [complaintId]: !prev[complaintId]
+        }));
+    };
+
+    const filteredComplaints = Array.isArray(complaints) ? complaints.filter((complaint) => {
         return filterStatus ? complaint.status === filterStatus : true;
-    });
+    }) : [];
 
     if (loading) {
         return <>
@@ -122,19 +86,75 @@ const Complaints = (props) => {
                 src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
         </>
     }
+
+    // Tourist View
+    if (role === 'Tourist') {
+        return (
+            <div className={styles.complaintsContainer}>
+                {Array.isArray(complaints) && complaints.length > 0 ? (
+                    complaints.map((complaint) => (
+                        <div key={complaint._id} className={styles.complaintItem} onClick={() => toggleComplaint(complaint._id)}>
+                            <div className={styles.complaintHeader}>
+                                <div className={styles.headerInfo}>
+                                    <div className={styles.complaintInfo}>
+                                        <h3>{complaint.title}</h3>
+                                    </div>
+                                </div>
+                                <div className={styles.statusContainer}>
+                                    <span>Status: </span>
+                                    <span className={
+                                        complaint.status === 'Pending' ? styles.statusPending : 
+                                        styles.statusResolved
+                                    }>
+                                        {complaint.status}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className={styles.dropdownButton}>
+                                <FaChevronDown 
+                                    className={`${styles.dropdownIcon} ${openComplaints[complaint._id] ? styles.open : ''}`}
+                                />
+                            </div>
+                            
+                            {openComplaints[complaint._id] && (
+                                <div className={styles.complaintDetails}>
+                                    <div className={styles.detailsGrid}>
+                                        <p><strong>Description:</strong> {complaint.body}</p>
+                                        <p><strong>Date:</strong> {new Date(complaint.date).toLocaleDateString()}</p>
+                                        {complaint.reply && (
+                                            <div className={styles.replySection}>
+                                                <h4>Admin Response:</h4>
+                                                <div className={styles.replyContent}>
+                                                    <p>{complaint.reply}</p>
+
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <p className={styles.emptyMessage}>No complaints available.</p>
+                )}
+            </div>
+        );
+    }
+
+    // Admin View (Original)
     return (
         <div className={styles.container}>
-            {role === 'Admin' && (
-                <div className={styles.sortFilterControls}>
-                    <button onClick={() => sortComplaintsByDate('asc')}>Sort by Date Ascending</button>
-                    <button onClick={() => sortComplaintsByDate('desc')}>Sort by Date Descending</button>
-                    <select onChange={(e) => filterComplaintsByStatus(e.target.value)} value={filterStatus}>
-                        <option value="">All Statuses</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Resolved">Resolved</option>
-                    </select>
-                </div>
-            )}
+            <div className={styles.sortFilterControls}>
+                <button onClick={() => sortComplaintsByDate('asc')}>Sort by Date Ascending</button>
+                <button onClick={() => sortComplaintsByDate('desc')}>Sort by Date Descending</button>
+                <select onChange={(e) => filterComplaintsByStatus(e.target.value)} value={filterStatus}>
+                    <option value="">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </div>
 
             <div className={styles.complaintsGrid}>
                 {Array.isArray(filteredComplaints) && filteredComplaints.length > 0 ? (
@@ -161,7 +181,6 @@ const Complaints = (props) => {
                 )}
             </div>
         </div>
-
     );
 };
 

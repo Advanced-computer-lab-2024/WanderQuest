@@ -23,18 +23,23 @@ import Salesrep from "../../components/Salesrep";
 import Salesrepseller from "../../components/Salesrepseller";
 import Salesrepadv from "../../components/Salesrepadv";
 import Authentication from "../../components/Authentication";
-
+import Salesreptour from "../../components/Salesreptour";
+import LandingPage from "../../components/LandingPage";
 
 export default function Home() {
-   return (<>
+   return (
+   <>
       <Navbar></Navbar>
+
+{/* 
+      <Salesreptour></Salesreptour> */}
 {/* 
       <Foot></Foot>   */}
 
 
             {/* <Salesrep></Salesrep> */}
 
-      {/* <Salesrepadv></Salesrepadv> */}
+     
 {/* <Salesrepseller></Salesrepseller> */}
       {/* <Signin></Signin>
 
@@ -90,6 +95,9 @@ export default function Home() {
       {/* <Itineraries/> */}
       {/* <h1>Welcome to WanderQuest</h1>
         <p>Where your dreams come true.</p> */}
+
+      <LandingPage></LandingPage>
+
    </>
    );
 }

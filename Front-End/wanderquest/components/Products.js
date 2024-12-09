@@ -38,6 +38,7 @@ const Products = ({ role, refreshWishlist }) => {
     const [productPicture, setProductPicture] = useState(null);
     const [multiplier, setMultiplier] = useState(1);
     const [preferredCurrency, setPreferredCurrency] = useState('USD');
+    
 
     useEffect(() => {
         const fetchPaymentMultiplier = async () => {
@@ -253,44 +254,43 @@ const Products = ({ role, refreshWishlist }) => {
             alert('Failed to add product to wishlist');
         }
     };
-
-    if (loading) {
-        return <>
-            <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-            <dotlottie-player style={{
-                width: '300px',
-                height: '300px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                margin: 'auto'
-            }}
-                src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
-        </>
-    }
-    return (
-        <>
-            <img src="/1.png" className={styles.travelplan} alt="iti" />
-            <motion.div
-                className={styles.searchcom}
-                initial={{ y: -170 }}
-                transition={{ duration: 1 }}
-            >
-                <input
-                    className={styles.productsearch}
-                    onChange={(e) => setSearch(e.target.value)}
-                    type="text"
-                    placeholder="Enter your text"
-                />
-            </motion.div>
-            <div className={styles.filterSection}>
-                <div className={styles.pageLayout}>
-                    <div className={styles.sidebar}>
-                        <h1>Products</h1>
-                        <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
-                        <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
-                        <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
-                        <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
+    
+    if (loading) {return<>
+        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+        <dotlottie-player style={{
+    width: '300px',
+    height: '300px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 'auto'
+    }}
+    src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+        </>}
+return (
+    <>
+    <img src="/prod.png" className={styles.travelplan} alt="iti" />
+    <motion.div
+            className={styles.searchcom}
+            initial={{ y: 20 }}
+            transition={{ duration: 1 }}
+          >
+            <input
+                        className={styles.productsearch}
+                        onChange={(e) => setSearch(e.target.value)}
+                        type="text"
+                        placeholder="Search for products..."
+                    />
+          </motion.div>
+        <div className={styles.filterSection}>
+            <div className={styles.pageLayout}>
+                <div className={styles.sidebar}>
+                    <h1>Sorting</h1>
+                    <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
+                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
+                    <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
+                    <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
+                   
 
                         <div className={styles.priceFilter}>
                             <h3>Price Filter</h3>
@@ -353,132 +353,131 @@ const Products = ({ role, refreshWishlist }) => {
                         placeholder="Enter your text"
                     />
                 </div> */}
-                    <div className={styles.cardscontainer}>
-                        {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-                            filteredProducts
-                                .filter(product => !product.isArchived)
-                                .map((product) => (
-                                    <div className={styles.productCard} key={product._id}>
-                                        <img
-                                            src={product.picture}
-                                            alt={product.name}
-                                            className={styles.productImage}
-                                        />
-                                        <div className={styles.productInfo}>
-                                            <h2>{product.name}</h2>
-                                            <p className={styles.productPrice}>
-                                                {(product.price * multiplier).toFixed(2)} {preferredCurrency}
-                                            </p>
-                                            <p>{product.description}</p>
-                                            <p>Seller: {product.seller}</p>
+                <div className={styles.cardscontainer}>
+                {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
+                        filteredProducts
+                         .filter(product => !product.isArchived)
+                    .map((product) => (
+                <div className={styles.productCard} key={product._id}>
+                    <div className={styles.productImageContainer}>
+                        <img
+                            src={product.picture}
+                            alt={product.name}
+                            className={styles.productImage}
+                        />
+                    </div>
+                    <div className={styles.productInfo}>
+                        <h2 className={styles.productTitle}>{product.name}</h2>
+                        
+                        <div className={styles.productMeta}>
+                            <div className={styles.priceAndStock}>
+                                <span className={styles.productPrice}>
+                                    {(product.price * multiplier).toFixed(2)} {preferredCurrency}
+                                </span>
+                                <span className={styles.stockInfo}>
+                                    {product.availableAmount > 0 
+                                        ? `${product.availableAmount} in stock` 
+                                        : "Out of stock"}
+                                </span>
+                            </div>
+                            
+                            <div className={styles.sellerInfo}>
+                                <span className={styles.sellerLabel}>Sold by:</span>
+                                <span className={styles.sellerName}>{product.seller}</span>
+                            </div>
+                        </div>
 
-                                            <p>Available Quantity: {product.availableAmount}</p>
-                                            <div className={styles.productRating}>
-                                                {product.rating && product.rating > 0 ? (
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <Rating
-                                                            name="text-feedback"
-                                                            value={product.rating}
-                                                            readOnly
-                                                            precision={0.5}
-                                                            emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
-                                                        />
-                                                        <Box sx={{ ml: 2 }}>{labels[product.rating]}</Box>
-                                                    </div>
-                                                ) : "No rating yet"}
-                                            </div>
-                                                        <button className={styles.productArchive} onClick={() => addWishlist(product._id)}>
-                                    Add to Wishlist
-                                </button>
-                                            {/*                         
-                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
-
-
-
-                                            {/* Render reviews */}
-                                            {/* <div className={styles.reviews}>
-                        <h3>Reviews:</h3>
-                        {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
-                            product.reviews.map((review, index) => (
-                                <div key={index} className={styles.review}>
-             
-                                    <p>
-                                        <strong>{review.touristId}</strong> {review.review}
-                                    </p>
+                        <p className={styles.productDescription}>{product.description}</p>
+                        
+                        <div className={styles.productRating}>
+                            {product.rating && product.rating > 0 ? (
+                                <div className={styles.ratingContainer}>
+                                    Rating:
+                                    <Rating
+                                        name="text-feedback"
+                                        value={product.rating}
+                                        readOnly
+                                        precision={0.5}
+                                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                    />
+                                    <span className={styles.ratingLabel}>{labels[product.rating]}</span>
                                 </div>
-                            ))
-                        ) : (
-                            <p>No reviews yet.</p>
+                            ) : "No rating yet"}
+                        </div>
+
+
+                        {role === "Admin" && (
+                            <div className={styles.adminActions}>
+                                <p>Sales: {product.sales}</p>
+                                <button onClick={() => onUpdateClick(product._id)} className={styles.productArchive}>
+                                    Edit
+                                </button>
+                                <button onClick={() => onArchiveClick(product._id)} className={styles.productArchive}>
+                                    Archive
+                                </button>
+                            </div>
                         )}
-                    </div> */}
 
-                                            {/* Admin-specific actions */}
-                                            {role === "Admin" && <p>Sales: {product.sales}</p>}
-                                            <div className={styles.actions}>
-                                                {role === "Admin" && (
-                                                    <>
-                                                        <button
-                                                            onClick={() => onUpdateClick(product._id)}
-                                                            className={styles.productArchive}
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                        <label className={styles.uploadButton}>
-                                                            Upload Picture
-                                                            <input
-                                                                type="file"
-                                                                onChange={(e) =>
-                                                                    onUploadClick(e, product._id)
-                                                                }
-                                                            />
-                                                        </label>
-                                                        <button
-                                                            onClick={() => onArchiveClick(product._id)}
-                                                            className={styles.productArchive}
-                                                        >
-                                                            Archive
-                                                        </button>
-                                                    </>
-                                                )}
-
-                                                {/* Tourist-specific actions
-                         {role === "Tourist" && (
-                            <>
+                        {role === "Tourist" && (
+                            <div className={styles.touristActions}>
                                 <AddRating
                                     rating={ratings[product._id] || product.rating}
-                                    setRating={(newRating) =>
-                                        updateRating(product._id, newRating)
-                                    }
+                                    setRating={(newRating) => updateRating(product._id, newRating)}
                                 />
                                 <AddComment
                                     comment={comments[product._id] || ""}
-                                    setComment={(newComment) =>
-                                        setComments((prev) => ({
-                                            ...prev,
-                                            [product._id]: newComment,
-                                        }))
-                                    }
+                                    setComment={(newComment) => setComments(prev => ({
+                                        ...prev,
+                                        [product._id]: newComment
+                                    }))}
                                 />
                                 <button
                                     className={styles.productArchive}
-                                    onClick={() =>
-                                        addComment(product._id, comments[product._id])
-                                    }
+                                    onClick={() => addComment(product._id, comments[product._id])}
                                 >
                                     Add a Comment
                                 </button>
-                            
-                                </>
-                                )} */}
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                ))
-                        ) : (
-                            <p>No products available.</p>
+                                                        {/* Role-specific actions */}
+                        {role === "Tourist" && (
+                            <button 
+                                className={styles.productArchive} 
+                                onClick={() => addWishlist(product._id)}
+                                style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '4px', 
+                                    padding: '6px 12px', 
+                                    fontSize: '0.9rem', 
+                                    minHeight: '32px'
+                                }}
+                            >
+                                <svg 
+                                    fill="#ffffff"
+                                    height="15px"
+                                    width="15px"
+                                    version="1.1" 
+                                    viewBox="0 0 611.997 611.997" 
+                                    stroke="#ffffff"
+                                >
+                                    <g>
+                                        <path d="M549.255,384.017h-50.692v-50.694c0-21.132-17.134-38.264-38.262-38.264c-21.138,0-38.266,17.132-38.266,38.264v50.694 h-50.697c-21.13,0-38.262,17.132-38.262,38.264c0,21.134,17.134,38.264,38.262,38.264h50.697v50.697 c0,21.13,17.13,38.264,38.266,38.264c21.13,0,38.262-17.134,38.262-38.264v-50.697h50.692c21.138,0,38.262-17.13,38.262-38.264 C587.519,401.151,570.394,384.017,549.255,384.017z"></path>
+                                        <path d="M383.77,498.809h-12.432c-42.198,0-76.526-34.33-76.526-76.528s34.328-76.528,76.526-76.528h12.432v-12.43 c0-42.198,34.33-76.528,76.53-76.528c42.198,0,76.526,34.33,76.526,76.528v12.43h12.428c5.073,0,10.028,0.508,14.827,1.454 c66.899-77.109,63.762-194.319-9.515-267.606c-37.102-37.1-86.429-57.533-138.896-57.533c-39.544,0-77.476,11.685-109.659,33.39 c-32.185-21.705-70.117-33.39-109.659-33.39c-52.464,0-101.791,20.433-138.896,57.535 c-76.609,76.617-76.609,201.284,0.002,277.904l215.831,215.829c2.226,2.222,4.583,4.463,7.009,6.664 c7.293,6.619,16.501,9.93,25.716,9.93c9.198,0,18.396-3.301,25.684-9.903c2.448-2.216,4.826-4.477,7.069-6.72l46.584-46.582 c-1.033-5.002-1.577-10.181-1.577-15.482v-12.432H383.77z"></path>
+                                    </g>
+                                </svg>
+                                Add to Wishlist
+                            </button>
                         )}
+
+                            </div>
+                        )}
+                    </div>
+                </div>
+              
+            
+        ))
+) : (
+    <p>No products available.</p>
+)}
 
                     </div>
                 </div>

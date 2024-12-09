@@ -488,7 +488,7 @@ export default function Tourist() {
             transition={{ duration: 0.3 }}
         >
             <Image 
-                src="/woodcarving.jpg" 
+                src="/wood.jpg" 
                 alt="Wooden Sculpture"
                 width={300}
                 height={200}
@@ -509,7 +509,7 @@ export default function Tourist() {
             transition={{ duration: 0.3 }}
         >
             <Image 
-                src="/silverwork.jpg" 
+                src="/silver.webp" 
                 alt="Silver Jewelry"
                 width={300}
                 height={200}
@@ -529,7 +529,129 @@ export default function Tourist() {
 
 
 
+<motion.div 
+    className={styles.activitiesSection}
+    initial={{ opacity: 0, y: 50 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.8 }}
+>
+    <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '2rem',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        width: '100%',
+        padding: '0 2rem'
+    }}>
+        <motion.h2 
+            style={{
+                margin: 0,
+                textAlign: 'left',
+                width: '100%'
+            }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+        >
+            Featured Activities
+        </motion.h2>
+        <motion.button 
+            style={{
+                background: 'none',
+                border: 'none',
+                borderBottom: '2px solid #000',
+                padding: '0.5rem 0',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                whiteSpace: 'nowrap'
+            }}
+            onClick={handleRedirectac}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+        >
+            View all activities
+        </motion.button>
+    </div>
+    
+    <motion.div 
+        className={styles.productsGrid}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4 }}
+    >
+        <motion.div 
+            className={styles.productCard}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+        >
+            <Image 
+                src="/surfing.jpg" 
+                alt="Surfing in Bali"
+                width={300}
+                height={200}
+                className={styles.productImage}
+            />
+            <div className={styles.productContent}>
+                <h3>Surfing in Bali</h3>
+                <p className={styles.price}>$75 per person</p>
+                <p className={styles.description}>
+                    Catch the perfect wave with professional instructors at Bali's most beautiful beaches.
+                </p>
+            </div>
+        </motion.div>
 
+        <motion.div 
+            className={styles.productCard}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+        >
+            <Image 
+                src="/hiking.jpg" 
+                alt="Mount Bromo Hiking"
+                width={300}
+                height={200}
+                className={styles.productImage}
+            />
+            <div className={styles.productContent}>
+                <h3>Mount Bromo Sunrise Trek</h3>
+                <p className={styles.price}>$120 per person</p>
+                <p className={styles.description}>
+                    Experience breathtaking views with a guided sunrise hike up Mount Bromo.
+                </p>
+            </div>
+        </motion.div>
+
+        <motion.div 
+            className={styles.productCard}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+        >
+            <Image 
+                src="/diving.jpg" 
+                alt="Scuba Diving"
+                width={300}
+                height={200}
+                className={styles.productImage}
+            />
+            <div className={styles.productContent}>
+                <h3>Raja Ampat Diving</h3>
+                <p className={styles.price}>$150 per person</p>
+                <p className={styles.description}>
+                    Discover the underwater paradise of Raja Ampat with certified diving instructors.
+                </p>
+            </div>
+        </motion.div>
+    </motion.div>
+</motion.div>
 
 
 
@@ -691,39 +813,9 @@ export default function Tourist() {
     </motion.button> */}
 </motion.div>
 
+          
 
 
-
-
-
-
-
-
-
-
-
-
-                <div className={styles.buttons}>
-                    <button onClick={handleRedirect}>Go to Itinerary</button>
-                    <button onClick={handleRedirectac}>Go to activity</button>
-                    <button onClick={handleRedirectp}>Go to products</button>
-                    <button onClick={handleRedirectm}>Go to museums</button>
-                    <button onClick={handleRedirectcomp}>File a complaint</button>
-                    <button onClick={handleRedirectviewcomp}>View Complaint</button>
-                    <button onClick={handleRedirectHist}>Go to History</button>
-                    <button onClick={handleRedirec}>My Bookings</button>
-                    <button onClick={handleRedirechotel}>Hotels</button>
-                    <button onClick={handleRedirecflight}>Flights</button>
-                    <button onClick={handleRedirectransport}>Transportation</button>
-                    <button onClick={handleRedirectWishlist}>View Wishlist</button>
-                    <button onClick={handleViewComplaints}>View Complaint</button>
-
-                </div>
-
-                {/* Profile button with icon */}
-                <button className={styles.profileButton} onClick={handleRedirectProfile}>
-                    <FaUserCircle className={styles.profileIcon} /> Profile
-                </button>
             </div>
 
             {/* Updated Wishlist Sliding Panel */}

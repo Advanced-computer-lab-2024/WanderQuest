@@ -10,6 +10,7 @@
 } */
 
 .travelplan {
+  margin-top: 80px;
   width: 100%;
   height: 550px;
 /* Removes padding if any */
@@ -36,6 +37,7 @@
 
 /* Itineraries container */
 .itineraries {
+  margin-top: 20px;
   flex: 1; /* Take up remaining space */
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2-column grid */
@@ -58,7 +60,7 @@
 }
 
 .itinerary:hover {
-  transform: translateY(-10px); /* More noticeable hover effect */
+/* More noticeable hover effect */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Add more depth on hover */
 }
 
@@ -117,10 +119,13 @@
   margin-left: 33%;
 }
 .productsearch {
-  border-radius: 20px;
+  display: block;
   width: 500px;
-  height: 40px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adjust values as needed */
+  border:1px solid gray;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: 380px;
+  height: 40px;/* Adjust values as needed */
 }
 
 .searchbtn{
@@ -346,3 +351,43 @@
   font-size: 1.2rem; /* Make the Day text slightly bigger */
 }
 
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin: 25px 0;
+  padding: 0 20px;
+}
+
+.primaryButton, .secondaryButton {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primaryButton {
+  background-color: #042335;
+  color: white;
+  box-shadow: 0 4px 15px rgba(4, 35, 53, 0.2);
+}
+
+.primaryButton:hover {
+  background-color: #083d5b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(4, 35, 53, 0.3);
+}
+
+.secondaryButton {
+  background-color: white;
+  color: #042335;
+  border: 2px solid #042335;
+}
+
+.secondaryButton:hover {
+  background-color: #042335;
+  color: white;
+  transform: translateY(-2px);
+}
