@@ -1,66 +1,158 @@
-/* Museums.css */
-
-.container {
-    max-width: 800px; /* Limit the width for better readability */
-    margin: 0 auto;
-    padding: 20px;
+.page-container {
+    margin-top: 0px;
     display: flex;
-    flex-direction: column; /* Stack cards vertically */
-    gap: 20px; /* Add space between cards */
+    gap: 2rem;
+    padding: 2rem;
+    min-height: 100vh;
 }
 
-.museum-card {
-    background-color: #fff; /* White background for cards */
-    border: 1px solid #ddd;
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: white;
+    padding: 1.5rem;
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
-    transition: transform 0.3s, box-shadow 0.3s; /* Add transition for hover effect */
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sidebar-content h3 {
+    margin-bottom: 10px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.search-container {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem;
+    height: 30px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    
+}
+
+.tags-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.museums-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+.museum-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    height: 380px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .museum-card:hover {
-    transform: translateY(-2px); /* Slight lift on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
 }
 
 .museum-name {
-    font-size: 1.8rem; /* Slightly larger font size */
-    margin: 0 0 10px;
-    color: #333; /* Dark color for better contrast */
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
 }
 
 .museum-description {
-    font-size: 1rem;
-    color: #666; /* Lighter color for description */
-    margin-bottom: 10px; /* Add space below description */
-}
-
-.museum-pictures {
-    display: flex;
-    flex-wrap: wrap; /* Wrap images if they exceed width */
-    gap: 5px; /* Space between images */
-    margin: 10px 0; /* Space above and below */
-}
-
-.museum-image {
-    width: 100%; /* Full width for responsiveness */
-    height: auto;
-    border-radius: 4px; /* Rounded corners */
-    max-width: 100%; /* Prevent overflow */
+    margin-bottom: 1rem;
+    flex-grow: 1;
+    color: #4a4a4a;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    /* Handles text overflow with ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .museum-location {
-    font-weight: bold;
-    margin: 10px 0;
-    color: #333; /* Dark color for better contrast */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid #eee;
 }
 
-.opening-hours,
-.ticket-prices {
-    margin-top: 15px;
+
+.museum-footer {
+    margin-top: auto;
 }
 
-h3 {
-    margin: 10px 0 5px;
-    color: #333; /* Dark color for section headers */
+.view-button {
+    background-color: #042335;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 25px;
+    margin-top : 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+    /* Added that to remove the underline feature of the Link tag in Next */
+    text-decoration: none;
+}
+
+.view-button:hover {
+    background: #0056b3;
+}
+
+@media (max-width: 1200px) {
+    .museums-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+    
+    .museums-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.musuem-image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

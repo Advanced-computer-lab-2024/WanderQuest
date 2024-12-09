@@ -38,11 +38,11 @@ const Museums = (Props) => {
     const filtertags = () => {
         if (filteredtags.length > 0) {
             const tempmu = museums.filter(museum => 
-               museum.tag && filteredtags.some(tag => museum.tags.type(tag))  // Fix: Check if museum includes all selected tags
+                museum.tags && museum.tags.some(tag => tag.type === tag)  // Fixed: Changed museum.tags.type(tag) to correct comparison
             );
             setFilteredmuseums(tempmu);
         } else {
-            setFilteredmuseums([...museums]);  // If no tag selected, show all museums
+            setFilteredmuseums([...museums]);
         }
     };
 
@@ -67,10 +67,12 @@ const Museums = (Props) => {
     const handlesearch = () => {
         const newprod = museums.filter((prod) => {
             return search.toLowerCase() === '' || 
-                //    prod.title.toLowerCase().includes(search.toLowerCase()) || 
-                (prod.tags && prod.tags.some(tag => tag.type.toLowerCase() === search.toLowerCase()));
+                   prod.title.toLowerCase().includes(search.toLowerCase()) ||  // Uncommented title search
+                   (prod.tags && prod.tags.some(tag => 
+                       tag.type.toLowerCase().includes(search.toLowerCase())  // Changed === to includes() for partial matches
+                   ));
         });
-        setFilteredmuseums(newprod);  // Set the filtered museums based on search
+        setFilteredmuseums(newprod);
     };
 
 useEffect(() => {
@@ -95,58 +97,82 @@ useEffect(() => {
     }}
       src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
         </>}
-    return (<>
-        <Navbar></Navbar>
-        <div className='container'>
-            {Tags.map((tag, index) => (
-                <div key={index}>
-                   <label htmlFor="">{tag.type}</label> <input type="checkbox"onClick={() => handlefilter(tag)}></input>
-                </div>
-            ))}{role=== "Tourist"?(
-            <div className={styles.museumsearchcom}>
-                <input className={styles.museumsearch} 
-                       onChange={(e) => setSearch(e.target.value)} 
-                       type="text" 
-                       placeholder='Enter your text' />
-                {/* <button className={styles.museumsearchbtn} onClick={handlesearch}>Search</button> */}
-                {/* <button onClick={clearsearch}>clearsearch</button> */}
-                
-            </div>):(<></>
-
-            )}
-            
-            {Array.isArray(filteredmuseums) && filteredmuseums.length > 0 ? (
-    filteredmuseums.map((museum) => (
-        <div className='museum-card' key={museum.id}>
-            <h2 className='museum-name'>{museum.title}</h2>
-            <p className='museum-description'>{museum.description}</p>
-            <div className='museum-pictures'>
-                {/* {museum.pictures.map((pic, index) => (
-                    <img key={index} src={pic} alt="Museum" className='museum-image' />
-                ))} */}
-            </div>
-            <p className='museum-location'>{museum.location}</p>
-            <div className='opening-hours'>
-                <h3>Opening Hours:</h3>
-                {museum.openingHours}
-            </div>
-            <div className='ticket-prices'>
-                <h3>Ticket Prices:</h3>
-                {museum.ticketPrices.map((cat, price) => (
-                    <div key={cat}>
-                        <p>{cat}: ${price}</p>
+  return (<>
+    <Navbar />
+    <div className="welcome-container" style={{
+      position: 'absolute',
+      top: '55%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 1,
+      textAlign: 'center',
+      color: 'white',
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+      width: '100%'
+    }}>
+      <h1 style={{
+        fontSize: '4rem',
+        marginBottom: '1rem',
+        width: '80%',
+        margin: '0 auto'
+      }}>Welcome to Historical Places</h1>
+      <p style={{
+        fontSize: '1.8rem'
+      }}>Explore magnificent historical landmarks and cultural treasures from around the globe, where every site tells a unique story of our past.</p>
+    </div>
+    <img src="/musuem.jpg" className='musuem-image' />
+    {role === "Tourist" && (
+                    <div className='search-container'>
+                        <input
+                            className='search-input'
+                            onChange={(e) => setSearch(e.target.value)}
+                            type="text"
+                            placeholder='Search museums...'
+                        />
                     </div>
-                ))}
+                )}
+    
+    <div className='page-container'>
+        <div className='sidebar'>
+            <div className='sidebar-content'>
+                <h1>Filters</h1>
+                <div className='tags-container'>
+                    <h4>Tags</h4>
+                    {Tags.map((tag, index) => (
+                        <div key={index} className='tag-item'>
+                            <input
+                                type="checkbox"
+                                id={`tag-${index}`}
+                                onClick={() => handlefilter(tag)}
+                            />
+                            <label htmlFor={`tag-${index}`}>{tag.type}</label>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
-            <Link href={`/tourist/musuem/${museum._id}`}>view</Link>
+ 
+        <div className='museums-grid'>
+            {Array.isArray(filteredmuseums) && filteredmuseums.length > 0 ? (
+                filteredmuseums.map((museum) => (
+                    <div className='museum-card' key={museum.id}>
+                        <h2 className='museum-name'>{museum.title}</h2>
+                        <p className='museum-description'>{museum.description}</p>
+                        <p className='museum-location'>{museum.location}</p>
+                        <div className='museum-footer'>
+                            <Link href={`/tourist/musuem/${museum._id}`} className='view-button'>
+                                View
+                            </Link>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <p>No museums found</p>
+            )}
         </div>
-    ))
-) : (
-    <p>No museums found</p>
-)}
+    </div>
+</>);
 
-        </div>
-        </>);
 }
 
 export default Museums;
