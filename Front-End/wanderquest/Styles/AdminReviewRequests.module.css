@@ -14,7 +14,7 @@
 
 /* Title styling */
 .title {
-  color: black;
+  color: #122c34;
   font-size: 2rem;
   text-align: center;
   margin-bottom: 20px;
@@ -198,8 +198,7 @@
 
 /* Message Styling */
 .acceptMessage {
-  background-color: #d4edda; /* Light green background */
-  color: #155724; /* Dark green text */
+  color: #23a541; /* Dark green text */
   padding: 10px;
   border-radius: 5px;
   margin-top: 20px;
@@ -207,8 +206,7 @@
 }
 
 .rejectMessage {
-  background-color: #f8d7da; /* Light red background */
-  color: #721c24; /* Dark red text */
+  color: #dd3445; /* Dark red text */
   padding: 10px;
   border-radius: 5px;
   margin-top: 20px;
