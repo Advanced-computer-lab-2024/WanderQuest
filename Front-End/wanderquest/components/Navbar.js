@@ -87,14 +87,31 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    {role == "advertiser" && (
-                        <div className="navbar-button}">
-                            <button onClick={() => window.location.href = '/advertiser/activitys'}>Activities</button>
-                            <button onClick={() => window.location.href = '/advertiser/createactivity'}>Create Activity</button>
-                            <button onClick={() => window.location.href = '/advertiser/createTransportation'}>Create Transportation</button>
-                            <button onClick={() => window.location.href = '/advertiser/transportation'}>Transportation</button>
-                        </div>
-                    )}
+                {role == "advertiser" && <a href="/advertiser" ><button className="navbar-button">Reports</button></a>}
+                    {role== "advertiser" && <div
+                        className="navbar-button-container"
+                        onMouseEnter={() => setShowDropdown(true)}
+                        onMouseLeave={() => setShowDropdown(false)}
+                    >
+                        <button className="navbar-button">Activities</button>
+                            {showDropdown && (
+                            <div className="dropdown-menu">
+                                <a href="/advertiser/createactivity" className="dropdown-item">
+                                Create an Activity
+                                </a>
+                                <a href="/advertiser/activitys" className="dropdown-item">
+                                View All My Activities
+                                </a>
+                                <a href="/advertiser/createtransportation" className="dropdown-item">
+                                Create a Transportation
+                                </a>
+                                <a href="/advertiser/transportation" className="dropdown-item">
+                                View All My Transportations
+                                </a>
+                            </div>
+                            )}
+                    </div>
+                    }
                     {role == "tourist" && (
                         <div className={styles.buttons}>
                             <button onClick={handleRedirect}>Go to Itinerary</button>
