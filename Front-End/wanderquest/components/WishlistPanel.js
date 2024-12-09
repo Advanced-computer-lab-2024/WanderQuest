@@ -15,7 +15,7 @@ const WishlistPanel = ({ isOpen, onClose }) => {
                     <IoClose />
                 </button>
                 <h2>My Wishlist</h2>
-                <Wishlist />
+                <Wishlist role="Tourist" />
             </div>
         </div>
     );
