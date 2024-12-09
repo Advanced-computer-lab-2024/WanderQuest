@@ -441,7 +441,7 @@ const activateItinerary = async (req, res) => {
         if (itinerary.bookingIsOpen) {
             return res.status(400).json({ error: 'Booking is already open' });
         }
-        if (itinerary.createdBy.toString() !== createdBy.toString()) {
+        if (itinerary.createdBy.toString() != createdBy.toString()) {
             return res.status(403).json({ error: 'You are not authorized to activate this itinerary' });
         }
         itinerary.bookingIsOpen = true;
