@@ -12,6 +12,35 @@ function myhotels() {
     const [activeButton, setActiveButton] = useState(5); // Set to 5 for hotels
     const router = useRouter();
 
+    const [multiplier, setMultiplier] = useState(1);
+    const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+    useEffect(() => {
+        const fetchPaymentMultiplier = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Automatically include credentials (user session)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    setMultiplier(result.multiplier);
+                    setPreferredCurrency(result.currency);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.message}`);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        };
+        fetchPaymentMultiplier();
+    }, []);
+
     // Navigation functions
     const handleRedirect = (path, buttonId) => {
         setActiveButton(buttonId);
@@ -105,7 +134,7 @@ function myhotels() {
                                 <h3>{hotel.details.hotelName}</h3>
                                 <p><strong>Rating:</strong> {hotel.details.rating}</p>
                                 <p><strong>Description:</strong> {hotel.details.description}</p>
-                                <p><strong>Price:</strong> {hotel.details.price || 'N/A'}</p>
+                                <p><strong>Price:</strong> {`${hotel.details.price * multiplier} ${preferredCurrency}` || 'N/A'}</p>
                                 <p><strong>Stars:</strong> {hotel.details.stars}</p>
                                 <p><strong>Check In:</strong> {hotel.details.checkIn}</p>
                                 <p><strong>Check Out:</strong> {hotel.details.checkOut}</p>

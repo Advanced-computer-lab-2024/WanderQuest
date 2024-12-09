@@ -12,6 +12,35 @@ function ActivityPage() {
   const [activeButton, setActiveButton] = useState(3); // Set to 3 for activities
   const router = useRouter();
 
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
+
   // Navigation functions
   const handleRedirect = (path, buttonId) => {
     setActiveButton(buttonId);
@@ -46,15 +75,15 @@ function ActivityPage() {
         body: JSON.stringify({ bookingId: activityId }),
         credentials: 'include',
       });
-      
+
       if (!response.ok) {
         throw new Error('Cancel failed');
       }
-      
+
       alert('Cancel was Successful!');
       // Refresh activities after cancellation
-      const updatedActivities = activities.map(activity => 
-        activity._id === activityId 
+      const updatedActivities = activities.map(activity =>
+        activity._id === activityId
           ? { ...activity, status: "cancelled" }
           : activity
       );
@@ -115,7 +144,7 @@ function ActivityPage() {
         </div>
       </div>
 
-      <motion.div 
+      <motion.div
         className={styles.bookingsContainer}
         initial={{ y: 0, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -130,14 +159,14 @@ function ActivityPage() {
             activities.map((activity) => (
               <div key={activity._id} className={styles.bookingCard}>
                 <h3>{activity.details.category}</h3>
-                <p><strong>Price:</strong> {activity.details.price}</p>
+                <p><strong>Price:</strong> {activity.details.price * multiplier} {preferredCurrency}</p>
                 <p><strong>Time:</strong> {activity.details.time}</p>
                 <p><strong>Location:</strong> {activity.details.location}</p>
                 <p><strong>Start Date:</strong> {activity.startDate}</p>
                 <p><strong>Special Discounts:</strong> {activity.details.specialDiscounts}</p>
                 <p><strong>Status:</strong> {activity.status}</p>
                 {activity.status !== "cancelled" && (
-                  <button 
+                  <button
                     className={styles.button}
                     onClick={() => handleCancel(activity._id)}
                   >

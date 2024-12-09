@@ -214,7 +214,6 @@ const cancelBooking = async (req, res) => {
             return res.status(404).json({ error: 'Booking not found' });
         }
         if (booking.userId.toString() !== userId.toString()) {
-            console.log(booking.userId.toString(), userId.toString());
             return res.status(403).json({ error: 'Unauthorized action: cannot delete the booking of another user' });
         }
         if (booking.status === 'cancelled') {
