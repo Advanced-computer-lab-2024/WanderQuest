@@ -169,7 +169,7 @@ const Navbar = () => {
                     )}
                     {role == "seller" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={() => window.location.href = '/seller/createprod'}>Create Product</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/seller/creatprod'}>Create Product</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/seller/products'}>View Products</button>
                         </div>
                     )}
