@@ -8,14 +8,14 @@ const requireAuth = (config = {}) => {
         const token = req.cookies.jwt;
 
         if (!token) {
-            return res.status(401).json({ error: 'You are not logged in' });
+            return res.json({ error: 'You are not logged in' });
         }
 
         jwt.verify(token, process.env.SECRET, async (err, decodedToken) => {
             const extractedID = decodedToken._id._id;
 
             if (err) {
-                res.status(401).json({ message: "You are not logged in." })
+                res.json({ message: "You are not logged in." })
             } else {
                 console.log('Token verified, user ID:', extractedID);
 
@@ -28,7 +28,7 @@ const requireAuth = (config = {}) => {
                     req.user = await TourGov.findById(extractedID).select('_id role');
                 }
                 if (!req.user) {
-                    return res.status(401).json({ error: 'User not found' });
+                    return res.json({ error: 'User not found' });
                 }
 
                 // Check if the user has the required role

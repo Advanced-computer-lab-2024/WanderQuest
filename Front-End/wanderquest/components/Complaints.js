@@ -29,7 +29,6 @@ const Complaints = (props) => {
                     const result = await response.json();
                     setUser(result);
                 } else {
-                    const errorData = await response.json();
                     setUser({});
                 }
             } catch (error) {
@@ -73,7 +72,9 @@ const Complaints = (props) => {
             }
         };
 
-        fetchComplaints();
+        if (user && user.role === 'tourist') {
+            fetchComplaints();
+        }
     }, [user]);
 
 
