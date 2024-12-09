@@ -91,14 +91,12 @@ npm run format:fix
 - Submit a request to register as an advertiser/tour guide/seller with professional details.
 - Upload required documents for advertiser/tour guide/seller registration.
 
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/user-registration.png)
 </details>
 
 <details>
 <summary>User Authentication 🔐</summary>
 - Login and logout securely.
 
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/user-authentication.png)
 
 </details>
 
@@ -117,7 +115,6 @@ npm run format:fix
 - Create/delete/view promocodes.
 - Search/Filter/Sort for a product based on product name/price/ratings.
 
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/administrator-functions.png)
 
 </details>
 
@@ -128,7 +125,6 @@ npm run format:fix
 - Reset forgotten password via email.
 - Request to delete account.
 
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/account-management.png)
 
 </details>
 
@@ -145,7 +141,6 @@ npm run format:fix
 - Archive/unarchive products.
 - Search/Filter/Sort for a product based on product name/price/ratings.
 
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/doctor-functions.png)
 
 </details>
 
@@ -160,7 +155,6 @@ npm run format:fix
 - Create/view transportation posts.
 - Get/mark as read notifications.
 
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/doctor-functions.png)
 
 </details>
 
@@ -187,7 +181,6 @@ npm run format:fix
 - Recieve a promocode on your birthday in notifications.
 - View/add/remove/edit/checkout to/from cart.
   
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/patient-functions.png)
 
 </details>
 
@@ -201,8 +194,6 @@ npm run format:fix
 - Rate/comment on tour guide.
 - Manage notifications.
   
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/patient-functions.png)
-
 </details>
 
 <details>
@@ -210,8 +201,6 @@ npm run format:fix
   
 - Create/update/delete/view places.
 - Add/view tags.
-  
-![image](https://github.com/advanced-computer-lab-2023/Copilot-and-Sons-Clinic/blob/main/images/patient-functions.png)
 
 </details>
 
