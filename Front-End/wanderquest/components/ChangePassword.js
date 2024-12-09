@@ -34,6 +34,7 @@ const ChangePassword = () => {
     
             if (response.ok) {
                 setPasswordMessage("Password changed successfully!");
+                setSuccessMessage("Password changed successfully!");
                 setCurrentPassword('');
                 setNewPassword('');
                 setConfirmPassword('');

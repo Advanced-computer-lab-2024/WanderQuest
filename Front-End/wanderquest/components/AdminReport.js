@@ -15,7 +15,7 @@ const AdminReport = () => {
     })
       .then((response) => response.json())
       .then((data) => setSalesReport(data.report))
-      .catch((error) => console.error("Error fetching sales report:", error));
+      .catch((error) => console.log("Error fetching sales report:", error));
     
     fetch('http://localhost:4000/admin/userStats', {
       method: "GET",
@@ -23,7 +23,7 @@ const AdminReport = () => {
     })
       .then((response) => response.json())
       .then((data) => setUserStats(data))
-      .catch((error) => console.error("Error fetching user stats:", error));
+      .catch((error) => console.log("Error fetching user stats:", error));
     
   }, []);
 
@@ -169,7 +169,7 @@ const AdminReport = () => {
         <h3>Product Sales</h3>
         <div className={styles.tableContainer}>
           <table className={styles.productTable}>
-            <thead>
+            <thead >
               <tr>
                 <th>Product Name</th>
                 <th>Price</th>
@@ -177,14 +177,15 @@ const AdminReport = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((product) => (
-                <tr key={product.name}>
-                  <td>{product.name}</td>
-                  <td>${product.price}</td>
-                  <td>{formatDate(product.date)}</td>
-                </tr>
-              ))}
-            </tbody>
+    {filteredProducts.map((product) => (
+        <tr key={product._id}>
+            <td>{product.name}</td>
+            <td>${product.price}</td>
+            <td>{formatDate(product.date)}</td>
+        </tr>
+    ))}
+</tbody>
+
           </table>
         </div>
 
@@ -201,7 +202,7 @@ const AdminReport = () => {
             </thead>
             <tbody>
               {filteredActivities.map((activity) => (
-                <tr key={activity.title}>
+                <tr key={activity._id}>
                   <td>{activity.title}</td>
                   <td>${activity.price}</td>
                   <td>{formatDate(activity.date)}</td>
@@ -224,7 +225,7 @@ const AdminReport = () => {
             </thead>
             <tbody>
               {filteredItineraries.map((itinerary) => (
-                <tr key={itinerary.title}>
+                <tr key={itinerary._id}>
                   <td>{itinerary.title}</td>
                   <td>${itinerary.price}</td>
                   <td>{itinerary.availableDates.join(', ')}</td>
