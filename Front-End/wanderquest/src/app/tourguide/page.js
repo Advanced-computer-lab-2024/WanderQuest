@@ -7,6 +7,7 @@ import styles from "../../../Styles/TourGuide.module.css";
 import { FaUserCircle } from "react-icons/fa";
 import Image from 'next/image';
 import backGround from '../../../public/guideHome.jpg';
+import Salesreptour from '../../../components/Salesreptour';
 
 export default function TourGuide() {
     const router = useRouter();
@@ -30,7 +31,9 @@ export default function TourGuide() {
 
     useEffect(() => {
         const fetchMyID = async () => {
-            const response = await fetch('http://localhost:4000/authentication/user');
+            const response = await fetch('http://localhost:4000/authentication/user',{
+                credentials: "include",
+            });
             const data = await response.json();
             setMyID(data._id);
             console.log(data._id);
@@ -39,44 +42,16 @@ export default function TourGuide() {
         fetchMyID();
     },[]);
 
-    useEffect(()=>{
-        const fetchProfile = async () => {
-            const response = await fetch(`http://localhost:4000/tourGuide/profile`);
-            const data = await response.json();
-            console.log(data._id);
-        }
-    },[])
+    // useEffect(()=>{
+    //     const fetchProfile = async () => {
+    //         const response = await fetch(`http://localhost:4000/tourGuide/profile`);
+    //         const data = await response.json();
+    //         console.log(data._id);
+    //     }
+    //     fetchProfile();
+    // },[])
 
-    useEffect(() => {
-        const fetchActivities = async () => {
-            const id = '507f1f77bcf86cd799439011';
-            const response = await fetch(`http://localhost:4000/activityRoutes/myActivities/${id}`);
-            const data = await response.json();
-            setActivities(data);
-        };
-        fetchActivities();
-    }, []);
-
-    useEffect(() => {
-        const fetchItineraries = async () => {
-            const id2 = '507f1f77bcf86cd799439013';
-            const response = await fetch(`http://localhost:4000/tourGuide/myItineraries/${id2}`);
-            const data = await response.json();
-            setItineraries(data);
-        };
-        fetchItineraries();
-    }
-    , []);
-
-    useEffect(() => {
-        const fetchHistorical = async () => {
-            const id3 = '507f1f77bcf86cd799439011';
-            const response = await fetch(`http://localhost:4000/tourismGovernor/myPlaces/${id3}`);
-            const data = await response.json();
-            setPlaces(data);
-        };
-        fetchHistorical();
-    }, []);
+    
 
 
 
@@ -93,12 +68,11 @@ export default function TourGuide() {
             <div >
 
             </div>
-            <button onClick={handleRedirect}>View a list of all my created activities/ itineraries / museums and historical places</button>
-            <button onClick={handleRedirectp}>crud iti</button>
-            {/* <button className={styles.profileButton} onClick={handleRedirectProfile}>
-                <FaUserCircle className={styles.profileIcon} /> Profile
-            </button>
-       */}
+            <div className={styles.buttonContainer}>
+            <button className={styles.back} onClick={handleRedirect}>My Itineraries</button>
+            <button className={styles.back} onClick={handleRedirectp}>Create Itineraries</button>
+            </div>
+            <Salesreptour/>
         </div>
     );
 };
