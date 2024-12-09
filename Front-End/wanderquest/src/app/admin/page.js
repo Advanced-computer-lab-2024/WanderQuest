@@ -1,5 +1,5 @@
 'use client'
-import Admin from "../../../components/Admin";
+import Admin from "../../../components/AdminReport";
 import { useRouter } from 'next/navigation';
 import AdminNavBar from "../../../components/AdminNavBar";
 import Link from 'next/link';
