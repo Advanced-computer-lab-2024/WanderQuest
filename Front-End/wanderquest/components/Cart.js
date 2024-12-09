@@ -81,8 +81,10 @@ const Cart = () => {
                     <div key={item.id} className={styles.cartItem}>
                         <img src={item.picture} alt={item.name} className={styles.itemImage} />
                         <div className={styles.itemDetails}>
-                            <h3 className={styles.productName}>{item.name}</h3>
-                            <p className={styles.price}>${item.price.toFixed(2)}</p>
+    <h3 className={styles.productName}>{item.name}</h3>
+    <p className={styles.price}>
+        ${typeof item.price === 'number' ? item.price.toFixed(2) : 'N/A'}
+    </p>
                             <div className={styles.quantityControls}>
                                 <label htmlFor={`quantity-${item.id}`}>Quantity:</label>
                                 <input
