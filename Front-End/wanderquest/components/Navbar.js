@@ -39,11 +39,6 @@ const Navbar = () => {
                     const result = await response.json();
                     localStorage.setItem('user', JSON.stringify(result));
                     setUser(result);
-                    if(result.role == "tourGuide") {
-                        setRole("tourguide");
-
-                    }
-                    else{
                     setRole(result.role);
                     console.log("RESULT: ", result);
 
