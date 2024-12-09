@@ -307,6 +307,16 @@ const editProduct = async (req, res) => {
         }
     }
 }
+const myProducts = async (req, res) => {
+    const userId = req.user._id;
+    try {
+        const products = await ProdModel.find({ seller: userId });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch products", error: error.message });
+    }
+};
+
 
 
 
@@ -417,4 +427,4 @@ const seenNotifications = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales, uploadProductPhoto,viewSalesReport,myNotifications,seenNotifications };
+module.exports = { getProfile, updateProfile, getProductPhoto, uploadLogo, getLogo, getProducts, addProduct, editProduct, getAvailableProducts, archiveProduct, unarchiveProduct, viewProductSales, viewAllProductSales,myProducts, uploadProductPhoto,viewSalesReport,myNotifications,seenNotifications };
