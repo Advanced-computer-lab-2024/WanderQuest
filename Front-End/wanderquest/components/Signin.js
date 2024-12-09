@@ -30,6 +30,31 @@ function Signin({ toggleForm }) {
         setSuccess("Login successful!");
         setError("");
 
+        // Store user data in localStorage
+        localStorage.setItem("user", JSON.stringify(data));
+
+        try {
+          const response = await fetch("http://localhost:4000/payment/getPaymentMultiplier", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem("multiplier", data.multiplier);
+            localStorage.setItem("preferredCurrency", data.currency);
+          } else {
+            const errorData = await response.json();
+            setError(errorData.error || "Failed to get user role. Please try again.");
+            setSuccess("");
+          }
+        } catch (err) {
+          console.error("Error during login:", err);
+          setError("An error occurred during login. Please try again later.");
+          setSuccess("");
+        }
+
         switch (data.role) {
           case "tourist":
             window.location.href = "/tourist";

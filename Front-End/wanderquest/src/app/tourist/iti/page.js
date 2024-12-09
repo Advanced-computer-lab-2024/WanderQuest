@@ -46,29 +46,19 @@ const ItineraryListpage = (Props) => {
   const [preferredCurrency, setPreferredCurrency] = useState('USD');
 
   useEffect(() => {
-    const fetchPaymentMultiplier = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Automatically include credentials (user session)
-        });
+    const storedMultiplier = localStorage.getItem('multiplier');
+    let multiplier = 1;
+    console.log('Stored Multiplier:', storedMultiplier);
+    if (storedMultiplier) {
+      console.log('Setting Multiplier:', storedMultiplier);
+      setMultiplier(storedMultiplier);
+    }
 
-        if (response.ok) {
-          const result = await response.json();
-          setMultiplier(result.multiplier);
-          setPreferredCurrency(result.currency);
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      } catch (error) {
-        alert(`Error: ${error.message}`);
-      }
-    };
-    fetchPaymentMultiplier();
+    const preferredCurrency = localStorage.getItem('preferredCurrency') || 'USD';
+    console.log('Preferred Currency:', preferredCurrency);
+    if (preferredCurrency) {
+      setPreferredCurrency(preferredCurrency);
+    }
   }, []);
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
@@ -425,7 +415,7 @@ const ItineraryListpage = (Props) => {
                 <p>
                   <strong>Price:</strong> {itinerary.price * multiplier} {preferredCurrency}
                 </p>
-           
+
                 {/* <div className={styles.datesContainer}>
                     <strong className={styles.datesLabel}>Available dates:</strong>
                     <div className={styles.dates}>
@@ -473,18 +463,18 @@ const ItineraryListpage = (Props) => {
                   {itinerary.BookingAlreadyMade ? "Yes" : "No"}
                 </p> */}
                 <p className={styles.productRating}>
-                    {itinerary.rating && itinerary.rating > 0 ? (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Rating
-                                name="text-feedback"
-                                value={itinerary.rating}
-                                readOnly
-                                precision={0.5}
-                                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                            />
-                            <Typography sx={{ ml: 1 }}>{labels[itinerary.rating]}</Typography>
-                        </Box>
-                    ) : "No rating yet"}
+                  {itinerary.rating && itinerary.rating > 0 ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Rating
+                        name="text-feedback"
+                        value={itinerary.rating}
+                        readOnly
+                        precision={0.5}
+                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                      />
+                      <Typography sx={{ ml: 1 }}>{labels[itinerary.rating]}</Typography>
+                    </Box>
+                  ) : "No rating yet"}
                 </p>
                 <Link href={`iti/${itinerary._id}`} passHref>
                   <button className={styles.searchbtn}>View</button>

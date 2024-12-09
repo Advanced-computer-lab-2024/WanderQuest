@@ -23,9 +23,8 @@ const Navbar = () => {
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
     const [user, setUser] = useState({});
 
-
-
     useEffect(() => {
+        console.log("TESTTTTT: ");
         const fetchUserData = async () => {
             try {
                 const response = await fetch('http://localhost:4000/authentication/user', {
@@ -38,6 +37,7 @@ const Navbar = () => {
 
                 if (response.ok) {
                     const result = await response.json();
+                    localStorage.setItem('user', JSON.stringify(result));
                     setUser(result);
                     if(result.role == "tourGuide") {
                         setRole("tourguide");
@@ -45,17 +45,49 @@ const Navbar = () => {
                     }
                     else{
                     setRole(result.role);
+                    console.log("RESULT: ", result);
+
+                    try {
+                        const response = await fetch("http://localhost:4000/payment/getPaymentMultiplier", {
+                            method: "GET",
+                            headers: { "Content-Type": "application/json" },
+                            credentials: "include",
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            console.log("DATA: ", data);
+                            localStorage.setItem("multiplier", data.multiplier);
+                            localStorage.setItem("preferredCurrency", data.currency);
+                            console.log("currency: ", localStorage.getItem("preferredCurrency"));
+                        } else {
+                            localStorage.setItem("multiplier", 1);
+                            localStorage.setItem("preferredCurrency", "USD");
+                        }
+                    } catch (err) {
+                        localStorage.setItem("multiplier", 1);
+                        localStorage.setItem("preferredCurrency", "USD");
                     }
                 } else {
                     const errorData = await response.json();
-                    setUser({});
+                    localStorage.setItem('user', JSON.stringify({}));
+                    localStorage.setItem("multiplier", 1);
+                    localStorage.setItem("preferredCurrency", "USD");
                 }
             } catch (error) {
-                setUser({});
+                localStorage.setItem('user', JSON.stringify({}));
+                localStorage.setItem("multiplier", 1);
+                localStorage.setItem("preferredCurrency", "USD");
             }
         };
 
         fetchUserData();
+    }, []);
+
+
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('user')));
     }, []);
 
     const toggleProfileMenu = () => {
@@ -93,14 +125,34 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    {role == "advertiser" && (
-                        <div className="navbar-button}">
-                            <button onClick={() => window.location.href = '/advertiser/activitys'}>Activities</button>
-                            <button onClick={() => window.location.href = '/advertiser/createactivity'}>Create Activity</button>
-                            <button onClick={() => window.location.href = '/advertiser/createTransportation'}>Create Transportation</button>
-                            <button onClick={() => window.location.href = '/advertiser/transportation'}>Transportation</button>
+                    {role == "advertiser" &&
+                        <div>
+                            <a href="/advertiser"><button className="navbar-button">Reports</button></a>
+                            <div
+                                className="navbar-button-container"
+                                onMouseEnter={() => setShowDropdown(true)}
+                                onMouseLeave={() => setShowDropdown(false)}
+                            >
+                                <button className="navbar-button">Activities</button>
+                                {showDropdown && (
+                                    <div className="dropdown-menu">
+                                        <a href="/advertiser/createactivity" className="dropdown-item">
+                                            Create an Activity
+                                        </a>
+                                        <a href="/advertiser/activitys" className="dropdown-item">
+                                            View All My Activities
+                                        </a>
+                                        <a href="/advertiser/createtransportation" className="dropdown-item">
+                                            Create a Transportation
+                                        </a>
+                                        <a href="/advertiser/transportation" className="dropdown-item">
+                                            View All My Transportations
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    )}
+                    }
                     {role == "tourist" && (
                         <div className={styles.buttons}>
                             <button onClick={handleRedirect}>Go to Itinerary</button>
@@ -235,7 +287,7 @@ const Navbar = () => {
     </svg>
 </button>
 
-)}
+                    )}
 
 
                     {role ? (

@@ -30,29 +30,19 @@ const Activitiespage = (Props) => {
   const [preferredCurrency, setPreferredCurrency] = useState('USD');
 
   useEffect(() => {
-    const fetchPaymentMultiplier = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Automatically include credentials (user session)
-        });
+    const storedMultiplier = localStorage.getItem('multiplier');
+    let multiplier = 1;
+    console.log('Stored Multiplier:', storedMultiplier);
+    if (storedMultiplier) {
+      console.log('Setting Multiplier:', storedMultiplier);
+      setMultiplier(storedMultiplier);
+    }
 
-        if (response.ok) {
-          const result = await response.json();
-          setMultiplier(result.multiplier);
-          setPreferredCurrency(result.currency);
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      } catch (error) {
-        alert(`Error: ${error.message}`);
-      }
-    };
-    fetchPaymentMultiplier();
+    const preferredCurrency = localStorage.getItem('preferredCurrency') || 'USD';
+    console.log('Preferred Currency:', preferredCurrency);
+    if (preferredCurrency) {
+      setPreferredCurrency(preferredCurrency);
+    }
   }, []);
 
   const handleSearch = () => {
@@ -286,30 +276,30 @@ const Activitiespage = (Props) => {
 
 
       {Array.isArray(category) && category.map((cat, index3) => (
-  <div key={index3}>
-    <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
-    <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
-  </div>
-))}
+        <div key={index3}>
+          <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
+          <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
+        </div>
+      ))}
 
-{role === "Tourist" ? (
-  < motion.div
-  className={styles.searchcom}
-  initial={{ y: 10 }}
-            transition={{ duration: 1 }} >
-    <input
-      className={styles.productsearch}
-      onChange={(e) => setSearch(e.target.value)}
-      type="text"
-      placeholder="Search activities..."
-    />
-    {/* <button className={styles.searchbtn} onClick={handleSearch}>Search</button> */}
-    {/* <button onClick={clearsearch}>Clear Search</button> */}
-  </motion.div>
-) : (
-  <div></div>
-)}
-{/* 
+      {role === "Tourist" ? (
+        < motion.div
+          className={styles.searchcom}
+          initial={{ y: 10 }}
+          transition={{ duration: 1 }} >
+          <input
+            className={styles.productsearch}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search activities..."
+          />
+          {/* <button className={styles.searchbtn} onClick={handleSearch}>Search</button> */}
+          {/* <button onClick={clearsearch}>Clear Search</button> */}
+        </motion.div>
+      ) : (
+        <div></div>
+      )}
+      {/* 
       <div className={styles.sortButtons}>
         <button onClick={handlesortPriceAsc}>Sort Price Asc</button>
         <button onClick={handlesortPriceDsc}>Sort Price Desc</button>
@@ -317,7 +307,7 @@ const Activitiespage = (Props) => {
         <button onClick={handlesortRatingDsc}>Sort Rating Desc</button>
       </div> */}
 
-     
+
       {/* Date filter input */}
       {/* <div className={styles.dateFilter}>
         <input 
@@ -347,109 +337,109 @@ const Activitiespage = (Props) => {
           />
         </label>
       </div> */} <div className={styles.pageLayout}>
-      <div className={styles.sidebar}>
-                    <h1>Filters</h1>
-                    <div className={styles.filterSection}>
-                    <button  style={{ margin: '5px' }} onClick={handlesortPriceAsc}>Sort Price Asc</button>
-                    <button  style={{ margin: '5px' }}  onClick={handlesortPriceDsc}>Sort Price Desc</button>
-                    <button style={{ margin: '5px' }} onClick={handlesortRatingAsc}>Sort Rating Asc</button>
-                    <button  style={{ margin: '5px' }}onClick={handlesortRatingDsc}>Sort Rating Desc</button>
-                    <div className={styles.ratingFilters}>
-                    <h2>Rating Filter</h2>
-                      {[1, 2, 3, 4].map((rating) => (
-                        <label key={rating} style={{ cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            onChange={() => handleRatingChange(rating)}
-                            checked={ratingFilter === rating}
-                          />
-                          {[...Array(rating)].map((_, index) => (
-                            <span key={index} style={{ color: 'gold' }}>★</span>
-                          ))}
-                          {[...Array(5 - rating)].map((_, index) => (
-                            <span key={index} style={{ color: '#ccc' }}>★</span>
-                          ))}
-                          <span style={{ marginLeft: '4px' }}>or higher</span>
-                        </label>
-                      ))}
-                    </div>
-                    </div>
-                    <div className={styles.priceFilter}>
-                        <h3>Price Filter</h3>
-                        <div>
-                            <label>
-                                Min Price:
-                                <input
-                                    type="number"
-                                    className={styles.min}
-                                    value={minBudget}
-                                    onChange={(e) => setMinBudget(e.target.value)}
-                                    placeholder="0"
-                                />
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                Max Price:
-                                <input
-                                    type="number"
-                                    className={styles.max}
-                                    value={maxBudget}
-                                    onChange={(e) => setMaxBudget(e.target.value)}
-                                    placeholder="1000"
-                                />
-                            </label>
-                        </div>
-                        <div className={styles.slider}>
-                            <label>Min</label>
-                            <input
-                                type="range"
-                                className={styles.rangeMin}
-                                min="0"
-                                max="10000"
-                                value={minBudget}
-                                onChange={(e) => setMinBudget(e.target.value)}
-                                step="100"
-                            />
-                            <label>Max</label>
-                            <input
-                                type="range"
-                                className={styles.rangeMax}
-                                min="0"
-                                max="10000"
-                                value={maxBudget}
-                                onChange={(e) => setMaxBudget(e.target.value)}
-                                step="100"
-                            />
-                        </div><div className={styles.filterSection}>
-                        <button  style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply Filter</button>
-                        <button  style={{ margin: '5px' }} className={styles.productArchive} onClick={clearFilters }>Clear Filters</button>
-                    </div></div>
-                </div>
-                <div className={styles.activities}>
-      {activities.map((activity) => (
-        <div key={activity.id} className={styles.activity}>
-          <h3>{activity.title}</h3>
-          <p>
-            <strong>Date:</strong> {activity.date}<br />
-            <strong>Time:</strong> {activity.time}<br />
-            <strong>Location:</strong>{' '}
-            <a href={activity.location} target="_blank" rel="noopener noreferrer">
-              {activity.location}
-            </a><br />
-            <strong>Price:</strong> {activity.price}<br />
-            <strong>Category:</strong> {activity.category}<br />
-            <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
-            <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-          </p>
-          <Link href={`activity/${activity._id}`} className={styles.addticket}>
-            <button className={styles.searchbtn}>View</button>
-          </Link>
+        <div className={styles.sidebar}>
+          <h1>Filters</h1>
+          <div className={styles.filterSection}>
+            <button style={{ margin: '5px' }} onClick={handlesortPriceAsc}>Sort Price Asc</button>
+            <button style={{ margin: '5px' }} onClick={handlesortPriceDsc}>Sort Price Desc</button>
+            <button style={{ margin: '5px' }} onClick={handlesortRatingAsc}>Sort Rating Asc</button>
+            <button style={{ margin: '5px' }} onClick={handlesortRatingDsc}>Sort Rating Desc</button>
+            <div className={styles.ratingFilters}>
+              <h2>Rating Filter</h2>
+              {[1, 2, 3, 4].map((rating) => (
+                <label key={rating} style={{ cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleRatingChange(rating)}
+                    checked={ratingFilter === rating}
+                  />
+                  {[...Array(rating)].map((_, index) => (
+                    <span key={index} style={{ color: 'gold' }}>★</span>
+                  ))}
+                  {[...Array(5 - rating)].map((_, index) => (
+                    <span key={index} style={{ color: '#ccc' }}>★</span>
+                  ))}
+                  <span style={{ marginLeft: '4px' }}>or higher</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div className={styles.priceFilter}>
+            <h3>Price Filter</h3>
+            <div>
+              <label>
+                Min Price:
+                <input
+                  type="number"
+                  className={styles.min}
+                  value={minBudget}
+                  onChange={(e) => setMinBudget(e.target.value)}
+                  placeholder="0"
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Max Price:
+                <input
+                  type="number"
+                  className={styles.max}
+                  value={maxBudget}
+                  onChange={(e) => setMaxBudget(e.target.value)}
+                  placeholder="1000"
+                />
+              </label>
+            </div>
+            <div className={styles.slider}>
+              <label>Min</label>
+              <input
+                type="range"
+                className={styles.rangeMin}
+                min="0"
+                max="10000"
+                value={minBudget}
+                onChange={(e) => setMinBudget(e.target.value)}
+                step="100"
+              />
+              <label>Max</label>
+              <input
+                type="range"
+                className={styles.rangeMax}
+                min="0"
+                max="10000"
+                value={maxBudget}
+                onChange={(e) => setMaxBudget(e.target.value)}
+                step="100"
+              />
+            </div><div className={styles.filterSection}>
+              <button style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply Filter</button>
+              <button style={{ margin: '5px' }} className={styles.productArchive} onClick={clearFilters}>Clear Filters</button>
+            </div></div>
         </div>
-      ))}
+        <div className={styles.activities}>
+          {activities.map((activity) => (
+            <div key={activity.id} className={styles.activity}>
+              <h3>{activity.title}</h3>
+              <p>
+                <strong>Date:</strong> {activity.date}<br />
+                <strong>Time:</strong> {activity.time}<br />
+                <strong>Location:</strong>{' '}
+                <a href={activity.location} target="_blank" rel="noopener noreferrer">
+                  {activity.location}
+                </a><br />
+                <strong>Price:</strong> {activity.price}<br />
+                <strong>Category:</strong> {activity.category}<br />
+                <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
+                <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
+              </p>
+              <Link href={`activity/${activity._id}`} className={styles.addticket}>
+                <button className={styles.searchbtn}>View</button>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
-  </div>
-</div>
   </>
   );
 };

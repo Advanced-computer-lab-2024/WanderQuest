@@ -25,6 +25,7 @@ import Salesrepadv from "../../components/Salesrepadv";
 import Authentication from "../../components/Authentication";
 import Salesreptour from "../../components/Salesreptour";
 import LandingPage from "../../components/LandingPage";
+import { useEffect } from 'react';
 
 export default function Home() {
    return (

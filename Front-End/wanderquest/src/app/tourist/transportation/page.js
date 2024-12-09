@@ -23,29 +23,19 @@ function transportpage() {
   const [preferredCurrency, setPreferredCurrency] = useState('USD');
 
   useEffect(() => {
-    const fetchPaymentMultiplier = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Automatically include credentials (user session)
-        });
+    const storedMultiplier = localStorage.getItem('multiplier');
+    let multiplier = 1;
+    console.log('Stored Multiplier:', storedMultiplier);
+    if (storedMultiplier) {
+      console.log('Setting Multiplier:', storedMultiplier);
+      setMultiplier(storedMultiplier);
+    }
 
-        if (response.ok) {
-          const result = await response.json();
-          setMultiplier(result.multiplier);
-          setPreferredCurrency(result.currency);
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      } catch (error) {
-        alert(`Error: ${error.message}`);
-      }
-    };
-    fetchPaymentMultiplier();
+    const preferredCurrency = localStorage.getItem('preferredCurrency') || 'USD';
+    console.log('Preferred Currency:', preferredCurrency);
+    if (preferredCurrency) {
+      setPreferredCurrency(preferredCurrency);
+    }
   }, []);
 
   const handleSearch = (e) => {
