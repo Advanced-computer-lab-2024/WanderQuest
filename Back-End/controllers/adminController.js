@@ -150,15 +150,19 @@ const addAdmin = async (req, res) => {
 };
 
 
-//Admin getProducts
+//Admin get products
 const getProducts = async (req, res) => {
     try {
+        // Fetch all products and populate the seller's name and ID
         const products = await ProdModel.find()
-        res.status(200).json(products)
-    } catch (error) {
-        res.status(400).json({ error: error.message })
+            .populate('seller', 'username')
+            .exec();
+        res.status(200).json(products);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
+
 
 //Admin getProdById
 const getProdById = async (req, res) => {

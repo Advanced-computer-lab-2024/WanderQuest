@@ -116,8 +116,8 @@ const ActivityCategory = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ category: isEditing.value }),
+        credentials: 'include',
       });
       if (!response.ok) throw new Error('Failed to update category');
 

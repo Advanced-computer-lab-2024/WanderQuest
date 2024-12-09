@@ -1,19 +1,18 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import Navbar from '../../../components/Navbar';
-import styles from '../../../Styles/Tourist.module.css'
+import styles from '../Styles/Tourist.module.css'
 import { FaUserCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useState } from 'react';
-import Wishlist from '../../../components/Wishlist';
-import Complaints from '../../../components/Complaints';
 import Image from 'next/image';
-import Mountains from '../../../imgs/Mountains.jpg';
+import Wishlist from "./Wishlist";
+import Complaints from "./Complaints";
+import Mountains from '../imgs/Mountains.jpg';
 import { Cookie } from 'next/font/google';
 import {motion} from 'framer-motion';
 
 import { useEffect } from 'react';
-import Foot from "../../../components/foot";
+import Foot from "./foot";
 
 
 const testimonials = [
@@ -45,7 +44,7 @@ const cookie = Cookie({
   subsets: ['latin'],
 });
 
-export default function Tourist() {
+const LandingPage = () => {
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
     const [slideDirection, setSlideDirection] = useState('next');
 
@@ -153,47 +152,8 @@ export default function Tourist() {
 
     return (
         <>
-            <Navbar  />
             <div className={styles.container}>
-                {promoCode.promoCodes && (
-                    <div style={{
-                        backgroundColor: 'black',
-                        color: 'white',
-                        overflow: 'hidden',
-                        position: 'relative',
-                        paddingTop: '5px',
-                        width: '100%',
-                        height: '30px'
-                    }}>
-                        {!isLoading  && (
-                            <motion.div
-                                style={{
-                                    whiteSpace: 'nowrap',
-                                    gap: '10px',
-                                    fontSize: '14px',
-                                    width: 'max-content'
-                                }}
-                                initial={{ x: '-100%' }}
-                                animate={{ x: '100vw' }}
-                                transition={{
-                                    duration: 20,
-                                    repeat: Infinity,
-                                    ease: 'linear'
-                                }}
-                            >
-                                🎉 SPECIAL OFFER: Use code "{promoCode.promoCodes.code}" for {promoCode.promoCodes.discount} {promoCode.promoCodes.type === "PERCENTAGE" ? '%' : 'USD'} OFF on all bookings! <span 
-                                    style={{
-                                        textDecoration: 'underline',
-                                        cursor: 'pointer'
-                                    }}
-                                    onClick={() => navigator.clipboard.writeText(promoCode.promoCodes.code)}
-                                >
-                                    Click here
-                                </span> to copy code! Limited time only! 🎉
-                            </motion.div>
-                        )}
-                    </div>
-                )}
+                
                 <div className={styles.heroSection}>
                     {(() => {
                         const [currentImage, setCurrentImage] = useState(0);
@@ -401,268 +361,6 @@ export default function Tourist() {
                 </motion.div>
 
            
-
-<motion.div 
-    className={styles.productsSection}
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8 }}
->
-    <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '2rem',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        width: '100%',
-        padding: '0 2rem'
-    }}>
-        <motion.h2 
-            style={{
-                margin: 0,
-                textAlign: 'left',
-                width: '100%'
-            }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-        >
-            Featured Products
-        </motion.h2>
-        <motion.button 
-            style={{
-                background: 'none',
-                border: 'none',
-                borderBottom: '2px solid #000',
-                padding: '0.5rem 0',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                whiteSpace: 'nowrap'
-            }}
-            onClick={handleRedirectp}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-        >
-            View all products
-        </motion.button>
-    </div>
-    
-    <motion.div 
-        className={styles.productsGrid}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-    >
-        <motion.div 
-            className={styles.productCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/batik.jpg" 
-                alt="Traditional Batik"
-                width={300}
-                height={200}
-                className={styles.productImage}
-            />
-            <div className={styles.productContent}>
-                <h3>Traditional Batik</h3>
-                <p className={styles.price}>$49.99</p>
-                <p className={styles.description}>
-                    Handcrafted Indonesian Batik made with natural dyes and traditional patterns.
-                </p>
-            </div>
-        </motion.div>
-
-        <motion.div 
-            className={styles.productCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/wood.jpg" 
-                alt="Wooden Sculpture"
-                width={300}
-                height={200}
-                className={styles.productImage}
-            />
-            <div className={styles.productContent}>
-                <h3>Balinese Wood Carving</h3>
-                <p className={styles.price}>$129.99</p>
-                <p className={styles.description}>
-                    Intricately carved wooden sculpture depicting traditional Balinese stories.
-                </p>
-            </div>
-        </motion.div>
-
-        <motion.div 
-            className={styles.productCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/silver.webp" 
-                alt="Silver Jewelry"
-                width={300}
-                height={200}
-                className={styles.productImage}
-            />
-            <div className={styles.productContent}>
-                <h3>Silver Jewelry Set</h3>
-                <p className={styles.price}>$89.99</p>
-                <p className={styles.description}>
-                    Handcrafted silver jewelry featuring traditional Indonesian designs.
-                </p>
-            </div>
-        </motion.div>
-    </motion.div>
-</motion.div>
-
-
-
-
-<motion.div 
-    className={styles.activitiesSection}
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.8 }}
->
-    <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '2rem',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        width: '100%',
-        padding: '0 2rem'
-    }}>
-        <motion.h2 
-            style={{
-                margin: 0,
-                textAlign: 'left',
-                width: '100%'
-            }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-        >
-            Featured Activities
-        </motion.h2>
-        <motion.button 
-            style={{
-                background: 'none',
-                border: 'none',
-                borderBottom: '2px solid #000',
-                padding: '0.5rem 0',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                whiteSpace: 'nowrap'
-            }}
-            onClick={handleRedirectac}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-        >
-            View all activities
-        </motion.button>
-    </div>
-    
-    <motion.div 
-        className={styles.productsGrid}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-    >
-        <motion.div 
-            className={styles.productCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/surfing.jpg" 
-                alt="Surfing in Bali"
-                width={300}
-                height={200}
-                className={styles.productImage}
-            />
-            <div className={styles.productContent}>
-                <h3>Surfing in Bali</h3>
-                <p className={styles.price}>$75 per person</p>
-                <p className={styles.description}>
-                    Catch the perfect wave with professional instructors at Bali's most beautiful beaches.
-                </p>
-            </div>
-        </motion.div>
-
-        <motion.div 
-            className={styles.productCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/hiking.jpg" 
-                alt="Mount Bromo Hiking"
-                width={300}
-                height={200}
-                className={styles.productImage}
-            />
-            <div className={styles.productContent}>
-                <h3>Mount Bromo Sunrise Trek</h3>
-                <p className={styles.price}>$120 per person</p>
-                <p className={styles.description}>
-                    Experience breathtaking views with a guided sunrise hike up Mount Bromo.
-                </p>
-            </div>
-        </motion.div>
-
-        <motion.div 
-            className={styles.productCard}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <Image 
-                src="/diving.jpg" 
-                alt="Scuba Diving"
-                width={300}
-                height={200}
-                className={styles.productImage}
-            />
-            <div className={styles.productContent}>
-                <h3>Raja Ampat Diving</h3>
-                <p className={styles.price}>$150 per person</p>
-                <p className={styles.description}>
-                    Discover the underwater paradise of Raja Ampat with certified diving instructors.
-                </p>
-            </div>
-        </motion.div>
-    </motion.div>
-</motion.div>
-
-
-
-
-
-
-
-
-
-
-
 <motion.div 
     className={styles.testimonialSection}
     initial={{ opacity: 0, y: 50 }}
@@ -813,9 +511,6 @@ export default function Tourist() {
     </motion.button> */}
 </motion.div>
 
-          
-
-
             </div>
 
             {/* Updated Wishlist Sliding Panel */}
@@ -849,3 +544,5 @@ export default function Tourist() {
         </>
     );
 };
+
+export default LandingPage;
