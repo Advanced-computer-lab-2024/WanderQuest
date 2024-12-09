@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from '../Styles/cruditinerary.module.css';
 import axios from 'axios';
 
@@ -35,6 +36,12 @@ const Cruditinerary = () => {
 
 
     const formRef = useRef(null);
+
+    const router = useRouter();
+
+    const handleBack = () =>{
+        router.back();
+    }
 
     useEffect(() => {
         // Fetch itineraries from the backend
@@ -344,36 +351,36 @@ const Cruditinerary = () => {
 
     
 
-    const fetchActivityDetails = (activityId) => {
-        if (activityDetails[activityId]) return; // Avoid refetching
-
-        fetch('http://localhost:4000/advertiser/activity/${activityId}')
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                setActivityDetails(prevDetails => ({
-                    ...prevDetails,
-                    [activityId]: data,
-                }));
-            })
-            .catch(error => {
-                setError(error.message);
-            });
-    };
+    
 
     return (
         <div className={styles.parent}>
+            <div className={styles.buttonContainer}>
+                <button className={styles.back} onClick={handleBack}>Back To Home</button>
+            </div>
             <div className={styles.container}>
+                <div className={styles.title}>
+                    <h1>Create Itinerary</h1>
+                </div>
+                <div className={styles.subtitle}>
+                    <h2>Let's Make Things Happen</h2>
+                </div>
                 <div className={styles.createItinerary} ref={formRef}>
                     <form className={styles.form} onSubmit={handleSubmit}>
-                        <div>
-                            <label className={styles.label}>Title</label>
-                            <input className={styles.input} placeholder="Title" name="title" type="text" value={formData.title} onChange={handleChange} required />
+                        <div className={styles.titleContainer}>
+                            <label className={styles.labelTitle}>Title</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Title"
+                                name="title"
+                                type="text"
+                                value={formData.title}
+                                onChange={handleChange}
+                                required
+                            />
                         </div>
+    
+                        {/* Activities Section */}
                         <div className={styles.activitiescontainer}>
                             <label className={styles.activitieslabel}>Activities</label>
                             <div className={styles.activitiescheckboxes}>
@@ -391,162 +398,175 @@ const Cruditinerary = () => {
                                 ))}
                             </div>
                         </div>
-                        <div>
-                            <label className={styles.label}>Locations</label>
-                            <input
-                                className={styles.input}
-                                placeholder="Enter locations separated by commas"
-                                name="locations"
-                                type="text"
-                                value={formData.locations.join(', ')}
-                                onChange={handleLocationsChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className={styles.label}>Timeline</label>
-                            <input className={styles.input} placeholder="Add your Timeline" name="timeline" type="text" value={formData.timeline} onChange={handleChange} required />
-                        </div>
-                        <div>
-                            <label className={styles.label}>Duration</label>
-                            <input className={styles.input} placeholder="duration" name="duration" type="text" value={formData.duration} onChange={handleChange} required />
-                        </div>
-                        <div>
-                            <label className={styles.label}>Language of Tour</label>
-                            <input className={styles.input} placeholder="language of tour" name="language" type="text" value={formData.language} onChange={handleChange} required />
-                        </div>
-                        <div>
-                            <label className={styles.label}>Price</label>
-                            <input className={styles.input} placeholder="Price" name="price" type="number" value={formData.price} onChange={handleChange} required />
-                        </div>
-                        <div>
-                            <label className={styles.label}>Available Dates</label>
-                            <input
-                                className={styles.input}
-                                name="availableDates"
-                                type="date"
-                                value={newDate}
-                                onChange={handleAvailableDatesChange}
-                            />
-                            <button type="button" onClick={addDate}>Add Another Date</button>
-                            <div>
-                                {formData.availableDates.map((date, index) => (
-                                    <div key={index}>
-                                        <span>{new Date(date).toLocaleDateString()}</span>
-                                        <button type="button" onClick={() => removeDate(index)}>Remove</button>
-                                    </div>
-                                ))}
+    
+                        {/* Other Form Fields */}
+                        <div className={styles.formSections}>
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Locations</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Enter locations separated by commas"
+                                    name="locations"
+                                    type="text"
+                                    value={formData.locations.join(', ')}
+                                    onChange={handleLocationsChange}
+                                    required
+                                />
+                            </div>
+    
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Timeline</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Add your Timeline"
+                                    name="timeline"
+                                    type="text"
+                                    value={formData.timeline}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+    
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Duration</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Duration"
+                                    name="duration"
+                                    type="text"
+                                    value={formData.duration}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </div>
                         </div>
-                        <div>
-                            <label className={styles.label}>Available Times</label>
-                            <input
-                                className={styles.input}
-                                placeholder="Enter times separated by commas (HH:MM)"
-                                name="time"
-                                type="text"
-                                value={formData.time.join(', ')}
-                                onChange={handleTimeChange}
-                                required
-                            />
+    
+                        <div className={styles.formSections}>
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Language of Tour</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Language of tour"
+                                    name="language"
+                                    type="text"
+                                    value={formData.language}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+    
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Price</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Price"
+                                    name="price"
+                                    type="number"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+    
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Available Dates</label>
+                                <input
+                                    className={styles.input}
+                                    name="availableDates"
+                                    type="date"
+                                    value={newDate}
+                                    onChange={handleAvailableDatesChange}
+                                />
+                                <button type="button" onClick={addDate}>Add Date</button>
+                                <div>
+                                    {formData.availableDates.map((date, index) => (
+                                        <div key={index}>
+                                            <span>{new Date(date).toLocaleDateString()}</span>
+                                            <button type="button" onClick={() => removeDate(index)}>Remove</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label className={styles.label}>Accessibility</label>
-                            <input
-                                className={styles.input}
-                                name="accessibility"
-                                type="checkbox"
-                                checked={formData.accessibility}
-                                onChange={handleChange}
-                            />
+    
+                        <div className={styles.formSections}>
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Available Times</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Enter times separated by commas (HH:MM)"
+                                    name="time"
+                                    type="text"
+                                    value={formData.time.join(', ')}
+                                    onChange={handleTimeChange}
+                                    required
+                                />
+                            </div>
+    
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Accessibility</label>
+                                <input
+                                    className={styles.input}
+                                    name="accessibility"
+                                    type="checkbox"
+                                    checked={formData.accessibility}
+                                    onChange={handleChange}
+                                />
+                            </div>
+    
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Pick Up Location</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Pick Up Location"
+                                    name="pickUpLocation"
+                                    type="text"
+                                    value={formData.pickUpLocation}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label className={styles.label}>Pick Up Location</label>
-                            <input
-                                className={styles.input}
-                                placeholder="Pick Up Location"
-                                name="pickUpLocation"
-                                type="text"
-                                value={formData.pickUpLocation}
-                                onChange={handleChange}
-                                required
-                            />
+    
+                        <div className={styles.formSections}>
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Drop Off Location</label>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Drop Off Location"
+                                    name="dropOffLocation"
+                                    type="text"
+                                    value={formData.dropOffLocation}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+    
+                            <div className={styles.formSection}>
+                                <label className={styles.label}>Booking Already Made</label>
+                                <input
+                                    className={styles.input}
+                                    name="BookingAlreadyMade"
+                                    type="checkbox"
+                                    checked={formData.BookingAlreadyMade}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label className={styles.label}>Drop Off Location</label>
-                            <input
-                                className={styles.input}
-                                placeholder="Drop Off Location"
-                                name="dropOffLocation"
-                                type="text"
-                                value={formData.dropOffLocation}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className={styles.label}>Booking Already Made</label>
-                            <input
-                                className={styles.input}
-                                name="BookingAlreadyMade"
-                                type="checkbox"
-                                checked={formData.BookingAlreadyMade}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <button type="submit" className={styles.submit}>{isUpdating ? 'Update Itinerary' : 'Create Itinerary'}</button>
+    
+                        {/* Submit Button */}
+                        <button type="submit" className={styles.submit}>
+                            {isUpdating ? 'Update Itinerary' : 'Create Itinerary'}
+                        </button>
                     </form>
                 </div>
             </div>
-            {/* <div className={styles.itinerariesContainer}>
-                <label className={styles.label}>List of Itineraries</label>
-                <div>
-                    {itineraries.map((itinerary, index) => (
-                        <div key={itinerary._id} className={styles.itineraryBox}>
-                            <p><strong>Title: {itinerary.title}</strong></p>
-                            <p><strong>Activities:</strong> {
-                                itinerary.activities
-                                    .map(activity => activity.title)
-                                    .join(', ')
-                            }</p>
-                            <p><strong>Available Dates:</strong> {itinerary.availableDates.map(date => new Date(date).toLocaleDateString()).join(', ')}</p>
-                            <p><strong>Time:</strong> {itinerary.time.join(', ')}</p>
-                            <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
-                            <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
-                            <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
-                            <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
-                           
-                            {
-                                itinerary.bookingIsOpen ?
-                            <button className={styles.inactive} onClick={() => handleDeactivation(itinerary._id)}>Deactivate</button> : 
-                            <button className={styles.active} onClick={() => handleActivation(itinerary._id)}>Activate</button>
-                            }
-                            
-                            <button className={styles.update} onClick={() => handleUpdate(itinerary)}>Update</button>
-                            <button className={styles.delete} onClick={() => handleDelete(itinerary)}>Delete</button>
-                            
-                            <div>
-                                { showMessage && lastUpdated === itinerary._id  && (
-                                    itinerary.bookingIsOpen ? <p className={`${styles.activationmessage} ${showMessage ? styles.fadeOut : ''}`}><strong>Booking is Open</strong></p>
-                                 :
-                                  <p className={`${styles.deactivationmessage} ${showMessage ? styles.fadeOut : ''}`}><strong>Booking is Closed</strong></p>
-                                )
-                                }
-                                { showError && lastUpdated === itinerary._id ?
-                                    <p className={`${styles.deactivationmessage} ${showError ? styles.fadeOut : ''}`}>{errorMessage}</p>
-                                    : null
-                                }
-                            </div>
-                        </div>
-
-                        
-                    ))}
-                </div>
-            </div> */}
+            <div className={styles.buttonContainer}>
+                <button className={styles.back} onClick={handleBack}>Back To Home</button>
+            </div>
         </div>
     );
+    
 }
 
 export default Cruditinerary;
