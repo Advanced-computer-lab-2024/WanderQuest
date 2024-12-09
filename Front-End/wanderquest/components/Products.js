@@ -38,6 +38,7 @@ const Products = ({ role, refreshWishlist }) => {
     const [productPicture, setProductPicture] = useState(null);
     const [multiplier, setMultiplier] = useState(1);
     const [preferredCurrency, setPreferredCurrency] = useState('USD');
+    
 
     useEffect(() => {
         const fetchPaymentMultiplier = async () => {
@@ -371,7 +372,7 @@ return (
                         <div className={styles.productMeta}>
                             <div className={styles.priceAndStock}>
                                 <span className={styles.productPrice}>
-                                    ${product.price.toFixed(2)}
+                                    {(product.price * multiplier).toFixed(2)} {preferredCurrency}
                                 </span>
                                 <span className={styles.stockInfo}>
                                     {product.availableAmount > 0 
@@ -391,6 +392,7 @@ return (
                         <div className={styles.productRating}>
                             {product.rating && product.rating > 0 ? (
                                 <div className={styles.ratingContainer}>
+                                    Rating:
                                     <Rating
                                         name="text-feedback"
                                         value={product.rating}
@@ -402,6 +404,72 @@ return (
                                 </div>
                             ) : "No rating yet"}
                         </div>
+
+
+                        {role === "Admin" && (
+                            <div className={styles.adminActions}>
+                                <p>Sales: {product.sales}</p>
+                                <button onClick={() => onUpdateClick(product._id)} className={styles.productArchive}>
+                                    Edit
+                                </button>
+                                <button onClick={() => onArchiveClick(product._id)} className={styles.productArchive}>
+                                    Archive
+                                </button>
+                            </div>
+                        )}
+
+                        {role === "Tourist" && (
+                            <div className={styles.touristActions}>
+                                <AddRating
+                                    rating={ratings[product._id] || product.rating}
+                                    setRating={(newRating) => updateRating(product._id, newRating)}
+                                />
+                                <AddComment
+                                    comment={comments[product._id] || ""}
+                                    setComment={(newComment) => setComments(prev => ({
+                                        ...prev,
+                                        [product._id]: newComment
+                                    }))}
+                                />
+                                <button
+                                    className={styles.productArchive}
+                                    onClick={() => addComment(product._id, comments[product._id])}
+                                >
+                                    Add a Comment
+                                </button>
+                                                        {/* Role-specific actions */}
+                        {role === "Tourist" && (
+                            <button 
+                                className={styles.productArchive} 
+                                onClick={() => addWishlist(product._id)}
+                                style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '4px', 
+                                    padding: '6px 12px', 
+                                    fontSize: '0.9rem', 
+                                    minHeight: '32px'
+                                }}
+                            >
+                                <svg 
+                                    fill="#ffffff"
+                                    height="15px"
+                                    width="15px"
+                                    version="1.1" 
+                                    viewBox="0 0 611.997 611.997" 
+                                    stroke="#ffffff"
+                                >
+                                    <g>
+                                        <path d="M549.255,384.017h-50.692v-50.694c0-21.132-17.134-38.264-38.262-38.264c-21.138,0-38.266,17.132-38.266,38.264v50.694 h-50.697c-21.13,0-38.262,17.132-38.262,38.264c0,21.134,17.134,38.264,38.262,38.264h50.697v50.697 c0,21.13,17.13,38.264,38.266,38.264c21.13,0,38.262-17.134,38.262-38.264v-50.697h50.692c21.138,0,38.262-17.13,38.262-38.264 C587.519,401.151,570.394,384.017,549.255,384.017z"></path>
+                                        <path d="M383.77,498.809h-12.432c-42.198,0-76.526-34.33-76.526-76.528s34.328-76.528,76.526-76.528h12.432v-12.43 c0-42.198,34.33-76.528,76.53-76.528c42.198,0,76.526,34.33,76.526,76.528v12.43h12.428c5.073,0,10.028,0.508,14.827,1.454 c66.899-77.109,63.762-194.319-9.515-267.606c-37.102-37.1-86.429-57.533-138.896-57.533c-39.544,0-77.476,11.685-109.659,33.39 c-32.185-21.705-70.117-33.39-109.659-33.39c-52.464,0-101.791,20.433-138.896,57.535 c-76.609,76.617-76.609,201.284,0.002,277.904l215.831,215.829c2.226,2.222,4.583,4.463,7.009,6.664 c7.293,6.619,16.501,9.93,25.716,9.93c9.198,0,18.396-3.301,25.684-9.903c2.448-2.216,4.826-4.477,7.069-6.72l46.584-46.582 c-1.033-5.002-1.577-10.181-1.577-15.482v-12.432H383.77z"></path>
+                                    </g>
+                                </svg>
+                                Add to Wishlist
+                            </button>
+                        )}
+
+                            </div>
+                        )}
                     </div>
                 </div>
               
