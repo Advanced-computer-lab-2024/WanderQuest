@@ -34,7 +34,13 @@ const Navbar = () => {
                 if (response.ok) {
                     const result = await response.json();
                     setUser(result);
+                    if(result.role == "tourGuide") {
+                        setRole("tourguide");
+
+                    }
+                    else{
                     setRole(result.role);
+                    }
                 } else {
                     const errorData = await response.json();
                     setUser({});
