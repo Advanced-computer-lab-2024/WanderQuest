@@ -162,9 +162,9 @@ const Navbar = () => {
                     )}
                     {role == "" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/itinerary'}>Go to Itinerary</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/itineitirary'}>Go to Itinerary</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/museums'}>Go to museums</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/museum'}>Go to museums</button>
                         </div>
                     )}
                     {role == "seller" && (
@@ -176,7 +176,7 @@ const Navbar = () => {
                     {role == "tourGuide" && (
                         <div className={styles.buttons}>
                             <button className="navbar-button" onClick={() => window.location.href = '/tourguide/crud'}>CRUD Operations</button>
-                            <button className="navbar-button" onClick={() => window.location.href = '/tourguide/viewAll'}>View All</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/tourguide/viewall'}>View All</button>
                         </div>
                     )}
                     {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && (
