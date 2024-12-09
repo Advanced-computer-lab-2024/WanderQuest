@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import WishlistPanel from './WishlistPanel';
 import ComplaintsPanel from './ComplaintsPanel';
+import CartPanel from './CartPanel';
 import styles from '../Styles/Navbar.css';
 import NotificationButton from './NotificationsTourGuide';
 import { useEffect } from 'react';
@@ -12,13 +13,17 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 
 
+
 const Navbar = () => {
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(false);
     const [role, setRole] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
     const [user, setUser] = useState({});
+
+
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -63,6 +68,20 @@ const Navbar = () => {
         }
     };
 
+    const handleRedirect = () => window.location.href = '/tourist/itinerary';
+    const handleRedirectac = () => window.location.href = '/tourist/activity';
+    const handleRedirectp = () => window.location.href = '/tourist/products';
+    const handleRedirectm = () => window.location.href = '/tourist/museums';
+    const handleRedirectcomp = () => window.location.href = '/tourist/file-complaint';
+    const handleRedirectviewcomp = () => window.location.href = '/tourist/view-complaint';
+    const handleRedirectHist = () => window.location.href = '/tourist/history';
+    const handleRedirec = () => window.location.href = '/tourist/bookings';
+    const handleRedirechotel = () => window.location.href = '/tourist/hotels';
+    const handleRedirecflight = () => window.location.href = '/tourist/flights';
+    const handleRedirectransport = () => window.location.href = '/tourist/transportation';
+    const handleRedirectWishlist = () => window.location.href = '/tourist/wishlist';
+    const handleViewComplaints = () => window.location.href = '/tourist/view-complaint';
+
     return (
         <>
             <div className="navbar-container">
@@ -72,33 +91,53 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    {role == "advertiser" && <a href="/advertiser"><button className="navbar-button">Reports</button></a>}
-                    {role != "advertiser" && <button className="navbar-button">Products</button>}
-                    <div
-                        className="navbar-button-container"
-                        onMouseEnter={() => setShowDropdown(true)}
-                        onMouseLeave={() => setShowDropdown(false)}
-                    >
-                        <button className="navbar-button">Activities</button>
-                        {showDropdown && (
-                            <div className="dropdown-menu">
-                                <a href="/advertiser/createactivity" className="dropdown-item">
-                                    Create an Activity
-                                </a>
-                                <a href="/advertiser/activitys" className="dropdown-item">
-                                    View All My Activities
-                                </a>
-                                <a href="/advertiser/createtransportation" className="dropdown-item">
-                                    Create a Transportation
-                                </a>
-                                <a href="/advertiser/transportation" className="dropdown-item">
-                                    View All My Transportations
-                                </a>
-                            </div>
-                        )}
-                    </div>
-                    {role != "advertiser" && <button className="navbar-button">Itinerary</button>}
-                    {role != "advertiser" && <button className="navbar-button">Historical Places</button>}
+                    {role == "advertiser" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/advertiser/activitys'}>Activities</button>
+                            <button onClick={() => window.location.href = '/advertiser/createactivity'}>Create Activity</button>
+                            <button onClick={() => window.location.href = '/advertiser/createTransportation'}>Create Transportation</button>
+                            <button onClick={() => window.location.href = '/advertiser/transportation'}>Transportation</button>
+                        </div>
+                    )}
+                    {role == "tourist" && (
+                        <div className={styles.buttons}>
+                            <button onClick={handleRedirect}>Go to Itinerary</button>
+                            <button onClick={handleRedirectac}>Go to activity</button>
+                            <button onClick={handleRedirectp}>Go to products</button>
+                            <button onClick={handleRedirectm}>Go to museums</button>
+                            <button onClick={handleRedirectcomp}>File a complaint</button>
+                            <button onClick={handleRedirectviewcomp}>View Complaint</button>
+                            <button onClick={handleRedirectHist}>Go to History</button>
+                            <button onClick={handleRedirec}>My Bookings</button>
+                            <button onClick={handleRedirechotel}>Hotels</button>
+                            <button onClick={handleRedirecflight}>Flights</button>
+                            <button onClick={handleRedirectransport}>Transportation</button>
+                            <button onClick={handleRedirectWishlist}>View Wishlist</button>
+                            <button onClick={handleViewComplaints}>View Complaint</button>
+                        </div>
+                    )}
+                    {role == "" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/guest/itinerary'}>Go to Itinerary</button>
+                            <button onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
+                            <button onClick={() => window.location.href = '/guest/museums'}>Go to museums</button>
+                        </div>
+                    )}
+                    {role == "seller" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/seller/createprod'}>Create Product</button>
+                            <button onClick={() => window.location.href = '/seller/products'}>View Products</button>
+                        </div>
+                    )}
+                    {role == "tourGuide" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/tourguide/crud'}>CRUD Operations</button>
+                            <button onClick={() => window.location.href = '/tourguide/viewAll'}>View All</button>
+                        </div>
+                    )}
+                    {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && <button className="navbar-button">Products</button>}
+                    {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && <button className="navbar-button">Itinerary</button>}
+                    {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && <button className="navbar-button">Historical Places</button>}
                 </div>
                 <div className='navbar-rightside'>
                     {role && <NotificationButton role={role} />}
@@ -180,6 +219,26 @@ const Navbar = () => {
                             </button>
                         </>
                     )}
+
+                    {role != "advertiser" && (
+    <button
+    className="navbar-cart-button"
+    onClick={() => setIsCartOpen(true)}
+>
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="30px"
+        width="30px"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+    >
+        <path d="M7 4h-2c-.55 0-1 .45-1 1s.45 1 1 1h2l3.6 7.59-1.35 2.45c-.16.29-.25.63-.25.96 0 1.11.89 2 2 2h9c.55 0 1-.45 1-1s-.45-1-1-1h-8.68c-.09 0-.17-.07-.22-.16l.03-.03 1.1-1.96h5.83c.38 0 .72-.21.89-.55l3.58-6.42c.2-.36.08-.8-.24-1.05-.32-.25-.77-.24-1.09.01l-3.06 5.48h-5.73l-3.3-6.92c-.14-.3-.44-.51-.78-.51zm1.79 14.5c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79zm11.92 0c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79z"></path>
+    </svg>
+</button>
+
+)}
+
+
                     {role ? (
                         <FontAwesomeIcon icon={faUser} className="profile-icon" onClick={toggleProfileMenu} />
 
@@ -202,7 +261,7 @@ const Navbar = () => {
                     )}
                 </div>
             </div>
-            
+
             <WishlistPanel
                 isOpen={isWishlistOpen}
                 onClose={() => setIsWishlistOpen(false)}
@@ -210,6 +269,10 @@ const Navbar = () => {
             <ComplaintsPanel
                 isOpen={isComplaintsOpen}
                 onClose={() => setIsComplaintsOpen(false)}
+            />
+            <CartPanel
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
             />
         </>
     );
