@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile, uploadLogo, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,viewSalesReport,seenNotifications,myNotifications } = require('../controllers/sellerController');
+const { getProfile, updateProfile, uploadLogo,myProducts, getLogo, archiveProduct,unarchiveProduct,viewProductSales,viewAllProductSales,viewSalesReport,seenNotifications,myNotifications } = require('../controllers/sellerController');
 const { getProducts, addProduct, editProduct, getAvailableProducts, getProdById, getProductPhoto } = require('../controllers/adminController');
 const requireAuth = require('../middleware/requireAuth');
 const router = express.Router();
@@ -13,7 +13,7 @@ router.get('/profile', requireAuth({role: "seller"}), getProfile);
 router.put('/profile', requireAuth({role: "seller"}), updateProfile);
 router.post('/uploadLogo', requireAuth({role: "seller"}), uploadLogo);
 router.get('/logo', requireAuth({role: "seller"}), getLogo);
-
+router.get('/myProducts' ,requireAuth({role: "seller"}),myProducts)
 router.get('/products', getProducts);
 //Seller viewProduct Sales
 router.get('/products/sales',viewProductSales)
