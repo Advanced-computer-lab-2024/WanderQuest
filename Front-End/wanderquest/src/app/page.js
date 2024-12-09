@@ -32,7 +32,7 @@ export default function Home() {
       <Foot></Foot>   */}
 
 
-            {/* <Salesrep></Salesrep> */}
+            <Salesrep></Salesrep>
 
       {/* <Salesrepadv></Salesrepadv> */}
 {/* <Salesrepseller></Salesrepseller> */}

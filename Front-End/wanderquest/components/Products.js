@@ -240,27 +240,28 @@ const Products = ({ role, refreshWishlist }) => {
         </>}
 return (
     <>
-    <img src="/1.png" className={styles.travelplan} alt="iti" />
+    <img src="/prod.png" className={styles.travelplan} alt="iti" />
     <motion.div
             className={styles.searchcom}
-            initial={{ y: -170 }}
+            initial={{ y: 20 }}
             transition={{ duration: 1 }}
           >
             <input
                         className={styles.productsearch}
                         onChange={(e) => setSearch(e.target.value)}
                         type="text"
-                        placeholder="Enter your text"
+                        placeholder="Search for products..."
                     />
           </motion.div>
         <div className={styles.filterSection}>
             <div className={styles.pageLayout}>
                 <div className={styles.sidebar}>
-                    <h1>Products</h1>
+                    <h1>Sorting</h1>
                     <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
+                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
                     <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
                     <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
-                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
+                   
 
                     <div className={styles.priceFilter}>
                         <h3>Price Filter</h3>
@@ -329,117 +330,52 @@ return (
                          .filter(product => !product.isArchived)
                     .map((product) => (
                 <div className={styles.productCard} key={product._id}>
-                <img
-                    src={product.picture}
-                    alt={product.name}
-                    className={styles.productImage}
-                />
-                <div className={styles.productInfo}>
-                    <h2>{product.name}</h2>
-                    <p className={styles.productPrice}>
-                        ${product.price.toFixed(2)}
-                    </p>
-                    <p>{product.description}</p>
-                    <p>Seller: {product.seller}</p>
-                   
-                    <p>Available Quantity: {product.availableAmount}</p>
-                    <p className={styles.productRating}>
-                        {product.rating && product.rating > 0 ? (
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <Rating
-                                    name="text-feedback"
-                                    value={product.rating}
-                                    readOnly
-                                    precision={0.5}
-                                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
-                                />
-                                <Box sx={{ ml: 2 }}>{labels[product.rating]}</Box>
+                    <div className={styles.productImageContainer}>
+                        <img
+                            src={product.picture}
+                            alt={product.name}
+                            className={styles.productImage}
+                        />
+                    </div>
+                    <div className={styles.productInfo}>
+                        <h2 className={styles.productTitle}>{product.name}</h2>
+                        
+                        <div className={styles.productMeta}>
+                            <div className={styles.priceAndStock}>
+                                <span className={styles.productPrice}>
+                                    ${product.price.toFixed(2)}
+                                </span>
+                                <span className={styles.stockInfo}>
+                                    {product.availableAmount > 0 
+                                        ? `${product.availableAmount} in stock` 
+                                        : "Out of stock"}
+                                </span>
                             </div>
-                        ) : "No rating yet"}
-                    </p>
-{/*                         
-                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
-     
-                   
-
-                    {/* Render reviews */}
-                    {/* <div className={styles.reviews}>
-                        <h3>Reviews:</h3>
-                        {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
-                            product.reviews.map((review, index) => (
-                                <div key={index} className={styles.review}>
-             
-                                    <p>
-                                        <strong>{review.touristId}</strong> {review.review}
-                                    </p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No reviews yet.</p>
-                        )}
-                    </div> */}
-
-                    {/* Admin-specific actions */}
-                    {role === "Admin" && <p>Sales: {product.sales}</p>}
-                    <div className={styles.actions}>
-                        {role === "Admin" && (
-                            <>
-                                <button
-                                    onClick={() => onUpdateClick(product._id)}
-                                    className={styles.productArchive}
-                                >
-                                    Update
-                                </button>
-                                <label className={styles.uploadButton}>
-                                    Upload Picture
-                                    <input
-                                        type="file"
-                                        onChange={(e) =>
-                                            onUploadClick(e, product._id)
-                                        }
-                                    />
-                                </label>
-                                <button
-                                    onClick={() => onArchiveClick(product._id)}
-                                    className={styles.productArchive}
-                                >
-                                    Archive
-                                </button>
-                            </>
-                        )}
-
-                        {/* Tourist-specific actions
-                         {role === "Tourist" && (
-                            <>
-                                <AddRating
-                                    rating={ratings[product._id] || product.rating}
-                                    setRating={(newRating) =>
-                                        updateRating(product._id, newRating)
-                                    }
-                                />
-                                <AddComment
-                                    comment={comments[product._id] || ""}
-                                    setComment={(newComment) =>
-                                        setComments((prev) => ({
-                                            ...prev,
-                                            [product._id]: newComment,
-                                        }))
-                                    }
-                                />
-                                <button
-                                    className={styles.productArchive}
-                                    onClick={() =>
-                                        addComment(product._id, comments[product._id])
-                                    }
-                                >
-                                    Add a Comment
-                                </button>
                             
-                                </>
-                                )} */}
+                            <div className={styles.sellerInfo}>
+                                <span className={styles.sellerLabel}>Sold by:</span>
+                                <span className={styles.sellerName}>{product.seller}</span>
                             </div>
                         </div>
+
+                        <p className={styles.productDescription}>{product.description}</p>
+                        
+                        <div className={styles.productRating}>
+                            {product.rating && product.rating > 0 ? (
+                                <div className={styles.ratingContainer}>
+                                    <Rating
+                                        name="text-feedback"
+                                        value={product.rating}
+                                        readOnly
+                                        precision={0.5}
+                                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                    />
+                                    <span className={styles.ratingLabel}>{labels[product.rating]}</span>
+                                </div>
+                            ) : "No rating yet"}
                         </div>
+                    </div>
+                </div>
               
             
         ))

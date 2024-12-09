@@ -245,11 +245,25 @@ const ItinerarydetailsPage = ({ params }) => {
                     </div>
 
 
-                    <button className={styles.searchbtn} onClick={() => { handleBooking(itinerary.availableDates[0]) }} >
-                    Book
-                     </button>
-         
-                    <button className={styles.searchbtn} onClick={share}>share link</button>
+                    <div className={styles.buttonGroup}>
+                        <div className={styles.leftButton}>
+                            <button 
+                                className={styles.primaryButton}
+                                onClick={() => handleBooking(itinerary.availableDates[0])}
+                            >
+                                Book Itinerary
+                            </button>
+                        </div>
+                        
+                        <div className={styles.rightButton}>
+                            <button 
+                                className={styles.secondaryButton}
+                                onClick={share}
+                            >
+                                Share
+                            </button>
+                        </div>
+                    </div>
 
             </div>
         </>

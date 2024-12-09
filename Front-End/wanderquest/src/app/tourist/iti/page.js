@@ -233,7 +233,7 @@ const clearsearch=()=>{
         {role === "Tourist" ? (
           <motion.div
             className={styles.searchcom}
-            initial={{ y: -170 }}
+            initial={{ y: 10 }}
             transition={{ duration: 1 }}
           >
             <input
@@ -249,6 +249,7 @@ const clearsearch=()=>{
         )}
         <div className={styles.pageLayout}>
           <div className={styles.sidebar}>
+            <h1>Filters</h1>
             <div className={styles.filterSection}>
               <h3>Date</h3>
               <input
@@ -358,7 +359,7 @@ const clearsearch=()=>{
                     </div>
                   ))}
                 </div>
-                <div className={styles.locationsContainer}>
+                {/* <div className={styles.locationsContainer}>
                     <strong className={styles.locationsLabel}>Available locations:</strong>
                     <div className={styles.locations}>
                         {itinerary.locations && itinerary.locations.length > 0 ? (
@@ -373,8 +374,8 @@ const clearsearch=()=>{
                         <p>No available locations</p>
                         )}
                     </div>
-                 </div>
-                <div className={styles.timelineCard}>
+                 </div> */}
+                {/* <div className={styles.timelineCard}>
   <h3 className={styles.timelineTitle}>Timeline</h3>
   <div className={styles.timelineList}>
     {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
@@ -383,7 +384,7 @@ const clearsearch=()=>{
       </div>
     ))}
   </div>
-</div>
+</div> */}
                 <p>
                   <strong>Duration:</strong> {itinerary.duration}
                 </p>
@@ -394,7 +395,7 @@ const clearsearch=()=>{
                   <strong>Price:</strong> ${itinerary.price}
                 </p>
            
-                <div className={styles.datesContainer}>
+                {/* <div className={styles.datesContainer}>
                     <strong className={styles.datesLabel}>Available dates:</strong>
                     <div className={styles.dates}>
                         {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
@@ -435,23 +436,25 @@ const clearsearch=()=>{
                 </p>
                 <p>
                   <strong>Drop Off Location:</strong> {itinerary.dropOffLocation}
-                </p>
-                <p>
+                </p> */}
+                {/* <p>
                   <strong>Booking Already Made:</strong>{" "}
                   {itinerary.BookingAlreadyMade ? "Yes" : "No"}
-                </p>
+                </p> */}
                 <p className={styles.productRating}>
-                        {itinerary.rating && itinerary.rating > 0 ?(<> <Rating
-        name="text-feedback"
-        value={itinerary.rating}
-        readOnly
-        precision={0.5}
-        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
-      /> <Box sx={{ ml: 2 }}>{labels[itinerary.rating]}</Box></>)  : "No rating yet"}
-{/*                         
-                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
-     
-                    </p>
+                    {itinerary.rating && itinerary.rating > 0 ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Rating
+                                name="text-feedback"
+                                value={itinerary.rating}
+                                readOnly
+                                precision={0.5}
+                                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                            />
+                            <Typography sx={{ ml: 1 }}>{labels[itinerary.rating]}</Typography>
+                        </Box>
+                    ) : "No rating yet"}
+                </p>
                 <Link href={`iti/${itinerary._id}`} passHref>
                   <button className={styles.searchbtn}>View</button>
                 </Link>

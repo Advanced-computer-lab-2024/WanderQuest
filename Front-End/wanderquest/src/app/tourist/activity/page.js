@@ -252,7 +252,7 @@ const Activitiespage = (Props) => {
 
   return (<>
     <Navbar></Navbar>
-    <img src="/1.png" className={styles.travelplan} alt="iti" />
+    <img src="/act.png" className={styles.travelplan} alt="iti" />
     <div className={styles.container}>
 
 
@@ -266,8 +266,8 @@ const Activitiespage = (Props) => {
 {role === "Tourist" ? (
   < motion.div
   className={styles.searchcom}
-  initial={{ y: -170 }}
-  transition={{ duration: 1 }} >
+  initial={{ y: 10 }}
+            transition={{ duration: 1 }} >
     <input
       className={styles.productsearch}
       onChange={(e) => setSearch(e.target.value)}
@@ -319,43 +319,32 @@ const Activitiespage = (Props) => {
         </label>
       </div> */} <div className={styles.pageLayout}>
       <div className={styles.sidebar}>
-                    <h1>Products</h1>
+                    <h1>Filters</h1>
                     <div className={styles.filterSection}>
                     <button  style={{ margin: '5px' }} onClick={handlesortPriceAsc}>Sort Price Asc</button>
                     <button  style={{ margin: '5px' }}  onClick={handlesortPriceDsc}>Sort Price Desc</button>
                     <button style={{ margin: '5px' }} onClick={handlesortRatingAsc}>Sort Rating Asc</button>
                     <button  style={{ margin: '5px' }}onClick={handlesortRatingDsc}>Sort Rating Desc</button>
-                    <div className={styles.ratingFilters}></div>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(1)}
-                          checked={ratingFilter === 1}
-                        /> 1 or higher
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(2)}
-                          checked={ratingFilter === 2}
-                        /> 2 or higher
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(3)}
-                          checked={ratingFilter === 3}
-                        /> 3 or higher
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleRatingChange(4)}
-                          checked={ratingFilter === 4}
-                        /> 4 or higher
-                      </label>
+                    <div className={styles.ratingFilters}>
+                    <h2>Rating Filter</h2>
+                      {[1, 2, 3, 4].map((rating) => (
+                        <label key={rating} style={{ cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            onChange={() => handleRatingChange(rating)}
+                            checked={ratingFilter === rating}
+                          />
+                          {[...Array(rating)].map((_, index) => (
+                            <span key={index} style={{ color: 'gold' }}>★</span>
+                          ))}
+                          {[...Array(5 - rating)].map((_, index) => (
+                            <span key={index} style={{ color: '#ccc' }}>★</span>
+                          ))}
+                          <span style={{ marginLeft: '4px' }}>or higher</span>
+                        </label>
+                      ))}
                     </div>
-                    
+                    </div>
                     <div className={styles.priceFilter}>
                         <h3>Price Filter</h3>
                         <div>
@@ -423,7 +412,7 @@ const Activitiespage = (Props) => {
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
+            {/* <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'} */}
             <p></p>
             <Link href={`activity/${activity._id}`} className={styles.addticket}>
             <button className={styles.searchbtn}>View</button>

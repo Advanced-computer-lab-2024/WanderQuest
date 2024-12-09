@@ -406,7 +406,7 @@ export default function Tourist() {
             transition={{ duration: 0.3 }}
         >
             <Image 
-                src="/woodcarving.jpg" 
+                src="/wood.jpg" 
                 alt="Wooden Sculpture"
                 width={300}
                 height={200}
@@ -427,7 +427,7 @@ export default function Tourist() {
             transition={{ duration: 0.3 }}
         >
             <Image 
-                src="/silverwork.jpg" 
+                src="/silver.webp" 
                 alt="Silver Jewelry"
                 width={300}
                 height={200}
@@ -500,14 +500,14 @@ export default function Tourist() {
     </div>
     
     <motion.div 
-        className={styles.activitiesGrid}
+        className={styles.productsGrid}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4 }}
     >
         <motion.div 
-            className={styles.activityCard}
+            className={styles.productCard}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
@@ -516,9 +516,9 @@ export default function Tourist() {
                 alt="Surfing in Bali"
                 width={300}
                 height={200}
-                className={styles.activityImage}
+                className={styles.productImage}
             />
-            <div className={styles.activityContent}>
+            <div className={styles.productContent}>
                 <h3>Surfing in Bali</h3>
                 <p className={styles.price}>$75 per person</p>
                 <p className={styles.description}>
@@ -528,7 +528,7 @@ export default function Tourist() {
         </motion.div>
 
         <motion.div 
-            className={styles.activityCard}
+            className={styles.productCard}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
@@ -537,9 +537,9 @@ export default function Tourist() {
                 alt="Mount Bromo Hiking"
                 width={300}
                 height={200}
-                className={styles.activityImage}
+                className={styles.productImage}
             />
-            <div className={styles.activityContent}>
+            <div className={styles.productContent}>
                 <h3>Mount Bromo Sunrise Trek</h3>
                 <p className={styles.price}>$120 per person</p>
                 <p className={styles.description}>
@@ -549,7 +549,7 @@ export default function Tourist() {
         </motion.div>
 
         <motion.div 
-            className={styles.activityCard}
+            className={styles.productCard}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
@@ -558,9 +558,9 @@ export default function Tourist() {
                 alt="Scuba Diving"
                 width={300}
                 height={200}
-                className={styles.activityImage}
+                className={styles.productImage}
             />
-            <div className={styles.activityContent}>
+            <div className={styles.productContent}>
                 <h3>Raja Ampat Diving</h3>
                 <p className={styles.price}>$150 per person</p>
                 <p className={styles.description}>
