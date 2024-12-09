@@ -24,12 +24,13 @@ import Salesrepseller from "../../components/Salesrepseller";
 import Salesrepadv from "../../components/Salesrepadv";
 import Authentication from "../../components/Authentication";
 import LandingPage from "../../components/LandingPage";
+import { useEffect } from 'react';
 
 export default function Home() {
    return (
-   <>
-      <Navbar></Navbar>
-      <LandingPage></LandingPage>
-   </>
+      <>
+         <Navbar></Navbar>
+         <LandingPage></LandingPage>
+      </>
    );
 }
