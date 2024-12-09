@@ -84,7 +84,6 @@ const Cart = (props) => {
                         <img src={item.picture} alt={item.name} className={styles.itemImage} />
                         <div className={styles.itemDetails}>
                             <h3 className={styles.productName}>{item.name}</h3>
-                            <p className={styles.price}>${item.price.toFixed(2)}</p>
                             <div className={styles.quantityControls}>
                                 <label htmlFor={`quantity-${item.id}`}>Quantity:</label>
                                 <input
@@ -109,6 +108,8 @@ const Cart = (props) => {
             ) : (
                 <p className={styles.emptyMessage}>Your cart is empty.</p>
             )}
+
+            <button onClick={() => (window.location.href = '/tourist/checkout')}>Checkout</button>
         </div>
     );
 };

@@ -38,6 +38,9 @@ const Products = ({ role, refreshWishlist }) => {
     const [productPicture, setProductPicture] = useState(null);
     const [multiplier, setMultiplier] = useState(1);
     const [preferredCurrency, setPreferredCurrency] = useState('USD');
+    const [quantity, setQuantity] = useState(1);
+
+
     
 
     useEffect(() => {
@@ -245,45 +248,72 @@ const Products = ({ role, refreshWishlist }) => {
             alert('Failed to add product to wishlist');
         }
     };
+    const addCart = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:4000/tourist/cart/add/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    quantity: quantity
+                })
+                
+            });
 
-    if (loading) {
-        return <>
-            <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
-            <dotlottie-player style={{
-                width: '300px',
-                height: '300px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                margin: 'auto'
-            }}
-                src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
-        </>
-    }
-    return (
-        <>
-            <img src="/prod.png" className={styles.travelplan} alt="iti" />
-            <motion.div
-                className={styles.searchcom}
-                initial={{ y: 20 }}
-                transition={{ duration: 1 }}
-            >
-                <input
-                    className={styles.productsearch}
-                    onChange={(e) => setSearch(e.target.value)}
-                    type="text"
-                    placeholder="Search for products..."
-                />
-            </motion.div>
-            <div className={styles.filterSection}>
-                <div className={styles.pageLayout}>
-                    <div className={styles.sidebar}>
-                        <h1>Sorting</h1>
-                        <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
-                        <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
-                        <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
-                        <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to add to wishlist');
+                
+            }
 
+            const result = await response.json();
+            console.log('Successfully added to Cart', result);
+            
+            alert('Product added to cart successfully!');
+        } catch (error) {
+            console.error('Error adding item to cart:', error.message);
+            alert('Failed to add product to cart');
+        }
+    };
+    
+    if (loading) {return<>
+        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+        <dotlottie-player style={{
+    width: '300px',
+    height: '300px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 'auto'
+    }}
+    src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+        </>}
+return (
+    <>
+    <img src="/prod.png" className={styles.travelplan} alt="iti" />
+    <motion.div
+            className={styles.searchcom}
+            initial={{ y: 20 }}
+            transition={{ duration: 1 }}
+          >
+            <input
+                        className={styles.productsearch}
+                        onChange={(e) => setSearch(e.target.value)}
+                        type="text"
+                        placeholder="Search for products..."
+                    />
+          </motion.div>
+        <div className={styles.filterSection}>
+            <div className={styles.pageLayout}>
+                <div className={styles.sidebar}>
+                    <h1>Sorting</h1>
+                    <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
+                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
+                    <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
+                    <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
+                   
 
                         <div className={styles.priceFilter}>
                             <h3>Price Filter</h3>
@@ -462,6 +492,32 @@ const Products = ({ role, refreshWishlist }) => {
                         )}
 
                             </div>
+                        )}
+
+{role === "Tourist" && (
+                            <button 
+                                className={styles.productArchive} 
+                                onClick={() => addCart(product._id)}
+                                style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '4px', 
+                                    padding: '6px 12px', 
+                                    fontSize: '0.9rem', 
+                                    minHeight: '32px'
+                                }}
+                            >
+                                <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="30px"
+        width="30px"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+    >
+        <path d="M7 4h-2c-.55 0-1 .45-1 1s.45 1 1 1h2l3.6 7.59-1.35 2.45c-.16.29-.25.63-.25.96 0 1.11.89 2 2 2h9c.55 0 1-.45 1-1s-.45-1-1-1h-8.68c-.09 0-.17-.07-.22-.16l.03-.03 1.1-1.96h5.83c.38 0 .72-.21.89-.55l3.58-6.42c.2-.36.08-.8-.24-1.05-.32-.25-.77-.24-1.09.01l-3.06 5.48h-5.73l-3.3-6.92c-.14-.3-.44-.51-.78-.51zm1.79 14.5c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79zm11.92 0c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79z"></path>
+    </svg>
+                                Add to Cart
+                            </button>
                         )}
                     </div>
                 </div>

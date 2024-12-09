@@ -101,13 +101,13 @@ const Navbar = () => {
         }
     };
 
-    const handleRedirect = () => window.location.href = '/tourist/itinerary';
+    const handleRedirect = () => window.location.href = '/tourist/iti';
     const handleRedirectac = () => window.location.href = '/tourist/activity';
     const handleRedirectp = () => window.location.href = '/tourist/products';
-    const handleRedirectm = () => window.location.href = '/tourist/museums';
-    const handleRedirec = () => window.location.href = '/tourist/bookings';
-    const handleRedirechotel = () => window.location.href = '/tourist/hotels';
-    const handleRedirecflight = () => window.location.href = '/tourist/flights';
+    const handleRedirectm = () => window.location.href = '/tourist/musuem';
+    const handleRedirec = () => window.location.href = '/tourist/mybookings';
+    const handleRedirechotel = () => window.location.href = '/tourist/Hotels';
+    const handleRedirecflight = () => window.location.href = '/tourist/Flights';
     const handleRedirectransport = () => window.location.href = '/tourist/transportation';
 
 
@@ -161,9 +161,9 @@ const Navbar = () => {
                     )}
                     {role == "" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/itinerary'}>Go to Itinerary</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/itineitirary'}>Go to Itinerary</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/museums'}>Go to museums</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/musuem'}>Go to museums</button>
                         </div>
                     )}
                     {role == "seller" && (
@@ -175,7 +175,7 @@ const Navbar = () => {
                     {role == "tourGuide" && (
                         <div className={styles.buttons}>
                             <button className="navbar-button" onClick={() => window.location.href = '/tourguide/crud'}>CRUD Operations</button>
-                            <button className="navbar-button" onClick={() => window.location.href = '/tourguide/viewAll'}>View All</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/tourguide/viewall'}>View All</button>
                         </div>
                     )}
                     {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && (
