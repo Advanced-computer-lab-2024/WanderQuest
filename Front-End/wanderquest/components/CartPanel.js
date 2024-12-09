@@ -15,7 +15,7 @@ const CartPanel = ({ isOpen, onClose }) => {
                     <IoClose />
                 </button>
                 <h2 className={styles.h2}>My Cart</h2>
-                <Cart />
+                <Cart props={"Tourist"} />
             </div>
         </div>
     );

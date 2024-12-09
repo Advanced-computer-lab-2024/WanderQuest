@@ -14,30 +14,21 @@ function Page({ params }) {
   const [preferredCurrency, setPreferredCurrency] = useState('USD');
 
   useEffect(() => {
-    const fetchPaymentMultiplier = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Automatically include credentials (user session)
-        });
+    const storedMultiplier = localStorage.getItem('multiplier');
+    let multiplier = 1;
+    console.log('Stored Multiplier:', storedMultiplier);
+    if (storedMultiplier) {
+      console.log('Setting Multiplier:', storedMultiplier);
+      setMultiplier(storedMultiplier);
+    }
 
-        if (response.ok) {
-          const result = await response.json();
-          setMultiplier(result.multiplier);
-          setPreferredCurrency(result.currency);
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      } catch (error) {
-        alert(`Error: ${error.message}`);
-      }
-    };
-    fetchPaymentMultiplier();
+    const preferredCurrency = localStorage.getItem('preferredCurrency') || 'USD';
+    console.log('Preferred Currency:', preferredCurrency);
+    if (preferredCurrency) {
+      setPreferredCurrency(preferredCurrency);
+    }
   }, []);
+
   const share = () => {
     navigator.share({
       url: `http://localhost:3000/tourist/activity/${id}`,
@@ -122,7 +113,7 @@ function Page({ params }) {
           <div className={styles.header}>
             <h1 className={styles.title}>{activity.title}</h1>
           </div>
-  
+
           <div className={styles.infoSection}>
             <div className={styles.infoItem}>
               <span className={styles.label}>Date</span>
@@ -134,10 +125,10 @@ function Page({ params }) {
             </div>
             <div className={styles.infoItem}>
               <span className={styles.label}>Location</span>
-              <a 
-                href={`https://maps.google.com/?q=${activity.location}`} 
+              <a
+                href={`https://maps.google.com/?q=${activity.location}`}
                 className={`${styles.value} ${styles.locationLink}`}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 {activity.location} 📍
@@ -168,7 +159,7 @@ function Page({ params }) {
               </span>
             </div>
           </div>
-  
+
           <div className={styles.reviews}>
             <h2 className={styles.reviewsTitle}>Ratings & Reviews</h2>
             {(!activity.ratings.length && !activity.comments.length) ? (
@@ -182,7 +173,7 @@ function Page({ params }) {
               ])].map((touristId, idx) => {
                 const rating = activity.ratings.find((rat) => rat.touristId === touristId);
                 const comment = activity.comments.find((comm) => comm.touristId === touristId);
-  
+
                 return (
                   <div className={styles.review} key={idx}>
                     <p className={styles.reviewHeader}>
@@ -190,8 +181,8 @@ function Page({ params }) {
                     </p>
                     {rating && (
                       <p className={`${styles.value} ${styles.rating}`}>
-                        <strong>Rating:</strong> 
-                        <span className={styles.star}>{'★'.repeat(rating.rating)}{'☆'.repeat(5-rating.rating)}</span>
+                        <strong>Rating:</strong>
+                        <span className={styles.star}>{'★'.repeat(rating.rating)}{'☆'.repeat(5 - rating.rating)}</span>
                       </p>
                     )}
                     {comment && (
@@ -204,7 +195,7 @@ function Page({ params }) {
               })
             )}
           </div>
-  
+
           <div className={styles.actions}>
             <button onClick={share} className={`${styles.button} ${styles.shareButton}`}>
               Share Activity

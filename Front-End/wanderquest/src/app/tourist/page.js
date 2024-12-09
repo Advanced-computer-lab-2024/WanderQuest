@@ -813,34 +813,7 @@ export default function Tourist() {
     </motion.button> */}
 </motion.div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-                <div className={styles.buttons}>
-                    <button onClick={handleRedirect}>Go to Itinerary</button>
-                    <button onClick={handleRedirectac}>Go to activity</button>
-                    <button onClick={handleRedirectp}>Go to products</button>
-                    <button onClick={handleRedirectm}>Go to museums</button>
-                    <button onClick={handleRedirectcomp}>File a complaint</button>
-                    <button onClick={handleRedirectviewcomp}>View Complaint</button>
-                    <button onClick={handleRedirectHist}>Go to History</button>
-                    <button onClick={handleRedirec}>My Bookings</button>
-                    <button onClick={handleRedirechotel}>Hotels</button>
-                    <button onClick={handleRedirecflight}>Flights</button>
-                    <button onClick={handleRedirectransport}>Transportation</button>
-                    <button onClick={handleRedirectWishlist}>View Wishlist</button>
-                    <button onClick={handleViewComplaints}>View Complaint</button>
-
-                </div>
+          
 
 
             </div>
@@ -855,7 +828,7 @@ export default function Tourist() {
                         <IoClose />
                     </button>
                     <h2>My Wishlist</h2>
-                    <Wishlist />
+                    <Wishlist role='Tourist' />
                 </div>
             </div>
 

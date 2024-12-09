@@ -6,6 +6,8 @@ import Products from '../../../components/Products';
 import AcceptTerms from '../../../components/AcceptTerms';
 import { FaUserCircle } from "react-icons/fa";
 import styles from "../../../Styles/Seller.module.css";
+import LandingPage from '../../../components/LandingPage';
+
 
 export default function seller(){
     const router = useRouter();
@@ -21,12 +23,13 @@ export default function seller(){
     return (
         <div>
             <AcceptTerms/>
+            <Navbar/>
+            <LandingPage/>
             <p>Welcome to the Seller page!</p>
             <h1>Seller Page</h1>
             <button onClick={handleRedirectp}>Go to products</button>
             <button onClick={handleRedirectcrep}>Create Product</button>
             <button className={styles.profileButton} onClick={handleRedirectProfile}>
-                <FaUserCircle className={styles.profileIcon} /> Profile
             </button>
             
         </div>
