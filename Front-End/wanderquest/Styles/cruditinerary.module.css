@@ -1,22 +1,21 @@
 .parent {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    background-color: #f0f0f0; /* Optional: background color for the parent */
+    min-height: 100vh;
+    background: #F0F4F9; /* Clean white background for the page */
+    padding: 20px;
+    color: #042335; /* Dark text contrast */
 }
-
 .container {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 50%;
-    max-width: 95%;
-    background: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
-    padding: 20px;
+    background: #1A6187;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for better elevation */
+    padding: 30px 40px;
+    width: 80%; /* Adjusted width */
+    /* max-width: 600px; For larger screens */
     margin-top: 50px;
 }
 
@@ -38,19 +37,46 @@
 .form {
     display: flex;
     flex-direction: column;
+    gap: 15px; /* Add consistent spacing between elements */
 }
-
 .form div {
     margin-bottom: 10px;
 }
 
+
 .label {
+    font-size: 14px;
     font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
+    color: #17455C; /* Neutral text color for readability */
+    padding: 10px;
 }
 
-.input[type="text"],
+.labelTitle{
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff; /* Neutral text color for readability */
+    padding: 10px;
+}
+
+
+.input {
+    width: 80%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    
+}
+
+.input:focus {
+    border-color: #067d87; /* Highlight border */
+    box-shadow: 0 0 5px rgba(6, 125, 135, 0.5); /* Soft glow */
+    outline: none;
+}
+
+
+/* .input[type="text"],
 .input[type="date"],
 .input[type="time"],
 .input[type="number"],
@@ -58,24 +84,54 @@
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
+} */
+
+.activitiescheckboxes input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2); /* Optional: Slightly enlarge the checkbox for better accessibility */
 }
 
-.input[type="checkbox"] {
-    margin-right: 10px;
+@media (max-width: 768px) {
+    .activitiescheckboxes div {
+        width: 48%; /* Two columns on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .activitiescheckboxes div {
+        width: 100%; /* Single column on very small screens */
+    }
 }
 
 .submit {
     padding: 10px 15px;
-    background-color: #042335;
+    background-color: #17455C;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    margin-top: 20px;
+    width: 100%;
 }
 
 .submit:hover {
-    background-color: #031A29;
-    color: white;
+    background-color:#042335 ;
+}
+
+.title{
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.subtitle{
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .delete {
@@ -164,23 +220,80 @@
     color:white;
 }
 
-.activitiescontainer {
-    margin-bottom: 20px;
+.activitieslabel {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #ffffff;
+    width: 100%; /* Ensure the label takes full width */
+    text-align: center; /* Center-align the label text */
 }
 
-.activitieslabel {
+.activitiescheckboxes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Create 3 equal columns */
+    gap: 15px;
+    width: 100%;
+    color: #ffffff;
+}
+
+.activitiescheckboxes div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.after-checkboxes {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.formSections {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.formSection {
+    flex: 1;
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.formSection .label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
-.activitiescheckboxes {
-    display: flex;
-    flex-direction: column;
+
+.after-checkboxes > div {
+    flex: 1;
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.activitiescheckboxes div {
+.after-checkboxes .section-title {
+    font-weight: bold;
     margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .activitiescheckboxes {
+        grid-template-columns: 1fr; /* Stack items into a single column on smaller screens */
+    }
+
+    .after-checkboxes {
+        flex-direction: column; /* Stack sections vertically on smaller screens */
+    }
 }
 
 @keyframes fadeOut{
@@ -200,3 +313,38 @@
     animation: fadeOut 3s forwards;
 }
 
+.confirmMessage {
+    margin-top: 10px;
+    color: #155724 !important; /* Green for success */
+    padding: 10px;
+    font-size: 14px;
+}
+
+.errorMessage {
+    margin-top: 10px;
+    color: #ff0019 !important; /* Red for error */
+    padding: 10px;
+    font-size: 14px;
+}
+
+.back{
+    padding: 12px 20px;
+    background-color: #17455C; /* Vibrant blue for the button */
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px; /* Rounded button */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-left: 0px;
+    margin-top: 80px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: flex-start;  /* Align items to the left */
+    width: 100%;
+  }
+
+  

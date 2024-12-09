@@ -3,37 +3,36 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #f0f0f0; /* Optional: background color for the parent */
+    background-color: #F0F4F9; /* Optional: background color for the parent */
+}
+
+.title{
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    align-self: center;
 }
 
 .container {
-    position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 50%;
-    max-width: 95%;
+    justify-content: space-between;
+    gap: 5px;
+    flex-wrap: wrap;
     background: #ffffff;
     border-radius: 5px;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     padding: 20px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .itinerariesContainer {
-    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    width: 50%;
-    max-width: 95%;
-    background: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+    width: 90%;
     padding: 20px;
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-top: 30px;
 }
+
 
 .form {
     display: flex;
@@ -50,15 +49,102 @@
     display: block;
 }
 
-.input[type="text"],
-.input[type="date"],
-.input[type="time"],
-.input[type="number"],
-.input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
+
+
+.submit {
+    padding: 10px 15px;
+    background-color: #042335;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
 }
+
+.submit:hover {
+    background-color: #031A29;
+    color: white;
+}
+
+.delete {
+    margin-right: 10px;
+    background-color: #dc3545;
+    color:white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+    
+}
+
+.delete:hover {
+    background-color: #c82333;
+    color:white;
+}
+
+.itineraryBox {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background: #fff;
+    padding: 15px;
+    margin: 15px;
+    width: calc(40% - 20px);
+}
+
+
+.bottomcard{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.topcard{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.update{
+    margin-right: 10px;
+    background-color: #031A29;
+    color:white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+
+.update:hover {
+    background-color: #042335;
+    color:white;
+}
+
+
+
+
+
+
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form div {
+    margin-bottom: 10px;
+}
+
+.label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+
 
 .input[type="checkbox"] {
     margin-right: 10px;
@@ -94,14 +180,7 @@
     color:white;
 }
 
-.itineraryBox{
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-    border-radius:5px;
-    background: #fff;
-    text-align:center;
-    padding: 10px;
-    margin:15px;
-}
+
 
 .bottomcard{
     display: flex;
@@ -132,155 +211,279 @@
     color:white;
 }
 
-.activitiescontainer {
+.itinerariesContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+}
+
+.itineraryBox {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background: #fff;
+    text-align: center;
+    padding: 15px;
+    margin: 15px;
+}
+
+.topcard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.bottomcard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.update, .delete, .activate, .deactivate {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.update {
+    background-color: #031A29;
+    color: white;
+}
+
+.update:hover {
+    background-color: #042335;
+}
+
+.delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete:hover {
+    background-color: #c82333;
+}
+
+.activate {
+    background-color: #138c2f;
+    color: white;
+}
+
+.activate:hover {
+    background-color: #218838;
+}
+
+.deactivate {
+    background-color: #ff0707;
+    color: white;
+}
+
+.deactivate:hover {
+    background-color: #e83131;
+}
+
+.label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.itinerariesContainer {
+    margin-top: 30px;
+}
+
+.itineraryBox p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.itinerariesContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+}
+
+.itineraryBox {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background: #fff;
+    padding: 15px;
+    margin: 15px;
+}
+.topSection, .middleSection, .bottomSection {
+    margin-bottom: 15px;
+}
+
+
+.topSection, .middleSection, .bottomSection {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+.actionButtons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 80%;
+}
+
+.update {
+    background-color: #031A29;
+    color: white;
+}
+
+.update:hover {
+    background-color: #042335;
+}
+
+.delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete:hover {
+    background-color: #c82333;
+}
+
+.activate {
+    background-color: #28a745;
+    color: white;
+}
+
+.activate:hover {
+    background-color: #218838;
+}
+
+.deactivate {
+    background-color: #ff0707;
+    color: white;
+}
+
+.deactivate:hover {
+    background-color: #eb3939;
+}
+
+.label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.itineraryBox p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+
+.heroSection {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    overflow: hidden;
+}
+
+.heroImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.heroText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2;
+}
+
+.heroTitle {
+    font-size: 4.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    display: block;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.heroSubtitle {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    display: block;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.update, .delete, .activate, .deactivate {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.successMessage {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
     margin-bottom: 20px;
-}
-
-.activitieslabel {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.activitiescheckboxes {
-    display: flex;
-    flex-direction: column;
-}
-
-.activitiescheckboxes div {
-    margin-bottom: 10px;
-}
-
-.parent {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: #f0f0f0; /* Optional: background color for the parent */
-}
-
-.container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 50%;
-    max-width: 95%;
-    background: #ffffff;
     border-radius: 5px;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
-    padding: 20px;
-    margin-top: 50px;
+    text-align: center;
 }
 
-.activitiescontainer {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 50%;
-    max-width: 95%;
-    background: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
-    padding: 20px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-}
-
-.form div {
-    margin-bottom: 10px;
-}
-
-.label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
-}
-
-.input[type="text"],
-.input[type="date"],
-.input[type="time"],
-.input[type="number"],
-.input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-}
-
-.input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-.submit {
-    padding: 10px 15px;
-    background-color: #042335;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.submit:hover {
-    background-color: #031A29;
-    color: white;
-}
-
-.delete {
-    margin-right: 10px;
-    background-color: #dc3545;
-    color:white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    padding: 10px 15px;
-    
-}
-
-.delete:hover {
-    background-color: #c82333;
-    color:white;
-}
-
-.activitybox{
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-    border-radius:5px;
-    background: #fff;
-    text-align:center;
+.errorMessage {
     padding: 10px;
-    margin:15px;
-}
-
-.bottomcard{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
-}
-
-.topcard{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
-}
-
-.update{
-    margin-right: 10px;
-    background-color: #031A29;
-    color:white;
-    border: none;
-    cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    margin-bottom: 20px;
     border-radius: 5px;
-    padding: 10px 15px;
+    text-align: center;
 }
 
-.update:hover {
-    background-color: #042335;
-    color:white;
+
+@media (max-width: 768px) {
+    .itineraryBox {
+        width: 100%;
+    }
 }
+
+.back{
+    padding: 12px 20px;
+    background-color: #17455C; /* Vibrant blue for the button */
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px; /* Rounded button */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-left: 0px;
+    margin-top: 1px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: flex-start;  /* Align items to the left */
+    width: 100%;
+  }
