@@ -43,6 +43,10 @@ const {
 
 const router = express.Router()
 
+
+//Admin getCategories
+router.get('/categories', getCategories)
+
 router.use(requireAuth({ role: 'Admin' }));
 
 // Get all admins
@@ -85,9 +89,6 @@ router.get('/productPhoto/:id', getProductPhoto);
 
 //Admin addActivityCategory
 router.post('/addCategory', addCategory)
-
-//Admin getCategories
-router.get('/categories', getCategories)
 
 //Admin editCategory
 router.patch('/editCategory/:id', editCategory)

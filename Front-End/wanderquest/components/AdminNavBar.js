@@ -124,6 +124,12 @@ const AdminNavbar = () => {
             <li>
               <Link href="/admin/prefTags">Preference Tags</Link>
             </li>
+            <li>
+              <Link href="/admin/archive">Unarchive Product</Link>
+            </li>
+            <li>
+              <Link href="/admin/activityCategory">Activity Category</Link>
+            </li>
             
           </ul>
         </div>

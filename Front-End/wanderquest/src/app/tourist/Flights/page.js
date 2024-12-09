@@ -34,7 +34,7 @@ function BookingsPage() {
   const handleRedirecttransport = () => {
     router.push('/tourist/transportation');  // Updated path with capital 'T'
   };
-  
+
   const handleSearch = () => {
     setLoading(true); // Set loading to true when the search starts
 
@@ -121,12 +121,12 @@ function BookingsPage() {
     const price = price1;
     const fromAir = originLocationCode;
     const toAir = destinationLocationCode;
-    
+
     // Remove hardcoded userId and rely on backend to extract it from the JWT token or session
     const flight = { bookingType, from, fromAir, toAir, price, companyName };
-  
+
     console.log('flight details:', flight);
-  
+
     fetch('http://localhost:4000/booking/flight', {
       method: "POST",
       headers: {
@@ -149,7 +149,7 @@ function BookingsPage() {
         alert('Booking failed. Please try again.');
       });
   };
-  
+
 
   return (
     <div className={styles.all}>
@@ -310,7 +310,7 @@ function BookingsPage() {
           const pricetotal = `${price.grandTotal}`
           return (
             <div key={index} className={styles.card}>
-              <img src="/plane2.png" alt="" className={styles.hotelImage}/>
+              <img src="/plane2.png" alt="" className={styles.hotelImage} />
               <p>
                 <strong>From:</strong> {departureInfo.iataCode} at {formattedDepartureDate} at {formattedDepartureTime}
               </p>

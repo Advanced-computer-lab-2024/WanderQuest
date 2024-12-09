@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import styles from '../styles/products.module.css';
+import styles from '../styles/archiveProduct.module.css';
 import {motion,AnimatePresence} from 'framer-motion';
 
 
@@ -73,6 +73,7 @@ const Archive = (props) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials:"include"
             });
     
             if (response.ok) {
@@ -92,13 +93,13 @@ const Archive = (props) => {
     
 
     useEffect(() => {
-        fetch('http://localhost:4000/admin/products')
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return res.json();
-            })
+        fetch('http://localhost:4000/admin/products', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Include credentials here
+        })
             .then((data) => {
                 setProduct(data);
                 console.log(data);

@@ -1,0 +1,249 @@
+/* General Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f5f5f5;
+    margin-top: 80px; /* Added margin for navbar */
+  }
+  
+  /* Header */
+  .container h1 {
+    font-size: 32px;
+    color: #122c34; /* Blumine */
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Product Buttons */
+  .productArchive {
+    background-color: #1a6187; /* Blumine */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .productArchive:hover {
+    background-color: #122c34; /* Big Stone */
+    transform: scale(1.05);
+  }
+  
+  /* Search and Filter Section */
+.searchcom {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    gap: 10px; /* Adds space between the buttons */
+  }
+  
+  .searchbtn, .productArchive {
+    padding: 12px 20px;
+    background-color: #1a6187; /* Blumine */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .searchbtn:hover, .productArchive:hover {
+    background-color: #122c34; /* Big Stone */
+    transform: scale(1.05);
+  }
+  
+  
+  .productsearch {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #17455c; /* Elephant */
+    border-radius: 8px;
+    margin-right: 10px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .productsearch:focus {
+    border-color: #1a6187; /* Blumine */
+    outline: none;
+  }
+  
+  /* Price Filter Section */
+  .priceFilter {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .priceFilter h3 {
+    font-size: 20px;
+    color: #17455c; /* Elephant */
+    margin-bottom: 20px;
+  }
+  
+  .priceFilter input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 2px solid #17455c; /* Elephant */
+    transition: border-color 0.3s ease;
+  }
+  
+  .priceFilter input:focus {
+    border-color: #1a6187; /* Blumine */
+    outline: none;
+  }
+  
+  .priceFilter button {
+    padding: 12px 20px;
+    background-color: #1a6187; /* Blumine */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .priceFilter button:hover {
+    background-color: #122c34; /* Big Stone */
+    transform: scale(1.05);
+  }
+  
+  /* Product Cards Grid */
+  .productCard {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding: 20px;
+    margin: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .productCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Product Image */
+  .productImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  
+  /* Product Information */
+  .productInfo h2 {
+    font-size: 22px;
+    color: #042335; /* Tangaroa */
+    margin-bottom: 10px;
+  }
+  
+  .productPrice {
+    font-size: 18px;
+    color: #17455c; /* Elephant */
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .productRating {
+    font-size: 16px;
+    color: #1a6187; /* Blumine */
+    margin-top: 10px;
+  }
+  
+  .reviews {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  .review {
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  
+  /* Product Archive Button */
+  .productArchive {
+    background-color: #1a6187; /* Blumine */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .productArchive:hover {
+    background-color: #122c34; /* Big Stone */
+    transform: scale(1.05);
+  }
+  
+  /* Lottie Loader */
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 1000;
+  }
+  
+  /* Responsive Layout */
+  @media (max-width: 768px) {
+    .productCard {
+      width: 90%;
+    }
+  
+    .productInfo h2 {
+      font-size: 20px;
+    }
+  
+    .productPrice {
+      font-size: 16px;
+    }
+  
+    .priceFilter {
+      width: 90%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .productCard {
+      width: 100%;
+    }
+  
+    .productInfo h2 {
+      font-size: 18px;
+    }
+  
+    .productPrice {
+      font-size: 14px;
+    }
+  
+    .searchcom {
+      flex-direction: column;
+    }
+  
+    .searchbtn {
+      margin-top: 10px;
+    }
+  }
+  

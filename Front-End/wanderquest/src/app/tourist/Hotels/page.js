@@ -19,6 +19,35 @@ function BookingsPage() {
   const [id1, setid] = useState('');
   const router = useRouter();
 
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
+
   const handleChangeColor = (buttonId) => {
     setActiveButton(buttonId);
   };
@@ -28,9 +57,9 @@ function BookingsPage() {
   };
 
 
-const handleRedirecttransport = () => {
-  router.push('/tourist/transportation');  // Updated path with capital 'T'
-};
+  const handleRedirecttransport = () => {
+    router.push('/tourist/transportation');  // Updated path with capital 'T'
+  };
 
 
 
@@ -120,12 +149,12 @@ const handleRedirecttransport = () => {
     const price = price1;
     const checkIn = departureDate;
     const checkOut = returnDate;
-    
+
     // The user ID will be retrieved from the authenticated user's token, no need to pass it manually
-    const hotel = {bookingType, hotelName, rating, description, price, stars, checkIn, checkOut };
-  
+    const hotel = { bookingType, hotelName, rating, description, price, stars, checkIn, checkOut };
+
     console.log('hotel details:', hotel);
-  
+
     fetch('http://localhost:4000/booking/hotel', {
       method: "POST",
       headers: {
@@ -148,7 +177,7 @@ const handleRedirecttransport = () => {
         alert('Booking failed. Please try again.');
       });
   };
-  
+
 
 
   return (
@@ -196,7 +225,7 @@ const handleRedirecttransport = () => {
           style={{ marginLeft: "3px", height: '41px' }}
           placeholder="To"
           type="text"
-          value={destinationLocationCode}
+          value={destinationLocationCode || ''}
           onChange={(e) => setDestinationLocationCode(e.target.value)}
         />
 
@@ -204,7 +233,7 @@ const handleRedirecttransport = () => {
           className={styles.input}
           type="date"
           placeholder="Departure Date"
-          value={departureDate}
+          value={departureDate || ''}
           onChange={(e) => setDepartureDate(e.target.value)}
         />
 
@@ -213,7 +242,7 @@ const handleRedirecttransport = () => {
           style={{ height: '41px' }}
           placeholder="Return Date"
           type="date"
-          value={returnDate}
+          value={returnDate || ''}
           onChange={(e) => setReturnDate(e.target.value)}
         />
 
@@ -223,7 +252,7 @@ const handleRedirecttransport = () => {
           min='0'
           placeholder="Adults"
           type="number"
-          value={adults}
+          value={adults || ''}
           onChange={(e) => setAdults(e.target.value)}
         />
 
@@ -233,7 +262,7 @@ const handleRedirecttransport = () => {
           min='0'
           placeholder="rooms"
           type="number"
-          value={rooms}
+          value={rooms || ''}
           onChange={(e) => setRooms(e.target.value)}
         />
 
@@ -241,7 +270,6 @@ const handleRedirecttransport = () => {
           Search
         </button>
       </motion.div>
-
 
 
       <div className={styles.form}>
@@ -257,7 +285,7 @@ const handleRedirecttransport = () => {
               )}
               <h3>{hotel.name || 'Unnamed Hotel'}</h3>
               {hotel.stars && <p><strong>Stars:</strong> {hotel.stars} Stars</p>}
-              {hotel.price && <p><strong>Price:</strong> {hotel.price} per night</p>}
+              {hotel.price && <p><strong>Price:</strong> {hotel.price * multiplier} {preferredCurrency} per night</p>}
               {hotel.distance && <p><strong>Distance:</strong> {hotel.distance}</p>}
               {hotel.relevantPoiDistance && (
                 <p><strong>Relevant Location:</strong> {hotel.relevantPoiDistance}</p>

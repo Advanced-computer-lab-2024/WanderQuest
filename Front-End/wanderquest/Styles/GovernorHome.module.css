@@ -44,7 +44,7 @@
 .image {
   width: 60%; /* Adjust width for smaller images */
   height: 60%; /* Set a consistent height */
-  object-fit: cover; /* Maintain proportional scaling while filling the area */
+  object-fit:fill; /* Maintain proportional scaling while filling the area */
   border-radius: 10px; /* Smooth rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   margin-left: 10px; /* Add space between the image and text */
@@ -199,4 +199,46 @@
   display: flex;
   gap: 10px; /* Space between buttons */
   margin-top: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 12px 25px;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.primaryButton {
+  background-color: #17455c; /* Dark Blue */
+  color: white;
+}
+
+.primaryButton:hover {
+  background-color: #113446;
+}
+
+.secondaryButton {
+  background-color: #038b1c; /* Green */
+  color: white;
+}
+
+.secondaryButton:hover {
+  background-color: #036b14;
+}
+
+.noPlacesMessage {
+  color: #ff0000;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
 }

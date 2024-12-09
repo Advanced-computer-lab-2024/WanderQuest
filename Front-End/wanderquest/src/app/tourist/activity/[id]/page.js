@@ -10,6 +10,34 @@ function Page({ params }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [id1, setid] = useState('');
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
   const share = () => {
     navigator.share({
       url: `http://localhost:3000/tourist/activity/${id}`,
@@ -33,7 +61,7 @@ function Page({ params }) {
       setLoading(false);
     }
   };
-  
+
   const fetchid = () => {
     fetch(`http://localhost:4000/tourist/touristId`, {
       credentials: 'include', // Include credentials in the request
@@ -47,25 +75,25 @@ function Page({ params }) {
       .then(data => {
         setid(data);
         setLoading(false);
-  
+
         // Fetch details for all activities
       })
       .catch(error => {
         setLoading(false);
       });
   };
-  
+
   useEffect(() => {
     fetchData();
     fetchid();
   }, [id1]);
-  
+
   const handleBooking = async () => {
     const activityId = id;
-  
+
     // User ID is fetched from the credentials in the cookies (handled by the backend)
     const act = { bookingType, activityId };
-  
+
     try {
       const response = await fetch('http://localhost:4000/booking/activity', {
         method: 'POST',
@@ -82,7 +110,7 @@ function Page({ params }) {
       alert('Booking failed, already booked');
     }
   };
-  
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 

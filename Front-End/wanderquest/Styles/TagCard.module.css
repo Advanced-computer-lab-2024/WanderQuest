@@ -15,6 +15,15 @@
   align-items: stretch;
 }
 
+.tagGrid {
+  list-style: none; /* Ensure no dots */
+  padding: 0; /* Remove any default padding */
+  margin: 0; /* Remove any default margin */
+  display: grid; /* Using grid for better control */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive layout */
+  gap: 20px; /* Add space between items */
+}
+
 .tag-card-fields {
   display: flex;
   gap: 8px;
@@ -67,13 +76,12 @@
   gap: 8px;
 }
 
-.tag-item {
-  display: inline-block;
-  background-color: #11c443;
-  color: #ffffff;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.9em;
+.tagItem {
+  background-color: #e6f7ff; /* Light blue background */
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #17455C; /* Dark color for the text */
 }
 
 @media (max-width: 480px) {

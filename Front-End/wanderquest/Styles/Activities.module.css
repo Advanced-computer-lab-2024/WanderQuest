@@ -12,20 +12,27 @@
   font-size: 2.5rem;
   margin-bottom: 30px;
   text-align: center;
-  color: #333; /* Darker text for contrast */
+  color: #333;
+  /* Darker text for contrast */
   font-weight: 700;
   letter-spacing: 1px;
 }
+
 .activities {
-  flex: 1; /* Take up remaining space */
+  flex: 1;
+  /* Take up remaining space */
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2-column grid */
-  gap: 20px; /* Space between grid items */
+  grid-template-columns: repeat(2, 1fr);
+  /* 2-column grid */
+  gap: 20px;
+  /* Space between grid items */
   padding: 20px;
   margin-top: 60px;
 
-  overflow-y: auto; /* Make the grid scrollable if it overflows */
+  overflow-y: auto;
+  /* Make the grid scrollable if it overflows */
 }
+
 .activity {
   background-color: white;
   border: none;
@@ -47,13 +54,15 @@
   margin-bottom: 25px;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Softer shadow */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  /* Softer shadow */
   transition: transform 0.2s ease-in-out;
   height: 500px;
 }
 
 .activity:hover {
-  transform: translateY(-5px); /* Slight lift effect on hover */
+  transform: translateY(-5px);
+  /* Slight lift effect on hover */
 }
 
 .activity h3 {
@@ -128,7 +137,8 @@
 .no-activities {
   text-align: center;
   font-size: 1.5rem;
-  color: #d9534f; /* A bright red to catch attention */
+  color: #d9534f;
+  /* A bright red to catch attention */
   margin-top: 40px;
   font-weight: 600;
 }
@@ -136,47 +146,55 @@
 /* Additional media queries for responsiveness */
 @media (max-width: 768px) {
   .container {
-      padding: 15px;
-      margin: 20px auto;
+    padding: 15px;
+    margin: 20px auto;
   }
 
   .activity {
-      padding: 15px;
+    padding: 15px;
   }
 
   .title {
-      font-size: 2rem;
+    font-size: 2rem;
   }
 
   .activity h3 {
-      font-size: 1.5rem;
+    font-size: 1.5rem;
   }
 
-  .loading, .no-activities {
-      font-size: 1.3rem;
+  .loading,
+  .no-activities {
+    font-size: 1.3rem;
   }
 }
-.actsearchcom{
+
+.actsearchcom {
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
   width: 25%;
 }
+
 .sidebar {
   width: 250px;
   background-color: #fff;
   padding: 20px;
   border-right: 2px solid #ddd;
   font-family: 'Arial', sans-serif;
-  overflow-y: auto; 
-  height: 100%;/* Make sidebar scrollable if content overflows */
-}.pageLayout {
-  margin: 0; /* Removes top margin */
+  overflow-y: auto;
+  height: 100%;
+  /* Make sidebar scrollable if content overflows */
+}
+
+.pageLayout {
+  margin: 0;
+  /* Removes top margin */
   display: flex;
   margin-top: -25px;
-  flex-direction: row; /* Ensures sidebar and itineraries are side-by-side */
-   /* Full viewport height for a consistent layout */
+  flex-direction: row;
+  /* Ensures sidebar and itineraries are side-by-side */
+  /* Full viewport height for a consistent layout */
 }
 
 .filterSection {
@@ -225,84 +243,143 @@
 
 .filterSection button:hover {
   background-color: black;
-}.priceFilter {
-  background-color: #f9f9f9; /* Light background for contrast */
-  border: 1px solid #ddd; /* Light border for definition */
-  border-radius: 8px; /* Rounded corners */
-  padding: 20px; /* Padding around the content */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  max-width: 400px; /* Limit the width */
-  margin: 20px auto; /* Center align on the page */
+}
+
+.categoryFilter {
+  margin-top: 20px;
+}
+
+.categoryFilter h3 {
+  margin-bottom: 10px;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.categoryItem input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.priceFilter {
+  background-color: #f9f9f9;
+  /* Light background for contrast */
+  border: 1px solid #ddd;
+  /* Light border for definition */
+  border-radius: 8px;
+  /* Rounded corners */
+  padding: 20px;
+  /* Padding around the content */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for depth */
+  max-width: 400px;
+  /* Limit the width */
+  margin: 20px auto;
+  /* Center align on the page */
 }
 
 .priceFilter h3 {
-  font-size: 1.5rem; /* Increase font size for the header */
-  margin-bottom: 15px; /* Space below the header */
-  color: #333; /* Darker color for better readability */
+  font-size: 1.5rem;
+  /* Increase font size for the header */
+  margin-bottom: 15px;
+  /* Space below the header */
+  color: #333;
+  /* Darker color for better readability */
 }
 
 .priceFilter label {
-  display: block; /* Each label in a new line */
-  margin-bottom: 10px; /* Space between labels */
-  font-weight: 600; /* Bold font for emphasis */
-  color: #555; /* Slightly lighter color for labels */
+  display: block;
+  /* Each label in a new line */
+  margin-bottom: 10px;
+  /* Space between labels */
+  font-weight: 600;
+  /* Bold font for emphasis */
+  color: #555;
+  /* Slightly lighter color for labels */
 }
 
 .priceFilter input[type="number"],
 .priceFilter input[type="range"] {
-  width: 100%; /* Full width inputs */
-  padding: 8px; /* Padding inside inputs */
-  margin-top: 5px; /* Space above inputs */
-  border: 1px solid #ccc; /* Light border for inputs */
-  border-radius: 4px; /* Rounded corners for inputs */
-  font-size: 1rem; /* Font size */
+  width: 100%;
+  /* Full width inputs */
+  padding: 8px;
+  /* Padding inside inputs */
+  margin-top: 5px;
+  /* Space above inputs */
+  border: 1px solid #ccc;
+  /* Light border for inputs */
+  border-radius: 4px;
+  /* Rounded corners for inputs */
+  font-size: 1rem;
+  /* Font size */
 }
 
 .priceFilter .slider {
-  display: flex; /* Flexbox for range inputs */
-  justify-content: space-between; /* Space between sliders */
-  margin: 20px 0; /* Margin around the slider */
+  display: flex;
+  /* Flexbox for range inputs */
+  justify-content: space-between;
+  /* Space between sliders */
+  margin: 20px 0;
+  /* Margin around the slider */
 }
 
 
 
 .priceFilter button:hover {
-  background-color: black; /* Darker green on hover */
+  background-color: black;
+  /* Darker green on hover */
 }
 
-.searchbtn{
+.searchbtn {
   background-color: #042335;
   border: none;
   color: white;
   padding: 10px 30px;
   border-radius: 25px;
-  margin-top : 20px;
+  margin-top: 20px;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
   box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
   /* Added that to remove the underline feature of the Link tag in Next */
   text-decoration: none;
-}.reviews {
-  margin-top: 20px; /* Slightly increased for better spacing */
-  border-top: 1px solid #ccc; /* Softer color for the separator */
-  padding-top: 15px; /* More padding for breathing room */
-  font-family: Arial, sans-serif; /* Clean, modern font */
+}
+
+.reviews {
+  margin-top: 20px;
+  /* Slightly increased for better spacing */
+  border-top: 1px solid #ccc;
+  /* Softer color for the separator */
+  padding-top: 15px;
+  /* More padding for breathing room */
+  font-family: Arial, sans-serif;
+  /* Clean, modern font */
 }
 
 .review {
-  font-size: 15px; /* Slightly larger text for readability */
-  color: #444; /* Darker color for better contrast */
-  background-color: #f9f9f9; /* Light background for distinction */
-  border: 1px solid #ccc; /* Subtle border color */
-  border-radius: 12px; /* Softer corners */
-  padding: 12px 15px; /* Comfortable inner spacing */
-  margin-bottom: 10px; /* More space between reviews */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds depth with a shadow */
-  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+  font-size: 15px;
+  /* Slightly larger text for readability */
+  color: #444;
+  /* Darker color for better contrast */
+  background-color: #f9f9f9;
+  /* Light background for distinction */
+  border: 1px solid #ccc;
+  /* Subtle border color */
+  border-radius: 12px;
+  /* Softer corners */
+  padding: 12px 15px;
+  /* Comfortable inner spacing */
+  margin-bottom: 10px;
+  /* More space between reviews */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Adds depth with a shadow */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Smooth hover effect */
 }
 
-.searchcom{
+.searchcom {
   display: block;
   margin-left: 33%;
 }.productsearch {

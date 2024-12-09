@@ -1,15 +1,55 @@
 'use client'
-import { useEffect, useState } from 'react';
-import styles from "/Styles/Activities.module.css";
-import Navbar from '../../../../../components/Navbar';
+import React, { useState, useEffect } from "react";
+import styles from "/Styles/Bookings.module.css";
+import { motion } from "framer-motion";
+import { useRouter } from 'next/navigation';
+import Navbar from "../../../../../components/Navbar";
+import Foot from "../../../../../components/foot";
 
-function transportpage() {
+function TransportPage() {
   const [transportation, setTransportation] = useState([]);
-  const [Loading, setLoading] = useState(true);
-  const [id1, setid] = useState('');
-  const fetchData = () => {
+  const [loading, setLoading] = useState(true);
+  const [activeButton, setActiveButton] = useState(2); // Set to 2 for transportation
+  const router = useRouter();
+
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
+
+  // Navigation functions
+  const handleRedirect = (path, buttonId) => {
+    setActiveButton(buttonId);
+    router.push(`/tourist/mybookings/${path}`);
+  };
+
+  useEffect(() => {
     fetch(`http://localhost:4000/booking/transportations`, {
-      credentials: 'include', // Automatically include user credentials
+      credentials: 'include',
     })
       .then((response) => {
         if (!response.ok) {
@@ -19,61 +59,95 @@ function transportpage() {
       })
       .then((data) => {
         setTransportation(data);
-        console.log(data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching transportations:', error);
+        console.error('Error fetching transportation:', error);
         setLoading(false);
       });
-  };
-  
+  }, []);
 
-  
-  useEffect(() => {
-    fetchData();
-
-  }, []); // No need for `id1` as a dependency, credentials will handle identification
-  
-
-
-  return (<> <Navbar></Navbar>
-    <div>transportpage</div>
-    {transportation.map((transport) => (
-      <div className={styles.activity} key={transport._id}>
-        <div className={styles.flightDetails}>
-          <p>
-            <strong>Compnay Name:</strong> {transport.details.company}
-          </p>
-          <p>
-            <strong>Type:</strong> {transport.details.type}
-          </p>
-          <p>
-            <strong>Price:</strong> {transport.details.price}
-          </p>
-          <p>
-            <strong>Departure:</strong> {transport.details.departure}
-          </p>
-          <p>
-            <strong>Arrival:</strong> {transport.details.arrival}
-          </p>
-          <p>
-            <strong>Date:</strong> {transport.details.transportationDate}
-          </p>
-          <p>
-            <strong>Booking AlreadyMade:</strong> {transport.details.bookingAlreadyMade}
-          </p>
-          <p>
-            <strong>PickUpLocation:</strong> {transport.details.pickUpLocation}
-          </p>
-          <p>
-            <strong>DropOffLocatione:</strong> {transport.details.dropOffLocation}
-          </p>
+  return (
+    <div className={styles.all}>
+      <Navbar />
+      <div className={styles.top}>
+        <div className={styles.container}>
+          <div className={styles.navbtns}>
+            <button
+              onClick={() => handleRedirect('flights', 1)}
+              className={`${styles.navbtn} ${activeButton === 1 ? styles.active : ""}`}
+            >
+              Flights
+            </button>
+            <button
+              onClick={() => handleRedirect('transport', 2)}
+              className={`${styles.navbtn} ${activeButton === 2 ? styles.active : ""}`}
+            >
+              Transportation
+            </button>
+            <button
+              onClick={() => handleRedirect('activities', 3)}
+              className={`${styles.navbtn} ${activeButton === 3 ? styles.active : ""}`}
+            >
+              Activities
+            </button>
+            <button
+              onClick={() => handleRedirect('itiniraries', 4)}
+              className={`${styles.navbtn} ${activeButton === 4 ? styles.active : ""}`}
+            >
+              Itineraries
+            </button>
+            <button
+              onClick={() => handleRedirect('myhotels', 5)}
+              className={`${styles.navbtn} ${activeButton === 5 ? styles.active : ""}`}
+            >
+              Hotels
+            </button>
+            <button
+              onClick={() => handleRedirect('orders', 6)}
+              className={`${styles.navbtn} ${activeButton === 6 ? styles.active : ""}`}
+            >
+              Orders
+            </button>
+          </div>
+        </div>
+        <h2 className={styles.welcome}>My Bookings</h2>
+        <div className={styles.welcomeq}>
+          Track and manage all your travel arrangements in one place.
         </div>
       </div>
-    ))}
 
-  </>)
+      <motion.div
+        className={styles.bookingsContainer}
+        initial={{ y: 0, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className={styles.bookingsList}>
+          {loading ? (
+            <p>Loading...</p>
+          ) : transportation.length === 0 ? (
+            <p>No transportation bookings found</p>
+          ) : (
+            transportation.map((transport) => (
+              <div key={transport._id} className={styles.bookingCard}>
+                <h3>{transport.details.company}</h3>
+                <p><strong>Type:</strong> {transport.details.type}</p>
+                <p><strong>Price:</strong> {transport.details.price * multiplier} {preferredCurrency}</p>
+                <p><strong>Departure:</strong> {transport.details.departure}</p>
+                <p><strong>Arrival:</strong> {transport.details.arrival}</p>
+                <p><strong>Date:</strong> {transport.details.transportationDate}</p>
+                <p><strong>Pick Up Location:</strong> {transport.details.pickUpLocation}</p>
+                <p><strong>Drop Off Location:</strong> {transport.details.dropOffLocation}</p>
+                <p><strong>Status:</strong> {transport.status}</p>
+              </div>
+            ))
+          )}
+        </div>
+      </motion.div>
+      <Foot />
+    </div>
+  );
 }
 
-export default transportpage;
+export default TransportPage;

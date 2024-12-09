@@ -1114,11 +1114,12 @@ const redeemPromo = async (req, res) => {
     try {
         const tourist = await Tourist.findById(userId);
         // Check if the promo code is already in activePromoCodes
-        if (tourist.activePromoCodes.some(activeCode => activeCode.code === PromoCode.code)) {
+        if (tourist.redeemedPromoCodes.some(redeemedCode => redeemedCode.code === PromoCode.code)) {
             return res.status(400).json({ error: 'Promocode is already redeemed.' });
         }
         // Push the promo code into the activePromoCodes array
         tourist.activePromoCodes.push(PromoCode);
+        tourist.redeemedPromoCodes.push(PromoCode);
         await tourist.save();
 
         return res.status(200).json({ message: 'Promocode redeemed successfully!', activePromoCodes: tourist.activePromoCodes });
@@ -1126,6 +1127,39 @@ const redeemPromo = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error.' });
     }
 }
+const availableCodes = async (req, res) => {
+    try {
+        const { _id: userID } = req.user; // Get the user's ID
+        const today = new Date();
+
+        // Retrieve the tourist's redeemed promo codes
+        const tourist = await Tourist.findById(userID, 'redeemedPromoCodes'); // Fetch only the redeemedPromoCodes field
+        if (!tourist) {
+            return res.status(404).json({ success: false, message: 'Tourist not found' });
+        }
+
+        const { redeemedPromoCodes } = tourist;
+
+        // Fetch promo codes that aren't in the redeemedPromoCodes array
+        const promoCodes = await PromoModel.findOne({
+            $and: [
+                { expiryDate: { $gt: today } }, // Not expired
+                {
+                    $or: [
+                        { createdBy: { $ne: null } }, // Created by someone
+                        { touristId: userID } // Specific to this tourist
+                    ]
+                },
+                { _id: { $nin: redeemedPromoCodes } } // Not already redeemed
+            ]
+        });
+
+        return res.status(200).json({ promoCodes });
+    } catch (error) {
+        console.error('Error fetching promo codes:', error);
+        return res.status(500).json({ success: false, message: 'Server Error', error });
+    }
+};
 
 module.exports = {
     getProfile,
@@ -1174,5 +1208,6 @@ module.exports = {
     birthDaycode,
     checkoutOrder,
     redeemPromo,
-    getMyOrders
+    getMyOrders,
+    availableCodes
 };

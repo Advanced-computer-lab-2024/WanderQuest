@@ -1,10 +1,12 @@
-"use client";
+'use client'
 import styles from '../Styles/historicalplaces.module.css';
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Sph from '../imgs/sphinx.jpg';
+import Sph from '../public/logo.png';
 
 const Historicalplaces = () => {
+    const router = useRouter();
 
     const [places, setPlaces] = useState([]);
     const [formData, setFormData] = useState({
@@ -16,6 +18,10 @@ const Historicalplaces = () => {
         ticketPrices: [],  // Initialize as empty array
         tags: [],  // Initialize as empty array
     });
+
+    const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+
+    const imageRef = useRef(null);
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentPlaceId, setCurrentPlaceId] = useState(null);
 
@@ -27,6 +33,11 @@ const Historicalplaces = () => {
     const [confirmMessage, setConfirmMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [picture, setPicture] = useState(null); 
+
+    const handleRedirectHome = () =>{
+        router.push('/governer');
+    }
 
     useEffect(()=> {
         const fetchGovId = async () =>{
@@ -69,9 +80,8 @@ const Historicalplaces = () => {
                 location: placeToEdit.location || '',
                 pictures: placeToEdit.pictures || [],
                 openingHours: placeToEdit.openingHours || '',
-                ticketPrices: placeToEdit.ticketPrices || [],
+                ticketPrices: placeToEdit.ticketPrices || [], 
                 tags: Array.isArray(placeToEdit.tags) ? placeToEdit.tags.map(tag => tag.type) : [],
-
             });
             setIsUpdating(true);
             setCurrentPlaceId(placeToEdit._id);
@@ -89,7 +99,6 @@ const Historicalplaces = () => {
                 : value
         });
     };
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -203,11 +212,19 @@ const Historicalplaces = () => {
     const handleTagsChange = (event) => {
         const { value } = event.target;
         const mapobject = value.split(',').map(tag => ({ type: tag.trim() }));
-        //console.log("Mapped:", JSON.stringify(mapobject, null, 2)); // Use JSON.stringify to print the array of objects
         setFormData({
             ...formData,
             tags: mapobject.map(tag => tag.type)
         });
+    };
+
+    const handleChangePicture = (event) => {
+        const file = event.target.files[0];
+        setFormData({
+            ...formData,
+            pictures: [...formData.pictures, file],  // Add file to the pictures array
+        });
+        setPicture(file);
     };
 
     const handleTicketChange = (event) => {
@@ -220,143 +237,121 @@ const Historicalplaces = () => {
 
     return (
         <div className={styles.parent}>
+            <div className={styles.buttonContainer}>
+                <button className={styles.back} onClick={handleRedirectHome}>Back To Home</button>
+            </div>
             <div className={styles.header}>
                 <h1>Create Historical Places</h1>
                 <p>This page will allow you as a Tourism Governor to promote historical places effectively.</p>
             </div>
             <div className={styles.pageContainer}>
-    <div className={styles.formContainer}>
-        <h2>Create Historical Places</h2>
-        <p>This page will allow you as a Tourism Governor to promote historical places effectively.</p>
-        <form className={styles.form} onSubmit={handleSubmit}>
-            <div>
-                <label className={styles.label}>Title</label>
-                <input
-                    className={styles.input}
-                    placeholder="Title"
-                    name="title"
-                    type="text"
-                    value={formData.title}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                <label className={styles.label}>Description</label>
-                <input
-                    className={styles.input}
-                    placeholder="Description"
-                    name="description"
-                    type="text"
-                    value={formData.description}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                <label className={styles.label}>Location</label>
-                <input
-                    className={styles.input}
-                    placeholder="Location"
-                    name="location"
-                    type="text"
-                    value={formData.location}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                <label className={styles.label}>Ticket Prices</label>
-                <input
-                    className={styles.input}
-                    placeholder="Ticket Prices"
-                    name="ticketPrices"
-                    type="text"
-                    value={formData.ticketPrices.join(", ")}
-                    onChange={handleTicketChange}
-                    required
-                />
-            </div>
-            <div>
-                <label className={styles.label}>Opening Hours</label>
-                <input
-                    className={styles.input}
-                    placeholder="Opening Hours"
-                    name="openingHours"
-                    type="text"
-                    value={formData.openingHours}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                <label className={styles.label}>Tags</label>
-                <input
-                    className={styles.input}
-                    placeholder="Tags"
-                    name="tags"
-                    type="text"
-                    value={formData.tags.join(", ")}
-                    onChange={handleTagsChange}
-                    required
-                />
-            </div>
-            <div>
-                <label className={styles.label}>Pictures</label>
-                <input
-                    className={styles.input}
-                    placeholder="Pictures"
-                    name="pictures"
-                    type="file"
-                    value={formData.pictures}
-                    onChange={handleChange}
-                    />
-            </div>
-            <div className={styles.info}>
-                <p>*Created/Updated Places will be displayed in your homepage*</p>
-                <p>*This is the default image for the place*</p>
-            </div>
-            <button className={styles.submit}>
-                {isUpdating ? "Update Historical Place" : "Create Historical Place"}
-            </button>
-            <div>
-            {showMessage && (
-        <div>
-            {confirmMessage && <p className={styles.confirmMessage}>{confirmMessage}</p>}
-            {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
-        </div>
-    )}
-            </div>
-        </form>
-    </div>
-    <div className={styles.imageContainer}>
-        <Image src={Sph} alt="Historical Place" className={styles.image} />
-    </div>
-</div>
-                {/* <div className={styles.activitiescontainer}>
-                    <label className={styles.label}>List of Historical Places</label>
-                    <div>
-                        {places.map((place, index) => (
-                            <div key={place._id} className={styles.activitybox}>
-                                <p><strong>{place.title}</strong></p>
-
-                                <div className={styles.topcard}>
-                                    <p><strong>Description:</strong> {place.description}</p>
+                <div className={styles.formContainer}>
+                    <form className={styles.form} onSubmit={handleSubmit}>
+                        <div>
+                            <label className={styles.label}>Title</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Title"
+                                name="title"
+                                type="text"
+                                value={formData.title}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Description</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Description"
+                                name="description"
+                                type="text"
+                                value={formData.description}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Location</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Location"
+                                name="location"
+                                type="text"
+                                value={formData.location}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Ticket Prices</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Ticket Prices"
+                                name="ticketPrices"
+                                type="text"
+                                value={formData.ticketPrices.join(", ")}
+                                onChange={handleTicketChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Opening Hours</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Opening Hours"
+                                name="openingHours"
+                                type="text"
+                                value={formData.openingHours}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Tags</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Tags"
+                                name="tags"
+                                type="text"
+                                value={formData.tags.join(", ")}
+                                onChange={handleTagsChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className={styles.label}>Pictures</label>
+                            <input
+                                className={styles.input}
+                                placeholder="Pictures"
+                                name="pictures"
+                                type="file"
+                                value={formData.pictures}
+                                onChange={handleChangePicture}
+                            />
+                        </div>
+                        <div className={styles.info}>
+                            <p>*Ticket prices should be split using (commas ' , ')*</p>
+                            <p>*Created/Updated Places will be displayed in your homepage*</p>
+                            <p>*This is the default image for the place*</p>
+                        </div>
+                        <button className={styles.submit}>
+                            {isUpdating ? "Update Historical Place" : "Create Historical Place"}
+                        </button>
+                        <div>
+                            {showMessage && (
+                                <div>
+                                    {confirmMessage && <p className={styles.confirmMessage}>{confirmMessage}</p>}
+                                    {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
                                 </div>
-                                
-                                <div className={styles.bottomcard}>
-                                    <p><strong>Opening Hours:</strong> {place.openingHours}</p>
-                                    <p><strong>Location:</strong> {place.location}</p>
-                                    <p><strong>Ticket Prices:</strong> {place.ticketPrices.join(', ')}</p>
-                                    <p><strong>Tags:</strong> {Array.isArray(place.tags) ? place.tags.map(tag => tag.type).join(', ') : place.tags}</p>
-                                </div>
-
-                                <button className={styles.update} onClick={() => handleUpdate(place)}>Update</button>
-                                <button className={styles.delete} onClick={() => handleDelete(place._id)}>Delete</button>
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
+                            )}
+                        </div>
+                    </form>
+                </div>
+                <div className={styles.imageContainer}>
+                    <Image src={Sph} alt="Historical Place" className={styles.image} />
+                </div>
+            </div>
         </div>
     );
 }

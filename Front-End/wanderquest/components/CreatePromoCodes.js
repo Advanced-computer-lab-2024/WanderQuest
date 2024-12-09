@@ -3,7 +3,7 @@ import styles from "../../wanderquest/Styles/CreatePromoCodes.module.css";
 
 const CreatePromoCodes = () => {
   const [code, setCode] = useState('');
-  const [type, setType] = useState('');
+  const [type, setType] = useState(''); // Initially empty, no default type
   const [discount, setDiscount] = useState('');
   const [promoCodes, setPromoCodes] = useState([]);
   const [error, setError] = useState('');
@@ -15,8 +15,8 @@ const CreatePromoCodes = () => {
   useEffect(() => {
     const fetchPromoCodes = async () => {
       try {
-        const response = await fetch('http://localhost:4000/admin/promocodes',{
-            credentials:"include"
+        const response = await fetch('http://localhost:4000/admin/promocodes', {
+          credentials: "include"
         });
         if (response.ok) {
           const data = await response.json();
@@ -54,14 +54,14 @@ const CreatePromoCodes = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, type, discount }),
-        credentials:"include"
+        credentials: "include"
       });
 
       if (response.ok) {
         const newPromo = await response.json();
         setPromoCodes((prev) => [...prev, newPromo]);
         setCode('');
-        setType('');
+        setType(''); // Reset type to empty
         setDiscount('');
         setSuccessMessage('Promo code created successfully');
       } else {
@@ -89,8 +89,8 @@ const CreatePromoCodes = () => {
       }
     } catch (error) {
       setError('Error deleting promo code');
-    }finally {
-        resetMessages();
+    } finally {
+      resetMessages();
     }
   };
 
@@ -103,7 +103,7 @@ const CreatePromoCodes = () => {
     try {
       const response = await fetch(`http://localhost:4000/admin/promocodes/${deleteId}`, {
         method: 'DELETE',
-        credentials:"include"
+        credentials: "include"
       });
 
       if (response.ok) {
@@ -121,12 +121,11 @@ const CreatePromoCodes = () => {
       resetMessages();
     }
   };
-  
 
   return (
     <div className={styles.container}>
       <div className={styles.form}>
-        <h1>Create Promo Code</h1>
+        <h2>Create Promo Code</h2>
         {error && <p className={styles.error}>{error}</p>}
         {successMessage && <p className={styles.success}>{successMessage}</p>}
 
@@ -137,13 +136,18 @@ const CreatePromoCodes = () => {
           onChange={(e) => setCode(e.target.value)}
           className={styles.input}
         />
-        <input
-          type="text"
-          placeholder="Type"
+
+        {/* Type as a dropdown with placeholder */}
+        <select
           value={type}
           onChange={(e) => setType(e.target.value)}
           className={styles.input}
-        />
+        >
+          <option value="">Choose Type</option> {/* Placeholder option */}
+          <option value="PERCENTAGE">PERCENTAGE</option>
+          <option value="FIXED">FIXED</option>
+        </select>
+
         <input
           type="number"
           placeholder="Discount"

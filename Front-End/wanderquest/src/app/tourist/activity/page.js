@@ -13,7 +13,7 @@ const Activitiespage = (Props) => {
     "Family",
     "Luxury"
   ];
-  const role='Tourist';
+  const role = 'Tourist';
   const [category, setCategory] = useState([]);
   const [selecttedfilters, setSelectedfilers] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -26,6 +26,35 @@ const Activitiespage = (Props) => {
   const [minBudget, setMinBudget] = useState(''); // State for minimum budget
   const [maxBudget, setMaxBudget] = useState(''); // State for maximum budget
 
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
+
   const handleSearch = () => {
     const filteredActivities = allActivities.filter((prod) => {
       return search.toLowerCase() === '' ||
@@ -35,9 +64,9 @@ const Activitiespage = (Props) => {
     });
     setActivities(filteredActivities);
   };
-//   const clearsearch=()=>{
-//     setActivities(allActivities);
-// }
+  //   const clearsearch=()=>{
+  //     setActivities(allActivities);
+  // }
   const handleRatingChange = (rating) => {
     setRatingFilter(ratingFilter === rating ? null : rating);
   };
@@ -64,7 +93,7 @@ const Activitiespage = (Props) => {
     // Filter activities based on the budget range
     if (minBudget !== '' || maxBudget !== '') {
       updatedActivities = updatedActivities.filter((activity) => {
-        const price = activity.price;
+        const price = activity.price * multiplier;
         return (minBudget === '' || price >= minBudget) && (maxBudget === '' || price <= maxBudget);
       });
     }
@@ -100,14 +129,14 @@ const Activitiespage = (Props) => {
       setSelectedfilers([...selecttedfilters, catg]);
     }
   };
-//   const handlefilter = (tag) => {
-//     if (filteredtags.includes(tag)) {
-//         const temp = filteredtags.filter(t => t !== tag);
-//         setFilteredtags(temp);
-//     } else {
-//         setFilteredtags([...filteredtags, tag]);
-//     }
-// };
+  //   const handlefilter = (tag) => {
+  //     if (filteredtags.includes(tag)) {
+  //         const temp = filteredtags.filter(t => t !== tag);
+  //         setFilteredtags(temp);
+  //     } else {
+  //         setFilteredtags([...filteredtags, tag]);
+  //     }
+  // };
 
   const filteritemscat = () => {
     if (selecttedfilters.length > 0) {
@@ -134,11 +163,11 @@ const Activitiespage = (Props) => {
         setCategory([]); // Set to an empty array on error
       });
   }, []);
-  
+
   useEffect(() => {
     filteritemscat();
   }, [selecttedfilters]);
-  
+
   const fetchData = () => {
     fetch('http://localhost:4000/tourist/upcomingActivities', {
       credentials: 'include', // Include credentials (cookies) in the request
@@ -160,7 +189,7 @@ const Activitiespage = (Props) => {
         setLoading(false);
       });
   };
-  
+
 
   useEffect(() => {
     fetchData();
@@ -173,46 +202,46 @@ const Activitiespage = (Props) => {
 
   const handleApplyFilters = () => {
     let updatedActivities = [...allActivities];
-  
+
     // Apply category filters
     if (selecttedfilters.length > 0) {
-      updatedActivities = updatedActivities.filter((item) => 
+      updatedActivities = updatedActivities.filter((item) =>
         selecttedfilters.includes(item.category)
       );
     }
-  
+
     // Apply search filter
     if (search.toLowerCase() !== '') {
-      updatedActivities = updatedActivities.filter((prod) => 
+      updatedActivities = updatedActivities.filter((prod) =>
         prod.title.toLowerCase().includes(search.toLowerCase()) ||
         prod.category.toLowerCase().includes(search.toLowerCase()) ||
         (prod.tags && prod.tags.some(tag => tag.type.toLowerCase().includes(search.toLowerCase())))
       );
     }
-  
+
     // Apply rating filter
     if (ratingFilter !== null) {
-      updatedActivities = updatedActivities.filter((activity) => 
+      updatedActivities = updatedActivities.filter((activity) =>
         activity.rating >= ratingFilter
       );
     }
-  
+
     // Apply date filter
     if (dateFilter) {
-      updatedActivities = updatedActivities.filter((activity) => 
+      updatedActivities = updatedActivities.filter((activity) =>
         activity.date === dateFilter
       );
     }
-  
+
     // Apply budget filter
     if (minBudget !== '' || maxBudget !== '') {
       updatedActivities = updatedActivities.filter((activity) => {
-        const price = activity.price;
-        return (minBudget === '' || price >= parseFloat(minBudget)) && 
-               (maxBudget === '' || price <= parseFloat(maxBudget));
+        const price = activity.price * multiplier;
+        return (minBudget === '' || price >= parseFloat(minBudget)) &&
+          (maxBudget === '' || price <= parseFloat(maxBudget));
       });
     }
-  
+
     // Set the filtered activities
     setActivities(updatedActivities);
   };
@@ -224,7 +253,7 @@ const Activitiespage = (Props) => {
     setDateFilter('');
     setMinBudget('');
     setMaxBudget('');
-  
+
     // Reset activities to the original list
     setActivities([...allActivities]);
   };
@@ -412,18 +441,17 @@ const Activitiespage = (Props) => {
             <strong>Category:</strong> {activity.category}<br />
             <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
             <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-            {/* <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'} */}
-            <p></p>
-            <Link href={`activity/${activity._id}`} className={styles.addticket}>
+          </p>
+          <Link href={`activity/${activity._id}`} className={styles.addticket}>
             <button className={styles.searchbtn}>View</button>
           </Link>
-          </p>
-          
         </div>
-        
-      ))}</div>
-    </div></div>
-    </>);
+      ))}
+    </div>
+  </div>
+</div>
+  </>
+  );
 };
 
 export default Activitiespage;
