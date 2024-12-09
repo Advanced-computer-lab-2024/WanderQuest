@@ -164,7 +164,7 @@ const Navbar = () => {
                         <div className={styles.buttons}>
                             <button className="navbar-button" onClick={() => window.location.href = '/guest/itineitirary'}>Go to Itinerary</button>
                             <button className="navbar-button" onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
-                            <button className="navbar-button" onClick={() => window.location.href = '/guest/museum'}>Go to museums</button>
+                            <button className="navbar-button" onClick={() => window.location.href = '/guest/musuem'}>Go to museums</button>
                         </div>
                     )}
                     {role == "seller" && (
