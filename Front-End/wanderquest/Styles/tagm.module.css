@@ -1,0 +1,19 @@
+.back{
+    padding: 12px 20px;
+    background-color: #17455C; /* Vibrant blue for the button */
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px; /* Rounded button */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-left: 0px;
+    margin-top: 80px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: flex-start;  /* Align items to the left */
+    width: 100%;
+  }

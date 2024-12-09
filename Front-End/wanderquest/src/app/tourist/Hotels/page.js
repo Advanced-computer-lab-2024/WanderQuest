@@ -225,7 +225,7 @@ function BookingsPage() {
           style={{ marginLeft: "3px", height: '41px' }}
           placeholder="To"
           type="text"
-          value={destinationLocationCode}
+          value={destinationLocationCode || ''}
           onChange={(e) => setDestinationLocationCode(e.target.value)}
         />
 
@@ -233,7 +233,7 @@ function BookingsPage() {
           className={styles.input}
           type="date"
           placeholder="Departure Date"
-          value={departureDate}
+          value={departureDate || ''}
           onChange={(e) => setDepartureDate(e.target.value)}
         />
 
@@ -242,7 +242,7 @@ function BookingsPage() {
           style={{ height: '41px' }}
           placeholder="Return Date"
           type="date"
-          value={returnDate}
+          value={returnDate || ''}
           onChange={(e) => setReturnDate(e.target.value)}
         />
 
@@ -252,7 +252,7 @@ function BookingsPage() {
           min='0'
           placeholder="Adults"
           type="number"
-          value={adults}
+          value={adults || ''}
           onChange={(e) => setAdults(e.target.value)}
         />
 
@@ -262,7 +262,7 @@ function BookingsPage() {
           min='0'
           placeholder="rooms"
           type="number"
-          value={rooms}
+          value={rooms || ''}
           onChange={(e) => setRooms(e.target.value)}
         />
 
@@ -270,7 +270,6 @@ function BookingsPage() {
           Search
         </button>
       </motion.div>
-
 
 
       <div className={styles.form}>

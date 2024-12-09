@@ -43,6 +43,10 @@ const {
 
 const router = express.Router()
 
+
+//Admin getCategories
+router.get('/categories', getCategories)
+
 router.use(requireAuth({ role: 'Admin' }));
 
 // Get all admins d

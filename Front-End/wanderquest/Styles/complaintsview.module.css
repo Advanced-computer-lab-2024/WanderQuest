@@ -1,154 +1,145 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #f5f5f5;
-    margin-top: 90px;
-  }
-  
-  .complaintCard {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
-    padding: 20px;
-    width: 60%;
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .complaintCard:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
-  
-  .complaintImage {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px 10px 0 0;
-  }
-  
-  .complaintInfo {
-    padding: 15px;
-    text-align: center;
-  }
-  .complaintInfo div{
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-  }
-  .complaintInfo div p{
-    margin-top: 25px;
-    margin-left: 10px;
-  }
-  
-  .complaintPrice {
-    color: #4CAF50;
-    font-size: 18px;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  
-  .complaintRating {
-    color: #ff9800;
-  }
-
-  .complaintRating2 {
-    color: #00ce00;
-  }
-  
-  .reviews {
-    margin-top: 15px;
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
-  }
-  
-  .review {
-    font-size: 14px;
-    color: #555;
-    border: 1px solid lightgray;
-    border-radius: 10px;
- 
-    margin-bottom: 5px;
-  }
-  
-  .buttonContainer {
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    margin-top: 15px;
-  }
-  
-  .complaintButton {
-    background-color: #1a6187;
-    border: none;
-    color: white;
-    padding: 10px 30px;
-    border-radius: 25px;
-    margin-top : 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
-    /* Added that to remove the underline feature of the Link tag in Next */
-    text-decoration: none;
-  }
-
-  .replybox{
-    margin-top: 15px;
-  }
-
-  .replyTextarea {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa; /* Softer background */
+  margin-top: 90px;
 }
-  .complaintButton2 {
-    background-color: #1a6187;
-    border: none;
-    color: white;
-    padding: 10px 10px;
-    border-radius: 25px;
-    margin-left   : 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
-    /* Added that to remove the underline feature of the Link tag in Next */
-    text-decoration: none;
-  }
 
-  .complaintButton2:hover {
-    background-color: #122c34;
-    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
-  }
-  
-  .complaintButton2:focus {
-    outline: none;
-  }
+.complaintCard {
+  background: linear-gradient(145deg, #ebeff4, #f4f5f7); /* Subtle gradient for a modern look */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 25px;
+  width: 60%;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
 
+.complaintCard:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
 
-  .complaintButtons{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-  }
-  
-  .complaintButton:hover {
-    background-color: #122c34;
-    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
-  }
-  
-  .complaintButton:focus {
-    outline: none;
-  }
-.complaintsearch{
-    display: inline;
+.complaintInfo {
+  padding: 20px;
+  text-align: left;
+  font-size: 18px; /* Larger text for readability */
+  line-height: 1.6; /* Reduced line spacing */
+}
+
+.complaintInfo h3 {
+  font-size: 20px; /* Larger titles */
+  color: #333; /* Darker title color for better contrast */
+  margin-bottom: 5px;
+}
+
+.complaintInfo p {
+  margin-top: 2px; /* Reduced spacing for cleaner look */
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 16px;
+  vertical-align: middle; /* Aligns detail text lower */
+}
+
+.complaintRating {
+  color: #e67e22; /* Stronger orange for text */
+  font-weight: bold;
+  background: rgba(230, 126, 34, 0.2); /* Slightly darker orange background */
+  padding: 5px 10px;
+  border-radius: 6px;
+  display: inline-block;
 }
 
 
+.complaintRating2 {
+  color: #28a745;
+  font-weight: bold;
+  background: rgba(40, 167, 69, 0.1); /* Green background for Resolved */
+  padding: 5px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.replybox {
+  margin-top: 15px;
+}
+
+.replyTextarea {
+  width: 100%;
+  height: 120px; /* Slightly larger text area */
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.complaintButton {
+  background: linear-gradient(90deg, #004085, #002952); /* Darker gradient */
+  border: none;
+  color: white;
+  padding: 12px 35px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+}
+
+.complaintButton:hover {
+  background: linear-gradient(90deg, #002952, #001b38);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.complaintButton:focus {
+  outline: none;
+}
+
+.complaintButton2 {
+  background: #138496; /* Dark teal */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+}
+
+.complaintButton2:hover {
+  background: #0f5966; /* Even darker teal */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.complaintButton2:focus {
+  outline: none;
+}
+
+.complaintButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.complaintInfo div {
+  display: flex;
+  align-items: flex-end; /* Aligns titles with their corresponding details */
+  flex-direction: row;
+}
+
+.complaintInfo div p {
+  margin-left: 10px;
+}

@@ -25,6 +25,7 @@
   /* Title Text Centering */
   .deleteAccount h2 {
     margin-bottom: 20px; /* Space below the title */
+    color: #122c34;
   }
   
   /* Search Input */
