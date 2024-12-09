@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react';
 import styles from '../Styles/Wishlist.module.css';
 import { FaChevronDown, FaTrash } from 'react-icons/fa';
 
-const Wishlist = () => {
+const Wishlist = (props) => {
     const [wishlist, setWishlist] = useState([]);
     const [loading, setLoading] = useState(true);
     const [openItems, setOpenItems] = useState({});
     const [multiplier, setMultiplier] = useState(1);
     const [preferredCurrency, setPreferredCurrency] = useState('USD');
-
+    const role = props.role;
+    if (role === "Tourist") {
     useEffect(() => {
         const fetchPaymentMultiplier = async () => {
             try {
@@ -161,7 +162,9 @@ const Wishlist = () => {
                 <p className={styles.emptyMessage}>No products in your wishlist.</p>
             )}
         </div>
+    
     );
+}
 };
 
 export default Wishlist;

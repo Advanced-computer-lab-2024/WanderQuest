@@ -133,7 +133,7 @@ const Navbar = () => {
                 </div>
                 <div className='navbar-rightside'>
                     {role && <NotificationButton role={role} />}
-                    {role != "advertiser" && (
+                    {role == "tourist" && (
                         <>
                             <Link href="/tourist/history">
                                 <button className="navbar-history-button">
@@ -212,7 +212,7 @@ const Navbar = () => {
                         </>
                     )}
 
-                    {role != "advertiser" && (
+                    {role == "tourist" && (
     <button
     className="navbar-cart-button"
     onClick={() => setIsCartOpen(true)}

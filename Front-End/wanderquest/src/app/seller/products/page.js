@@ -8,7 +8,7 @@ const museumpages = () => {
         <div>
             <Navbar />
             <h1>product Page</h1>
-           <Products role={"Admin"}></Products>
+           <Products role="Admin"></Products>
         </div>
     );
 };
