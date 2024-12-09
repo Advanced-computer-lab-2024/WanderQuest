@@ -101,13 +101,13 @@ const Navbar = () => {
         }
     };
 
-    const handleRedirect = () => window.location.href = '/tourist/itinerary';
+    const handleRedirect = () => window.location.href = '/tourist/iti';
     const handleRedirectac = () => window.location.href = '/tourist/activity';
     const handleRedirectp = () => window.location.href = '/tourist/products';
-    const handleRedirectm = () => window.location.href = '/tourist/museums';
-    const handleRedirec = () => window.location.href = '/tourist/bookings';
-    const handleRedirechotel = () => window.location.href = '/tourist/hotels';
-    const handleRedirecflight = () => window.location.href = '/tourist/flights';
+    const handleRedirectm = () => window.location.href = '/tourist/museum';
+    const handleRedirec = () => window.location.href = '/tourist/mybookings';
+    const handleRedirechotel = () => window.location.href = '/tourist/Hotels';
+    const handleRedirecflight = () => window.location.href = '/tourist/Flights';
     const handleRedirectransport = () => window.location.href = '/tourist/transportation';
 
 
