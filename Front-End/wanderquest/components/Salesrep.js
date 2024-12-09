@@ -25,259 +25,397 @@ ChartJS.register(
   Legend
 );
 
+// Chart configuration constants
+const chartColors = {
+  primary: 'rgb(0, 123, 255)',
+  hover: 'rgb(52, 152, 219)',
+  distribution: ['rgb(0, 123, 255)', 'rgb(52, 152, 219)', 'rgb(33, 97, 140)']
+};
+
+const chartOptions = {
+  responsive: true,
+  color: 'black',
+  plugins: {
+    legend: { 
+      position: "top",
+      labels: { color: 'black' }
+    },
+    title: { 
+      display: true, 
+      text: "Chart",
+      color: 'black'
+    },
+  },
+  scales: {
+    x: {
+      ticks: { color: 'black' },
+      grid: {
+        display: false,
+      },
+    },
+    y: {
+      ticks: { color: 'black' },
+      grid: {
+        drawBorder: false,
+        drawTicks: true,
+      },
+    },
+  },
+};
+
+const doughnutOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: { color: 'black' }
+    }
+  }
+};
+
+// Helper functions
+const getUniqueDates = (products) => {
+  return [...new Set(products.map(product => 
+    new Date(product.date).toISOString().split('T')[0]
+  ))].sort();
+};
+
+const getUniqueMonths = (products) => {
+  return [...new Set(products.map(product => {
+    const date = new Date(product.date);
+    return date.toISOString().slice(0, 7); // YYYY-MM format
+  }))].sort();
+};
+
 const Salesrep = () => {
-const [report,setReport]=useState([]);
-const [loading,setLoading]=useState(false);
-const[activities,setActivities]=useState([]);
-const[itineraries,setItineraries]=useState([]);
-const[products,setProducts]=useState([]); 
-const[totalRevenue,setTotalRevenue]=useState(0);
-const[totalUsers,setTotalUsers]=useState(0);
-const[newUsers,setNewUsers]=useState(0);
-const[totalProducts,setTotalProducts]=useState([]);
-const[totalItineraries,setTotalItineraries]=useState([]);
-const[totalActivities,setTotalActivities]=useState([]);  
-const [productRevenue, setProductRevenue] = useState(0);
-const [activityRevenue, setActivityRevenue] = useState(0);
-const [itineraryRevenue, setItineraryRevenue] = useState(0);
-
+  // Filters state
   const [productFilter, setProductFilter] = useState("All");
+  const [dateFilter, setDateFilter] = useState("All");
+  const [monthFilter, setMonthFilter] = useState("All");
+  const [itineraryFilter, setItineraryFilter] = useState("All");
+  const [activityFilter, setActivityFilter] = useState("All");
 
-useEffect(() => {
+  // Data state
+  const [report, setReport] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [activities, setActivities] = useState([]);
+  const [itineraries, setItineraries] = useState([]);
+  const [products, setProducts] = useState([]); 
+
+  // Statistics state
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [newUsers, setNewUsers] = useState(0);
+  const [productRevenue, setProductRevenue] = useState(0);
+  const [activityRevenue, setActivityRevenue] = useState(0);
+  const [itineraryRevenue, setItineraryRevenue] = useState(0);
+
+  // Fetch sales report data
+  useEffect(() => {
     const fetchReport = async () => {
-        try {
-            const response = await fetch('http://localhost:4000/admin/salesReport', {
-                method: 'GET',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('http://localhost:4000/admin/salesReport', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data);
-                setReport(data);
-                setProductRevenue(data.report.productRevenue || 0);
-                setActivityRevenue(data.report.activityRevenue || 0); 
-                setItineraryRevenue(data.report.itineraryRevenue || 0);
-                setTotalRevenue(data.report.totalRevenue || 0);
-                // setTotalUsers(data.report.totalUsers || 0);
-                // setNewUsers(data.report.newUsers || 0);
-                console.log(data.report.productRevenue);
-                console.log(data.report.activityRevenue);
-                console.log(data.report.itineraryRevenue);
-                console.log(data.report.totalRevenue);
-            } else {
-                console.error('Failed to fetch report');
-            }
-        } catch (error) {
-            console.error('Error fetching report:', error);
+        if (!response.ok) {
+          throw new Error('Failed to fetch report');
         }
+
+        const data = await response.json();
+        setReport(data);
+        setProductRevenue(data.report.productRevenue || 0);
+        setActivityRevenue(data.report.activityRevenue || 0); 
+        setItineraryRevenue(data.report.itineraryRevenue || 0);
+        setTotalRevenue(data.report.totalRevenue || 0);
+        setProducts(data.report.productDetails || []);
+        setItineraries(data.report.itineraryDetails || []);
+        setActivities(data.report.activityDetails || []);
+      } catch (error) {
+        setError(error.message);
+        console.error('Error fetching report:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchReport();
-}, []);
+  }, []);
 
-  const blueColors = [
-    'rgb(0, 123, 255)',
-    'rgb(52, 152, 219)',
-    'rgb(33, 97, 140)',
-    'rgb(94, 186, 255)'
-  ];
+  // Fetch user statistics
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/admin/userStats', {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch user stats');
+        }
 
-  const allData = {
-    labels: ["A", "B", "C", "D"],
-    datasets: [
-      {
+        const data = await response.json();
+        setTotalUsers(data.totalUsers);
+        setNewUsers(data.newUsers);
+      } catch (error) {
+        console.error('Error fetching user stats:', error);
+      }
+    };
+
+    fetchUserStats();
+  }, []);
+
+  // Data preparation functions
+  const prepareProductData = () => {
+    let filteredProducts = [...products];
+    
+    if (productFilter !== "All") {
+      filteredProducts = filteredProducts.filter(product => product.name === productFilter);
+    }
+    if (dateFilter !== "All") {
+      filteredProducts = filteredProducts.filter(product => {
+        const productDate = new Date(product.date);
+        const filterDate = new Date(dateFilter);
+        return productDate.toISOString().split('T')[0] === filterDate.toISOString().split('T')[0];
+      });
+    }
+    if (monthFilter !== "All") {
+      filteredProducts = filteredProducts.filter(product => {
+        const productDate = new Date(product.date);
+        const yearMonth = productDate.toISOString().slice(0, 7);
+        return yearMonth === monthFilter;
+      });
+    }
+
+    return {
+      labels: filteredProducts.map(product => product.name),
+      datasets: [{
         label: "Revenue",
-        data: [200, 300, 400, 500],
-        backgroundColor: blueColors,
-        borderColor: blueColors,
-        borderWidth: 1
-      },
-    ],
+        data: filteredProducts.map(product => product.price),
+        backgroundColor: chartColors.primary,
+        borderColor: 'white',
+        borderWidth: 2,
+        borderRadius: 6,
+        hoverBackgroundColor: chartColors.hover,
+        hoverBorderColor: 'white',
+        hoverBorderWidth: 2,
+      }]
+    };
+  };
+
+  const prepareItineraryData = () => {
+    return {
+      labels: itineraries.map(itinerary => itinerary.title),
+      datasets: [{
+        label: "Revenue",
+        data: itineraries.map(itinerary => itinerary.price),
+        backgroundColor: chartColors.primary,
+        borderColor: 'white',
+        borderWidth: 2,
+        borderRadius: 6,
+        hoverBackgroundColor: chartColors.hover,
+        hoverBorderColor: 'white',
+        hoverBorderWidth: 2,
+      }]
+    };
+  };
+
+  const prepareActivityData = () => {
+    return {
+      labels: activities.map(activity => activity.title),
+      datasets: [{
+        label: "Revenue",
+        data: activities.map(activity => activity.price),
+        backgroundColor: chartColors.primary,
+        borderColor: 'white',
+        borderWidth: 2,
+        borderRadius: 6,
+        hoverBackgroundColor: chartColors.hover,
+        hoverBorderColor: 'white',
+        hoverBorderWidth: 2,
+      }]
+    };
   };
 
   const doughnutData = {
     labels: ['Products', 'Itineraries', 'Activities'],
-    datasets: [
-      {
-        label: 'Sales Distribution',
-        data: [productRevenue, itineraryRevenue, activityRevenue],
-        backgroundColor: [
-          'rgb(0, 123, 255)',
-          'rgb(52, 152, 219)', 
-          'rgb(33, 97, 140)'
-        ],
-        hoverOffset: 4
-      }
-    ]
+    datasets: [{
+      label: 'Sales Distribution',
+      data: [productRevenue, itineraryRevenue, activityRevenue],
+      backgroundColor: chartColors.distribution,
+      borderWidth: 2,
+      borderColor: 'white',
+      hoverOffset: 4
+    }]
   };
 
-  const filterData = (filter) => {
-    return {
-      ...allData,
-      labels:
-        filter === "All"
-          ? allData.labels
-          : allData.labels.filter((label, index) => label === filter),
-      datasets: [
-        {
-          ...allData.datasets[0],
-          data:
-            filter === "All"
-              ? allData.datasets[0].data
-              : allData.datasets[0].data.filter(
-                  (_, index) => allData.labels[index] === filter
-                ),
-        },
-      ],
-    };
-  };
-
-  const getTotalSales = (data) => {
-    return data.datasets[0].data.reduce((sum, value) => sum + value, 0);
-  };
-
-  const { productNumber } = useSpring({
-    from: { productNumber: 0 },
-    to: { productNumber: getTotalSales(filterData(productFilter)) },
-    config: { duration: 1000 },
-  });
-
-  const chartOptions = {
-    responsive: true,
-    color: 'black',
-    plugins: {
-      legend: { 
-        position: "top",
-        labels: { color: 'black' }
-      },
-      title: { 
-        display: true, 
-        text: "Chart",
-        color: 'black'
-      },
-    },
-    scales: {
-      x: {
-        ticks: { color: 'black' },
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        ticks: { color: 'black' },
-        grid: {
-          drawBorder: false,
-          drawTicks: true,
-        },
-      },
-    },
-  };
-
-  const doughnutOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: { color: 'black' }
-      },
-      title: {
-        display: true,
-        text: 'Sales Distribution',
-        color: 'black'
-      }
-    }
-  };
+  if (error) {
+    return <div className={styles.error}>Error: {error}</div>;
+  }
 
   return (
     <div className={styles.container}>
-      <h1>Admin Sales Report </h1>
-      <div className={styles.totals}>
-        <div className={styles.total} style={{height: '200px'}}>
-          <p className={styles.text}>Total Revenue</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total} style={{height: '200px'}}>
-          <p className={styles.text}>Total users</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-        <div className={styles.total} style={{height: '200px'}}>
-          <p className={styles.text}>New users</p>
-          <animated.span className={styles.nums}>{productNumber.to((n) => n.toFixed(0))}</animated.span>
-        </div>
-      </div>
-
-      <div className={styles.graphscontainer}>
-        <div className={styles.graphGrid}>
-          {/* First row */}
-          <div className={styles.graphWrapper}>
-            <h2>Sales Distribution</h2>
-            <Doughnut 
-              data={doughnutData}
-              options={doughnutOptions}
-            />
+      <h1 className={styles.title}>Admin Sales Report</h1>
+      
+      {loading ? (
+        <div className={styles.loading}>Loading...</div>
+      ) : (
+        <>
+          {/* Stats Cards Row */}
+          <div className={styles.statsGrid}>
+            <div className={styles.statsCard}>
+              <p className={styles.statsLabel}>Total Revenue</p>
+              <animated.span className={styles.statsValue}>
+                ${totalRevenue}
+              </animated.span>
+            </div>
+            
+            <div className={styles.statsCard}>
+              <p className={styles.statsLabel}>Total Users</p>
+              <animated.span className={styles.statsValue}>
+                {totalUsers}
+              </animated.span>
+            </div>
+            
+            <div className={styles.statsCard}>
+              <p className={styles.statsLabel}>New Users</p>
+              <animated.span className={styles.statsValue}>
+                {newUsers}
+              </animated.span>
+            </div>
           </div>
 
-          <div className={styles.graphWrapper}>
-            <label>
-              Product Filter:
-              <select
-                value={productFilter}
-                onChange={(e) => setProductFilter(e.target.value)}
-              >
-                <option value="All">All</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-              </select>
-            </label>
-            <h2>Products</h2>
-            <Bar
-              data={filterData(productFilter)}
-              options={{
-                ...chartOptions,
-                plugins: {
-                  ...chartOptions.plugins,
-                  title: { text: "Products Chart" },
-                },
-              }}
-            />
-          </div>
+          {/* Charts Grid */}
+          <div className={styles.chartsContainer}>
+            {/* Sales Distribution Chart */}
+            <div className={styles.chartCard}>
+              <h2 className={styles.chartTitle}>Sales Distribution</h2>
+              <div className={styles.chartWrapper}>
+                <Doughnut 
+                  data={doughnutData}
+                  options={doughnutOptions}
+                />
+              </div>
+            </div>
 
-          {/* Second row */}
-          <div className={styles.graphWrapper}>
-            <h2>Itineraries</h2>
-            <Bar
-              data={filterData("All")}
-              options={{
-                ...chartOptions,
-                plugins: {
-                  ...chartOptions.plugins,
-                  title: { text: "Itinerary Chart" },
-                },
-              }}
-            />
-          </div>
+            {/* Products Chart */}
+            <div className={styles.chartCard}>
+              <div className={styles.filterSection}>
+                <label className={styles.filterLabel}>
+                  Product:
+                  <select
+                    className={styles.filterSelect}
+                    value={productFilter}
+                    onChange={(e) => setProductFilter(e.target.value)}
+                  >
+                    <option value="All">All</option>
+                    {products.map(product => (
+                      <option key={product.name} value={product.name}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-          <div className={styles.graphWrapper}>
-            <h2>Activities</h2>
-            <Bar
-              data={filterData("All")}
-              options={{
-                ...chartOptions,
-                plugins: {
-                  ...chartOptions.plugins,
-                  title: { text: "Activity Chart" },
-                },
-              }}
-            />
+                <label className={styles.filterLabel}>
+                  Date:
+                  <select
+                    className={styles.filterSelect}
+                    value={dateFilter}
+                    onChange={(e) => {
+                      setDateFilter(e.target.value);
+                      setMonthFilter("All");
+                    }}
+                  >
+                    <option value="All">All Dates</option>
+                    {getUniqueDates(products).map(date => (
+                      <option key={date} value={date}>
+                        {new Date(date).toLocaleDateString()}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className={styles.filterLabel}>
+                  Month:
+                  <select
+                    className={styles.filterSelect}
+                    value={monthFilter}
+                    onChange={(e) => {
+                      setMonthFilter(e.target.value);
+                      setDateFilter("All");
+                    }}
+                  >
+                    <option value="All">All Months</option>
+                    {getUniqueMonths(products).map(month => (
+                      <option key={month} value={month}>
+                        {new Date(month).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              
+              <h2 className={styles.chartTitle}>Products Revenue</h2>
+              <div className={styles.chartWrapper}>
+                <Bar
+                  data={prepareProductData()}
+                  options={{
+                    ...chartOptions,
+                    plugins: {
+                      ...chartOptions.plugins,
+                      title: { text: "Products Revenue" },
+                    },
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Itineraries Chart */}
+            <div className={styles.chartCard}>
+              <h2 className={styles.chartTitle}>Itineraries Revenue</h2>
+              <div className={styles.chartWrapper}>
+                <Bar
+                  data={prepareItineraryData()}
+                  options={{
+                    ...chartOptions,
+                    plugins: {
+                      ...chartOptions.plugins,
+                      title: { text: "Itinerary Revenue" },
+                    },
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Activities Chart */}
+            <div className={styles.chartCard}>
+              <h2 className={styles.chartTitle}>Activities Revenue</h2>
+              <div className={styles.chartWrapper}>
+                <Bar
+                  data={prepareActivityData()}
+                  options={{
+                    ...chartOptions,
+                    plugins: {
+                      ...chartOptions.plugins,
+                      title: { text: "Activity Revenue" },
+                    },
+                  }}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };
