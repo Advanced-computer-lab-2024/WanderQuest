@@ -150,10 +150,9 @@ const Navbar = () => {
                     }
                     {role == "tourist" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={handleRedirect}>Go to Itinerary</button>
-                            <button className="navbar-button" onClick={handleRedirectac}>Go to activity</button>
-                            <button className="navbar-button" onClick={handleRedirectp}>Go to products</button>
-                            <button className="navbar-button" onClick={handleRedirectm}>Go to museums</button>
+                            <button className="navbar-button" onClick={handleRedirect}>Itinerary</button>
+
+                            <button className="navbar-button" onClick={handleRedirectm}>Museums</button>
                             <button className="navbar-button" onClick={handleRedirec}>My Bookings</button>
                             <button className="navbar-button" onClick={handleRedirechotel}>Hotels</button>
                             <button className="navbar-button" onClick={handleRedirecflight}>Flights</button>
