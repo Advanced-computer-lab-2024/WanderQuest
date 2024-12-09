@@ -55,7 +55,6 @@ const ComplaintCard = () => {
     }
 
     return (
-        <div className={styles.container}>
             <div className={styles.complaintCard}>
                 <h1>File a Complaint</h1>
                 {successMessage && (
@@ -85,7 +84,6 @@ const ComplaintCard = () => {
                     <button className={styles.complaintButton} onClick={handleSubmit}>Submit</button>
                 </div>
             </div>
-        </div>
     );
 };
 

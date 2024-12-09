@@ -52,6 +52,7 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  width: 100%;
 }
 
 .complaintCard h1 {
@@ -80,55 +81,9 @@
   font-size: 0.9rem;
 }
 
-.complaintInfo input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-.complaintInfo input:focus {
-  outline: none;
-  border-color: #031A29;
-}
-
-.complaintInfo input[type="date"] {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
-}
-
-.complaintButton {
-  margin-top: 10px;
-  background-color: #031A29;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-
-.complaintButton:hover {
-  background-color: #042335;
-}
-
-/* Add disabled input styling */
-.complaintInfo input:disabled {
-  background-color: #f5f5f5;
-  color: #666;
-  cursor: not-allowed;
-}
-
-/* Add error state styling if needed */
-.complaintInfo input.error {
-  border-color: #ff4d4d;
-}
-
-/* Add success state styling if needed */
-.complaintInfo input.success {
-  border-color: #4CAF50;
+.complaintInfo p {
+  margin: 0;
+  color: #333;
 }
 
 /* Responsive layout adjustments */
@@ -176,8 +131,6 @@
 
 .complaintsContainer {
     padding: 20px;
-    max-height: 500px;
-    overflow-y: auto;
 }
 
 .complaintItem {
@@ -185,29 +138,79 @@
     border: 1px solid #eee;
     border-radius: 8px;
     margin-bottom: 10px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
+
+
 
 .complaintHeader {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
     padding: 15px;
     cursor: pointer;
     background-color: #f8f9fa;
     transition: background-color 0.3s ease;
+    gap: 10px;
 }
 
 .complaintHeader:hover {
     background-color: #f1f3f5;
 }
 
-.complaintHeader h3 {
+.headerInfo {
+    text-align: center;
+    width: 100%;
+}
+
+.complaintInfo h3 {
     margin: 0;
     font-size: 1rem;
     color: #333;
+}
+
+.statusContainer {
     display: flex;
     align-items: center;
+    gap: 5px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.statusNew {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    min-width: 80px;
+    text-align: center;
+}
+
+.statusPending {
+    display: inline-block;
+    background-color: #ffd700;
+    color: #000;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    min-width: 80px;
+    text-align: center;
+}
+
+.statusResolved {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    min-width: 80px;
+    text-align: center;
 }
 
 .dropdownIcon {
@@ -233,24 +236,6 @@
 
 .complaintDetails strong {
     color: #333;
-}
-
-.statusPending {
-    background-color: #ffd700;
-    color: #000;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    margin-left: 8px;
-}
-
-.statusResolved {
-    background-color: #4CAF50;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    margin-left: 8px;
 }
 
 .emptyMessage {
@@ -298,4 +283,267 @@
     color: #888;
     margin-top: 8px;
     text-align: right;
+}
+
+.detailsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dropdownButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+/* Tourist View Styles */
+.complaintsContainer {
+    padding: 20px;
+}
+
+.complaintItem {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: visible;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.complaintItem:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.complaintHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+    gap: 10px;
+}
+
+.headerInfo {
+    text-align: center;
+    width: 100%;
+}
+
+.complaintInfo h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.statusContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.dropdownButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+.dropdownIcon {
+    transition: transform 0.3s ease;
+    color: #666;
+}
+
+.dropdownIcon.open {
+    transform: rotate(180deg);
+}
+
+.complaintDetails {
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.detailsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.replySection {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.replyDate {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    text-align: right;
+    margin-top: 8px;
+}
+
+/* Original Admin Styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #f5f5f5;
+    margin-top: 90px;
+}
+
+.sortFilterControls {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.sortFilterControls button {
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #1a6187;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.sortFilterControls button:hover {
+    background-color: #122c34;
+}
+
+.sortFilterControls select {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.complaintsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    justify-items: center;
+    padding: 0 20px;
+}
+
+.complaintCard {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+
+.complaintCard .complaintInfo {
+    padding: 15px;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.complaintCard .complaintInfo h2 {
+    font-size: 22px;
+    color: #1a6187;
+    margin-bottom: 10px;
+}
+
+.complaintCard .complaintInfo p {
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.complaintCard .complaintInfo div {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.complaintRating {
+    color: #ff9800;
+    font-weight: bold;
+    background-color: rgba(255, 152, 0, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.complaintRating2 {
+    color: #4CAF50;
+    font-weight: bold;
+    background-color: rgba(76, 175, 80, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.complaintButton {
+    background-color: #1a6187;
+    border: none;
+    color: white;
+    padding: 12px 35px;
+    border-radius: 30px;
+    margin-top: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+}
+
+.complaintButton:hover {
+    background-color: #122c34;
+    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .complaintsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .complaintCard {
+        width: 90%;
+    }
+
+    .sortFilterControls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .complaintButton {
+        width: 100%;
+        padding: 12px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .complaintsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .complaintCard {
+        width: 90%;
+    }
 }

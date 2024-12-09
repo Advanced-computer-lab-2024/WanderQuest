@@ -16,7 +16,7 @@ router.get('/logo', requireAuth({role: "seller"}), getLogo);
 
 router.get('/products', getProducts);
 //Seller viewProduct Sales
-router.get('products/sales',viewProductSales)
+router.get('/products/sales',viewProductSales)
 
 // seller view all product sales
 router.get('/sales', viewAllProductSales);

@@ -264,7 +264,7 @@ const ItineraryListpage = (Props) => {
         {role === "Tourist" ? (
           <motion.div
             className={styles.searchcom}
-            initial={{ y: -170 }}
+            initial={{ y: 10 }}
             transition={{ duration: 1 }}
           >
             <input
@@ -280,6 +280,7 @@ const ItineraryListpage = (Props) => {
         )}
         <div className={styles.pageLayout}>
           <div className={styles.sidebar}>
+            <h1>Filters</h1>
             <div className={styles.filterSection}>
               <h3>Date</h3>
               <input
@@ -389,32 +390,32 @@ const ItineraryListpage = (Props) => {
                     </div>
                   ))}
                 </div>
-                <div className={styles.locationsContainer}>
-                  <strong className={styles.locationsLabel}>Available locations:</strong>
-                  <div className={styles.locations}>
-                    {itinerary.locations && itinerary.locations.length > 0 ? (
-                      <select className={styles.locationSelect}>
-                        {itinerary.locations.map((location, idx) => (
-                          <option key={idx} value={location}>
-                            {location}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <p>No available locations</p>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.timelineCard}>
-                  <h3 className={styles.timelineTitle}>Timeline</h3>
-                  <div className={styles.timelineList}>
-                    {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
-                      <div key={idx} className={styles.timelineEntry}>
-                        <strong>Day {idx + 1}:</strong> {entry.trim()}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                {/* <div className={styles.locationsContainer}>
+                    <strong className={styles.locationsLabel}>Available locations:</strong>
+                    <div className={styles.locations}>
+                        {itinerary.locations && itinerary.locations.length > 0 ? (
+                        <select className={styles.locationSelect}>
+                            {itinerary.locations.map((location, idx) => (
+                            <option key={idx} value={location}>
+                                {location}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available locations</p>
+                        )}
+                    </div>
+                 </div> */}
+                {/* <div className={styles.timelineCard}>
+  <h3 className={styles.timelineTitle}>Timeline</h3>
+  <div className={styles.timelineList}>
+    {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
+      <div key={idx} className={styles.timelineEntry}>
+        <strong>Day {idx + 1}:</strong> {entry.trim()}
+      </div>
+    ))}
+  </div>
+</div> */}
                 <p>
                   <strong>Duration:</strong> {itinerary.duration}
                 </p>
@@ -424,24 +425,24 @@ const ItineraryListpage = (Props) => {
                 <p>
                   <strong>Price:</strong> {itinerary.price * multiplier} {preferredCurrency}
                 </p>
-
-                <div className={styles.datesContainer}>
-                  <strong className={styles.datesLabel}>Available dates:</strong>
-                  <div className={styles.dates}>
-                    {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
-                      <select className={styles.dateSelect}>
-                        {itinerary.availableDates.map((date, idx) => (
-                          <option key={idx} value={date}>
-                            {new Date(date).toLocaleDateString()}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <p>No available dates</p>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.timesContainer}>
+           
+                {/* <div className={styles.datesContainer}>
+                    <strong className={styles.datesLabel}>Available dates:</strong>
+                    <div className={styles.dates}>
+                        {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
+                        <select className={styles.dateSelect}>
+                            {itinerary.availableDates.map((date, idx) => (
+                            <option key={idx} value={date}>
+                                {new Date(date).toLocaleDateString()}
+                            </option>
+                            ))}
+                        </select>
+                        ) : (
+                        <p>No available dates</p>
+                        )}
+                    </div>
+                 </div>
+                 <div className={styles.timesContainer}>
                   <strong className={styles.timesLabel}>Available times:</strong>
                   <div className={styles.times}>
                     {itinerary.time && itinerary.time.length > 0 ? (
@@ -466,22 +467,24 @@ const ItineraryListpage = (Props) => {
                 </p>
                 <p>
                   <strong>Drop Off Location:</strong> {itinerary.dropOffLocation}
-                </p>
-                <p>
+                </p> */}
+                {/* <p>
                   <strong>Booking Already Made:</strong>{" "}
                   {itinerary.BookingAlreadyMade ? "Yes" : "No"}
-                </p>
+                </p> */}
                 <p className={styles.productRating}>
-                  {itinerary.rating && itinerary.rating > 0 ? (<> <Rating
-                    name="text-feedback"
-                    value={itinerary.rating}
-                    readOnly
-                    precision={0.5}
-                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
-                  /> <Box sx={{ ml: 2 }}>{labels[itinerary.rating]}</Box></>) : "No rating yet"}
-                  {/*                         
-                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
-
+                    {itinerary.rating && itinerary.rating > 0 ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Rating
+                                name="text-feedback"
+                                value={itinerary.rating}
+                                readOnly
+                                precision={0.5}
+                                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                            />
+                            <Typography sx={{ ml: 1 }}>{labels[itinerary.rating]}</Typography>
+                        </Box>
+                    ) : "No rating yet"}
                 </p>
                 <Link href={`iti/${itinerary._id}`} passHref>
                   <button className={styles.searchbtn}>View</button>

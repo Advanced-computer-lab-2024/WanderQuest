@@ -15,6 +15,7 @@ const ComplaintsPanel = ({ isOpen, onClose }) => {
                 >
                     <IoClose />
                 </button>
+                
                 <ComplaintCard/>
                 <h2>My Complaints</h2>
                 <Complaints role='Tourist' />
