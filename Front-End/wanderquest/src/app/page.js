@@ -23,6 +23,7 @@ import Salesrep from "../../components/Salesrep";
 import Salesrepseller from "../../components/Salesrepseller";
 import Salesrepadv from "../../components/Salesrepadv";
 import Authentication from "../../components/Authentication";
+import Salesreptour from "../../components/Salesreptour";
 import LandingPage from "../../components/LandingPage";
 
 export default function Home() {
@@ -30,6 +31,8 @@ export default function Home() {
    <>
       <Navbar></Navbar>
 
+{/* 
+      <Salesreptour></Salesreptour> */}
 {/* 
       <Foot></Foot>   */}
 
