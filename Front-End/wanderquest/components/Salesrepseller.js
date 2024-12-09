@@ -43,7 +43,7 @@ const Salesrepseller = () => {
   useEffect(() => {
     const fetchReport = async () => {
         try {
-            const response = await fetch('http://localhost:4000/admin/salesReport', {
+            const response = await fetch('http://localhost:4000/seller/salesReport', {
                 method: 'GET',
                 credentials: 'include',
                 headers: {

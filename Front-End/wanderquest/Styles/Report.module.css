@@ -1,71 +1,122 @@
-/* Container for the totals */
-.container{
-  margin-top: 10px;  
-  background-color:  #f5f5f5;
-  height: 100%;
-  padding: 10px;
-  border-radius: 20px;
-  width: 97%;
-  margin-left: auto;
-  margin-right: auto;
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
-.totals {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-  .text{
-    color: #625d5d;
-    position: absolute;
-  top: 0;
-  left: 0.2;
 
-  }
-  .nums{
-    position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 50px;
-  }
-  
-  .total {
-    position: relative;
-    margin-top: 10px;  
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    height: 130px;
-  }
-  
-  .total p {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-  
-  /* Container for the graphs */
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
 
-  
-  .graph canvas {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-  }
-  .graphGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    width: 98%;
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statsCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.statsLabel {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.statsValue {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Charts Container */
+.chartsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 2rem;
+}
+
+.chartCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chartTitle {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.chartWrapper {
+  height: 300px;
+  position: relative;
+}
+
+/* Filters Section */
+.filterSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filterLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.filterSelect {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  min-width: 150px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
     padding: 1rem;
   }
   
-  .graphWrapper {
-    background: white;
-    padding: 1rem;
-    height: 500px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .chartsContainer {
+    grid-template-columns: 1fr;
   }
+  
+  .chartCard {
+    min-height: 400px;
+  }
+  
+  .filterSection {
+    flex-direction: column;
+  }
+}
+
+.doughnutWrapper {
+  height: 400px;
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Adjust for mobile screens */
+@media (max-width: 768px) {
+  .doughnutWrapper {
+    width: 100%;
+    height: 350px;
+  }
+}
