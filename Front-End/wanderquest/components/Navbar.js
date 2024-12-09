@@ -72,15 +72,11 @@ const Navbar = () => {
     const handleRedirectac = () => window.location.href = '/tourist/activity';
     const handleRedirectp = () => window.location.href = '/tourist/products';
     const handleRedirectm = () => window.location.href = '/tourist/museums';
-    const handleRedirectcomp = () => window.location.href = '/tourist/file-complaint';
-    const handleRedirectviewcomp = () => window.location.href = '/tourist/view-complaint';
-    const handleRedirectHist = () => window.location.href = '/tourist/history';
     const handleRedirec = () => window.location.href = '/tourist/bookings';
     const handleRedirechotel = () => window.location.href = '/tourist/hotels';
     const handleRedirecflight = () => window.location.href = '/tourist/flights';
     const handleRedirectransport = () => window.location.href = '/tourist/transportation';
-    const handleRedirectWishlist = () => window.location.href = '/tourist/wishlist';
-    const handleViewComplaints = () => window.location.href = '/tourist/view-complaint';
+
 
     return (
         <>
@@ -105,15 +101,11 @@ const Navbar = () => {
                             <button onClick={handleRedirectac}>Go to activity</button>
                             <button onClick={handleRedirectp}>Go to products</button>
                             <button onClick={handleRedirectm}>Go to museums</button>
-                            <button onClick={handleRedirectcomp}>File a complaint</button>
-                            <button onClick={handleRedirectviewcomp}>View Complaint</button>
-                            <button onClick={handleRedirectHist}>Go to History</button>
                             <button onClick={handleRedirec}>My Bookings</button>
                             <button onClick={handleRedirechotel}>Hotels</button>
                             <button onClick={handleRedirecflight}>Flights</button>
                             <button onClick={handleRedirectransport}>Transportation</button>
-                            <button onClick={handleRedirectWishlist}>View Wishlist</button>
-                            <button onClick={handleViewComplaints}>View Complaint</button>
+
                         </div>
                     )}
                     {role == "" && (
@@ -225,14 +217,15 @@ const Navbar = () => {
     className="navbar-cart-button"
     onClick={() => setIsCartOpen(true)}
 >
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="30px"
-        width="30px"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-    >
-        <path d="M7 4h-2c-.55 0-1 .45-1 1s.45 1 1 1h2l3.6 7.59-1.35 2.45c-.16.29-.25.63-.25.96 0 1.11.89 2 2 2h9c.55 0 1-.45 1-1s-.45-1-1-1h-8.68c-.09 0-.17-.07-.22-.16l.03-.03 1.1-1.96h5.83c.38 0 .72-.21.89-.55l3.58-6.42c.2-.36.08-.8-.24-1.05-.32-.25-.77-.24-1.09.01l-3.06 5.48h-5.73l-3.3-6.92c-.14-.3-.44-.51-.78-.51zm1.79 14.5c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79zm11.92 0c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79z"></path>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+            <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#1a6187" strokeWidth="1.5" strokeLinecap="round"></path>
+            <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#1a6187" strokeWidth="1.5"></path>
+            <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#1a6187" strokeWidth="1.5"></path>
+            <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#1a6187" strokeWidth="1.5"></path>
+        </g>
     </svg>
 </button>
 
