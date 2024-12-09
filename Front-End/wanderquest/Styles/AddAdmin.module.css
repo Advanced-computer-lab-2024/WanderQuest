@@ -1,3 +1,4 @@
+/* Admin Wrapper */
 .AdminWrapper {
     display: flex;
     justify-content: center; /* Center horizontally */
@@ -5,15 +6,30 @@
     height: 100vh; /* Full viewport height */
     width: 100%;
     background-color: #f5f5f5; /* Optional: Add a light background */
+    background: linear-gradient(to bottom right, #f5f5f5, #e0e0e0); /* Subtle gradient */
 }
+
+.AdminWrapper h2 {
+    color: #122c34;
+}
+
 /* Add New Admin Card */
 .newAdmin {
     border: 1px solid #122c34; /* Big Stone color */
     background-color: white;
     padding: 20px;
+    width: 500px;
     border-radius: 5px;
     margin-bottom: 100px;
-    width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s; /* Smooth hover transition */
+}
+
+/* Hover effects for Admin Card */
+.newAdmin:hover {
+    transform: scale(1.05); /* Slight scale up */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Bigger shadow on hover */
+    border-color: #1a6187; /* Change border color on hover */
 }
 
 /* Styles for Input Fields and Labels in the Admin Card */
@@ -29,8 +45,10 @@
     margin-bottom: 10px;
     border: 1px solid #17455c; /* Elephant color */
     border-radius: 4px;
+    transition: border-color 0.3s; /* Smooth transition for focus state */
 }
 
+/* Focus state for input fields */
 .newAdmin input[type="text"]:focus,
 .newAdmin input[type="password"]:focus {
     border-color: #1a6187; /* Blumine color */
@@ -43,11 +61,19 @@
     border: none;
     padding: 10px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s; /* Button hover transition */
     border-radius: 4px;
 }
 
+/* Button hover effects */
 .newAdmin button:hover {
     background-color: #17455c; /* Elephant color on hover */
-    color: white; /* Ensure text color stays white on hover */
+    transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Ensure inputs and button have more rounded corners */
+.newAdmin input[type="text"],
+.newAdmin input[type="password"],
+.newAdmin button {
+    border-radius: 12px; /* More rounded corners */
 }

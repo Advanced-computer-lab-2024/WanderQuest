@@ -94,7 +94,7 @@ const CompanyInfo = () => {
     
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
+                console.log("Profile updated:", data);
                 setSuccessMessage("Profile updated successfully!");
                 setError(""); // Clear any error message
             } else {

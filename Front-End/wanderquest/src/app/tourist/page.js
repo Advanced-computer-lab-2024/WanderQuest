@@ -15,6 +15,7 @@ import {motion} from 'framer-motion';
 import { useEffect } from 'react';
 import Foot from "../../../components/foot";
 
+
 const testimonials = [
     {
         image: "/cat1.jpg",
@@ -51,6 +52,48 @@ export default function Tourist() {
     const router = useRouter();
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isComplaintsOpen, setIsComplaintsOpen] = useState(false);
+    const [promoCode, setPromoCode] = useState({ code: '', discount: '', type: '' });
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(true);
+        fetch('http://localhost:4000/tourist/codes', {
+            method: 'GET',
+            credentials: 'include',
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then((data) => {
+                setPromoCode(data);
+                setIsLoading(false);
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+                setIsLoading(false);
+            });
+    }, []);
+
+    useEffect(() => {
+        fetch('http://localhost:4000/tourist/birthday', {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then((data) => {
+                console.log('Birthday data:', data);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
+
+
 
     const handleRedirect = () => {
         router.push('/tourist/iti');
@@ -112,6 +155,45 @@ export default function Tourist() {
         <>
             <Navbar  />
             <div className={styles.container}>
+                {promoCode.promoCodes && (
+                    <div style={{
+                        backgroundColor: 'black',
+                        color: 'white',
+                        overflow: 'hidden',
+                        position: 'relative',
+                        paddingTop: '5px',
+                        width: '100%',
+                        height: '30px'
+                    }}>
+                        {!isLoading  && (
+                            <motion.div
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    gap: '10px',
+                                    fontSize: '14px',
+                                    width: 'max-content'
+                                }}
+                                initial={{ x: '-100%' }}
+                                animate={{ x: '100vw' }}
+                                transition={{
+                                    duration: 20,
+                                    repeat: Infinity,
+                                    ease: 'linear'
+                                }}
+                            >
+                                🎉 SPECIAL OFFER: Use code "{promoCode.promoCodes.code}" for {promoCode.promoCodes.discount} {promoCode.promoCodes.type === "PERCENTAGE" ? '%' : 'USD'} OFF on all bookings! <span 
+                                    style={{
+                                        textDecoration: 'underline',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() => navigator.clipboard.writeText(promoCode.promoCodes.code)}
+                                >
+                                    Click here
+                                </span> to copy code! Limited time only! 🎉
+                            </motion.div>
+                        )}
+                    </div>
+                )}
                 <div className={styles.heroSection}>
                     {(() => {
                         const [currentImage, setCurrentImage] = useState(0);
@@ -406,7 +488,7 @@ export default function Tourist() {
             transition={{ duration: 0.3 }}
         >
             <Image 
-                src="/woodcarving.jpg" 
+                src="/wood.jpg" 
                 alt="Wooden Sculpture"
                 width={300}
                 height={200}
@@ -427,7 +509,7 @@ export default function Tourist() {
             transition={{ duration: 0.3 }}
         >
             <Image 
-                src="/silverwork.jpg" 
+                src="/silver.webp" 
                 alt="Silver Jewelry"
                 width={300}
                 height={200}
@@ -500,14 +582,14 @@ export default function Tourist() {
     </div>
     
     <motion.div 
-        className={styles.activitiesGrid}
+        className={styles.productsGrid}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4 }}
     >
         <motion.div 
-            className={styles.activityCard}
+            className={styles.productCard}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
@@ -516,9 +598,9 @@ export default function Tourist() {
                 alt="Surfing in Bali"
                 width={300}
                 height={200}
-                className={styles.activityImage}
+                className={styles.productImage}
             />
-            <div className={styles.activityContent}>
+            <div className={styles.productContent}>
                 <h3>Surfing in Bali</h3>
                 <p className={styles.price}>$75 per person</p>
                 <p className={styles.description}>
@@ -528,7 +610,7 @@ export default function Tourist() {
         </motion.div>
 
         <motion.div 
-            className={styles.activityCard}
+            className={styles.productCard}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
@@ -537,9 +619,9 @@ export default function Tourist() {
                 alt="Mount Bromo Hiking"
                 width={300}
                 height={200}
-                className={styles.activityImage}
+                className={styles.productImage}
             />
-            <div className={styles.activityContent}>
+            <div className={styles.productContent}>
                 <h3>Mount Bromo Sunrise Trek</h3>
                 <p className={styles.price}>$120 per person</p>
                 <p className={styles.description}>
@@ -549,7 +631,7 @@ export default function Tourist() {
         </motion.div>
 
         <motion.div 
-            className={styles.activityCard}
+            className={styles.productCard}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
@@ -558,9 +640,9 @@ export default function Tourist() {
                 alt="Scuba Diving"
                 width={300}
                 height={200}
-                className={styles.activityImage}
+                className={styles.productImage}
             />
-            <div className={styles.activityContent}>
+            <div className={styles.productContent}>
                 <h3>Raja Ampat Diving</h3>
                 <p className={styles.price}>$150 per person</p>
                 <p className={styles.description}>

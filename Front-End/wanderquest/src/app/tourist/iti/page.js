@@ -9,13 +9,13 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
-import StarIcon from '@mui/icons-material/Star'; 
+import StarIcon from '@mui/icons-material/Star';
 
 
 
 const ItineraryListpage = (Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState('');
-  const role='Tourist';
+  const role = 'Tourist';
   const [activityDetails, setActivityDetails] = useState({});
   const [allItineraries, setAllItineraries] = useState([]);
   const [displayedItineraries, setDisplayedItineraries] = useState([]);
@@ -40,97 +40,126 @@ const ItineraryListpage = (Props) => {
     4.5: 'Excellent',
     5: 'Excellent+',
   };
-  
+
+
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
   const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Japanese", "Russian"];
-    const share=()=>{
-        navigator.share({
-            url:'http://localhost:3000/tourist/iti'
-        })
-    }
+  const share = () => {
+    navigator.share({
+      url: 'http://localhost:3000/tourist/iti'
+    })
+  }
 
-    const fetchActivityDetails = (activityId) => {
-      if (activityDetails[activityId]) return; // Avoid refetching
-  
-      fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
-          method: 'GET',
-          credentials: 'include', // Include credentials (cookies)
-          headers: {
-              "Content-Type": "application/json", // Ensure headers are set correctly
-          },
-      })
+  const fetchActivityDetails = (activityId) => {
+    if (activityDetails[activityId]) return; // Avoid refetching
+
+    fetch(`http://localhost:4000/advertiser/activity/${activityId}`, {
+      method: 'GET',
+      credentials: 'include', // Include credentials (cookies)
+      headers: {
+        "Content-Type": "application/json", // Ensure headers are set correctly
+      },
+    })
       .then(res => {
-          if (!res.ok) {
-              throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
-          }
-          return res.json();
+        if (!res.ok) {
+          throw new Error(`Error fetching activity ${activityId}: ${res.statusText}`);
+        }
+        return res.json();
       })
       .then(data => {
-          setActivityDetails(prevDetails => ({
-              ...prevDetails,
-              [activityId]: data,
-          }));
+        setActivityDetails(prevDetails => ({
+          ...prevDetails,
+          [activityId]: data,
+        }));
       })
       .catch(error => {
-          setError(error.message);
+        setError(error.message);
       });
   };
-  
+
   const fetchItineraries = () => {
-      fetch('http://localhost:4000/tourist/upcomingItineraries', {
-          method: 'GET',
-          credentials: 'include', // Include credentials (cookies)
-          headers: {
-              "Content-Type": "application/json", // Ensure headers are set correctly
-          },
-      })
+    fetch('http://localhost:4000/tourist/upcomingItineraries', {
+      method: 'GET',
+      credentials: 'include', // Include credentials (cookies)
+      headers: {
+        "Content-Type": "application/json", // Ensure headers are set correctly
+      },
+    })
       .then(res => {
-          if (!res.ok) {
-              throw new Error(`Error fetching itineraries: ${res.statusText}`);
-          }
-          return res.json();
+        if (!res.ok) {
+          throw new Error(`Error fetching itineraries: ${res.statusText}`);
+        }
+        return res.json();
       })
       .then(data => {
-          setAllItineraries(data);
-          setDisplayedItineraries(data);
-          setTimeout(() => console.log("First"), 10000);
-          setLoading(false);
-  
-          // Fetch details for all activities
-          data.forEach(itinerary => {
-              itinerary.activities.forEach(activityId => {
-                  fetchActivityDetails(activityId);
-              });
+        setAllItineraries(data);
+        setDisplayedItineraries(data);
+        setTimeout(() => console.log("First"), 10000);
+        setLoading(false);
+
+        // Fetch details for all activities
+        data.forEach(itinerary => {
+          itinerary.activities.forEach(activityId => {
+            fetchActivityDetails(activityId);
           });
+        });
       })
       .catch(error => {
-          setError(error.message);
-          setTimeout(() => console.log("First"), 10000);
-          setLoading(false);
+        setError(error.message);
+        setTimeout(() => console.log("First"), 10000);
+        setLoading(false);
       });
   };
-  
+
   useEffect(() => {
-      fetchItineraries();
-      
+    fetchItineraries();
+
   }, []);
 
   useEffect(() => {
 
     handleSearch();
-}, [search]);
+  }, [search]);
   const handleSearch = () => {
     const newprod = allItineraries.filter((prod) => {
-        return search.toLowerCase() === '' || 
-             prod.title.toLowerCase().includes(search.toLowerCase()) || 
-            (prod.tags && prod.tags.some(tag => tag.type.toLowerCase() === search.toLowerCase()));
+      return search.toLowerCase() === '' ||
+        prod.title.toLowerCase().includes(search.toLowerCase()) ||
+        (prod.tags && prod.tags.some(tag => tag.type.toLowerCase() === search.toLowerCase()));
     });
     setDisplayedItineraries(newprod);  // Set the filtered museums based on search
-};
-const clearsearch=()=>{
-  setDisplayedItineraries(allItineraries);
-}
+  };
+  const clearsearch = () => {
+    setDisplayedItineraries(allItineraries);
+  }
   // const l = () => {
   //   let filtered = allItineraries.filter((itinerary) => {
   //     const searchLower = search.toLowerCase();
@@ -173,32 +202,32 @@ const clearsearch=()=>{
   };
   const handleApplyFilters = () => {
     let filtered = allItineraries.filter((itinerary) => {
-      const withinBudget = 
-        (minBudget === '' || itinerary.price >= parseFloat(minBudget)) && 
-        (maxBudget === '' || itinerary.price <= parseFloat(maxBudget));
-        
-      const withinDate = 
-        dateFilter === '' || 
+      const withinBudget =
+        (minBudget === '' || itinerary.price * multiplier >= parseFloat(minBudget)) &&
+        (maxBudget === '' || itinerary.price * multiplier <= parseFloat(maxBudget));
+
+      const withinDate =
+        dateFilter === '' ||
         itinerary.availableDates.some(date => {
           const availableDate = new Date(date);
           const filterDate = new Date(dateFilter);
           return availableDate.toDateString() === filterDate.toDateString();
         });
-  
-      const matchesPreferences = 
-        selectedPreferences.length === 0 || 
+
+      const matchesPreferences =
+        selectedPreferences.length === 0 ||
         selectedPreferences.some(pref => itinerary.tags.includes(pref));
-  
-      const matchesLanguage = 
+
+      const matchesLanguage =
         selectedLanguage === '' || itinerary.language === selectedLanguage; // Add language filter logic
-  
+
       return withinBudget && withinDate && matchesPreferences && matchesLanguage;
     });
-  
+
     setDisplayedItineraries(filtered);
   };
-  
-  
+
+
 
   const handleClearFilters = () => {
     setDateFilter('');
@@ -208,18 +237,20 @@ const clearsearch=()=>{
     setDisplayedItineraries(allItineraries);
   };
 
-  if (loading) {return<>
-    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
-    <dotlottie-player style={{
-  width: '300px',
-  height: '300px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  margin: 'auto'
-}}
-  src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
-    </>}
+  if (loading) {
+    return <>
+      <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+      <dotlottie-player style={{
+        width: '300px',
+        height: '300px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 'auto'
+      }}
+        src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
+    </>
+  }
 
   if (error) {
     return <div className={styles.error}>Error: {error}</div>;
@@ -233,7 +264,7 @@ const clearsearch=()=>{
         {role === "Tourist" ? (
           <motion.div
             className={styles.searchcom}
-            initial={{ y: -170 }}
+            initial={{ y: 10 }}
             transition={{ duration: 1 }}
           >
             <input
@@ -249,6 +280,7 @@ const clearsearch=()=>{
         )}
         <div className={styles.pageLayout}>
           <div className={styles.sidebar}>
+            <h1>Filters</h1>
             <div className={styles.filterSection}>
               <h3>Date</h3>
               <input
@@ -257,7 +289,7 @@ const clearsearch=()=>{
                 onChange={(e) => setDateFilter(e.target.value)}
               />
             </div>
-  
+
             <div className={styles.filterSection}>
               <h3>Budget</h3>
               <label htmlFor="min-budget">Min:</label>
@@ -277,7 +309,7 @@ const clearsearch=()=>{
                 onChange={(e) => setMaxBudget(e.target.value)}
               />
             </div>
-  
+
             <div className={styles.filterSection}>
               <h3>Preferences</h3>
               {preferences.map((pref) => (
@@ -293,7 +325,7 @@ const clearsearch=()=>{
                 </div>
               ))}
             </div>
-  
+
             <div className={styles.filterSection}>
               <h3>Language</h3>
               <select
@@ -307,10 +339,10 @@ const clearsearch=()=>{
                   </option>
                 ))}
               </select>
-              <button  style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply</button>
-              <button  style={{ margin: '5px' }} onClick={handleClearFilters}>Clear</button>
+              <button style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply</button>
+              <button style={{ margin: '5px' }} onClick={handleClearFilters}>Clear</button>
             </div>
-  
+
             <div className={styles.filterSection}>
               <h3 style={{ marginBottom: '5px' }}>Sorting</h3>
               <button onClick={handleSortAsc} style={{ margin: '5px' }}>Price: Low to High</button>
@@ -320,7 +352,7 @@ const clearsearch=()=>{
 
             </div>
           </div>
-  
+
           <div className={styles.itineraries}>
             {displayedItineraries.map((itinerary) => (
               <div
@@ -358,7 +390,7 @@ const clearsearch=()=>{
                     </div>
                   ))}
                 </div>
-                <div className={styles.locationsContainer}>
+                {/* <div className={styles.locationsContainer}>
                     <strong className={styles.locationsLabel}>Available locations:</strong>
                     <div className={styles.locations}>
                         {itinerary.locations && itinerary.locations.length > 0 ? (
@@ -373,8 +405,8 @@ const clearsearch=()=>{
                         <p>No available locations</p>
                         )}
                     </div>
-                 </div>
-                <div className={styles.timelineCard}>
+                 </div> */}
+                {/* <div className={styles.timelineCard}>
   <h3 className={styles.timelineTitle}>Timeline</h3>
   <div className={styles.timelineList}>
     {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
@@ -383,7 +415,7 @@ const clearsearch=()=>{
       </div>
     ))}
   </div>
-</div>
+</div> */}
                 <p>
                   <strong>Duration:</strong> {itinerary.duration}
                 </p>
@@ -391,10 +423,10 @@ const clearsearch=()=>{
                   <strong>Language:</strong> {itinerary.language}
                 </p>
                 <p>
-                  <strong>Price:</strong> ${itinerary.price}
+                  <strong>Price:</strong> {itinerary.price * multiplier} {preferredCurrency}
                 </p>
            
-                <div className={styles.datesContainer}>
+                {/* <div className={styles.datesContainer}>
                     <strong className={styles.datesLabel}>Available dates:</strong>
                     <div className={styles.dates}>
                         {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
@@ -426,7 +458,7 @@ const clearsearch=()=>{
                     )}
                   </div>
                 </div>
-                                <p>
+                <p>
                   <strong>Accessibility:</strong>{" "}
                   {itinerary.accessibility ? "Yes" : "No"}
                 </p>
@@ -435,27 +467,29 @@ const clearsearch=()=>{
                 </p>
                 <p>
                   <strong>Drop Off Location:</strong> {itinerary.dropOffLocation}
-                </p>
-                <p>
+                </p> */}
+                {/* <p>
                   <strong>Booking Already Made:</strong>{" "}
                   {itinerary.BookingAlreadyMade ? "Yes" : "No"}
-                </p>
+                </p> */}
                 <p className={styles.productRating}>
-                        {itinerary.rating && itinerary.rating > 0 ?(<> <Rating
-        name="text-feedback"
-        value={itinerary.rating}
-        readOnly
-        precision={0.5}
-        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" readOnly />}
-      /> <Box sx={{ ml: 2 }}>{labels[itinerary.rating]}</Box></>)  : "No rating yet"}
-{/*                         
-                        <Rating name="read-only" value={itinerary.rating} readOnly /> */}
-     
-                    </p>
+                    {itinerary.rating && itinerary.rating > 0 ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Rating
+                                name="text-feedback"
+                                value={itinerary.rating}
+                                readOnly
+                                precision={0.5}
+                                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                            />
+                            <Typography sx={{ ml: 1 }}>{labels[itinerary.rating]}</Typography>
+                        </Box>
+                    ) : "No rating yet"}
+                </p>
                 <Link href={`iti/${itinerary._id}`} passHref>
                   <button className={styles.searchbtn}>View</button>
                 </Link>
-             
+
               </div>
             ))}
           </div>
@@ -463,7 +497,7 @@ const clearsearch=()=>{
       </div>
     </>
   );
-  
+
 };
 
 export default ItineraryListpage;
