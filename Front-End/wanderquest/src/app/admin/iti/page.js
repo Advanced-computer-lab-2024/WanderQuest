@@ -45,31 +45,31 @@ const ItineraryListpage = (Props) => {
   const [multiplier, setMultiplier] = useState(1);
   const [preferredCurrency, setPreferredCurrency] = useState('USD');
 
-  useEffect(() => {
-    const fetchPaymentMultiplier = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Automatically include credentials (user session)
-        });
+  // useEffect(() => {
+  //   const fetchPaymentMultiplier = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         credentials: 'include', // Automatically include credentials (user session)
+  //       });
 
-        if (response.ok) {
-          const result = await response.json();
-          setMultiplier(result.multiplier);
-          setPreferredCurrency(result.currency);
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      } catch (error) {
-        alert(`Error: ${error.message}`);
-      }
-    };
-    fetchPaymentMultiplier();
-  }, []);
+  //       if (response.ok) {
+  //         const result = await response.json();
+  //         setMultiplier(result.multiplier);
+  //         setPreferredCurrency(result.currency);
+  //       } else {
+  //         const errorData = await response.json();
+  //         alert(`Error: ${errorData.message}`);
+  //       }
+  //     } catch (error) {
+  //       alert(`Error: ${error.message}`);
+  //     }
+  //   };
+  //   fetchPaymentMultiplier();
+  // }, []);
 
   const preferences = ["Historic Areas", "Beaches", "Family-Friendly", "Shopping"];
   const languages = ["English", "Spanish", "French", "German", "Chinese", "Arabic", "Japanese", "Russian"];

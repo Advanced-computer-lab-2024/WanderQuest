@@ -40,7 +40,7 @@ const Salesreptour = () => {
     useEffect(() => {
       const fetchReport = async () => {
           try {
-              const response = await fetch('http://localhost:4000/admin/salesReport', {
+              const response = await fetch('http://localhost:4000/tourGuide/salesReport', {
                   method: 'GET',
                   credentials: 'include',
                   headers: {

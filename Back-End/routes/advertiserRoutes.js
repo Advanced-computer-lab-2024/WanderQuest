@@ -40,7 +40,7 @@ router.get('/allAdvertisers', requireAuth({ role: 'Admin' }), getAllAdvertisers)
 //d
 router.post('/activity', requireAuth({ role: 'advertiser' }), createActivity);
 //d
-router.get('/activities', requireAuth({ role: 'advertiser' }), readActivities);
+router.get('/activities', readActivities);
 //d
 router.put('/activity/:id', requireAuth({ role: 'advertiser' }), updateActivity);
 //d

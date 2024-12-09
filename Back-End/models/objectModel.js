@@ -65,7 +65,7 @@ const productSchema = new Schema({
     seller:
     {
         type: mongoose.Schema.Types.ObjectId,  //???color?
-        ref: SellerModel
+        ref: 'seller'
     },
     ratings:
         [{ type: ratingSchema, required: false, default: null }],

@@ -1,0 +1,87 @@
+.checkout {
+    width: 60%;
+    margin: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 100px;
+}
+
+.h2, .h3 {
+    font-size: 24px;
+    color: #333;
+}
+
+.cartitems, .deliveryaddress, .paymentmethods, .ordersummary {
+    margin-bottom: 20px;
+}
+
+.cartitem {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.address {
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.address.active {
+    border-color: #007bff;
+    background-color: #e9f7ff;
+}
+
+.paymentmethods label {
+    display: block;
+    margin: 10px 0;
+}
+
+.paymentsection {
+    margin-top: 20px;
+}
+
+.paymentsection .StripeElement {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.paymentsection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.paymentsection input {
+    margin-right: 10px;
+    flex-grow: 1;
+}
+
+.paymentsection button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.paymentsection button:hover {
+    background-color: #218838;
+}
+
+.button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
