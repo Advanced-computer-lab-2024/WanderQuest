@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import styles from "../Styles/RegistrationForm.module.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import UploadDocuments from "./UploadDocuments";
+import Image from "next/image";
+import wander from "../public/logo.png";
 
 const RegistrationForm = ({ toggleForm }) => {
     const [email, setEmail] = useState('');
@@ -68,6 +70,7 @@ const RegistrationForm = ({ toggleForm }) => {
 
     return (
         <div className={styles.RegistrationContainer}>
+            <Image src={wander} alt="WanderQuest Logo" className={styles.logo}/>
             <form className={styles.RegistrationForm} onSubmit={handleSubmit}>
                 <h1 className={styles.Title}>{userType ? `${userType} Registration` : "Sign Up"}</h1>
 

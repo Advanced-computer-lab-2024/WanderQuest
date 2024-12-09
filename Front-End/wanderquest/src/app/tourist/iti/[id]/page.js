@@ -37,9 +37,7 @@ const ItinerarydetailsPage = ({ params }) => {
                 alert(`Error: ${error.message}`);
             }
         };
-        if (role === "Tourist") {
-            fetchPaymentMultiplier();
-        }
+        fetchPaymentMultiplier();
     }, []);
 
     const share = () => {

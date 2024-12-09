@@ -18,27 +18,38 @@ const Navbar = () => {
     const [role, setRole] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/authentication/user', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Automatically include credentials (user session)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    setUser(result);
+                    setRole(result.role);
+                } else {
+                    const errorData = await response.json();
+                    setUser({});
+                }
+            } catch (error) {
+                setUser({});
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const toggleProfileMenu = () => {
         setProfileMenuOpen(!isProfileMenuOpen);
     };
-
-
-    const fetchUserRole = async () => {
-        try {
-            const response = await axios.get('http://localhost:4000/authentication/user', {
-                withCredentials: true, // Include cookies if required
-            });
-            setRole(response.data.role);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching user role:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchUserRole();
-    }, []);
 
     const handleLogout = async () => {
         try {
@@ -61,7 +72,7 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    {role == "advertiser" && <button className="navbar-button">Reports</button>}
+                    {role == "advertiser" && <a href="/advertiser"><button className="navbar-button">Reports</button></a>}
                     {role != "advertiser" && <button className="navbar-button">Products</button>}
                     <div
                         className="navbar-button-container"
@@ -95,22 +106,22 @@ const Navbar = () => {
                         <>
                             <Link href="/tourist/history">
                                 <button className="navbar-history-button">
-                                    <svg 
-                                        viewBox="0 0 16 16" 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        fill="none" 
-                                        stroke="#1a6187" 
+                                    <svg
+                                        viewBox="0 0 16 16"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        stroke="#1a6187"
                                         strokeWidth="0.00016"
                                         height="30px"
                                         width="30px"
                                     >
                                         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                                         <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                                        <g id="SVGRepo_iconCarrier"> 
-                                            <g fill="#1a6187"> 
-                                                <path d="M1.5 1.25a.75.75 0 011.5 0v1.851A7 7 0 111 8a.75.75 0 011.5 0 5.5 5.5 0 101.725-4H5.75a.75.75 0 010 1.5h-3.5a.75.75 0 01-.75-.75v-3.5z"></path> 
-                                                <path d="M8.25 4a.75.75 0 01.75.75v3.763l1.805.802a.75.75 0 01-.61 1.37l-2.25-1A.75.75 0 017.5 9V4.75A.75.75 0 018.25 4z"></path> 
-                                            </g> 
+                                        <g id="SVGRepo_iconCarrier">
+                                            <g fill="#1a6187">
+                                                <path d="M1.5 1.25a.75.75 0 011.5 0v1.851A7 7 0 111 8a.75.75 0 011.5 0 5.5 5.5 0 101.725-4H5.75a.75.75 0 010 1.5h-3.5a.75.75 0 01-.75-.75v-3.5z"></path>
+                                                <path d="M8.25 4a.75.75 0 01.75.75v3.763l1.805.802a.75.75 0 01-.61 1.37l-2.25-1A.75.75 0 017.5 9V4.75A.75.75 0 018.25 4z"></path>
+                                            </g>
                                         </g>
                                     </svg>
                                 </button>
@@ -119,11 +130,11 @@ const Navbar = () => {
                                 className="navbar-wishlist-button"
                                 onClick={() => setIsWishlistOpen(true)}
                             >
-                                <svg 
-                                    viewBox="0 0 64 64" 
-                                    xmlns="http://www.w3.org/2000/svg" 
-                                    strokeWidth="3.84" 
-                                    stroke="#1a6187" 
+                                <svg
+                                    viewBox="0 0 64 64"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    strokeWidth="3.84"
+                                    stroke="#1a6187"
                                     fill="#1a6187"
                                     height="30px"
                                     width="30px"
@@ -191,7 +202,7 @@ const Navbar = () => {
                     )}
                 </div>
             </div>
-
+            
             <WishlistPanel
                 isOpen={isWishlistOpen}
                 onClose={() => setIsWishlistOpen(false)}

@@ -12,6 +12,35 @@ function TransportPage() {
   const [activeButton, setActiveButton] = useState(2); // Set to 2 for transportation
   const router = useRouter();
 
+  const [multiplier, setMultiplier] = useState(1);
+  const [preferredCurrency, setPreferredCurrency] = useState('USD');
+
+  useEffect(() => {
+    const fetchPaymentMultiplier = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/payment/getPaymentMultiplier', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Automatically include credentials (user session)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setMultiplier(result.multiplier);
+          setPreferredCurrency(result.currency);
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    };
+    fetchPaymentMultiplier();
+  }, []);
+
   // Navigation functions
   const handleRedirect = (path, buttonId) => {
     setActiveButton(buttonId);
@@ -88,7 +117,7 @@ function TransportPage() {
         </div>
       </div>
 
-      <motion.div 
+      <motion.div
         className={styles.bookingsContainer}
         initial={{ y: 0, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -104,7 +133,7 @@ function TransportPage() {
               <div key={transport._id} className={styles.bookingCard}>
                 <h3>{transport.details.company}</h3>
                 <p><strong>Type:</strong> {transport.details.type}</p>
-                <p><strong>Price:</strong> {transport.details.price}</p>
+                <p><strong>Price:</strong> {transport.details.price * multiplier} {preferredCurrency}</p>
                 <p><strong>Departure:</strong> {transport.details.departure}</p>
                 <p><strong>Arrival:</strong> {transport.details.arrival}</p>
                 <p><strong>Date:</strong> {transport.details.transportationDate}</p>

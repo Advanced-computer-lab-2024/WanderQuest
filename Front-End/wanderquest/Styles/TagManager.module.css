@@ -1,4 +1,5 @@
 .container {
+  position:relative;
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
@@ -48,13 +49,27 @@
   background-color: #f9f9f9;
 }
 .input {
-  width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  font-size: 14px;
   border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 200px; /* Adjust size as needed */
 }
 
-
+.form {
+  position: absolute;
+  top: 0;
+  left: 50%; /* Centers the form horizontally */
+  transform: translateX(-50%); /* Centers the form perfectly */
+  z-index: 100;
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: top 0.2s ease; /* Smooth transition when moving */
+  width: 80%; /* Width of the form can be adjusted */
+  min-width: 300px; /* Min width to prevent it from becoming too small */
+}
 .buttonWrapper {
   display: flex;
   justify-content: space-between;
@@ -63,18 +78,18 @@
 }
 /* General button styles */
 .button {
-  padding: 12px 20px;
-  margin: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  flex: 1; /* Ensure buttons take equal space */
-  text-align: center;
+  padding: 8px 15px;
   background-color: #17455C;
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+.button:hover {
+  background-color: #122c34;
+}
 .addTag {
   background-color: #1A6187;
   color: white;

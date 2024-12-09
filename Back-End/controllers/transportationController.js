@@ -2,18 +2,24 @@ const TransportationModel = require('../models/objectModel').transportation;
 const AdvertiserModel = require('../models/userModel').Advertiser;
 
 const createTransportation = async (req, res) => {
-  const { company, type, price, departure, arrival, date, bookingAlreadyMade, pickUpLocation, dropOffLocation } = req.body;
+  let { company, type, price, departure, arrival, date, bookingAlreadyMade, pickUpLocation, dropOffLocation } = req.body;
+  
   if (!type || !price || !departure || !arrival || !pickUpLocation || !dropOffLocation) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
+  
   const id = req.user._id;
   const retAdvertiser = await AdvertiserModel.findById(id);
+  company = retAdvertiser.company;
+  
   if (!retAdvertiser) {
     return res.status(400).json({ message: 'Advertiser not found' });
   }
+  
   if (!company) {
     company = 'N/A';
   }
+  
   const newTransportation = new TransportationModel({
     company,
     type,
@@ -26,6 +32,7 @@ const createTransportation = async (req, res) => {
     dropOffLocation,
     createdBy: id
   });
+  
   newTransportation.save().then((data) => {
     return res.status(201).json(newTransportation);
   }).catch((err) => {

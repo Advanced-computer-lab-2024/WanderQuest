@@ -1,5 +1,5 @@
 const AdminModel = require('../models/adminModel');
-const { User, Advertiser, TourGuide, Tourist,PromoCode } = require('../models/userModel');
+const { User, Advertiser, TourGuide, Tourist,PromoCode, Seller } = require('../models/userModel');
 const tourGovModel = require('../models/tourGovernerModel');
 const NotificationModel = require('../models/objectModel').notification;
 const ItineraryModel = require('../models/objectModel').itinerary;
@@ -148,15 +148,18 @@ const addAdmin = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 };
+
+
 //Admin getProducts
 const getProducts = async (req, res) => {
     try {
-        const products = await ProdModel.find({})
+        const products = await ProdModel.find()
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
 };
+
 //Admin getProdById
 const getProdById = async (req, res) => {
     const { id } = req.params;
