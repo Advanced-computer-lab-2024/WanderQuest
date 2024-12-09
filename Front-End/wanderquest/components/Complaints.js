@@ -12,13 +12,40 @@ const Complaints = (props) => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [filterStatus, setFilterStatus] = useState('');
     const router = useRouter();
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/authentication/user', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Automatically include credentials (user session)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    setUser(result);
+                } else {
+                    const errorData = await response.json();
+                    setUser({});
+                }
+            } catch (error) {
+                setUser({});
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
 
 
-    if (role === 'Admin') {
+    if (user && user.role === 'Admin') {
         useEffect(() => {
             fetch('http://localhost:4000/admin/complaints', {
-                credentials: 'include' 
+                credentials: 'include'
             })
                 .then((res) => {
                     if (!res.ok) {
@@ -30,18 +57,18 @@ const Complaints = (props) => {
                 .then((data) => {
                     setComplaints(data);
                     console.log(data);
-                    setLoading(false); 
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error('Error fetching data:', error);
                     setComplaints([]);
-                    setLoading(false); 
+                    setLoading(false);
                 });
         }, []);
-    } else if (role === 'Tourist') {
+    } else if (user && user.role === 'tourist') {
         useEffect(() => {
             fetch('http://localhost:4000/tourist/myComplaints', {
-                credentials: 'include' 
+                credentials: 'include'
             })
                 .then((res) => {
                     if (!res.ok) {
@@ -53,28 +80,28 @@ const Complaints = (props) => {
                 .then((data) => {
                     setComplaints(data);
                     console.log(data);
-                    setLoading(false); 
+                    setLoading(false);
                 })
                 .catch((error) => {
                     console.error('Error fetching data:', error);
                     setComplaints([]);
-                    setLoading(false); 
+                    setLoading(false);
                 });
         }, []);
     }
 
 
     const handleViewComplaint = (complaintId) => {
-        if (role === 'Admin') {
+        if (user && user.role === 'Admin') {
             router.push(`/admin/complaints/${complaintId}`);
-        } else if (role === 'Tourist') {
+        } else if (user && user.role === 'tourist') {
             router.push(`/tourist/viewComplaint/${complaintId}`);
         }
     };
-   
 
-   
-    
+
+
+
 
     const sortComplaintsByDate = (order) => {
         const sortedComplaints = [...complaints].sort((a, b) => {
@@ -94,21 +121,23 @@ const Complaints = (props) => {
         return filterStatus ? complaint.status === filterStatus : true;
     });
 
-    if (loading) {return<>
-        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
-        <dotlottie-player style={{
-      width: '300px',
-      height: '300px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: 'auto'
-    }}
-      src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
-        </>}
+    if (loading) {
+        return <>
+            <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+            <dotlottie-player style={{
+                width: '300px',
+                height: '300px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 'auto'
+            }}
+                src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
+        </>
+    }
     return (
         <div className={styles.container}>
-            {role==='Admin'&& (<div className={styles.sortFilterControls}>
+            {role === 'Admin' && (<div className={styles.sortFilterControls}>
                 <button onClick={() => sortComplaintsByDate('asc')}>Sort by Date Ascending</button>
                 <button onClick={() => sortComplaintsByDate('desc')}>Sort by Date Descending</button>
                 <select onChange={(e) => filterComplaintsByStatus(e.target.value)} value={filterStatus}>

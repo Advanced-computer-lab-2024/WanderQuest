@@ -14,7 +14,7 @@ const Wishlist = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await fetch('http://localhost:4000/user', {
+                const response = await fetch('http://localhost:4000/authentication/user', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const Wishlist = () => {
                     setUser({});
                 }
             } catch (error) {
-                alert(`Error: ${error.message}`);
+                setUser({});
             }
         };
 
