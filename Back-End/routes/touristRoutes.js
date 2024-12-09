@@ -115,7 +115,7 @@ router.patch('/setActiveDeliveryAddress', setActiveDeliveryAddress);
 router.post('/birthday', birthDaycode);
 router.patch('/redeemCode',redeemPromo);
 router.get('/codes',availableCodes);
-router.post('/cart/add', addToCart);
+router.post('/cart/add/:id', addToCart);
 router.get('/cart', viewCart);
 router.delete('/cart/remove', removeFromCart);
 router.patch('/cart/change', changeAmountInCart);
