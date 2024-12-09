@@ -1,108 +1,80 @@
 .wishlistContainer {
-    width: 90%;
-    margin: 20px auto;
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
 }
 
 .wishlistItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: white;
-    padding: 15px;
-    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid #eee;
     border-radius: 8px;
-    box-shadow: 0 2px 2px rgba(0,0,0,0.4);
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
 }
 
-.leftSection {
+.wishlistHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+.wishlistHeader:hover {
+    background-color: #f1f3f5;
+}
+
+.headerInfo {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     flex: 1;
 }
 
-.itemImage {
-    width: 80px;
-    height: 80px;
+.itemThumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
     object-fit: cover;
-    border-radius: 4px;
 }
 
-.basicInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: flex-start;
+.wishlistHeader h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
 }
 
-.basicInfo > * {
+.dropdownButton {
     width: 100%;
-}
-
-.productName {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-    margin-bottom: 5px;
-}
-
-.price {
-    color: #2c5282;
-    font-weight: 500;
-    margin: 0;
-    margin-bottom: 5px;
-}
-
-.removeButton {
-    background-color: #e53e3e;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    width: 100px;
-    height: 35px;
-    font-size: 0.9rem;
     display: flex;
-    align-items: center;
     justify-content: center;
-    margin-top: 5px;
-}
-
-.removeButton:hover {
-    background-color: #c53030;
-    transform: none;
-}
-
-.dropdownSection {
-    display: flex;
     align-items: center;
-    gap: 10px;
+    padding: 8px 0;
+    cursor: pointer;
+    border-top: 1px solid #eee;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+.dropdownButton:hover {
+    background-color: #f1f3f5;
 }
 
 .dropdownIcon {
-    cursor: pointer;
-    padding: 8px;
     transition: transform 0.3s ease;
+    color: #666;
 }
 
 .dropdownIcon.open {
     transform: rotate(180deg);
 }
 
-.detailsPanel {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    background-color: #f7fafc;
-    width: 100%;
-}
-
-.detailsPanel.open {
-    max-height: 250px;
+.wishlistDetails {
     padding: 15px;
-    margin-top: 10px;
+    border-top: 1px solid #eee;
+    background-color: white;
 }
 
 .detailsGrid {
@@ -111,12 +83,54 @@
     gap: 10px;
 }
 
-.detailItem {
+.detailsGrid p {
     margin: 0;
-    padding: 5px 0;
-    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.9rem;
+    color: #666;
 }
 
-.detailItem:last-child {
-    border-bottom: none;
+.detailsGrid strong {
+    color: #333;
+}
+
+.removeButton {
+    margin-top: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.removeButton:hover {
+    background-color: #c82333;
+}
+
+.emptyMessage {
+    text-align: center;
+    color: #666;
+}
+
+.productInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.productInfo h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.price {
+    font-size: 0.9rem;
+    color: #1a6187;
+    font-weight: 600;
+}
+
+.headerActions {
+    display: none;
 }

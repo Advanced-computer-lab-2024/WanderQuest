@@ -1,19 +1,18 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import Navbar from '../../../components/Navbar';
-import styles from '../../../Styles/Tourist.module.css'
+import styles from '../Styles/Tourist.module.css'
 import { FaUserCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useState } from 'react';
-import Wishlist from '../../../components/Wishlist';
-import Complaints from '../../../components/Complaints';
 import Image from 'next/image';
-import Mountains from '../../../imgs/Mountains.jpg';
+import Wishlist from "./Wishlist";
+import Complaints from "./Complaints";
+import Mountains from '../imgs/Mountains.jpg';
 import { Cookie } from 'next/font/google';
 import {motion} from 'framer-motion';
 
 import { useEffect } from 'react';
-import Foot from "../../../components/foot";
+import Foot from "./foot";
 
 
 const testimonials = [
@@ -45,7 +44,7 @@ const cookie = Cookie({
   subsets: ['latin'],
 });
 
-export default function Tourist() {
+const LandingPage = () => {
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
     const [slideDirection, setSlideDirection] = useState('next');
 
@@ -153,47 +152,8 @@ export default function Tourist() {
 
     return (
         <>
-            <Navbar  />
             <div className={styles.container}>
-                {promoCode.promoCodes && (
-                    <div style={{
-                        backgroundColor: 'black',
-                        color: 'white',
-                        overflow: 'hidden',
-                        position: 'relative',
-                        paddingTop: '5px',
-                        width: '100%',
-                        height: '30px'
-                    }}>
-                        {!isLoading  && (
-                            <motion.div
-                                style={{
-                                    whiteSpace: 'nowrap',
-                                    gap: '10px',
-                                    fontSize: '14px',
-                                    width: 'max-content'
-                                }}
-                                initial={{ x: '-100%' }}
-                                animate={{ x: '100vw' }}
-                                transition={{
-                                    duration: 20,
-                                    repeat: Infinity,
-                                    ease: 'linear'
-                                }}
-                            >
-                                🎉 SPECIAL OFFER: Use code "{promoCode.promoCodes.code}" for {promoCode.promoCodes.discount} {promoCode.promoCodes.type === "PERCENTAGE" ? '%' : 'USD'} OFF on all bookings! <span 
-                                    style={{
-                                        textDecoration: 'underline',
-                                        cursor: 'pointer'
-                                    }}
-                                    onClick={() => navigator.clipboard.writeText(promoCode.promoCodes.code)}
-                                >
-                                    Click here
-                                </span> to copy code! Limited time only! 🎉
-                            </motion.div>
-                        )}
-                    </div>
-                )}
+                
                 <div className={styles.heroSection}>
                     {(() => {
                         const [currentImage, setCurrentImage] = useState(0);
@@ -720,7 +680,7 @@ export default function Tourist() {
 
                 </div>
 
-
+                
             </div>
 
             {/* Updated Wishlist Sliding Panel */}
@@ -754,3 +714,5 @@ export default function Tourist() {
         </>
     );
 };
+
+export default LandingPage;

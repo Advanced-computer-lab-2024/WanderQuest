@@ -1,11 +1,7 @@
 /* Main container styling */
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
-  background-color: #f5f5f5;
-  margin-top: 90px; /* Adjusted to leave space for the navbar */
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
 /* Sort and filter controls */
@@ -53,16 +49,86 @@
 /* Complaint card styling */
 .complaintCard {
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  width: 400px; /* Increased card width */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.complaintCard:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 16px rgba(0, 0, 0, 0.2);
+.complaintCard h1 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+.complaintInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.complaintInfo > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.complaintInfo label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.complaintInfo input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.complaintInfo input:focus {
+  outline: none;
+  border-color: #031A29;
+}
+
+.complaintInfo input[type="date"] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.complaintButton {
+  margin-top: 10px;
+  background-color: #031A29;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.complaintButton:hover {
+  background-color: #042335;
+}
+
+/* Add disabled input styling */
+.complaintInfo input:disabled {
+  background-color: #f5f5f5;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Add error state styling if needed */
+.complaintInfo input.error {
+  border-color: #ff4d4d;
+}
+
+/* Add success state styling if needed */
+.complaintInfo input.success {
+  border-color: #4CAF50;
 }
 
 /* Responsive layout adjustments */
@@ -86,136 +152,150 @@
   }
 }
 
-
-/* Styling for complaint info section inside the card */
-.complaintInfo {
-  padding: 15px;
-  text-align: left;
-  font-size: 16px;
-  line-height: 1.6;
+/* Add this to your existing CSS */
+.successMessage {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in;
 }
 
-.complaintInfo h2 {
-  font-size: 22px;
-  color: #1a6187;
-  margin-bottom: 10px;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.complaintInfo p {
-  color: #555;
-  margin-bottom: 12px;
+.complaintsContainer {
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
 }
 
-.complaintInfo .date {
-  color: #888;
-  font-size: 14px;
+.complaintItem {
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
 }
 
-/* Styling for complaint status section */
-.complaintInfo div {
-  margin-top: 15px;
-  display: flex;
-  align-items: center;
-  gap: 5px; /* Adjust spacing between "Status:" and its value */
+.complaintHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
 }
 
-/* Styling for status labels */
-.complaintInfo div p:first-child {
-  font-weight: bold;
-  color: #333;
-  margin: 0;
+.complaintHeader:hover {
+    background-color: #f1f3f5;
 }
 
-/* Styling for status values */
-.complaintRating {
-  color: #ff9800; /* Orange for Pending */
-  font-weight: bold;
-  background-color: rgba(255, 152, 0, 0.2);
-  padding: 5px 10px;
-  border-radius: 8px;
+.complaintHeader h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
 }
 
-.complaintRating2 {
-  color: #4CAF50; /* Green for Resolved */
-  font-weight: bold;
-  background-color: rgba(76, 175, 80, 0.2);
-  padding: 5px 10px;
-  border-radius: 8px;
+.dropdownIcon {
+    transition: transform 0.3s ease;
+    color: #666;
 }
 
-/* Styling for the complaint button */
-.complaintButton {
-  background-color: #1a6187;
-  border: none;
-  color: white;
-  padding: 12px 35px;
-  border-radius: 30px;
-  margin-top: 20px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  text-decoration: none;
-  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+.dropdownIcon.open {
+    transform: rotate(180deg);
 }
 
-.complaintButton:hover {
-  background-color: #122c34;
-  box-shadow: 0 6px 10px rgba(0, 123, 255, 0.5);
+.complaintDetails {
+    padding: 15px;
+    border-top: 1px solid #eee;
+    background-color: white;
 }
 
-.complaintButton:focus {
-  outline: none;
+.complaintDetails p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+    color: #666;
 }
 
-/* Sort and filter controls */
-.sortFilterControls {
-  margin-bottom: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+.complaintDetails strong {
+    color: #333;
 }
 
-.sortFilterControls button {
-  padding: 12px 25px;
-  font-size: 16px;
-  background-color: #1a6187;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+.statusPending {
+    background-color: #ffd700;
+    color: #000;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 8px;
 }
 
-.sortFilterControls button:hover {
-  background-color: #122c34;
+.statusResolved {
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 8px;
 }
 
-.sortFilterControls select {
-  padding: 12px 20px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  cursor: pointer;
+.emptyMessage {
+    text-align: center;
+    color: #666;
+    padding: 20px;
 }
 
-/* Ensure the cards adjust correctly in the responsive layout */
-@media (max-width: 768px) {
-  .container {
-      padding: 20px;
-  }
+/* Add these new styles */
+.hasReplyIcon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    color: #4CAF50;
+    font-size: 0.8rem;
+}
 
-  .complaintCard {
-      width: 90%;
-  }
+.replySection {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
 
-  .sortFilterControls {
-      flex-direction: column;
-      align-items: center;
-  }
+.replySection h4 {
+    color: #333;
+    margin: 0 0 10px 0;
+    font-size: 0.95rem;
+}
 
-  .complaintButton {
-      width: 100%;
-      padding: 12px 0;
-  }
+.replyContent {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    position: relative;
+}
+
+.replyContent p {
+    margin: 0;
+    color: #444;
+}
+
+.replyDate {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 8px;
+    text-align: right;
 }
