@@ -15,8 +15,8 @@ const Transportation = () => {
             const response = await axios.get('http://localhost:4000/authentication/user', {
                 withCredentials: true, // Include cookies if required
             });
-            setId(response.data._id);
-            console.log(response.data);
+            setId(response.data);
+            console.log(response.data.companyName);
         } catch (error) {
             console.error('Error fetching user role:', error);
         }
@@ -35,8 +35,8 @@ const Transportation = () => {
         BookingAlreadyMade: false,
         pickUpLocation: "",
         dropOffLocation: "",
-        createdBy: id
-        
+        createdBy: id._id,
+        company:id.companyName
     });
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentTransportationId, setCurrentTransportationId] = useState(null);
@@ -125,8 +125,8 @@ const Transportation = () => {
             BookingAlreadyMade: false,
             pickUpLocation: "",
             dropOffLocation: "",
-            createdBy: id
-
+            createdBy: id._id,
+            company: id.companyName
         });
     };
 
@@ -152,7 +152,7 @@ const Transportation = () => {
                             <p><strong>Company Name: {transportation.company}</strong></p>
                             <p><strong>Type of transportation:</strong> {transportation.type}</p>
                             <p><strong>Price:</strong> {transportation.price}</p>
-                            <p><strong>Date:</strong> {transportation.date}</p>
+                            <p><strong>Date:</strong> {transportation.date.split('T')[0]}</p>
                             <p><strong>Departure Time:</strong> {transportation.departure}</p>
                             <p><strong>Arrival Time:</strong> {transportation.arrival}</p>
                             <p><strong>Pick Up Location:</strong> {transportation.pickUpLocation}</p>

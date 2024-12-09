@@ -1,0 +1,131 @@
+.dashboard {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 50px;
+  }
+  
+  .header {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .filter h3 {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .filterInput {
+    padding: 8px;
+    width: 250px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .filterSelect {
+    padding: 8px;
+    width: 150px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .salesSummary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    gap: 30px; /* Adds gap between the charts */
+  }
+  
+  .chart {
+    width: 100%;
+    max-width: 600px;
+    flex-grow: 1;
+  }
+  
+  .salesSummary h4 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .productSales, .activitySales, .itinerarySales {
+    margin-top: 40px;
+  }
+  
+  .productSales h3, .activitySales h3, .itinerarySales h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .tableContainer {
+    overflow-x: auto;
+  }
+  
+  .productTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .productTable th, .productTable td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .productTable th {
+    background-color: #f2f2f2;
+    color: #555;
+  }
+  
+  .productTable td {
+    background-color: #fff;
+  }
+  
+  .productTable tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .productTable td:last-child, .productTable th:last-child {
+    text-align: center;
+  }
+  
+  .productTable td {
+    font-size: 0.9rem;
+  }
+  
+  .productTable th {
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .salesSummary {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .chart {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  
+    .filter {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  
