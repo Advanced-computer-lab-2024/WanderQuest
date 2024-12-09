@@ -88,7 +88,7 @@ const Navbar = () => {
                 </div>
                 <div className='navbar-middleside'>
                     {role == "advertiser" && (
-                        <div className={styles.buttons}>
+                        <div className="navbar-button}">
                             <button onClick={() => window.location.href = '/advertiser/activitys'}>Activities</button>
                             <button onClick={() => window.location.href = '/advertiser/createactivity'}>Create Activity</button>
                             <button onClick={() => window.location.href = '/advertiser/createTransportation'}>Create Transportation</button>
