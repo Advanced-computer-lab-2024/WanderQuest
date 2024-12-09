@@ -279,163 +279,178 @@ const Activitiespage = (Props) => {
     return <p className={styles.error}>Error: {error}</p>;
   }
 
-  return (
-    <>
-      <Navbar />
-      <img src="/1.png" className={styles.travelplan} alt="iti" />
-      <div className={styles.container}>
-        {role === "Tourist" ? (
-          <motion.div
-            className={styles.searchcom}
-            initial={{ y: -170 }}
-            transition={{ duration: 1 }}
-          >
-            <input
-              className={styles.productsearch}
-              onChange={(e) => setSearch(e.target.value)}
-              type="text"
-              placeholder="Search activities..."
-            />
-          </motion.div>
-        ) : (
-          <div></div>
-        )}
+  return (<>
+    <Navbar></Navbar>
+    <img src="/act.png" className={styles.travelplan} alt="iti" />
+    <div className={styles.container}>
 
-        <div className={styles.pageLayout}>
-          <div className={styles.sidebar}>
-            <h1>Products</h1>
-            <div className={styles.filterSection}>
-              <button style={{ margin: '5px' }} onClick={handlesortPriceAsc}>Sort Price Asc</button>
-              <button style={{ margin: '5px' }} onClick={handlesortPriceDsc}>Sort Price Desc</button>
-              <button style={{ margin: '5px' }} onClick={handlesortRatingAsc}>Sort Rating Asc</button>
-              <button style={{ margin: '5px' }} onClick={handlesortRatingDsc}>Sort Rating Desc</button>
-              <div className={styles.ratingFilters}>
-                <label>
-                  <input
-                    type="checkbox"
-                    onChange={() => handleRatingChange(1)}
-                    checked={ratingFilter === 1}
-                  /> 1 or higher
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    onChange={() => handleRatingChange(2)}
-                    checked={ratingFilter === 2}
-                  /> 2 or higher
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    onChange={() => handleRatingChange(3)}
-                    checked={ratingFilter === 3}
-                  /> 3 or higher
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    onChange={() => handleRatingChange(4)}
-                    checked={ratingFilter === 4}
-                  /> 4 or higher
-                </label>
-              </div>
-            </div>
 
-            <div className={styles.categoryFilter}>
-              <h3>Categories</h3>
-              {Array.isArray(category) && category.map((cat, index3) => (
-                <div key={index3} className={styles.categoryItem}>
-                  <input
-                    type="checkbox"
-                    id={`category-${index3}`}
-                    onClick={() => handlefiltercat(cat.category)}
-                  />
-                  <label htmlFor={`category-${index3}`}>{cat.category}</label>
+      {Array.isArray(category) && category.map((cat, index3) => (
+  <div key={index3}>
+    <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
+    <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
+  </div>
+))}
+
+{role === "Tourist" ? (
+  < motion.div
+  className={styles.searchcom}
+  initial={{ y: 10 }}
+            transition={{ duration: 1 }} >
+    <input
+      className={styles.productsearch}
+      onChange={(e) => setSearch(e.target.value)}
+      type="text"
+      placeholder="Search activities..."
+    />
+    {/* <button className={styles.searchbtn} onClick={handleSearch}>Search</button> */}
+    {/* <button onClick={clearsearch}>Clear Search</button> */}
+  </motion.div>
+) : (
+  <div></div>
+)}
+{/* 
+      <div className={styles.sortButtons}>
+        <button onClick={handlesortPriceAsc}>Sort Price Asc</button>
+        <button onClick={handlesortPriceDsc}>Sort Price Desc</button>
+        <button onClick={handlesortRatingAsc}>Sort Rating Asc</button>
+        <button onClick={handlesortRatingDsc}>Sort Rating Desc</button>
+      </div> */}
+
+     
+      {/* Date filter input */}
+      {/* <div className={styles.dateFilter}>
+        <input 
+          type="date" 
+          onChange={(e) => setDateFilter(e.target.value)} // Update date filter state on date change
+        />
+      </div> */}
+
+      {/* Budget filter inputs */}
+      {/* <div className={styles.budgetFilter}>
+        <label>
+          Min Budget: 
+          <input 
+            type="number" 
+            value={minBudget} 
+            onChange={(e) => setMinBudget(e.target.value)} 
+            placeholder="Min" 
+          />
+        </label>
+        <label>
+          Max Budget: 
+          <input 
+            type="number" 
+            value={maxBudget} 
+            onChange={(e) => setMaxBudget(e.target.value)} 
+            placeholder="Max" 
+          />
+        </label>
+      </div> */} <div className={styles.pageLayout}>
+      <div className={styles.sidebar}>
+                    <h1>Filters</h1>
+                    <div className={styles.filterSection}>
+                    <button  style={{ margin: '5px' }} onClick={handlesortPriceAsc}>Sort Price Asc</button>
+                    <button  style={{ margin: '5px' }}  onClick={handlesortPriceDsc}>Sort Price Desc</button>
+                    <button style={{ margin: '5px' }} onClick={handlesortRatingAsc}>Sort Rating Asc</button>
+                    <button  style={{ margin: '5px' }}onClick={handlesortRatingDsc}>Sort Rating Desc</button>
+                    <div className={styles.ratingFilters}>
+                    <h2>Rating Filter</h2>
+                      {[1, 2, 3, 4].map((rating) => (
+                        <label key={rating} style={{ cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            onChange={() => handleRatingChange(rating)}
+                            checked={ratingFilter === rating}
+                          />
+                          {[...Array(rating)].map((_, index) => (
+                            <span key={index} style={{ color: 'gold' }}>★</span>
+                          ))}
+                          {[...Array(5 - rating)].map((_, index) => (
+                            <span key={index} style={{ color: '#ccc' }}>★</span>
+                          ))}
+                          <span style={{ marginLeft: '4px' }}>or higher</span>
+                        </label>
+                      ))}
+                    </div>
+                    </div>
+                    <div className={styles.priceFilter}>
+                        <h3>Price Filter</h3>
+                        <div>
+                            <label>
+                                Min Price:
+                                <input
+                                    type="number"
+                                    className={styles.min}
+                                    value={minBudget}
+                                    onChange={(e) => setMinBudget(e.target.value)}
+                                    placeholder="0"
+                                />
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                Max Price:
+                                <input
+                                    type="number"
+                                    className={styles.max}
+                                    value={maxBudget}
+                                    onChange={(e) => setMaxBudget(e.target.value)}
+                                    placeholder="1000"
+                                />
+                            </label>
+                        </div>
+                        <div className={styles.slider}>
+                            <label>Min</label>
+                            <input
+                                type="range"
+                                className={styles.rangeMin}
+                                min="0"
+                                max="10000"
+                                value={minBudget}
+                                onChange={(e) => setMinBudget(e.target.value)}
+                                step="100"
+                            />
+                            <label>Max</label>
+                            <input
+                                type="range"
+                                className={styles.rangeMax}
+                                min="0"
+                                max="10000"
+                                value={maxBudget}
+                                onChange={(e) => setMaxBudget(e.target.value)}
+                                step="100"
+                            />
+                        </div><div className={styles.filterSection}>
+                        <button  style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply Filter</button>
+                        <button  style={{ margin: '5px' }} className={styles.productArchive} onClick={clearFilters }>Clear Filters</button>
+                    </div></div>
                 </div>
-              ))}
-            </div>
-
-            <div className={styles.priceFilter}>
-              <h3>Price Filter</h3>
-              <div>
-                <label>
-                  Min Price:
-                  <input
-                    type="number"
-                    className={styles.min}
-                    value={minBudget}
-                    onChange={(e) => setMinBudget(e.target.value)}
-                    placeholder="0"
-                  />
-                </label>
-              </div>
-              <div>
-                <label>
-                  Max Price:
-                  <input
-                    type="number"
-                    className={styles.max}
-                    value={maxBudget}
-                    onChange={(e) => setMaxBudget(e.target.value)}
-                    placeholder="1000"
-                  />
-                </label>
-              </div>
-              <div className={styles.slider}>
-                <label>Min</label>
-                <input
-                  type="range"
-                  className={styles.rangeMin}
-                  min="0"
-                  max="10000"
-                  value={minBudget}
-                  onChange={(e) => setMinBudget(e.target.value)}
-                  step="100"
-                />
-                <label>Max</label>
-                <input
-                  type="range"
-                  className={styles.rangeMax}
-                  min="0"
-                  max="10000"
-                  value={maxBudget}
-                  onChange={(e) => setMaxBudget(e.target.value)}
-                  step="100"
-                />
-              </div>
-              <div className={styles.filterSection}>
-                <button style={{ margin: '5px' }} onClick={handleApplyFilters}>Apply Filter</button>
-                <button style={{ margin: '5px' }} className={styles.productArchive} onClick={clearFilters}>Clear Filters</button>
-              </div>
-            </div>
-          </div>
-          <div className={styles.activities}>
-            {activities.map((activity) => (
-              <div key={activity.id} className={styles.activity}>
-                <h3>{activity.title}</h3>
-                <p>
-                  <strong>Date:</strong> {activity.date}<br />
-                  <strong>Time:</strong> {activity.time}<br />
-                  <strong>Location:</strong>{' '}
-                  <a href={activity.location} target="_blank" rel="noopener noreferrer">
-                    {activity.location}
-                  </a><br />
-                  <strong>Price:</strong> {activity.price * multiplier} {preferredCurrency}<br />
-                  <strong>Category:</strong> {activity.category}<br />
-                  <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
-                  <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-                  <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-                  <p></p>
-                  <Link href={`activity/${activity._id}`} className={styles.addticket}>
-                    <button className={styles.searchbtn}>View</button>
-                  </Link>
-                </p>
-              </div>
-            ))}
-          </div>
+                <div className={styles.activities}>
+      {activities.map((activity) => (
+        <div key={activity.id} className={styles.activity}>
+          <h3>{activity.title}</h3>
+          <p>
+            <strong>Date:</strong> {activity.date}<br />
+            <strong>Time:</strong> {activity.time}<br />
+            <strong>Location:</strong>{' '}
+            <a href={activity.location} target="_blank" rel="noopener noreferrer">
+              {activity.location}
+            </a><br />
+            <strong>Price:</strong> {activity.price}<br />
+            <strong>Category:</strong> {activity.category}<br />
+            <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
+            <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
+          </p>
+          <Link href={`activity/${activity._id}`} className={styles.addticket}>
+            <button className={styles.searchbtn}>View</button>
+          </Link>
         </div>
-      </div>
-    </>
+      ))}
+    </div>
+  </div>
+</div>
+  </>
   );
 };
 

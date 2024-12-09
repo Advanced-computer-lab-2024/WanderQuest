@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import styles from '/styles/Activities.module.css';
+import styles from '/styles/actdetail.module.css';
 import Navbar from '../../../../../components/Navbar';
 
 function Page({ params }) {
@@ -118,60 +118,103 @@ function Page({ params }) {
     <>
       <Navbar />
       {activity && (
-        <div key={activity.id} className={styles.activitydetails}>
-          <h3>{activity.title}</h3>
-          <p>
-            <strong>Date:</strong> {activity.date}<br />
-            <strong>Time:</strong> {activity.time}<br />
-            <strong>Location:</strong>{' '}
-            <a href='' target="_blank" rel="noopener noreferrer">
-              {activity.location}
-            </a><br />
-            <strong>Price:</strong> {activity.price * multiplier} {preferredCurrency}<br />
-            <strong>Category:</strong> {activity.category}<br />
-            <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
-            <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-            <strong>Booking Open:</strong> {activity.booking_open ? 'Yes' : 'No'}
-            <div className={styles.reviews}>
-              <h3>Ratings & Reviews</h3>
-
-              {/* Check if there are no ratings or comments */}
-              {(!activity.ratings.length && !activity.comments.length) ? (
-                <p>No reviews and ratings</p>
-              ) : (
-                [
-                  ...new Set([
-                    ...activity.ratings.map((rat) => rat.touristId),
-                    ...activity.comments.map((comm) => comm.touristId),
-                  ])
-                ].map((touristId, idx) => {
-                  const rating = activity.ratings.find((rat) => rat.touristId === touristId);
-                  const comment = activity.comments.find((comm) => comm.touristId === touristId);
-
-                  return (
-                    <div className={styles.review} key={idx}>
-                      <p>
-                        <strong>{touristId}:</strong>
-                      </p>
-                      {rating && (
-                        <p>
-                          <strong>Rating:</strong> {rating.rating} stars
-                        </p>
-                      )}
-                      {comment && (
-                        <p>
-                          <strong>Review:</strong> {comment.comment}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })
-              )}
+        <div className={styles.activitydetails}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>{activity.title}</h1>
+          </div>
+  
+          <div className={styles.infoSection}>
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Date</span>
+              <span className={styles.value}>{activity.date}</span>
             </div>
-
-          </p>
-          <button onClick={share}>Share Link</button>
-          {activity.bookingIsOpen ? (<button onClick={handleBooking}>Book</button>) : (<></>)}
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Time</span>
+              <span className={styles.value}>{activity.time}</span>
+            </div>
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Location</span>
+              <a 
+                href={`https://maps.google.com/?q=${activity.location}`} 
+                className={`${styles.value} ${styles.locationLink}`}
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                {activity.location} 📍
+              </a>
+            </div>
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Price</span>
+              <span className={styles.value}>{activity.price}</span>
+            </div>
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Category</span>
+              <span className={styles.value}>{activity.category}</span>
+            </div>
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Tags</span>
+              <span className={styles.value}>
+                {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}
+              </span>
+            </div>
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Special Discounts</span>
+              <span className={styles.value}>{activity.specialDiscounts || 'None'}</span>
+            </div>
+            <div className={styles.infoItem}>
+              <span className={styles.label}>Booking Status</span>
+              <span className={styles.value}>
+                {activity.booking_open ? '✅ Open for Booking' : '❌ Currently Closed'}
+              </span>
+            </div>
+          </div>
+  
+          <div className={styles.reviews}>
+            <h2 className={styles.reviewsTitle}>Ratings & Reviews</h2>
+            {(!activity.ratings.length && !activity.comments.length) ? (
+              <div className={styles.review}>
+                <p className={styles.value}>No reviews and ratings yet</p>
+              </div>
+            ) : (
+              [...new Set([
+                ...activity.ratings.map((rat) => rat.touristId),
+                ...activity.comments.map((comm) => comm.touristId),
+              ])].map((touristId, idx) => {
+                const rating = activity.ratings.find((rat) => rat.touristId === touristId);
+                const comment = activity.comments.find((comm) => comm.touristId === touristId);
+  
+                return (
+                  <div className={styles.review} key={idx}>
+                    <p className={styles.reviewHeader}>
+                      Tourist {touristId}
+                    </p>
+                    {rating && (
+                      <p className={`${styles.value} ${styles.rating}`}>
+                        <strong>Rating:</strong> 
+                        <span className={styles.star}>{'★'.repeat(rating.rating)}{'☆'.repeat(5-rating.rating)}</span>
+                      </p>
+                    )}
+                    {comment && (
+                      <p className={styles.value}>
+                        <strong>Review:</strong> {comment.comment}
+                      </p>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+  
+          <div className={styles.actions}>
+            <button onClick={share} className={`${styles.button} ${styles.shareButton}`}>
+              Share Activity
+            </button>
+            {activity.bookingIsOpen && (
+              <button onClick={handleBooking} className={`${styles.button} ${styles.bookButton}`}>
+                Book Now
+              </button>
+            )}
+          </div>
         </div>
       )}
     </>

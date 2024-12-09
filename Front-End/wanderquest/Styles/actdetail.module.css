@@ -1,0 +1,149 @@
+.activitydetails {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.activitydetails:hover {
+    transform: translateY(-5px);
+}
+
+.header {
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.title {
+    font-size: 2.8rem;
+    color: #1a237e;
+    margin-bottom: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.infoItem {
+    display: flex;
+    align-items: baseline;
+    padding: 0.5rem 0;
+    transition: transform 0.2s ease;
+}
+
+.infoItem:hover {
+    transform: translateX(5px);
+}
+
+.label {
+    font-weight: 600;
+    color: #455a64;
+    min-width: 140px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.value {
+    color: #37474f;
+    font-size: 1.1rem;
+}
+
+.locationLink {
+    color: #1e88e5;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.locationLink:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #1e88e5;
+    transition: width 0.3s ease;
+}
+
+.locationLink:hover:after {
+    width: 100%;
+}
+
+.reviews {
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 2px solid #e3f2fd;
+}
+
+.reviewsTitle {
+    font-size: 2rem;
+    color: #1a237e;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.review {
+    background: linear-gradient(to right, #ffffff, #f5f5f5);
+    padding: 1.8rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e3f2fd;
+    transition: all 0.3s ease;
+}
+
+.review:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.actions {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.button {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+.shareButton {
+    background: #f5f5f5;
+    color: #37474f;
+    border: 2px solid #e0e0e0;
+}
+
+.bookButton {
+    background: linear-gradient(45deg, #1e88e5, #1976d2);
+    color: white;
+}
+
+.button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.shareButton:hover {
+    background: #eeeeee;
+    border-color: #bdbdbd;
+}
+
+.bookButton:hover {
+    background: linear-gradient(45deg, #1976d2, #1565c0);
+}
