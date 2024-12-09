@@ -20,6 +20,8 @@ const Navbar = () => {
     const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
     const [user, setUser] = useState({});
 
+
+
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -63,6 +65,20 @@ const Navbar = () => {
         }
     };
 
+    const handleRedirect = () => window.location.href = '/tourist/itinerary';
+    const handleRedirectac = () => window.location.href = '/tourist/activity';
+    const handleRedirectp = () => window.location.href = '/tourist/products';
+    const handleRedirectm = () => window.location.href = '/tourist/museums';
+    const handleRedirectcomp = () => window.location.href = '/tourist/file-complaint';
+    const handleRedirectviewcomp = () => window.location.href = '/tourist/view-complaint';
+    const handleRedirectHist = () => window.location.href = '/tourist/history';
+    const handleRedirec = () => window.location.href = '/tourist/bookings';
+    const handleRedirechotel = () => window.location.href = '/tourist/hotels';
+    const handleRedirecflight = () => window.location.href = '/tourist/flights';
+    const handleRedirectransport = () => window.location.href = '/tourist/transportation';
+    const handleRedirectWishlist = () => window.location.href = '/tourist/wishlist';
+    const handleViewComplaints = () => window.location.href = '/tourist/view-complaint';
+
     return (
         <>
             <div className="navbar-container">
@@ -72,33 +88,53 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <div className='navbar-middleside'>
-                    {role == "advertiser" && <a href="/advertiser"><button className="navbar-button">Reports</button></a>}
-                    {role != "advertiser" && <button className="navbar-button">Products</button>}
-                    <div
-                        className="navbar-button-container"
-                        onMouseEnter={() => setShowDropdown(true)}
-                        onMouseLeave={() => setShowDropdown(false)}
-                    >
-                        <button className="navbar-button">Activities</button>
-                        {showDropdown && (
-                            <div className="dropdown-menu">
-                                <a href="/advertiser/createactivity" className="dropdown-item">
-                                    Create an Activity
-                                </a>
-                                <a href="/advertiser/activitys" className="dropdown-item">
-                                    View All My Activities
-                                </a>
-                                <a href="/advertiser/createtransportation" className="dropdown-item">
-                                    Create a Transportation
-                                </a>
-                                <a href="/advertiser/transportation" className="dropdown-item">
-                                    View All My Transportations
-                                </a>
-                            </div>
-                        )}
-                    </div>
-                    {role != "advertiser" && <button className="navbar-button">Itinerary</button>}
-                    {role != "advertiser" && <button className="navbar-button">Historical Places</button>}
+                    {role == "advertiser" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/advertiser/activitys'}>Activities</button>
+                            <button onClick={() => window.location.href = '/advertiser/createactivity'}>Create Activity</button>
+                            <button onClick={() => window.location.href = '/advertiser/createTransportation'}>Create Transportation</button>
+                            <button onClick={() => window.location.href = '/advertiser/transportation'}>Transportation</button>
+                        </div>
+                    )}
+                    {role == "tourist" && (
+                        <div className={styles.buttons}>
+                            <button onClick={handleRedirect}>Go to Itinerary</button>
+                            <button onClick={handleRedirectac}>Go to activity</button>
+                            <button onClick={handleRedirectp}>Go to products</button>
+                            <button onClick={handleRedirectm}>Go to museums</button>
+                            <button onClick={handleRedirectcomp}>File a complaint</button>
+                            <button onClick={handleRedirectviewcomp}>View Complaint</button>
+                            <button onClick={handleRedirectHist}>Go to History</button>
+                            <button onClick={handleRedirec}>My Bookings</button>
+                            <button onClick={handleRedirechotel}>Hotels</button>
+                            <button onClick={handleRedirecflight}>Flights</button>
+                            <button onClick={handleRedirectransport}>Transportation</button>
+                            <button onClick={handleRedirectWishlist}>View Wishlist</button>
+                            <button onClick={handleViewComplaints}>View Complaint</button>
+                        </div>
+                    )}
+                    {role == "" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/guest/itinerary'}>Go to Itinerary</button>
+                            <button onClick={() => window.location.href = '/guest/activity'}>Go to activity</button>
+                            <button onClick={() => window.location.href = '/guest/museums'}>Go to museums</button>
+                        </div>
+                    )}
+                    {role == "seller" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/seller/createprod'}>Create Product</button>
+                            <button onClick={() => window.location.href = '/seller/products'}>View Products</button>
+                        </div>
+                    )}
+                    {role == "tourGuide" && (
+                        <div className={styles.buttons}>
+                            <button onClick={() => window.location.href = '/tourguide/crud'}>CRUD Operations</button>
+                            <button onClick={() => window.location.href = '/tourguide/viewAll'}>View All</button>
+                        </div>
+                    )}
+                    {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && <button className="navbar-button">Products</button>}
+                    {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && <button className="navbar-button">Itinerary</button>}
+                    {role != "advertiser" && role != "tourist" && role != "seller" && role != "tourGuide" && role != "" && <button className="navbar-button">Historical Places</button>}
                 </div>
                 <div className='navbar-rightside'>
                     {role && <NotificationButton role={role} />}
@@ -202,7 +238,7 @@ const Navbar = () => {
                     )}
                 </div>
             </div>
-            
+
             <WishlistPanel
                 isOpen={isWishlistOpen}
                 onClose={() => setIsWishlistOpen(false)}
