@@ -480,6 +480,7 @@ npm install
 
 <details>
 <summary>API 1 : Send a request to Log in as a tourist</summary>
+  
 `POST: http://localhost:4000/authentication/login`
 
 *Request Body*
@@ -498,7 +499,10 @@ npm install
 }
 ```
 </details>
-API 2 : Send a Request to Get Profile
+
+<details>
+<summary>API 2 : Send a Request to Get Profile</summary>
+  
 `GET: http://localhost:4000/tourist/profile`
 
 *Response Body*
@@ -625,7 +629,12 @@ API 2 : Send a Request to Get Profile
     ]
 }
 ```
-API 3 : Send a Request to Get Redeemable PromoCodes
+
+</details>
+
+<details>
+<summary>API 3 : Send a Request to Get Redeemable PromoCodes</summary>
+  
 `Get: http://localhost:4000/tourist/codes`
 
 *Response Body*
@@ -645,7 +654,11 @@ API 3 : Send a Request to Get Redeemable PromoCodes
     }
 }
 ```
-API 4 : Send a Request to Mark all notifications as read
+</details>
+
+<details>
+<summary>API 4 : Send a Request to Mark all notifications as read</summary>
+  
 `PATCH: http://localhost:4000/tourist/notifs`
 
 *Response Body*
@@ -661,7 +674,11 @@ API 4 : Send a Request to Mark all notifications as read
     }
 }
 ```
-API 5 : Send a Request to Clear all notifications
+</details>
+
+<details>
+<summary>API 5 : Send a Request to Clear all notifications</summary>
+  
 `DELETE: http://localhost:4000/tourist/notifications`
 
 *Response Body*
@@ -671,8 +688,11 @@ API 5 : Send a Request to Clear all notifications
     "deletedCount": 12
 }
 ```
+</details>
 
-API 6 : Send a Request to Get available Promocodes
+<details>
+<summary>API 6 : Send a Request to Get available Promocodes</summary>
+  
 `GET: http://localhost:4000/tourist/codes`
 
 *Response Body*
@@ -692,8 +712,11 @@ API 6 : Send a Request to Get available Promocodes
     }
 }
 ```
+</details>
 
-API 7 : Send a Request to Redeem PromoCode
+<details>
+<summary>API 7 : Send a Request to Redeem PromoCode</summary>
+  
 `PATCH: http://localhost:4000/tourist/redeemCode`
 
 *Request Body*
@@ -736,8 +759,11 @@ API 7 : Send a Request to Redeem PromoCode
     ]
 }
 ```
+</details>
 
-API 8 : Send a Request to Log in as an admin
+<details>
+<summary>API 8 : Send a Request to Log in as an admin</summary>
+  
 `POST: http://localhost:4000/authentication/login`
 
 *Request Body*
@@ -756,7 +782,11 @@ API 8 : Send a Request to Log in as an admin
     "id": "6747087b9f8a17b02f53dfac"
 }
 ```
-API 9 : Send a Request to Get a specific complaint
+</details>
+
+<details>
+<summary>API 9 : Send a Request to Get a specific complaint</summary>
+  
 `GET: http://localhost:4000/admin/complaints/672a920b53693b19f9672174`
 
 *Response Body*
@@ -773,7 +803,11 @@ API 9 : Send a Request to Get a specific complaint
     "reply": "The issue is solved"
 }
 ```
-API 10 : Send a Request to Flag an Itinerary
+</details>
+
+<details>
+<summary>API 10 : Send a Request to Flag an Itinerary</summary>
+  
 `PATCH: http://localhost:4000/admin/flagItinerary/67565525d4fd4be70932c260`
 
 *Response Body*
@@ -830,7 +864,11 @@ API 10 : Send a Request to Flag an Itinerary
     }
 }
 ```
-API 11 : Send a Request to get Notifications as a tourGuide
+</details>
+
+<details>
+<summary>API 11 : Send a Request to get Notifications as a tourGuide</summary>
+  
 `GET: http://localhost:4000/tourGuide/notifs`
 
 *Response Body*
@@ -909,7 +947,12 @@ API 11 : Send a Request to get Notifications as a tourGuide
     }
 ]
 ```
-API 12 : Send a Request to get a specific Notification as a tourGuide
+</details>
+
+
+<details>
+<summary>API 12 : Send a Request to get a specific Notification as a tourGuide</summary>
+  
 `GET: http://localhost:4000/tourGuide/notif/675661f5f97bdd3f05225196`
 
 *Response Body*
@@ -926,7 +969,11 @@ API 12 : Send a Request to get a specific Notification as a tourGuide
     "__v": 0
 }
 ```
-API 13 : Send a Request to add a Product to cart
+</details>
+
+<details>
+<summary>API 13 : Send a Request to add a Product to cart</summary>
+  
 `POST: http://localhost:4000/tourist/cart/add`
 
 *Request Body*
@@ -951,7 +998,11 @@ API 13 : Send a Request to add a Product to cart
     ]
 }
 ```
-API 14: Send a Request to change products in cart
+</details>
+
+<details>
+<summary>API 14: Send a Request to change products in cart</summary>
+  
 `PATCH: http://localhost:4000/tourist/cart/change`
 
 *Request Body*
@@ -976,8 +1027,11 @@ API 14: Send a Request to change products in cart
     ]
 }
 ```
+</details>
 
-API 15: Send a Request to delete products from cart
+<details>
+<summary>API 15: Send a Request to delete products from cart</summary>
+  
 `DELETE: http://localhost:4000/tourist/cart/remove`
 
 *Request Body*
@@ -994,7 +1048,7 @@ API 15: Send a Request to delete products from cart
     "message": "Successfully removed the product from the cart"
 }
 ```
-
+</details>
 
 
 ## 🧪 Tests
