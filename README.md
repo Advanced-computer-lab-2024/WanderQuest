@@ -477,6 +477,147 @@ npm install
 ```
 
 ## 📚 API Reference
+<details>
+<summary>Send a request to Log in as a tourist</summary>
+
+- `POST /authentication/login` - Log in as a tourist
+  - **Request body**
+    - `username`: string
+    - `password`: string
+  - **Response**: The Tourist Details
+     - `role`: string
+     - `email`: string
+     - `id`: string
+- `GET /tourist/profile` - Get user's profile
+  - **Response**: A list of all users
+  ```
+  ```json
+
+    "activeAddress": null,
+    "_id": "674709389f8a17b02f53dfb3",
+    "username": "testTourist",
+    "email": "torist@test.com",
+    "password": "$2b$12$tZVlBjp9KdBm7trU3I0csOp0Di4Uob2oCZKSIu/FYwbl.JUTmgVOK",
+    "role": "tourist",
+    "rejected": true,
+    "requestToBeDeleted": false,
+    "nationality": "United Arab Emirates",
+    "mobileNumber": "01010101010",
+    "dob": "1993-02-01T00:00:00.000Z",
+    "job": "student",
+    "wallet": 997576.4998,
+    "preferredCurrency": "EGP",
+    "totalPoints": 1292.7501,
+    "availablePoints": 1292.7501,
+    "level": 1,
+    "accepted": true,
+    "isTermsAccepted": true,
+    "documents": [
+        {
+            "filename": "1733250169050-tour Guide pic 1.jpg",
+            "contentType": "image/jpeg",
+            "fileID": "674f4c79fc91a1a7fad15556",
+            "_id": "674f4c7c3b54f7be7363d417"
+        },
+        {
+            "filename": "1733250169051-company logo 2.jpg",
+            "contentType": "image/jpeg",
+            "fileID": "674f4c79fc91a1a7fad15557",
+            "_id": "674f4c7c3b54f7be7363d418"
+        }
+    ],
+    "__v": 74,
+    "savedEvents": [
+        {
+            "notify": false,
+            "eventType": "Activity",
+            "eventId": "674a488451261c734a627bf4",
+            "_id": "674a4f3e51261c734a627c1e"
+        },
+        {
+            "eventType": "Activity",
+            "eventId": "674a47f251261c734a627bec",
+            "_id": "674a54bcb9cccf752f15c714",
+            "notify": true
+        },
+        {
+            "eventType": "itinerary",
+            "eventId": "674a4e9b51261c734a627c0d",
+            "_id": "674a54e0b9cccf752f15c726",
+            "notify": true
+        }
+    ],
+    "wishlist": [
+        "67033095681e74db673e8484",
+        "6730f075dc71ecb78456212b",
+        "674b6ff986153c78a2ddfda5",
+      "674b706386153c78a2ddfdb0",
+        "674b70a086153c78a2ddfdb6"
+    ],
+    "otp": {
+        "otp": "4f74d8",
+        "expiry": "2024-12-03T16:10:58.963Z",
+        "_id": "674f2b3a1ae32f3ee860c396"
+    },
+    "cart": [],
+    "deliveryAddresses": [
+        {
+            "_id": "675647aac5612e29af2209ba",
+            "street": "123",
+            "city": "cairo",
+            "state": "",
+            "postalCode": "123",
+            "country": "egypt",
+            "googleMapsUrl": "123"
+        }
+    ],
+    "activePromoCodes": [
+        {
+            "code": "seifElKing",
+            "type": "PERCENTAGE",
+            "discount": 0.01,
+            "expiryDate": "2024-12-15T23:48:09.919Z",
+            "createdBy": "6747087b9f8a17b02f53dfac",
+            "touristId": null,
+            "_id": "675630390c1a5f61ce417200",
+            "createdAt": "2024-12-08T23:48:09.978Z",
+            "updatedAt": "2024-12-08T23:48:09.978Z",
+            "__v": 0
+        }
+    ],
+    "updatedAt": "2024-12-09T02:36:47.691Z",
+    "redeemedPromoCodes": [
+        {
+            "code": "cristianoSUIIII",
+            "type": "FIXED",
+            "discount": 100000000000,
+            "expiryDate": "2024-12-15T14:45:08.648Z",
+            "createdBy": "6747087b9f8a17b02f53dfac",
+            "touristId": null,
+            "_id": "6755b0f4b71bbdfa34ee0ba0",
+            "createdAt": "2024-12-08T14:45:08.707Z",
+            "updatedAt": "2024-12-08T14:45:08.707Z",
+            "__v": 0
+        },
+        {
+            "code": "seifElKing",
+            "type": "PERCENTAGE",
+            "discount": 0.01,
+            "expiryDate": "2024-12-15T23:48:09.919Z",
+            "createdBy": "6747087b9f8a17b02f53dfac",
+            "touristId": null,
+            "_id": "675630390c1a5f61ce417200",
+            "createdAt": "2024-12-08T23:48:09.978Z",
+            "updatedAt": "2024-12-08T23:48:09.978Z",
+            "__v": 0
+        }
+    ]
+```
+
+  ```
+- `DELETE /admins/username/:id` - Delete a user by username
+</details>
+
 
 
 ## 🧪 Tests
