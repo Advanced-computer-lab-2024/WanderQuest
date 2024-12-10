@@ -480,6 +480,7 @@ npm install
 
 API 1 : Send a request to Log in as a tourist
 `POST: http://localhost:4000/authentication/login`
+
 *Request Body*
 ```json
 {
@@ -497,6 +498,7 @@ API 1 : Send a request to Log in as a tourist
 ```
 API 2 : Send a Request to Get Profile
 `GET: http://localhost:4000/tourist/profile`
+
 *Response Body*
 ```json
 {
@@ -623,6 +625,7 @@ API 2 : Send a Request to Get Profile
 ```
 API 3 : Send a Request to Get Redeemable PromoCodes
 `Get: http://localhost:4000/tourist/codes`
+
 *Response Body*
 ```json
 {
@@ -642,6 +645,7 @@ API 3 : Send a Request to Get Redeemable PromoCodes
 ```
 API 4 : Send a Request to Mark all notifications as read
 `PATCH: http://localhost:4000/tourist/notifs`
+
 *Response Body*
 ```json
 {
@@ -668,6 +672,7 @@ API 5 : Send a Request to Clear all notifications
 
 API 6 : Send a Request to Get available Promocodes
 `GET: http://localhost:4000/tourist/codes`
+
 *Response Body*
 ```json
 {
@@ -688,6 +693,7 @@ API 6 : Send a Request to Get available Promocodes
 
 API 7 : Send a Request to Redeem PromoCode
 `PATCH: http://localhost:4000/tourist/redeemCode`
+
 *Request Body*
 
 ```json
@@ -919,7 +925,7 @@ API 12 : Send a Request to get a specific Notification as a tourGuide
 }
 ```
 API 13 : Send a Request to add a Product to cart
-POST: http://localhost:4000/tourist/cart/add
+`POST: http://localhost:4000/tourist/cart/add`
 
 *Request Body*
 
@@ -944,8 +950,8 @@ POST: http://localhost:4000/tourist/cart/add
 }
 ```
 API 14: Send a Request to change products in cart
-PATCH: http://localhost:4000/tourist/cart/change
-```
+`PATCH: http://localhost:4000/tourist/cart/change`
+
 *Request Body*
 
 ```json
@@ -971,6 +977,7 @@ PATCH: http://localhost:4000/tourist/cart/change
 
 API 15: Send a Request to delete products from cart
 `DELETE: http://localhost:4000/tourist/cart/remove`
+
 *Request Body*
 
 ```json
