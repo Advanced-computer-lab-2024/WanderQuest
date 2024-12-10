@@ -89,11 +89,15 @@ npm run format:fix
 - Submit a request to register as an advertiser/tour guide/seller with professional details.
 - Upload required documents for advertiser/tour guide/seller registration.
 
+<img width="1787" alt="Sign up page " src="https://github.com/user-attachments/assets/554cb639-83e7-45e7-bcbf-959bfaec0470">
+
 </details>
 
 <details>
 <summary>User Authentication 🔐</summary>
 - Login and logout securely.
+
+<img width="1786" alt="Sign in page" src="https://github.com/user-attachments/assets/f2c99997-0327-464f-9f83-b3819b10351e">
 
 
 </details>
@@ -113,6 +117,8 @@ npm run format:fix
 - Create/delete/view promocodes.
 - Search/Filter/Sort for a product based on product name/price/ratings.
 
+<img width="1788" alt="Admin Home Page" src="https://github.com/user-attachments/assets/3015f1d3-33e7-4e26-a49e-5d75b1ec7e40">
+
 
 </details>
 
@@ -123,6 +129,7 @@ npm run format:fix
 - Reset forgotten password via email.
 - Request to delete account.
 
+![Account Management](https://github.com/user-attachments/assets/883cd94d-eb9e-4522-b330-d279c72acf9f)
 
 </details>
 
@@ -139,6 +146,8 @@ npm run format:fix
 - Archive/unarchive products.
 - Search/Filter/Sort for a product based on product name/price/ratings.
 
+<img width="1788" alt="Seller home page" src="https://github.com/user-attachments/assets/506f2875-2ddc-4e02-94f4-3642abaa090e">
+
 
 </details>
 
@@ -152,6 +161,8 @@ npm run format:fix
 - View created activities.
 - Create/view transportation posts.
 - Get/mark as read notifications.
+
+<img width="1788" alt="Advertiser Home page" src="https://github.com/user-attachments/assets/943786e2-54c8-44ce-853c-10966c0c2a15">
 
 
 </details>
@@ -178,7 +189,9 @@ npm run format:fix
 - Be reminded of your Booked Events getting Within 4 days of check.
 - Recieve a promocode on your birthday in notifications.
 - View/add/remove/edit/checkout to/from cart.
-  
+
+<img width="1792" alt="Tourist Home page" src="https://github.com/user-attachments/assets/e2f424a1-9238-45f9-b99c-0ff49de8c0d9">
+
 
 </details>
 
@@ -191,6 +204,9 @@ npm run format:fix
 - Create/update/delete/view/activate/deactivate itineraries.
 - Rate/comment on tour guide.
 - Manage notifications.
+
+<img width="1787" alt="Tour Guide home page" src="https://github.com/user-attachments/assets/4884fda4-8c6b-4268-b903-406bc5d45eb2">
+
   
 </details>
 
