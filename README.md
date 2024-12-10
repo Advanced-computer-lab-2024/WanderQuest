@@ -261,7 +261,7 @@ npm run format:fix
 
 <details>
   
-<summary>BE authentication Routes</summary>
+<summary>BE Authentication Routes</summary>
   
   ```js
   
