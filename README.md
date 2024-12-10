@@ -990,6 +990,9 @@ API 15: Send a Request to delete products from cart
 
 ## 🧪 Tests
 
+We use `Postman` to manually test all our api references by making sure the response is as expected.
+
+![image](https://github.com/user-attachments/assets/790808a2-a080-4e50-a3e9-bb86ac19c21f)
 
 
 ## 🧑🏻‍🏫 How to Use
