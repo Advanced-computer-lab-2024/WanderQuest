@@ -66,8 +66,6 @@ npm run format:fix
 - [ReactJs](https://reactjs.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [Mongoose](https://mongoosejs.com/)
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
 - [Prettier](https://prettier.io/)
 - [MUI](https://mui.com/)
 - [React Router](https://reactrouter.com/)
@@ -242,6 +240,38 @@ npm run format:fix
           </ul>
 ```
 
+</details>
+<details>
+<summary>BE authentication Routes</summary>
+  ```js
+  router.post('/register', registerUser);
+  
+  router.post('/login', login);
+  
+  router.get('/user', requireAuth(), getUser);
+  
+  router.post('/changePassword', requireAuth(), changePassword);
+  
+  router.post('/uploadDocuments', requireAuth(), uploadDocuments);
+  
+  router.get('/getDocuments/:id', requireAuth(), getUserDocuments);
+  
+  router.get('/getUsersRequestingAcceptance', requireAuth({ role: 'Admin' }), getUsersRequestingAcceptance);
+  
+  router.get('/getDocumentByFileID/:id', requireAuth(), getDocumentByFileID);
+  
+  router.patch('/acceptUser/:id', requireAuth({ role: 'Admin' }), acceptUser);
+  
+  router.patch('/acceptTerms', requireAuth(), acceptTerms);
+  
+  router.patch('/requestAccountDeletion', requireAuth(), requestAccountDeletion);
+  
+  router.post('/requestForgetPasswordEmail', requestForgetPasswordEmail);
+  
+  router.post('/resetPassword', resetPassword);
+  
+  router.post('/logout', logout);
+  ```
 </details>
 
 
