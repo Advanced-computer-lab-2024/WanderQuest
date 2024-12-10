@@ -241,9 +241,14 @@ npm run format:fix
 ```
 
 </details>
+
+
 <details>
+  
 <summary>BE authentication Routes</summary>
+  
   ```js
+  
   router.post('/register', registerUser);
   
   router.post('/login', login);
