@@ -367,8 +367,6 @@ We welcome contributions to Copilot & Sons El7a2ny Clinic. If you want to contri
 - [Express docs](https://expressjs.com/en/4x/api.html)
 - [ReactJs docs](https://reactjs.org/docs/getting-started.html)
 - [NodeJs docs](https://nodejs.org/en/docs/)
-- [Docker docs](https://docs.docker.com/)
-- [Docker Compose docs](https://docs.docker.com/compose/)
 - [Prettier docs](https://prettier.io/docs/en/index.html)
 - [MUI docs](https://mui.com/getting-started/usage/)
 - [React Router docs](https://reactrouter.com/en/6.21.0)
