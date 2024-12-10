@@ -478,12 +478,8 @@ npm install
 
 ## 📚 API Reference
 
-```API 1
-```
-Send a request to Log in as a tourist
-POST: http://localhost:4000/authentication/login
-```
-```
+API 1 : Send a request to Log in as a tourist
+`POST: http://localhost:4000/authentication/login`
 *Request Body*
 ```json
 {
@@ -499,12 +495,8 @@ POST: http://localhost:4000/authentication/login
     "id": "674709389f8a17b02f53dfb3"
 }
 ```
-```API 2
-```
-Send a Request to Get Profile
-GET: http://localhost:4000/tourist/profile
-```
-```
+API 2 : Send a Request to Get Profile
+`GET: http://localhost:4000/tourist/profile`
 *Response Body*
 ```json
 {
@@ -629,12 +621,8 @@ GET: http://localhost:4000/tourist/profile
     ]
 }
 ```
-```API 3
-```
-Send a Request to Get Redeemable PromoCodes
-Get: http://localhost:4000/tourist/codes
-```
-```
+API 3 : Send a Request to Get Redeemable PromoCodes
+`Get: http://localhost:4000/tourist/codes`
 *Response Body*
 ```json
 {
@@ -652,12 +640,8 @@ Get: http://localhost:4000/tourist/codes
     }
 }
 ```
-```API 4
-```
-Send a Request to Mark all notifications as read
-PATCH: http://localhost:4000/tourist/notifs
-```
-```
+API 4 : Send a Request to Mark all notifications as read
+`PATCH: http://localhost:4000/tourist/notifs`
 *Response Body*
 ```json
 {
@@ -671,12 +655,9 @@ PATCH: http://localhost:4000/tourist/notifs
     }
 }
 ```
-```API 5
-```
-Send a Request to Clear all notifications
-DELETE: http://localhost:4000/tourist/notifications
-```
-```
+API 5 : Send a Request to Clear all notifications
+`DELETE: http://localhost:4000/tourist/notifications`
+
 *Response Body*
 ```json
 {
@@ -685,14 +666,9 @@ DELETE: http://localhost:4000/tourist/notifications
 }
 ```
 
-```API 6
-```
-Send a Request to Get available Promocodes
-GET: http://localhost:4000/tourist/codes
-```
-```
+API 6 : Send a Request to Get available Promocodes
+`GET: http://localhost:4000/tourist/codes`
 *Response Body*
-
 ```json
 {
     "promoCodes": {
@@ -710,12 +686,8 @@ GET: http://localhost:4000/tourist/codes
 }
 ```
 
-```API 7
-```
-Send a Request to Redeem PromoCode
-PATCH: http://localhost:4000/tourist/redeemCode
-```
-```
+API 7 : Send a Request to Redeem PromoCode
+`PATCH: http://localhost:4000/tourist/redeemCode`
 *Request Body*
 
 ```json
@@ -757,12 +729,9 @@ PATCH: http://localhost:4000/tourist/redeemCode
 }
 ```
 
-```API 8
-```
-Send a Request to Log in as an admin
-POST: http://localhost:4000/authentication/login
-```
-```
+API 8 : Send a Request to Log in as an admin
+`POST: http://localhost:4000/authentication/login`
+
 *Request Body*
 
 ```json
@@ -779,12 +748,9 @@ POST: http://localhost:4000/authentication/login
     "id": "6747087b9f8a17b02f53dfac"
 }
 ```
-```API 9
-```
-Send a Request to Get a specific complaint
-GET: http://localhost:4000/admin/complaints/672a920b53693b19f9672174
-```
-```
+API 9 : Send a Request to Get a specific complaint
+`GET: http://localhost:4000/admin/complaints/672a920b53693b19f9672174`
+
 *Response Body*
 
 ```json
@@ -799,12 +765,9 @@ GET: http://localhost:4000/admin/complaints/672a920b53693b19f9672174
     "reply": "The issue is solved"
 }
 ```
-```API 10
-```
-Send a Request to Flag an Itinerary
-PATCH: http://localhost:4000/admin/flagItinerary/67565525d4fd4be70932c260
-```
-```
+API 10 : Send a Request to Flag an Itinerary
+`PATCH: http://localhost:4000/admin/flagItinerary/67565525d4fd4be70932c260`
+
 *Response Body*
 
 ```json
@@ -859,12 +822,9 @@ PATCH: http://localhost:4000/admin/flagItinerary/67565525d4fd4be70932c260
     }
 }
 ```
-```API 11
-```
-Send a Request to get Notifications as a tourGuide
-GET: http://localhost:4000/tourGuide/notifs
-```
-```
+API 11 : Send a Request to get Notifications as a tourGuide
+`GET: http://localhost:4000/tourGuide/notifs`
+
 *Response Body*
 
 ```json
@@ -941,12 +901,9 @@ GET: http://localhost:4000/tourGuide/notifs
     }
 ]
 ```
-```API 12
-```
-Send a Request to get a specific Notification as a tourGuide
-GET: http://localhost:4000/tourGuide/notif/675661f5f97bdd3f05225196
-```
-```
+API 12 : Send a Request to get a specific Notification as a tourGuide
+`GET: http://localhost:4000/tourGuide/notif/675661f5f97bdd3f05225196`
+
 *Response Body*
 
 ```json
@@ -961,12 +918,9 @@ GET: http://localhost:4000/tourGuide/notif/675661f5f97bdd3f05225196
     "__v": 0
 }
 ```
-```API 13
-```
-Send a Request to add a Product to cart
+API 13 : Send a Request to add a Product to cart
 POST: http://localhost:4000/tourist/cart/add
-```
-```
+
 *Request Body*
 
 ```json
@@ -989,8 +943,7 @@ POST: http://localhost:4000/tourist/cart/add
     ]
 }
 ```
-```API 14
-Send a Request to change products in cart
+API 14: Send a Request to change products in cart
 PATCH: http://localhost:4000/tourist/cart/change
 ```
 *Request Body*
@@ -1016,12 +969,8 @@ PATCH: http://localhost:4000/tourist/cart/change
 }
 ```
 
-```API 15
-```
-Send a Request to delete products from cart
-DELETE: http://localhost:4000/tourist/cart/remove
-```
-```
+API 15: Send a Request to delete products from cart
+`DELETE: http://localhost:4000/tourist/cart/remove`
 *Request Body*
 
 ```json
