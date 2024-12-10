@@ -478,7 +478,8 @@ npm install
 
 ## 📚 API Reference
 
-API 1 : Send a request to Log in as a tourist
+<details>
+<summary>API 1 : Send a request to Log in as a tourist</summary>
 `POST: http://localhost:4000/authentication/login`
 
 *Request Body*
@@ -496,6 +497,7 @@ API 1 : Send a request to Log in as a tourist
     "id": "674709389f8a17b02f53dfb3"
 }
 ```
+</details>
 API 2 : Send a Request to Get Profile
 `GET: http://localhost:4000/tourist/profile`
 
