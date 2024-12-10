@@ -280,6 +280,180 @@ npm run format:fix
 </details>
 
 
+<details>
+  
+<summary>BE Promocode Creation Controller</summary>
+  
+  ```js
+  
+  const createPromo = async (req, res) => {
+    const { code, type, discount, birthday, touristId } = req.body;
+    const admin = req.user._id;
+    const expiry = Date.now() + (7 * 24 * 60 * 60 * 1000);
+    // Validate input
+    if (!code || !type || !discount) {
+        return res.status(400).json({ error: ' fields are required' });
+    }
+    try {
+        // Checking if the username already exists
+        const existingPromo = await PromoCode.findOne({ code });
+
+        if (existingPromo) {
+            return res.status(400).json({ error: 'Promocode already exists' });
+        }
+
+        const promocode = await PromoCode.create({
+            code,
+            type,
+            discount,
+            expiryDate: expiry,
+            createdBy: admin
+        });
+        const tourists = await Tourist.find();
+
+        // Create notifications for each tourist
+        const notifications = tourists.map(tourist => ({
+            userID: tourist._id,
+            message: `New promo code available: ${code}`,
+            reason: 'New Promo Code',
+            ReasonID: promocode._id // Optional reference to the promo code
+        }));
+
+        // Insert all notifications at once
+        await NotificationModel.insertMany(notifications);
+
+        res.status(200).json(promocode)
+
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+  ```
+</details>
+
+
+<details>
+  
+<summary>BE Promocode Schema</summary>
+  
+  ```js
+  
+  const mongoose = require('mongoose');
+  const Schema = mongoose.Schema;
+  const promoCodeSchema = new Schema({
+      code: { type: String, required: true, unique: true },
+      type: { type: String, enum: ['PERCENTAGE', 'FIXED'], required: true },
+      discount: { type: Number, required: true },
+      expiryDate: { type: Date, required: true },
+      createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: false },
+      birthday: { type: Boolean, required: false },
+      touristId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Tourist",
+          required: false,
+          default:null,
+          validate: {
+              validator: function (value) {
+                  return !this.birthday || (this.birthday && value);
+              },
+              message: 'touristId is required to create a birthday promocode'
+          }
+      }
+  }, { timestamps: true });
+  
+  const PromoCode = mongoose.model('PromoCode', promoCodeSchema);
+  module.exports = {PromoCode};
+
+  ```
+</details>
+
+<details>
+  
+<summary>BE Promocode Applier in Payment </summary>
+  
+  ```js
+  async function applyPromoCodes(userId, amount) {
+    try {
+        const user = await User.findById(userId);
+
+        if (!user || !user.activePromoCodes || user.activePromoCodes.length === 0) {
+            console.log('No active promo codes found for this user.');
+            return amount; // Return original amount if no promo codes
+        }
+
+        let finalAmount = amount;
+
+        for (const promo of user.activePromoCodes) {
+            switch (promo.type) {
+                case 'FIXED':
+                    const fixedDiscount = await convertCurrency(promo.discount, 'USD', user.preferredCurrency);
+                    finalAmount = Math.max(0, finalAmount - fixedDiscount);
+                    break;
+
+                case 'PERCENTAGE':
+                    finalAmount = Math.max(0, finalAmount - (finalAmount * promo.discount) / 100);
+                    break;
+
+                default:
+                    console.log('Unknown promo type:', promo.type);
+            }
+        }
+
+        user.activePromoCodes = [];
+        await user.save();
+
+        return finalAmount;
+    } catch (error) {
+        console.error('Error applying promo codes:', error);
+        throw error;
+    }
+}
+  
+  ```
+</details>
+
+
+<details>
+  
+<summary>BE Deduction from Wallet Helper </summary>
+  
+  ```js
+
+    TouristSchema.methods.deduceFromWallet = async function (amount) {
+    try {
+        if (amount > this.wallet) {
+            throw new Error('Insufficient wallet balance');
+        }
+        this.wallet -= amount;
+        let pointsEarned;
+        switch (this.level) {
+            case 1:
+                pointsEarned = amount * 0.5;
+                break;
+            case 2:
+                pointsEarned = amount * 1;
+                break;
+            case 3:
+                pointsEarned = amount * 1.5;
+                break;
+            default:
+                pointsEarned = 0;
+                break;
+        }
+        this.totalPoints += pointsEarned;
+        this.availablePoints += pointsEarned;
+        // await sendEmail(this.email,'Payment regarding WanderQuest',`${amount} has been deducted from your wallet`);
+        await this.save();
+    } catch (error) {
+        console.error('Error deducting from wallet:', error);
+        throw error; // Re-throw the error to be handled by the caller
+    }
+}
+  ```
+</details>
+
+
+
 ## ⚙️ Installation
 
 - Make sure you have [Node](https://nodejs.org/en) and [Git](https://git-scm.com/) installed
