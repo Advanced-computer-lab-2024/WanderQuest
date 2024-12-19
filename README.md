@@ -510,6 +510,40 @@ git clone https://github.com/Advanced-computer-lab-2024/WanderQuest.git
 cd WanderQuest
 npm install
 ```
+
+- How to run
+
+- Add a `.env` in the `backend` of this repo `WanderQuest`
+
+```bash
+PORT=4000
+MONGO_URI=mongodb+srv://wndrqstaclproj:0kJPyXZCpwhA2vwB@wanderquest.ysdlc.mongodb.net/?retryWrites=true&w=majority&appName=WanderQuest
+SECRET=thisisatestsecretcode1234!
+EXCHANGE_RATE_API_KEY=878b382f87f70b368b1a1b77
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_USER=81331d001@smtp-brevo.com
+SMTP_PASS=xsmtpsib-f4616267d504380fe69fed5abead6b1cca0de777b8b51ca4e11529084c48d7d0-Egz8brFnH0tZ1a9q
+SMTP_EMAIL=wanderquest.noreply@gmail.com
+STRIPE_SECRET_KEY=rk_test_51QRfekFYbqa6jLuacYBGvdPJNTTSb5JIjiHUaNFnFzC2OpONxNoMy8QlE3tEVFP4fwnKo2hUfaburyCbjjWoDWWN00M07wztsy
+```
+
+- Start Front-End
+
+```bash
+cd Front-End
+cd wanderquest
+npm run dev
+```
+
+- Start Back-End in a different terminal
+
+```bash
+cd Back-End
+npm run dev
+```
+
+
 ## 📚 API References
 
 <details>
@@ -1540,37 +1574,6 @@ We use `Postman` to manually test all our api references by making sure the resp
 ## 🧑🏻‍🏫 How to Use
 
 - Make sure to follow the [Installation](#-installation) steps first
-
-- Add a `.env` in the `backend` of this repo `WanderQuest`
-
-```bash
-PORT=4000
-MONGO_URI=mongodb+srv://wndrqstaclproj:0kJPyXZCpwhA2vwB@wanderquest.ysdlc.mongodb.net/?retryWrites=true&w=majority&appName=WanderQuest
-SECRET=thisisatestsecretcode1234!
-EXCHANGE_RATE_API_KEY=878b382f87f70b368b1a1b77
-SMTP_HOST=smtp-relay.brevo.com
-SMTP_PORT=587
-SMTP_USER=81331d001@smtp-brevo.com
-SMTP_PASS=xsmtpsib-f4616267d504380fe69fed5abead6b1cca0de777b8b51ca4e11529084c48d7d0-Egz8brFnH0tZ1a9q
-SMTP_EMAIL=wanderquest.noreply@gmail.com
-STRIPE_SECRET_KEY=rk_test_51QRfekFYbqa6jLuacYBGvdPJNTTSb5JIjiHUaNFnFzC2OpONxNoMy8QlE3tEVFP4fwnKo2hUfaburyCbjjWoDWWN00M07wztsy
-```
-
-- Start Front-End
-
-```bash
-cd Front-End
-cd wanderquest
-npm run dev
-```
-
-- Start Back-End in a different terminal
-
-```bash
-cd Back-End
-npm run dev
-```
-
 
 <details> <summary>Tourist 🌍 </summary>
   
