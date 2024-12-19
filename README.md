@@ -512,9 +512,11 @@ npm install
 ```
 ## 📚 API References
 
+## 📚 API References
+
 <details>
-<summary>API 1: Register User</summary>
-  
+<summary>API 1: Tourist Registration</summary>
+
 `POST: http://localhost:4000/auth/register`
 
 *Request Body*
@@ -522,339 +524,483 @@ npm install
 {
     "username": "johndoe",
     "email": "john@example.com",
-    "password": "Password123",
-    "role": "tourist"
+    "password": "Password123!",
+    "role": "tourist",
+    "nationality": "Egyptian",
+    "mobileNumber": "+201234567890",
+    "dob": "1990-01-01",
+    "job": "Engineer"
 }
 ```
 
-*Response Body*
+*Success Response (201)*
 ```json
 {
-    "message": "User registered successfully",
-    "userId": "675661f5f97bdd3f05225196"
+    "userId": "675661f5f97bdd3f05225196",
+    "username": "johndoe",
+    "role": "tourist",
+    "accepted": true
 }
 ```
 </details>
 
 <details>
-<summary>API 2: Login User</summary>
-  
-`POST: http://localhost:4000/auth/login`
+<summary>API 2: Tour Guide Registration</summary>
+
+`POST: http://localhost:4000/auth/register`
 
 *Request Body*
 ```json
 {
-    "username": "johndoe",
-    "password": "Password123"
+    "username": "guidejohn",
+    "email": "guide@example.com",
+    "password": "Guide123!",
+    "role": "tourGuide",
+    "yearsOfExperience": 5,
+    "mobileNumber": "+201234567891",
+    "previousWork": ["Pyramids Tours", "Nile Cruises"]
 }
 ```
 
-*Response Body*
+*Success Response (201)*
 ```json
 {
-    "token": "jwt_token_here",
-    "user": {
-        "id": "675661f5f97bdd3f05225196",
-        "role": "tourist"
-    }
+    "userId": "675661f5f97bdd3f05225197",
+    "username": "guidejohn",
+    "role": "tourGuide",
+    "accepted": false
 }
 ```
 </details>
 
 <details>
 <summary>API 3: Create Activity</summary>
-  
+
 `POST: http://localhost:4000/advertiser/activity`
 
 *Request Body*
 ```json
 {
     "title": "Desert Safari",
-    "description": "Experience desert adventure",
-    "price": 100,
-    "capacity": 20
+    "description": "Experience the thrill of desert adventure",
+    "price": 150,
+    "category": "675661f5f97bdd3f05225198",
+    "location": "Dubai Desert",
+    "date": "2024-12-25",
+    "time": "14:00",
+    "capacity": 20,
+    "tags": ["675661f5f97bdd3f05225199", "675661f5f97bdd3f05225200"]
 }
 ```
 
-*Response Body*
+*Success Response (201)*
 ```json
 {
-    "message": "Activity created successfully",
-    "activityId": "675661f5f97bdd3f05225197"
+    "activityId": "675661f5f97bdd3f05225201",
+    "title": "Desert Safari",
+    "price": 150,
+    "capacity": 20,
+    "createdBy": "675661f5f97bdd3f05225202"
 }
 ```
 </details>
 
 <details>
-<summary>API 4: Book Activity</summary>
-  
+<summary>API 4: Create Product</summary>
+
+`POST: http://localhost:4000/seller/addProduct`
+
+*Request Body*
+```json
+{
+    "name": "Traditional Scarf",
+    "price": 299.99,
+    "description": "Handmade Egyptian cotton scarf",
+    "availableAmount": 50,
+    "picture": {
+        "filename": "scarf.jpg",
+        "contentType": "image/jpeg",
+        "fileID": "675661f5f97bdd3f05225203"
+    }
+}
+```
+
+*Success Response (201)*
+```json
+{
+    "productId": "675661f5f97bdd3f05225204",
+    "name": "Traditional Scarf",
+    "price": 299.99,
+    "seller": "675661f5f97bdd3f05225205"
+}
+```
+</details>
+
+<details>
+<summary>API 5: Create Booking</summary>
+
 `POST: http://localhost:4000/booking/activity`
 
 *Request Body*
 ```json
 {
-    "activityId": "675661f5f97bdd3f05225197",
-    "date": "2024-12-25",
-    "participants": 2
+    "bookingType": "activity",
+    "activityId": "675661f5f97bdd3f05225201",
+    "paid": false,
+    "startDate": "2024-12-25",
+    "details": {
+        "numberOfParticipants": 2,
+        "specialRequests": "Vegetarian meals"
+    }
 }
 ```
 
-*Response Body*
+*Success Response (201)*
 ```json
 {
-    "bookingId": "675661f5f97bdd3f05225198",
-    "status": "confirmed",
-    "totalAmount": 200
+    "bookingId": "675661f5f97bdd3f05225206",
+    "status": "booked",
+    "totalAmount": 300
 }
 ```
 </details>
 
 <details>
-<summary>API 5: Process Payment</summary>
-  
+<summary>API 6: Create Order</summary>
+
+`POST: http://localhost:4000/tourist/cart/checkout`
+
+*Request Body*
+```json
+{
+    "products": [
+        {
+            "productId": "675661f5f97bdd3f05225204",
+            "quantity": 2
+        }
+    ],
+    "deliveryAddress": "675661f5f97bdd3f05225207"
+}
+```
+
+*Success Response (201)*
+```json
+{
+    "orderId": "675661f5f97bdd3f05225208",
+    "totalPrice": 599.98,
+    "status": "pending",
+    "paymentStatus": "pending"
+}
+```
+</details>
+
+<details>
+<summary>API 7: Process Payment</summary>
+
 `POST: http://localhost:4000/payment/handleBookingPayment`
 
 *Request Body*
 ```json
 {
-    "bookingId": "675661f5f97bdd3f05225198",
-    "amount": 200,
+    "bookingId": "675661f5f97bdd3f05225206",
+    "amount": 300,
+    "currency": "EGP",
     "method": "wallet"
 }
 ```
 
-*Response Body*
+*Success Response (200)*
 ```json
 {
-    "transactionId": "675661f5f97bdd3f05225199",
-    "status": "success"
+    "paymentId": "675661f5f97bdd3f05225209",
+    "status": "completed",
+    "paidAmount": 300
 }
 ```
 </details>
 
 <details>
-<summary>API 6: Add to Cart</summary>
-  
-`POST: http://localhost:4000/tourist/cart/add`
+<summary>API 8: Add Delivery Address</summary>
+
+`POST: http://localhost:4000/tourist/addDeliveryAddresses`
 
 *Request Body*
 ```json
 {
-    "productId": "675661f5f97bdd3f05225196",
-    "quantity": 2
+    "street": "123 Main St",
+    "city": "Cairo",
+    "state": "Cairo Governorate",
+    "postalCode": "11511",
+    "country": "Egypt",
+    "googleMapsUrl": "https://maps.google.com/?q=30.0444,31.2357"
 }
 ```
 
-*Response Body*
+*Success Response (201)*
 ```json
 {
-    "message": "Product added to cart successfully",
-    "cart": [
-        {
-            "productId": "675661f5f97bdd3f05225196",
-            "quantity": 2
-        }
-    ]
+    "addressId": "675661f5f97bdd3f05225207",
+    "message": "Delivery address added successfully"
 }
 ```
 </details>
 
 <details>
-<summary>API 7: Create Itinerary</summary>
-  
-`POST: http://localhost:4000/tourGuide/create`
+<summary>API 9: File Complaint</summary>
+
+`POST: http://localhost:4000/tourist/fileComplaint`
 
 *Request Body*
 ```json
 {
-    "title": "Egypt Explorer",
-    "activities": ["675661f5f97bdd3f05225197"],
-    "duration": 7,
-    "price": 1500
+    "title": "Late Tour Guide",
+    "body": "The tour guide was 30 minutes late for the scheduled tour",
+    "date": "2024-01-15T10:30:00.000Z"
 }
 ```
 
-*Response Body*
+*Success Response (201)*
 ```json
 {
-    "itineraryId": "675661f5f97bdd3f05225200",
-    "status": "created"
+    "complaintId": "675661f5f97bdd3f05225210",
+    "status": "Pending",
+    "createdAt": "2024-01-15T10:30:00.000Z"
 }
 ```
 </details>
 
 <details>
-<summary>API 8: Rate Activity</summary>
-  
+<summary>API 10: Rate Activity</summary>
+
 `POST: http://localhost:4000/tourist/activity/rate/:id`
 
 *Request Body*
 ```json
 {
-    "rating": 5,
-    "comment": "Great experience!"
+    "rating": 4,
+    "comment": "Great experience, very well organized",
+    "touristId": "675661f5f97bdd3f05225196"
 }
 ```
 
-*Response Body*
+*Success Response (200)*
 ```json
 {
-    "message": "Rating submitted successfully",
-    "newAverageRating": 4.5
+    "activityId": "675661f5f97bdd3f05225201",
+    "newAverageRating": 4.5,
+    "totalRatings": 15
 }
 ```
 </details>
 
 <details>
-<summary>API 9: View Sales Report</summary>
-  
+<summary>API 11: Create Itinerary</summary>
+
+`POST: http://localhost:4000/tourGuide/create`
+
+*Request Body*
+```json
+{
+    "title": "Cairo Historical Tour",
+    "description": "Explore ancient Egyptian history",
+    "activities": ["675661f5f97bdd3f05225201", "675661f5f97bdd3f05225202"],
+    "price": 2500,
+    "duration": 5,
+    "maxParticipants": 15,
+    "startDates": ["2024-02-01", "2024-02-15"]
+}
+```
+
+*Success Response (201)*
+```json
+{
+    "itineraryId": "675661f5f97bdd3f05225211",
+    "title": "Cairo Historical Tour",
+    "tourGuideId": "675661f5f97bdd3f05225197",
+    "status": "active"
+}
+```
+</details>
+
+<details>
+<summary>API 12: Create Promo Code</summary>
+
+`POST: http://localhost:4000/admin/promo`
+
+*Request Body*
+```json
+{
+    "code": "SUMMER2024",
+    "type": "PERCENTAGE",
+    "discount": 15,
+    "expiryDate": "2024-08-31T23:59:59.999Z",
+    "birthday": false
+}
+```
+
+*Success Response (201)*
+```json
+{
+    "promoId": "675661f5f97bdd3f05225212",
+    "code": "SUMMER2024",
+    "status": "active",
+    "createdAt": "2024-01-15T10:30:00.000Z"
+}
+```
+</details>
+
+<details>
+<summary>API 13: Book Transportation</summary>
+
+`POST: http://localhost:4000/booking/transportation`
+
+*Request Body*
+```json
+{
+    "bookingType": "transportation",
+    "details": {
+        "transportationId": "675661f5f97bdd3f05225200",
+        "passengers": 2,
+        "luggageCount": 3
+    },
+    "paid": false,
+    "startDate": "2024-02-01T09:00:00.000Z"
+}
+```
+
+*Success Response (201)*
+```json
+{
+    "bookingId": "675661f5f97bdd3f05225213",
+    "status": "booked",
+    "totalAmount": 100
+}
+```
+</details>
+
+<details>
+<summary>API 14: Update User Profile</summary>
+
+`PUT: http://localhost:4000/tourist/profile`
+
+*Request Body*
+```json
+{
+    "mobileNumber": "+201234567892",
+    "nationality": "American",
+    "job": "Software Engineer",
+    "email": "newemail@example.com"
+}
+```
+
+*Success Response (200)*
+```json
+{
+    "userId": "675661f5f97bdd3f05225196",
+    "message": "Profile updated successfully",
+    "updatedFields": ["mobileNumber", "nationality", "job", "email"]
+}
+```
+</details>
+
+<details>
+<summary>API 15: View Sales Report</summary>
+
 `GET: http://localhost:4000/seller/salesReport`
 
 *Response Body*
 ```json
 {
     "totalRevenue": 15000,
-    "totalSales": 100,
+    "totalSales": 50,
     "productDetails": [
         {
-            "name": "Product 1",
-            "sales": 50,
-            "revenue": 7500
+            "productId": "675661f5f97bdd3f05225204",
+            "name": "Traditional Scarf",
+            "sales": 20,
+            "revenue": 5999.80
         }
-    ]
+    ],
+    "periodStart": "2024-01-01T00:00:00.000Z",
+    "periodEnd": "2024-01-31T23:59:59.999Z"
 }
 ```
 </details>
 
 <details>
-<summary>API 10: Update Profile</summary>
-  
-`PUT: http://localhost:4000/tourist/profile`
+<summary>API 16: Get User Notifications</summary>
 
-*Request Body*
-```json
-{
-    "name": "John Doe",
-    "phone": "+1234567890",
-    "preferences": ["adventure", "culture"]
-}
-```
-
-*Response Body*
-```json
-{
-    "message": "Profile updated successfully",
-    "user": {
-        "name": "John Doe",
-        "phone": "+1234567890"
-    }
-}
-```
-</details>
-
-<details>
-<summary>API 11: Create Complaint</summary>
-  
-`POST: http://localhost:4000/tourist/fileComplaint`
-
-*Request Body*
-```json
-{
-    "subject": "Booking Issue",
-    "description": "Activity was cancelled without notice",
-    "relatedBooking": "675661f5f97bdd3f05225198"
-}
-```
-
-*Response Body*
-```json
-{
-    "complaintId": "675661f5f97bdd3f05225201",
-    "status": "pending"
-}
-```
-</details>
-
-<details>
-<summary>API 12: Get Notifications</summary>
-  
 `GET: http://localhost:4000/tourist/notifs`
 
 *Response Body*
 ```json
-[
-    {
-        "id": "675661f5f97bdd3f05225202",
-        "message": "Your booking is confirmed",
-        "seen": false,
-        "createdAt": "2024-12-09T03:20:21.637Z"
-    }
-]
-```
-</details>
-
-<details>
-<summary>API 13: Apply Promo Code</summary>
-  
-`POST: http://localhost:4000/tourist/redeemCode`
-
-*Request Body*
-```json
 {
-    "code": "SUMMER2024",
-    "orderId": "675661f5f97bdd3f05225203"
-}
-```
-
-*Response Body*
-```json
-{
-    "discountAmount": 50,
-    "newTotal": 150
-}
-```
-</details>
-
-<details>
-<summary>API 14: Create Transportation</summary>
-  
-`POST: http://localhost:4000/advertiser/transportation/create`
-
-*Request Body*
-```json
-{
-    "type": "bus",
-    "departure": "Cairo",
-    "arrival": "Luxor",
-    "price": 50,
-    "date": "2024-12-25"
-}
-```
-
-*Response Body*
-```json
-{
-    "transportationId": "675661f5f97bdd3f05225204",
-    "status": "created"
-}
-```
-</details>
-
-<details>
-<summary>API 15: Get User Statistics</summary>
-  
-`GET: http://localhost:4000/admin/userStats`
-
-*Response Body*
-```json
-{
-    "totalUsers": 1000,
-    "newUsersPerMonth": [
+    "notifications": [
         {
-            "month": "January",
-            "count": 50
+            "_id": "675661f5f97bdd3f05225214",
+            "message": "Your booking has been confirmed",
+            "reason": "booking_confirmation",
+            "ReasonID": "675661f5f97bdd3f05225206",
+            "seen": false,
+            "createdAt": "2024-01-15T10:30:00.000Z"
         }
-    ]
+    ],
+    "unreadCount": 1
+}
+```
+</details>
+
+<details>
+<summary>API 17: Rate Tour Guide</summary>
+
+`POST: http://localhost:4000/tourGuide/rate/:tourGuideId`
+
+*Request Body*
+```json
+{
+    "rating": 5,
+    "comment": "Excellent knowledge and communication skills",
+    "touristId": "675661f5f97bdd3f05225196"
+}
+```
+
+*Success Response (200)*
+```json
+{
+    "tourGuideId": "675661f5f97bdd3f05225197",
+    "newAverageRating": 4.8,
+    "totalRatings": 25
+}
+```
+</details>
+
+<details>
+<summary>API 18: Create Place</summary>
+
+`POST: http://localhost:4000/tourGoverner/addPlace`
+
+*Request Body*
+```json
+{
+    "title": "Great Pyramids of Giza",
+    "description": "One of the Seven Wonders of the Ancient World",
+    "location": "Al Haram, Giza Governorate",
+    "openingHours": "8:00 AM - 5:00 PM",
+    "ticketPrices": [400, 200, 100],
+    "tags": [
+        { "type": "Historical" },
+        { "type": "UNESCO" }
+    ],
+    "pictures": ["base64EncodedImage1", "base64EncodedImage2"]
+}
+```
+
+*Success Response (201)*
+```json
+{
+    "placeId": "675661f5f97bdd3f05225215",
+    "title": "Great Pyramids of Giza",
+    "message": "Place added successfully"
 }
 ```
 </details>
