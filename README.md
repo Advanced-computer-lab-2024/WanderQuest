@@ -119,6 +119,17 @@ npm run format:fix
 
 <img width="1788" alt="Admin Home Page" src="https://github.com/user-attachments/assets/3015f1d3-33e7-4e26-a49e-5d75b1ec7e40">
 
+<img width="1779" alt="Add admin" src="https://github.com/user-attachments/assets/c2c0c2f8-9108-4dcb-83d6-b4d8072cea0b" />
+
+<img width="1792" alt="Admin complaints" src="https://github.com/user-attachments/assets/60a5ca3a-71b6-48e7-9ef8-7366ae5d3761" />
+
+<img width="1787" alt="Admin delete account" src="https://github.com/user-attachments/assets/d3dc8a3b-83b2-4bb5-b6e4-16e78ccabda3" />
+
+<img width="1792" alt="Admin Promo Code" src="https://github.com/user-attachments/assets/fed0c7db-1021-4c18-a0a2-1aabf4649094" />
+
+<img width="1785" alt="Admin requests" src="https://github.com/user-attachments/assets/a0843cde-5da1-4710-b7cb-14bcf00efe1f" />
+
+<img width="1780" alt="Preference Tags" src="https://github.com/user-attachments/assets/c0c1ff37-6c51-4238-a550-55868527d7ba" />
 
 </details>
 
@@ -192,6 +203,12 @@ npm run format:fix
 
 <img width="1792" alt="Tourist Home page" src="https://github.com/user-attachments/assets/e2f424a1-9238-45f9-b99c-0ff49de8c0d9">
 
+<img width="1792" alt="Historical Places" src="https://github.com/user-attachments/assets/cb86690f-999e-464e-bab8-49556e8ad1b0" />
+
+<img width="1792" alt="My bookings" src="https://github.com/user-attachments/assets/72a44ae7-256a-46c0-88c9-3c984bdabc87" />
+
+<img width="1775" alt="Tourist Transportation" src="https://github.com/user-attachments/assets/1cb0692d-288e-4f7d-a075-4a5d0aaf7442" />
+
 
 </details>
 
@@ -206,6 +223,8 @@ npm run format:fix
 - Manage notifications.
 
 <img width="1787" alt="Tour Guide home page" src="https://github.com/user-attachments/assets/4884fda4-8c6b-4268-b903-406bc5d45eb2">
+
+<img width="1780" alt="Tour guide sales report" src="https://github.com/user-attachments/assets/d38bc28b-0aa3-4be6-b2f1-c2d105d21e6e" />
 
   
 </details>
