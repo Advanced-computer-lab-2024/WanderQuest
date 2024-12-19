@@ -116,6 +116,7 @@ npm run format:fix
 - Mark a complaint as pending or resolved or reply to it.
 - Create/delete/view promocodes.
 - Search/Filter/Sort for a product based on product name/price/ratings.
+- Advanced analytics or dashboards showing trends
 
 <img width="1788" alt="Admin Home Page" src="https://github.com/user-attachments/assets/3015f1d3-33e7-4e26-a49e-5d75b1ec7e40">
 
@@ -156,6 +157,7 @@ npm run format:fix
 - View/Filter sales report
 - Archive/unarchive products.
 - Search/Filter/Sort for a product based on product name/price/ratings.
+- Detailed performance analytics
 
 <img width="1788" alt="Seller home page" src="https://github.com/user-attachments/assets/506f2875-2ddc-4e02-94f4-3642abaa090e">
 
@@ -172,6 +174,7 @@ npm run format:fix
 - View created activities.
 - Create/view transportation posts.
 - Get/mark as read notifications.
+- Analytics to track the performance of activities or posts
 
 <img width="1788" alt="Advertiser Home page" src="https://github.com/user-attachments/assets/943786e2-54c8-44ce-853c-10966c0c2a15">
 
@@ -200,6 +203,9 @@ npm run format:fix
 - Be reminded of your Booked Events getting Within 4 days of check.
 - Recieve a promocode on your birthday in notifications.
 - View/add/remove/edit/checkout to/from cart.
+- Cancelation policies or refund requests tied to bookings.
+- Wallet management, such as transaction history or adding funds to the wallet.
+- Save/bookmark specific promocodes or offers.
 
 <img width="1792" alt="Tourist Home page" src="https://github.com/user-attachments/assets/e2f424a1-9238-45f9-b99c-0ff49de8c0d9">
 
