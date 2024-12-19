@@ -1573,57 +1573,69 @@ npm run dev
 
 
 <details> <summary>Tourist 🌍 </summary>
-Sign Up & Profile Management
+  
+Sign Up & Profile Management:
 
 - Register with email, username, password, mobile number, nationality, DOB, and occupation.
 - Update your profile, including wallet information and vacation preferences (historic areas, beaches, shopping, etc.).
-- Planning Your Vacation
+
+Planning Your Vacation:
 
 - Search for specific museums, activities, or itineraries by name, category, or tag.
 - Filter activities and itineraries by budget, date, category, preferences, or language.
 - Sort upcoming events or itineraries by price or ratings.
-- Booking & Payments
+
+Booking & Payments:
 
 - Book flights, hotels, transportation, and tickets to events directly through the app.
 - Pay online via credit/debit card (Stripe) or wallet balance.
 - Receive payment receipts via email.
-- Personalized Experience
+
+Personalized Experience:
 
 - Bookmark events to view later or request notifications when bookings open.
 - Redeem loyalty points for wallet cash and earn badges based on your level.
-- Ratings & Feedback
+  
+Ratings & Feedback:
 
 - Rate and comment on events, activities, or itineraries you participated in.
 - Rate and review your tour guide.
-- Notifications & Updates
+
+Notifications & Updates:
 
 - Get reminders for upcoming bookings via app and email.
 - View all your upcoming and past paid activities.
-- Cancellations & Refunds
+
+Cancellations & Refunds:
 
 - Cancel bookings 48 hours before the event to receive a wallet refund.
-- Complaints & Support
+
+Complaints & Support:
 
 - File complaints with title, description, and date for admin review.
 
 </details>
 
 <details> <summary>Tour Guide 🗺️</summary>
-Sign Up & Profile Management
+  
+Sign Up & Profile Management:
 
 - Register with email, username, and password.
 - Upload required documents for admin approval.
 - Create or update your profile with personal details, experience, and work history.
-- Itinerary Management
+
+Itinerary Management:
 
 - Create, read, update, or delete itineraries with details like activities, locations, timeline, price, accessibility, and language.
 - Activate/deactivate itineraries with bookings.
-- Analytics & Sales
+
+Analytics & Sales:
 
 - View a sales report with revenue from your itineraries.
 - Filter sales reports by itinerary, date, or month.
 - View a report of tourists using your itineraries and filter by month.
-- Notifications
+
+Notifications:
 
 - Receive alerts if an itinerary is flagged as inappropriate.
 - Get notified of bookings or cancellations for your itineraries.
@@ -1631,21 +1643,25 @@ Sign Up & Profile Management
 </details>
 
 <details> <summary>Advertiser 📢</summary>
-Sign Up & Profile Management
+  
+Sign Up & Profile Management:
 
 - Register with email, username, and password.
 - Upload required documents for admin approval.
 - Create or update your profile with company details like website, hotline, and company profile.
-- Activity Management
+
+Activity Management:
 
 - Create, read, update, or delete activities with details like date, time, location, price, category, tags, and discounts.
 - View a list of all your created activities.
-- Analytics & Sales
+
+Analytics & Sales:
 
 - View a sales report with revenue from your activities.
 - Filter sales reports by activity, date, or month.
 - View a report of tourists attending your activities and filter by month.
-- Notifications
+
+Notifications:
 
 - Receive alerts if an activity is flagged as inappropriate.
 - Get notified of bookings or cancellations for your activities.
@@ -1653,12 +1669,14 @@ Sign Up & Profile Management
 </details>
 
 <details> <summary>Seller 🛍️</summary>
-Sign Up & Profile Management
+  
+Sign Up & Profile Management:
 
 - Register with email, username, and password.
 - Upload required documents for admin approval.
 - Create or update your profile with name and description of your store.
-- Gift Shop Management
+
+Gift Shop Management:
 
 - Add and manage products in the in-app gift shop.
 - View sales reports for your store.
@@ -1667,32 +1685,38 @@ Sign Up & Profile Management
 </details>
 
 <details> <summary>Tourism Governor 🏛️</summary>
-Sign Up & Management
+  
+Sign Up & Management:
 
 - Create museums and historical places with details like description, pictures, location, hours, and ticket prices.
 - Create tags for categorizing historical places (e.g., type, historical period).
 - Update or delete museums and tags as needed.
-- Overview
+
+Overview:
 
 - View a list of all museums and historical places you’ve created.
 
 </details>
 
 <details> <summary>Administrator 👩‍💼</summary>
-User Management
+  
+User Management:
 
 - Accept or reject registration requests for tour guides, advertisers, and sellers based on uploaded documents.
 - Add or remove other admins and tourism governors.
 - View the total number of users and monthly new user stats.
-- Content Management
+
+Content Management:
 
 - Create, read, update, or delete activity categories and preference tags.
 - Flag events or itineraries deemed inappropriate.
-- Complaint Management
+
+Complaint Management:
 
 - View and manage complaints from users.
 - Mark complaints as pending, resolved, or reply directly.
-- Analytics & Reports
+
+Analytics & Reports:
 
 - View and filter sales reports by product, date, or month.
 - Access a comprehensive revenue report for events, itineraries, and gift shop sales.
