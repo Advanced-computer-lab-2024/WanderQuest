@@ -1730,6 +1730,8 @@ Analytics & Reports:
 
 </details>
 
+Make sure to check out the [🔥 Features & Screenshots](#-features--screenshots) !
+
 
 ## 🤝 Contribute
 
