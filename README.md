@@ -1733,7 +1733,7 @@ Analytics & Reports:
 
 ## 🤝 Contribute
 
-We welcome contributions to Copilot & Sons El7a2ny Clinic. If you want to contribute, it's as easy as:
+We welcome contributions to WanderQuest. If you want to contribute, it's as easy as:
 
 1. Fork the repo
 2. Create a new branch (`git checkout -b my-new-feature`)
