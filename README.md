@@ -511,9 +511,7 @@ cd WanderQuest
 npm install
 ```
 
-- How to run
-
-- Add a `.env` in the `backend` of this repo `WanderQuest`
+- How to run: Add a `.env` in the `backend` of this repo `WanderQuest`
 
 ```bash
 PORT=4000
@@ -1573,7 +1571,7 @@ We use `Postman` to manually test all our api references by making sure the resp
 
 ## 🧑🏻‍🏫 How to Use
 
-- Make sure to follow the [Installation](#-installation) steps first
+Make sure to follow the [Installation](#-installation) steps first
 
 <details> <summary>Tourist 🌍 </summary>
   
