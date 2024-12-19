@@ -512,8 +512,6 @@ npm install
 ```
 ## 📚 API References
 
-## 📚 API References
-
 <details>
 <summary>API 1: Tourist Registration</summary>
 
