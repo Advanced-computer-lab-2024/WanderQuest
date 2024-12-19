@@ -510,525 +510,149 @@ git clone https://github.com/Advanced-computer-lab-2024/WanderQuest.git
 cd WanderQuest
 npm install
 ```
-
-## 📚 API Reference
+## 📚 API References
 
 <details>
-<summary>API 1 : Send a request to Log in as a tourist</summary>
+<summary>API 1: Register User</summary>
   
-`POST: http://localhost:4000/authentication/login`
+`POST: http://localhost:4000/auth/register`
 
 *Request Body*
 ```json
 {
-    "username":"testTourist",
-    "password":"Test@123"
+    "username": "johndoe",
+    "email": "john@example.com",
+    "password": "Password123",
+    "role": "tourist"
 }
 ```
+
 *Response Body*
 ```json
 {
-    "role": "tourist",
-    "email": "torist@test.com",
-    "id": "674709389f8a17b02f53dfb3"
+    "message": "User registered successfully",
+    "userId": "675661f5f97bdd3f05225196"
 }
 ```
 </details>
 
 <details>
-<summary>API 2 : Send a Request to Get Profile</summary>
+<summary>API 2: Login User</summary>
   
-`GET: http://localhost:4000/tourist/profile`
-
-*Response Body*
-```json
-{
-    "activeAddress": null,
-    "_id": "674709389f8a17b02f53dfb3",
-    "username": "testTourist",
-    "email": "torist@test.com",
-    "password": "$2b$12$tZVlBjp9KdBm7trU3I0csOp0Di4Uob2oCZKSIu/FYwbl.JUTmgVOK",
-    "role": "tourist",
-    "rejected": true,
-    "requestToBeDeleted": false,
-    "nationality": "United Arab Emirates",
-    "mobileNumber": "01010101010",
-    "dob": "1993-02-01T00:00:00.000Z",
-    "job": "student",
-    "wallet": 997576.4998,
-    "preferredCurrency": "EGP",
-    "totalPoints": 1292.7501,
-    "availablePoints": 1292.7501,
-    "level": 1,
-    "accepted": true,
-    "isTermsAccepted": true,
-    "documents": [
-        {
-            "filename": "1733250169050-tour Guide pic 1.jpg",
-            "contentType": "image/jpeg",
-            "fileID": "674f4c79fc91a1a7fad15556",
-            "_id": "674f4c7c3b54f7be7363d417"
-        },
-        {
-            "filename": "1733250169051-company logo 2.jpg",
-            "contentType": "image/jpeg",
-            "fileID": "674f4c79fc91a1a7fad15557",
-            "_id": "674f4c7c3b54f7be7363d418"
-        }
-    ],
-    "__v": 74,
-    "savedEvents": [
-        {
-            "notify": false,
-            "eventType": "Activity",
-            "eventId": "674a488451261c734a627bf4",
-            "_id": "674a4f3e51261c734a627c1e"
-        },
-        {
-            "eventType": "Activity",
-            "eventId": "674a47f251261c734a627bec",
-            "_id": "674a54bcb9cccf752f15c714",
-            "notify": true
-        },
-        {
-            "eventType": "itinerary",
-            "eventId": "674a4e9b51261c734a627c0d",
-            "_id": "674a54e0b9cccf752f15c726",
-            "notify": true
-        }
-    ],
-    "wishlist": [
-        "67033095681e74db673e8484",
-        "6730f075dc71ecb78456212b",
-        "674b6ff986153c78a2ddfda5",
-        "674b706386153c78a2ddfdb0",
-        "674b70a086153c78a2ddfdb6"
-    ],
-    "otp": {
-        "otp": "4f74d8",
-        "expiry": "2024-12-03T16:10:58.963Z",
-        "_id": "674f2b3a1ae32f3ee860c396"
-    },
-    "cart": [],
-    "deliveryAddresses": [
-        {
-            "_id": "675647aac5612e29af2209ba",
-            "street": "123",
-            "city": "cairo",
-            "state": "",
-            "postalCode": "123",
-            "country": "egypt",
-            "googleMapsUrl": "123"
-        }
-    ],
-    "activePromoCodes": [
-        {
-            "code": "seifElKing",
-            "type": "PERCENTAGE",
-            "discount": 0.01,
-            "expiryDate": "2024-12-15T23:48:09.919Z",
-            "createdBy": "6747087b9f8a17b02f53dfac",
-            "touristId": null,
-            "_id": "675630390c1a5f61ce417200",
-            "createdAt": "2024-12-08T23:48:09.978Z",
-            "updatedAt": "2024-12-08T23:48:09.978Z",
-            "__v": 0
-        }
-    ],
-    "updatedAt": "2024-12-09T02:36:47.691Z",
-    "redeemedPromoCodes": [
-        {
-            "code": "cristianoSUIIII",
-            "type": "FIXED",
-            "discount": 100000000000,
-            "expiryDate": "2024-12-15T14:45:08.648Z",
-            "createdBy": "6747087b9f8a17b02f53dfac",
-            "touristId": null,
-            "_id": "6755b0f4b71bbdfa34ee0ba0",
-            "createdAt": "2024-12-08T14:45:08.707Z",
-            "updatedAt": "2024-12-08T14:45:08.707Z",
-            "__v": 0
-        },
-        {
-            "code": "seifElKing",
-            "type": "PERCENTAGE",
-            "discount": 0.01,
-            "expiryDate": "2024-12-15T23:48:09.919Z",
-            "createdBy": "6747087b9f8a17b02f53dfac",
-            "touristId": null,
-            "_id": "675630390c1a5f61ce417200",
-            "createdAt": "2024-12-08T23:48:09.978Z",
-            "updatedAt": "2024-12-08T23:48:09.978Z",
-            "__v": 0
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-<summary>API 3 : Send a Request to Get Redeemable PromoCodes</summary>
-  
-`Get: http://localhost:4000/tourist/codes`
-
-*Response Body*
-```json
-{
-    "promoCodes": {
-        "_id": "675630390c1a5f61ce417200",
-        "code": "seifElKing",
-        "type": "PERCENTAGE",
-        "discount": 0.01,
-        "expiryDate": "2024-12-15T23:48:09.919Z",
-        "createdBy": "6747087b9f8a17b02f53dfac",
-        "touristId": null,
-        "createdAt": "2024-12-08T23:48:09.978Z",
-        "updatedAt": "2024-12-08T23:48:09.978Z",
-        "__v": 0
-    }
-}
-```
-</details>
-
-<details>
-<summary>API 4 : Send a Request to Mark all notifications as read</summary>
-  
-`PATCH: http://localhost:4000/tourist/notifs`
-
-*Response Body*
-```json
-{
-    "message": "Notifications updated",
-    "result": {
-        "acknowledged": true,
-        "modifiedCount": 9,
-        "upsertedId": null,
-        "upsertedCount": 0,
-        "matchedCount": 12
-    }
-}
-```
-</details>
-
-<details>
-<summary>API 5 : Send a Request to Clear all notifications</summary>
-  
-`DELETE: http://localhost:4000/tourist/notifications`
-
-*Response Body*
-```json
-{
-    "message": "All notifications cleared successfully.",
-    "deletedCount": 12
-}
-```
-</details>
-
-<details>
-<summary>API 6 : Send a Request to Get available Promocodes</summary>
-  
-`GET: http://localhost:4000/tourist/codes`
-
-*Response Body*
-```json
-{
-    "promoCodes": {
-        "_id": "675636a7d4248c045f3f0c9d",
-        "code": "SeifPromo",
-        "type": "FIXED",
-        "discount": 50,
-        "expiryDate": "2024-12-16T00:15:35.884Z",
-        "createdBy": "6747087b9f8a17b02f53dfac",
-        "touristId": null,
-        "createdAt": "2024-12-09T00:15:35.947Z",
-        "updatedAt": "2024-12-09T00:15:35.947Z",
-        "__v": 0
-    }
-}
-```
-</details>
-
-<details>
-<summary>API 7 : Send a Request to Redeem PromoCode</summary>
-  
-`PATCH: http://localhost:4000/tourist/redeemCode`
+`POST: http://localhost:4000/auth/login`
 
 *Request Body*
-
 ```json
 {
-    "code":"SeifPromo"
+    "username": "johndoe",
+    "password": "Password123"
 }
 ```
-*Response Body*
 
+*Response Body*
 ```json
 {
-    "message": "Promocode redeemed successfully!",
-    "activePromoCodes": [
-        {
-            "code": "seifElKing",
-            "type": "PERCENTAGE",
-            "discount": 0.01,
-            "expiryDate": "2024-12-15T23:48:09.919Z",
-            "createdBy": "6747087b9f8a17b02f53dfac",
-            "touristId": null,
-            "_id": "675630390c1a5f61ce417200",
-            "createdAt": "2024-12-08T23:48:09.978Z",
-            "updatedAt": "2024-12-08T23:48:09.978Z",
-            "__v": 0
-        },
-        {
-            "code": "SeifPromo",
-            "type": "FIXED",
-            "discount": 50,
-            "expiryDate": "2024-12-16T00:15:35.884Z",
-            "createdBy": "6747087b9f8a17b02f53dfac",
-            "touristId": null,
-            "_id": "675636a7d4248c045f3f0c9d",
-            "createdAt": "2024-12-09T00:15:35.947Z",
-            "updatedAt": "2024-12-09T00:15:35.947Z",
-            "__v": 0
-        }
-    ]
+    "token": "jwt_token_here",
+    "user": {
+        "id": "675661f5f97bdd3f05225196",
+        "role": "tourist"
+    }
 }
 ```
 </details>
 
 <details>
-<summary>API 8 : Send a Request to Log in as an admin</summary>
+<summary>API 3: Create Activity</summary>
   
-`POST: http://localhost:4000/authentication/login`
+`POST: http://localhost:4000/advertiser/activity`
 
 *Request Body*
-
 ```json
 {
-    "username":"testAdmin",
-    "password":"Test@123"
+    "title": "Desert Safari",
+    "description": "Experience desert adventure",
+    "price": 100,
+    "capacity": 20
 }
 ```
-*Response Body*
 
+*Response Body*
 ```json
 {
-    "role": "Admin",
-    "id": "6747087b9f8a17b02f53dfac"
+    "message": "Activity created successfully",
+    "activityId": "675661f5f97bdd3f05225197"
 }
 ```
 </details>
 
 <details>
-<summary>API 9 : Send a Request to Get a specific complaint</summary>
+<summary>API 4: Book Activity</summary>
   
-`GET: http://localhost:4000/admin/complaints/672a920b53693b19f9672174`
+`POST: http://localhost:4000/booking/activity`
 
-*Response Body*
-
+*Request Body*
 ```json
 {
-    "_id": "672a920b53693b19f9672174",
-    "title": "Delayed Service",
-    "body": "The service was delayed by over an hour.",
-    "status": "Resolved",
-    "date": "2024-11-05T00:00:00.000Z",
-    "createdBy": "6702dcb44d7aa925eae92c5c",
-    "__v": 0,
-    "reply": "The issue is solved"
+    "activityId": "675661f5f97bdd3f05225197",
+    "date": "2024-12-25",
+    "participants": 2
+}
+```
+
+*Response Body*
+```json
+{
+    "bookingId": "675661f5f97bdd3f05225198",
+    "status": "confirmed",
+    "totalAmount": 200
 }
 ```
 </details>
 
 <details>
-<summary>API 10 : Send a Request to Flag an Itinerary</summary>
+<summary>API 5: Process Payment</summary>
   
-`PATCH: http://localhost:4000/admin/flagItinerary/67565525d4fd4be70932c260`
+`POST: http://localhost:4000/payment/handleBookingPayment`
 
-*Response Body*
-
+*Request Body*
 ```json
 {
-    "message": "Notification created successfully.",
-    "retItinerary": {
-        "_id": "67565525d4fd4be70932c260",
-        "title": "New Itinerary",
-        "activities": [
-            "675644969e4995e9a9358c06"
-        ],
-        "locations": [
-            "Cairo"
-        ],
-        "timeline": "Day 1: Cairo",
-        "duration": "10 am to 12 pm",
-        "language": "Arabic",
-        "price": 50,
-        "availableDates": [
-            "2024-12-11T00:00:00.000Z"
-        ],
-        "time": [
-            "12:20"
-        ],
-        "accessibility": true,
-        "pickUpLocation": "Cairo",
-        "dropOffLocation": "Giza",
-        "tags": [],
-        "ratings": [],
-        "rating": null,
-        "comments": [],
-        "BookingAlreadyMade": true,
-        "NoOfBookings": 0,
-        "touristsCount": 0,
-        "revenueOfThisItinerary": 0,
-        "createdBy": "67470c2f50bb3589eab32816",
-        "bookingIsOpen": true,
-        "flagged": true,
-        "createdAt": "2024-12-09T02:25:41.446Z",
-        "updatedAt": "2024-12-09T03:20:21.294Z",
-        "__v": 0
-    },
-    "notification": {
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "Your Itinerary New Itinerary has been flagged as inappropriate.",
-        "reason": "Inappropriate content",
-        "ReasonID": "67565525d4fd4be70932c260",
-        "seen": false,
-        "_id": "675661f5f97bdd3f05225196",
-        "createdAt": "2024-12-09T03:20:21.637Z",
-        "__v": 0
-    }
+    "bookingId": "675661f5f97bdd3f05225198",
+    "amount": 200,
+    "method": "wallet"
+}
+```
+
+*Response Body*
+```json
+{
+    "transactionId": "675661f5f97bdd3f05225199",
+    "status": "success"
 }
 ```
 </details>
 
 <details>
-<summary>API 11 : Send a Request to get Notifications as a tourGuide</summary>
-  
-`GET: http://localhost:4000/tourGuide/notifs`
-
-*Response Body*
-
-```json
-[
-    {
-        "_id": "674c519f7ecba75c98817bb5",
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "You've been flagged as inappropriate.",
-        "reason": "Inappropriate content flagged",
-        "ReasonID": "674b6baba8e5aee39a8595e7",
-        "seen": true,
-        "createdAt": "2024-12-01T12:07:59.141Z",
-        "__v": 0
-    },
-    {
-        "_id": "674c81109340c275510fcbf6",
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "Your Itinerary has been flagged as inappropriate.",
-        "reason": "Inappropriate content",
-        "ReasonID": "674b6baba8e5aee39a8595e7",
-        "seen": true,
-        "createdAt": "2024-12-01T15:30:24.173Z",
-        "__v": 0
-    },
-    {
-        "_id": "674f65677703850b7dec398c",
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "Your Itinerary has been flagged as inappropriate.",
-        "reason": "Inappropriate content",
-        "ReasonID": "674b6baba8e5aee39a8595e7",
-        "seen": true,
-        "createdAt": "2024-12-03T20:09:11.265Z",
-        "__v": 0
-    },
-    {
-        "_id": "674f656f7703850b7dec3994",
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "Your Itinerary has been flagged as inappropriate.",
-        "reason": "Inappropriate content",
-        "ReasonID": "674b6baba8e5aee39a8595e7",
-        "seen": true,
-        "createdAt": "2024-12-03T20:09:19.905Z",
-        "__v": 0
-    },
-    {
-        "_id": "674f681b0ba002420cea9425",
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "Your Itinerary has been flagged as inappropriate.",
-        "reason": "Inappropriate content",
-        "ReasonID": "674b6baba8e5aee39a8595e7",
-        "seen": true,
-        "createdAt": "2024-12-03T20:20:43.795Z",
-        "__v": 0
-    },
-    {
-        "_id": "674f75f93c868b0b5445876b",
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "Your Itinerary New try has been flagged as inappropriate.",
-        "reason": "Inappropriate content",
-        "ReasonID": "674b6baba8e5aee39a8595e7",
-        "seen": true,
-        "createdAt": "2024-12-03T21:19:53.306Z",
-        "__v": 0
-    },
-    {
-        "_id": "675661f5f97bdd3f05225196",
-        "userID": "67470c2f50bb3589eab32816",
-        "message": "Your Itinerary New Itinerary has been flagged as inappropriate.",
-        "reason": "Inappropriate content",
-        "ReasonID": "67565525d4fd4be70932c260",
-        "seen": false,
-        "createdAt": "2024-12-09T03:20:21.637Z",
-        "__v": 0
-    }
-]
-```
-</details>
-
-
-<details>
-<summary>API 12 : Send a Request to get a specific Notification as a tourGuide</summary>
-  
-`GET: http://localhost:4000/tourGuide/notif/675661f5f97bdd3f05225196`
-
-*Response Body*
-
-```json
-{
-    "_id": "675661f5f97bdd3f05225196",
-    "userID": "67470c2f50bb3589eab32816",
-    "message": "Your Itinerary New Itinerary has been flagged as inappropriate.",
-    "reason": "Inappropriate content",
-    "ReasonID": "67565525d4fd4be70932c260",
-    "seen": false,
-    "createdAt": "2024-12-09T03:20:21.637Z",
-    "__v": 0
-}
-```
-</details>
-
-<details>
-<summary>API 13 : Send a Request to add a Product to cart</summary>
+<summary>API 6: Add to Cart</summary>
   
 `POST: http://localhost:4000/tourist/cart/add`
 
 *Request Body*
-
 ```json
 {
-        "productId": "674b6ff986153c78a2ddfda5",
-        "quantity":2
+    "productId": "675661f5f97bdd3f05225196",
+    "quantity": 2
 }
 ```
-*Response Body*
 
+*Response Body*
 ```json
 {
     "message": "Product added to cart successfully",
     "cart": [
         {
-            "productId": "674b6ff986153c78a2ddfda5",
-            "quantity": 2,
-            "_id": "675663a0f97bdd3f052251f5"
+            "productId": "675661f5f97bdd3f05225196",
+            "quantity": 2
         }
     ]
 }
@@ -1036,28 +660,66 @@ npm install
 </details>
 
 <details>
-<summary>API 14: Send a Request to change products in cart</summary>
+<summary>API 7: Create Itinerary</summary>
   
-`PATCH: http://localhost:4000/tourist/cart/change`
+`POST: http://localhost:4000/tourGuide/create`
 
 *Request Body*
-
 ```json
 {
-        "productId": "674b6ff986153c78a2ddfda5",
-        "quantity":1
+    "title": "Egypt Explorer",
+    "activities": ["675661f5f97bdd3f05225197"],
+    "duration": 7,
+    "price": 1500
 }
 ```
-*Response Body*
 
+*Response Body*
 ```json
 {
-    "message": "Product quantity updated successfully",
-    "cart": [
+    "itineraryId": "675661f5f97bdd3f05225200",
+    "status": "created"
+}
+```
+</details>
+
+<details>
+<summary>API 8: Rate Activity</summary>
+  
+`POST: http://localhost:4000/tourist/activity/rate/:id`
+
+*Request Body*
+```json
+{
+    "rating": 5,
+    "comment": "Great experience!"
+}
+```
+
+*Response Body*
+```json
+{
+    "message": "Rating submitted successfully",
+    "newAverageRating": 4.5
+}
+```
+</details>
+
+<details>
+<summary>API 9: View Sales Report</summary>
+  
+`GET: http://localhost:4000/seller/salesReport`
+
+*Response Body*
+```json
+{
+    "totalRevenue": 15000,
+    "totalSales": 100,
+    "productDetails": [
         {
-            "productId": "674b6ff986153c78a2ddfda5",
-            "quantity": 1,
-            "_id": "675663a0f97bdd3f052251f5"
+            "name": "Product 1",
+            "sales": 50,
+            "revenue": 7500
         }
     ]
 }
@@ -1065,26 +727,664 @@ npm install
 </details>
 
 <details>
-<summary>API 15: Send a Request to delete products from cart</summary>
+<summary>API 10: Update Profile</summary>
   
-`DELETE: http://localhost:4000/tourist/cart/remove`
+`PUT: http://localhost:4000/tourist/profile`
 
 *Request Body*
-
 ```json
 {
-        "productId": "674b6ff986153c78a2ddfda5"
+    "name": "John Doe",
+    "phone": "+1234567890",
+    "preferences": ["adventure", "culture"]
 }
 ```
 
 *Response Body*
 ```json
 {
-    "message": "Successfully removed the product from the cart"
+    "message": "Profile updated successfully",
+    "user": {
+        "name": "John Doe",
+        "phone": "+1234567890"
+    }
 }
 ```
 </details>
 
+<details>
+<summary>API 11: Create Complaint</summary>
+  
+`POST: http://localhost:4000/tourist/fileComplaint`
+
+*Request Body*
+```json
+{
+    "subject": "Booking Issue",
+    "description": "Activity was cancelled without notice",
+    "relatedBooking": "675661f5f97bdd3f05225198"
+}
+```
+
+*Response Body*
+```json
+{
+    "complaintId": "675661f5f97bdd3f05225201",
+    "status": "pending"
+}
+```
+</details>
+
+<details>
+<summary>API 12: Get Notifications</summary>
+  
+`GET: http://localhost:4000/tourist/notifs`
+
+*Response Body*
+```json
+[
+    {
+        "id": "675661f5f97bdd3f05225202",
+        "message": "Your booking is confirmed",
+        "seen": false,
+        "createdAt": "2024-12-09T03:20:21.637Z"
+    }
+]
+```
+</details>
+
+<details>
+<summary>API 13: Apply Promo Code</summary>
+  
+`POST: http://localhost:4000/tourist/redeemCode`
+
+*Request Body*
+```json
+{
+    "code": "SUMMER2024",
+    "orderId": "675661f5f97bdd3f05225203"
+}
+```
+
+*Response Body*
+```json
+{
+    "discountAmount": 50,
+    "newTotal": 150
+}
+```
+</details>
+
+<details>
+<summary>API 14: Create Transportation</summary>
+  
+`POST: http://localhost:4000/advertiser/transportation/create`
+
+*Request Body*
+```json
+{
+    "type": "bus",
+    "departure": "Cairo",
+    "arrival": "Luxor",
+    "price": 50,
+    "date": "2024-12-25"
+}
+```
+
+*Response Body*
+```json
+{
+    "transportationId": "675661f5f97bdd3f05225204",
+    "status": "created"
+}
+```
+</details>
+
+<details>
+<summary>API 15: Get User Statistics</summary>
+  
+`GET: http://localhost:4000/admin/userStats`
+
+*Response Body*
+```json
+{
+    "totalUsers": 1000,
+    "newUsersPerMonth": [
+        {
+            "month": "January",
+            "count": 50
+        }
+    ]
+}
+```
+</details>
+
+## 🧪 Test Routes
+
+<details>
+<summary>Test 1: User Registration Flow</summary>
+
+`POST: http://localhost:4000/auth/register`
+
+*Test Cases:*
+```json
+{
+    "validCase": {
+        "input": {
+            "username": "testuser",
+            "email": "test@example.com",
+            "password": "Password123",
+            "role": "tourist"
+        },
+        "expectedResponse": {
+            "status": 201,
+            "body": {
+                "message": "Registration successful"
+            }
+        }
+    },
+    "invalidCase": {
+        "input": {
+            "username": "test",
+            "email": "invalid-email",
+            "password": "123"
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid input data"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 2: Authentication Flow</summary>
+
+`POST: http://localhost:4000/auth/login`
+
+*Test Cases:*
+```json
+{
+    "validLogin": {
+        "input": {
+            "username": "testuser",
+            "password": "Password123"
+        },
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "token": "jwt_token"
+            }
+        }
+    },
+    "invalidLogin": {
+        "input": {
+            "username": "testuser",
+            "password": "wrongpass"
+        },
+        "expectedResponse": {
+            "status": 401,
+            "body": {
+                "error": "Invalid credentials"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 3: Activity Booking Flow</summary>
+
+`POST: http://localhost:4000/booking/activity`
+
+*Test Cases:*
+```json
+{
+    "validBooking": {
+        "input": {
+            "activityId": "675661f5f97bdd3f05225197",
+            "date": "2024-12-25",
+            "participants": 2
+        },
+        "expectedResponse": {
+            "status": 201,
+            "body": {
+                "bookingId": "675661f5f97bdd3f05225198"
+            }
+        }
+    },
+    "invalidBooking": {
+        "input": {
+            "activityId": "675661f5f97bdd3f05225197",
+            "participants": 100
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Insufficient capacity"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 4: Payment Processing Flow</summary>
+
+`POST: http://localhost:4000/payment/handleBookingPayment`
+
+*Test Cases:*
+```json
+{
+    "validPayment": {
+        "input": {
+            "bookingId": "675661f5f97bdd3f05225198",
+            "amount": 200,
+            "method": "wallet"
+        },
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "transactionId": "675661f5f97bdd3f05225199"
+            }
+        }
+    },
+    "insufficientFunds": {
+        "input": {
+            "bookingId": "675661f5f97bdd3f05225198",
+            "amount": 10000,
+            "method": "wallet"
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Insufficient funds"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 5: Cart Management Flow</summary>
+
+`POST: http://localhost:4000/tourist/cart/add`
+
+*Test Cases:*
+```json
+{
+    "addToCart": {
+        "input": {
+            "productId": "675661f5f97bdd3f05225196",
+            "quantity": 2
+        },
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "message": "Added to cart"
+            }
+        }
+    },
+    "invalidQuantity": {
+        "input": {
+            "productId": "675661f5f97bdd3f05225196",
+            "quantity": -1
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid quantity"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 6: Itinerary Creation Flow</summary>
+
+`POST: http://localhost:4000/tourGuide/create`
+
+*Test Cases:*
+```json
+{
+    "validItinerary": {
+        "input": {
+            "title": "Egypt Explorer",
+            "activities": ["675661f5f97bdd3f05225197"],
+            "duration": 7,
+            "price": 1500
+        },
+        "expectedResponse": {
+            "status": 201,
+            "body": {
+                "itineraryId": "675661f5f97bdd3f05225200"
+            }
+        }
+    },
+    "invalidItinerary": {
+        "input": {
+            "title": "",
+            "duration": -1
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid itinerary data"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 7: Rating System Flow</summary>
+
+`POST: http://localhost:4000/tourist/activity/rate/:id`
+
+*Test Cases:*
+```json
+{
+    "validRating": {
+        "input": {
+            "rating": 5,
+            "comment": "Great experience!"
+        },
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "newAverageRating": 4.5
+            }
+        }
+    },
+    "invalidRating": {
+        "input": {
+            "rating": 6,
+            "comment": ""
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid rating value"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 8: Profile Update Flow</summary>
+
+`PUT: http://localhost:4000/tourist/profile`
+
+*Test Cases:*
+```json
+{
+    "validUpdate": {
+        "input": {
+            "name": "John Doe",
+            "phone": "+1234567890"
+        },
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "message": "Profile updated"
+            }
+        }
+    },
+    "invalidUpdate": {
+        "input": {
+            "phone": "invalid-phone"
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid phone format"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 9: Complaint System Flow</summary>
+
+`POST: http://localhost:4000/tourist/fileComplaint`
+
+*Test Cases:*
+```json
+{
+    "validComplaint": {
+        "input": {
+            "subject": "Booking Issue",
+            "description": "Activity cancelled"
+        },
+        "expectedResponse": {
+            "status": 201,
+            "body": {
+                "complaintId": "675661f5f97bdd3f05225201"
+            }
+        }
+    },
+    "invalidComplaint": {
+        "input": {
+            "subject": ""
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Subject required"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 10: Notification System Flow</summary>
+
+`GET: http://localhost:4000/tourist/notifs`
+
+*Test Cases:*
+```json
+{
+    "validRequest": {
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "notifications": [
+                    {
+                        "message": "Booking confirmed",
+                        "seen": false
+                    }
+                ]
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 11: Promo Code Flow</summary>
+
+`POST: http://localhost:4000/tourist/redeemCode`
+
+*Test Cases:*
+```json
+{
+    "validPromo": {
+        "input": {
+            "code": "SUMMER2024",
+            "orderId": "675661f5f97bdd3f05225203"
+        },
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "discountAmount": 50
+            }
+        }
+    },
+    "invalidPromo": {
+        "input": {
+            "code": "INVALID"
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid promo code"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 12: Transportation Booking Flow</summary>
+
+`POST: http://localhost:4000/booking/transportation`
+
+*Test Cases:*
+```json
+{
+    "validBooking": {
+        "input": {
+            "transportationId": "675661f5f97bdd3f05225204",
+            "seats": 2,
+            "date": "2024-12-25"
+        },
+        "expectedResponse": {
+            "status": 201,
+            "body": {
+                "bookingId": "675661f5f97bdd3f05225205"
+            }
+        }
+    },
+    "invalidBooking": {
+        "input": {
+            "seats": -1
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid seats number"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 13: User Statistics Flow</summary>
+
+`GET: http://localhost:4000/admin/userStats`
+
+*Test Cases:*
+```json
+{
+    "validRequest": {
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "totalUsers": 1000,
+                "newUsersPerMonth": [
+                    {
+                        "month": "January",
+                        "count": 50
+                    }
+                ]
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 14: Activity Creation Flow</summary>
+
+`POST: http://localhost:4000/advertiser/activity`
+
+*Test Cases:*
+```json
+{
+    "validActivity": {
+        "input": {
+            "title": "Desert Safari",
+            "price": 100,
+            "capacity": 20
+        },
+        "expectedResponse": {
+            "status": 201,
+            "body": {
+                "activityId": "675661f5f97bdd3f05225206"
+            }
+        }
+    },
+    "invalidActivity": {
+        "input": {
+            "price": -100
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid price"
+            }
+        }
+    }
+}
+```
+</details>
+
+<details>
+<summary>Test 15: Password Reset Flow</summary>
+
+`POST: http://localhost:4000/auth/resetPassword`
+
+*Test Cases:*
+```json
+{
+    "validReset": {
+        "input": {
+            "email": "user@example.com",
+            "otp": "123456",
+            "newPassword": "NewPassword123"
+        },
+        "expectedResponse": {
+            "status": 200,
+            "body": {
+                "message": "Password reset successful"
+            }
+        }
+    },
+    "invalidReset": {
+        "input": {
+            "email": "user@example.com",
+            "otp": "wrong-otp"
+        },
+        "expectedResponse": {
+            "status": 400,
+            "body": {
+                "error": "Invalid OTP"
+            }
+        }
+    }
+}
+```
+</details>
 
 ## 🧪 Tests
 
