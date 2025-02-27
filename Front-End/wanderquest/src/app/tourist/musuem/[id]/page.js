@@ -35,21 +35,27 @@ useEffect(() => {
   if (loading) {
     return <p>Loading...</p>;
   }
+  const images ={'Eiffel Tower':'/eiflle.jpg',
+  'Pyramids of Giza':'/pyramids.jpg',
+  'Taj Mahal ':'/m.jpg',
+  'Sydney Opera House ':'/sydney.jpg',
+  'The Great Egyptian Museum ':'/egy.jpg'
+  
+  };
+  const cat = ['students', 'locals', 'foreigners'];
   return (
     <>
       <Navbar />
       {museum && (
         <div className={styles.museumContainer}>
           <h2 className={styles.museumName}>{museum.title || 'No title available'}</h2>
-          {museum.pictures && museum.pictures.length > 0 ? (
+          
             <div className={styles.museumPictures}>
-              {museum.pictures.map((pic, index) => (
-                <img key={index} src={pic} alt={`Museum image ${index + 1}`} className={styles.museumImage} />
-              ))}
+             
+                <img src={images[museum.title]}  className={styles.museumImage} />
+            
             </div>
-          ) : (
-            <p>No images available</p>
-          )}
+       
           <p className={styles.museumDescription}>{museum.description || 'No description available'}</p>
           
 
@@ -69,8 +75,8 @@ useEffect(() => {
             {museum.ticketPrices && Array.isArray(museum.ticketPrices) && museum.ticketPrices.length > 0 ? (
               museum.ticketPrices.map((price, index) => (
                 <div key={index} className={styles.ticketPriceItem}>
-                  <span>{price.category || 'Category'}</span>
-                  <span>${price.amount || 'N/A'}</span>
+                  <span>{cat[index]}</span>
+                  <span>${price}</span>
                 </div>
               ))
             ) : (
