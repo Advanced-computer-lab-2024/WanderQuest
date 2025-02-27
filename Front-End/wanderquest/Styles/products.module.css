@@ -1,17 +1,15 @@
 .body{
-  margin-top: 100px;
+  margin-top: 81px;
+  background-color: #FFFFFA;
 }
 
 .cardscontainer {
   flex: 1; /* Take up remaining space */
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 2-column grid */
-/* Space between grid items */
-  padding: 20px;
-
+  grid-template-columns: repeat(3, 1fr); /* 3-column grid */
+  padding: 20px 15px; /* Add padding to the top/bottom and left/right */
+  margin: 0 10px; /* Increase margin to 40px on the left and right */
   overflow-y: auto;
-
-
 }
 /* .container{
   margin: 0;
@@ -109,26 +107,27 @@
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
-    background: white;
+    background: FFFFFA;
     margin: 15px;
+   
   }
   
   .productCard:hover {
     transform: translateY(-4px);
   }
   
-  .productImageContainer {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-  }
-  
-  .productImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s;
-  }
+.productImageContainer {
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+}
+
+.productImage {
+  width: 100%; /* Set width to 100% */
+  height: 100%; /* Set height to 100% */
+  object-fit: cover; /* Change to contain to avoid cutting off the image */
+  transition: transform 0.3s;
+}
   
   .productImage:hover {
     transform: scale(1.05);
@@ -161,7 +160,7 @@
   .productPrice {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2ecc71;
+    color: #1a6187;
   }
   
   .stockInfo {
@@ -232,18 +231,44 @@
   .productUpdate:focus {
     outline: none;
   }
-.productsearch{
-    display: block;
-    width: 500px;
-    border:1px solid gray;
-    border-radius: 10px;
-    margin-left: auto;
-    margin-right: 380px;
+.searchContainer {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 900px;
+  margin: 0 auto;
 }
 
-.searchcom{
-    display: inline;
+.productsearch {
+  flex: 1;
+  height: 40px;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+.sortcontainer {
+  display: flex;
+  align-items: center;
+}
+
+.sort {
+  height: 60px;
+  min-width: 200px;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
 .priceFilter {
   background-color: #f9f9f9; /* Light background for contrast */
   border: 1px solid #ddd; /* Light border for definition */
@@ -301,7 +326,7 @@
 .productArchive{
     margin-right: 10px;
     margin-bottom: 10px;
-    background-color: #031A29;
+    background-color: black;
     color:white;
     border: none;
     cursor: pointer;
@@ -388,7 +413,7 @@
 .filterSection button {
   width: 100%;
   padding: 10px;
-  background-color: #1a6187;
+  background-color: black;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -398,7 +423,7 @@
 }
 
 .filterSection button:hover {
-  background-color: black;
+  background-color: #042335;
 }
 .pageLayout {
   margin: 0; /* Removes top margin */

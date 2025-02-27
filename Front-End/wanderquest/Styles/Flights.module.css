@@ -52,7 +52,7 @@
   border: 1px solid black;
   margin-left: auto;
   margin-right: auto;
-  width: 70%;
+  width: 71%;
   background-color: whitesmoke;
   height: 45px;
   border-radius: 10px;
@@ -78,7 +78,6 @@
   font-size: 15px;
 }  
 .hotelImage{
-  margin-Top: 80px;
   width: 100%;
   height: 60%;
   object-fit: cover;
@@ -100,7 +99,7 @@
     border-radius: 10px;
     transition: transform 0.4s ease;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    padding: 20px;
+    padding: 10px;
     height: 650px;  /* Optional: adds padding inside the card */
   }
   
@@ -155,6 +154,7 @@
     box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
     /* Added that to remove the underline feature of the Link tag in Next */
     text-decoration: none;
+    width: 100%;
   }
   .welcomeq{
     margin-top: -50px;
@@ -163,4 +163,155 @@
     font-size: 45px;
 
        width: 70%;
+  }
+  .flightCardHeader {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 160px;
+    position: relative;
+    background: linear-gradient(to bottom, #f5f7fa, #ffffff);
+  }
+
+  .planeImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .flightCard:hover .planeImage {
+    transform: scale(1.05);
+  }
+
+  .flightCard {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+  }
+
+  .flightCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .flightInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .flightRoute {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .locationBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .iataCode {
+    font-size: 28px;
+    font-weight: 700;
+    color: #042335;
+  }
+
+  .dateTime {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .date {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .time {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .flightDivider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    margin: 0 20px;
+  }
+
+  .airlineInfo {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+  }
+
+  .flightLine {
+    width: 100%;
+    height: 2px;
+    background: #e0e0e0;
+    position: relative;
+  }
+
+  .planeIcon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #042335;
+  }
+
+  .priceSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+  }
+
+  .priceLabel {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .priceAmount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #042335;
+  }
+
+  .bookButton {
+    background: #042335;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .bookButton:hover {
+    background: #0a3d5c;
+  }
+
+  .bookButton:active {
+    transform: scale(0.98);
   }

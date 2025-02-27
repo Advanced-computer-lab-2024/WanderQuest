@@ -6,26 +6,64 @@ import styles from '../styles/products.module.css';
 import AddRating from './AddRating';
 import AddComment from './AddComment';
 import { motion } from "framer-motion";
+import foot from './foot';
 
-
+// Material UI components
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
 import StarIcon from '@mui/icons-material/Star';
+import Footer from './Footer';
+
+const travelProducts = [
+    { name: "Mountain Hiking Boots", description: "Durable and comfortable boots designed for rugged mountain trails." },
+    { name: "Travel Backpack", description: "A versatile and spacious backpack perfect for carrying all your essentials." },
+    { name: "Passport Holder", description: "A sleek, protective holder to keep your passport safe during your travels." },
+    { name: "Neck Pillow", description: "Soft and ergonomic neck pillow to keep you comfortable during long flights." },
+    { name: "Travel Adapter", description: "A compact adapter to ensure your devices work in different countries." },
+    { name: "Luggage Tag", description: "Easily identifiable tags for your luggage to prevent mix-ups." },
+    { name: "Packing Cubes", description: "Organize your clothes and accessories neatly with these space-saving packing cubes." },
+    { name: "Hiking Gloves", description: "Protect your hands with these durable gloves designed for outdoor activities." },
+    { name: "Portable Charger", description: "Keep your devices powered on-the-go with this compact portable charger." },
+    { name: "Travel Guidebook", description: "A detailed guidebook offering tips, attractions, and useful travel advice." },
+    { name: "Sunglasses", description: "Stylish and UV-protective sunglasses to keep your eyes safe and comfortable." },
+    { name: "Reusable Water Bottle", description: "Eco-friendly and durable water bottle to stay hydrated on your travels." },
+    { name: "Sunscreen", description: "Broad-spectrum sunscreen to protect your skin from harmful UV rays." },
+    { name: "Sunscreen", description: "Broad-spectrum sunscreen to protect your skin from harmful UV rays." }
+];
+
+const images = [
+    '/hikingboots.avif',
+    '/yogamat.jpg',
+    '/travelpack.jpg',
+    '/passportholder.jpg',
+    '/sunscreen.jpg',
+    '/neckpillow.jpg',
+    '/traveladapter.jpg',
+    '/traveltage.webp',
+    '/Packing Cubes.webp',
+    '/hiking gloves.jpg',
+    '/portable charger.webp',
+    '/Travel Guidebook.webp',
+    '/sunglasses.jpg',
+    '/reusable water bottle.webp'
+];
+
+const i=0;
 const labels = {
     0.5: 'Useless',
-    1: 'Useless+',
+    1: 'Useless',
     1.5: 'Poor',
-    2: 'Poor+',
+    2: 'Poor',
     2.5: 'Ok',
     3: 'Ok+',
     3.5: 'Good',
-    4: 'Good+',
+    4: 'Good',
     4.5: 'Excellent',
     5: 'Excellent+',
 };
 const Products = ({ role, refreshWishlist }) => {
-
+    
     const [products, setProduct] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState('');
@@ -199,8 +237,9 @@ const Products = ({ role, refreshWishlist }) => {
     };
 
     useEffect(() => {
+
         fetch('http://localhost:4000/tourist/products', {
-            credentials: 'include', // Include admin credentials
+            credentials: 'include',
         })
             .then((res) => {
                 if (!res.ok) {
@@ -209,16 +248,23 @@ const Products = ({ role, refreshWishlist }) => {
                 return res.json();
             })
             .then((data) => {
-                setProduct(data);
-                console.log(data);
-                setFilteredProducts(data);
-                setLoading(false); // Initialize filtered products with fetched data
+                // Add image paths to products
+                const productsWithImages = data.map((product, index) => {
+                    const imageIndex = index % images.length; // Use modulo to cycle through images
+                    return {
+                        ...product,
+                        imagePath: images[imageIndex]
+                    };
+                });
+                setProduct(productsWithImages);
+                setFilteredProducts(productsWithImages);
+                setLoading(false);
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
                 setProduct([]);
                 setFilteredProducts([]);
-                setLoading(false); // Reset filtered products on error
+                setLoading(false);
             });
     }, []);
 
@@ -252,31 +298,29 @@ const Products = ({ role, refreshWishlist }) => {
         try {
             const response = await fetch(`http://localhost:4000/tourist/cart/add/${id}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({
-                    quantity: quantity
-                })
-                
+                body: JSON.stringify({ quantity: 1 })
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to add to wishlist');
-                
+                throw new Error(errorData.error || 'Failed to add to cart');
             }
-
-            const result = await response.json();
-            console.log('Successfully added to Cart', result);
+    
+            console.log('Successfully added to Cart');
             
+            // Notify cart component to refresh
+            window.dispatchEvent(new Event('cartUpdated'));
+    
             alert('Product added to cart successfully!');
         } catch (error) {
             console.error('Error adding item to cart:', error.message);
             alert('Failed to add product to cart');
         }
     };
+    
+    
     
     if (loading) {return<>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
@@ -291,29 +335,27 @@ const Products = ({ role, refreshWishlist }) => {
     src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
         </>}
 return (
-    <>
-    <img src="/prod.png" className={styles.travelplan} alt="iti" />
-    <motion.div
-            className={styles.searchcom}
-            initial={{ y: 20 }}
-            transition={{ duration: 1 }}
-          >
+    <div className={styles.body}>
+    
+    <motion.div initial={{ opacity: 0, y: 20,x:30 }} animate={{ opacity: 1 }} className={styles.searchContainer}>
             <input
                         className={styles.productsearch}
                         onChange={(e) => setSearch(e.target.value)}
                         type="text"
                         placeholder="Search for products..."
-                    />
-          </motion.div>
+                    /> <div className={styles.sortcontainer}>
+                        <select className={styles.sort} onChange={(e) => { const value = e.target.value; if(value === 'asc') handlesortasc(); else if(value === 'desc') handlesortdsc(); else if(value === 'ratingAsc') handleratingfilterasc(); else if(value === 'ratingDesc') handleratingdsc(); }}>
+                            <option value="asc">Sort by Price Asc</option>
+                            <option value="desc">Sort by Price Desc</option>
+                            <option value="ratingAsc">Sort by Rating Asc</option>
+                            <option value="ratingDesc">Sort by Rating Desc</option>
+                        </select>
+                        </div>
+                        </motion.div>
         <div className={styles.filterSection}>
             <div className={styles.pageLayout}>
-                <div className={styles.sidebar}>
-                    <h1>Sorting</h1>
-                    <button className={styles.productArchive} onClick={handlesortasc}>Sort by Price Asc</button>
-                    <button className={styles.productArchive} onClick={handlesortdsc}>Sort by Price Desc</button>
-                    <button className={styles.productArchive} onClick={handleratingfilterasc}>Sort by Rating Asc</button>
-                    <button className={styles.productArchive} onClick={handleratingdsc}>Sort by Rating Desc</button>
-                   
+                    <div className={styles.sidebar}>
+                     <h1>Filters</h1>
 
                         <div className={styles.priceFilter}>
                             <h3>Price Filter</h3>
@@ -375,23 +417,71 @@ return (
                         type="text"
                         placeholder="Enter your text"
                     />
-                </div> */}
+                 </div> */}
                     <div className={styles.cardscontainer}>
                         {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
                             filteredProducts
                                 .filter(product => !product.isArchived)
-                                .map((product) => (
-                                    <div className={styles.productCard} key={product._id}>
-                                        <div className={styles.productImageContainer}>
-                                            <img
-                                                src={product.picture}
+                                .map((product, index) => (
+                                    <motion.div
+                                        className={styles.productCard}
+                                        key={product._id}
+                                        initial={{ 
+                                            opacity: 0, 
+                                            y: 50,
+                                            scale: 0.9
+                                        }}
+                                        animate={{ 
+                                            opacity: 1, 
+                                            y: 0,
+                                            scale: 1
+                                        }}
+                                        transition={{
+                                            duration: 0.6,
+                                            delay: index * 0.2,
+                                            ease: [0.43, 0.13, 0.23, 0.96] // Custom easing for smooth animation
+                                        }}
+                                        whileHover={{
+                                            scale: 1.03,
+                                            transition: { duration: 0.2 }
+                                        }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        <motion.div 
+                                            className={styles.productImageContainer}
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{
+                                                delay: index * 0.2 + 0.3,
+                                                duration: 0.5
+                                            }}
+                                        >
+                                            <motion.img
+                                                src={product.imagePath}
                                                 alt={product.name}
                                                 className={styles.productImage}
+                                                initial={{ scale: 1 }}
+                                                whileHover={{ 
+                                                    scale: 1.1,
+                                                    transition: {
+                                                        duration: 0.3,
+                                                        ease: "easeOut"
+                                                    }
+                                                }}
                                             />
-                                        </div>
-                                        <div className={styles.productInfo}>
-                                            <h2 className={styles.productTitle}>{product.name}</h2>
-
+                                        </motion.div>
+                                        <motion.div 
+                                            className={styles.productInfo}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{
+                                                delay: index * 0.2 + 0.4,
+                                                duration: 0.5
+                                            }}
+                                        >
+                                            <h2 style={{ color: 'black',marginBottom: '-2px' }} className={styles.productTitle}>{product.name}</h2>
+                                            <span className={styles.productDescription}>{product.description}</span>
+                                            <hr></hr>
                                             <div className={styles.productMeta}>
                                                 <div className={styles.priceAndStock}>
                                                     <span className={styles.productPrice}>
@@ -405,17 +495,17 @@ return (
                                                 </div>
 
                                                 <div className={styles.sellerInfo}>
-                                                    <span className={styles.sellerLabel}>Sold by:</span>
-                                                    <span className={styles.sellerName}>{product.seller}</span>
+                                                    
+                                                    {/* <span className={styles.sellerName}>{product.seller}</span> */}
                                                 </div>
                                             </div>
 
-                        <p className={styles.productDescription}>{product.description}</p>
+                        
                         
                         <div className={styles.productRating}>
                             {product.rating && product.rating > 0 ? (
                                 <div className={styles.ratingContainer}>
-                                    Rating:
+                                    
                                     <Rating
                                         name="text-feedback"
                                         value={product.rating}
@@ -441,86 +531,140 @@ return (
                             </div>
                         )}
 
+                      
+                                                     
                         {role === "Tourist" && (
-                            <div className={styles.touristActions}>
-                                <AddRating
-                                    rating={ratings[product._id] || product.rating}
-                                    setRating={(newRating) => updateRating(product._id, newRating)}
-                                />
-                                <AddComment
-                                    comment={comments[product._id] || ""}
-                                    setComment={(newComment) => setComments(prev => ({
-                                        ...prev,
-                                        [product._id]: newComment
-                                    }))}
-                                />
-                                <button
-                                    className={styles.productArchive}
-                                    onClick={() => addComment(product._id, comments[product._id])}
-                                >
-                                    Add a Comment
-                                </button>
-                                                        {/* Role-specific actions */}
-                        {role === "Tourist" && (
-                            <button 
-                                className={styles.productArchive} 
-                                onClick={() => addWishlist(product._id)}
-                                style={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    gap: '4px', 
-                                    padding: '6px 12px', 
-                                    fontSize: '0.9rem', 
-                                    minHeight: '32px'
+                            <motion.div 
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    gap: '10px'
+                                }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ 
+                                    delay: index * 0.2 + 0.5,
+                                    duration: 0.5,
+                                    ease: [0.43, 0.13, 0.23, 0.96]
                                 }}
                             >
-                                <svg 
-                                    fill="#ffffff"
-                                    height="15px"
-                                    width="15px"
-                                    version="1.1" 
-                                    viewBox="0 0 611.997 611.997" 
-                                    stroke="#ffffff"
+                                <motion.button 
+                                    className={styles.productArchive} 
+                                    onClick={() => addWishlist(product._id)}
+                                    whileHover={{ 
+                                        scale: 1.05, 
+                                        backgroundColor: "#333"
+                                    }}
+                                    whileTap={{ 
+                                        scale: 0.95,
+                                        transition: {
+                                            duration: 0.1
+                                        }
+                                    }}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ 
+                                        delay: index * 0.2 + 0.6,
+                                        duration: 0.4,
+                                        ease: [0.43, 0.13, 0.23, 0.96]
+                                    }}
+                                    style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '4px', 
+                                        padding: '6px 12px', 
+                                        fontSize: '0.9rem', 
+                                        minHeight: '32px',
+                                        backgroundColor: 'black',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        flex: 1
+                                    }}
                                 >
-                                    <g>
-                                        <path d="M549.255,384.017h-50.692v-50.694c0-21.132-17.134-38.264-38.262-38.264c-21.138,0-38.266,17.132-38.266,38.264v50.694 h-50.697c-21.13,0-38.262,17.132-38.262,38.264c0,21.134,17.134,38.264,38.262,38.264h50.697v50.697 c0,21.13,17.13,38.264,38.266,38.264c21.13,0,38.262-17.134,38.262-38.264v-50.697h50.692c21.138,0,38.262-17.13,38.262-38.264 C587.519,401.151,570.394,384.017,549.255,384.017z"></path>
-                                        <path d="M383.77,498.809h-12.432c-42.198,0-76.526-34.33-76.526-76.528s34.328-76.528,76.526-76.528h12.432v-12.43 c0-42.198,34.33-76.528,76.53-76.528c42.198,0,76.526,34.33,76.526,76.528v12.43h12.428c5.073,0,10.028,0.508,14.827,1.454 c66.899-77.109,63.762-194.319-9.515-267.606c-37.102-37.1-86.429-57.533-138.896-57.533c-39.544,0-77.476,11.685-109.659,33.39 c-32.185-21.705-70.117-33.39-109.659-33.39c-52.464,0-101.791,20.433-138.896,57.535 c-76.609,76.617-76.609,201.284,0.002,277.904l215.831,215.829c2.226,2.222,4.583,4.463,7.009,6.664 c7.293,6.619,16.501,9.93,25.716,9.93c9.198,0,18.396-3.301,25.684-9.903c2.448-2.216,4.826-4.477,7.069-6.72l46.584-46.582 c-1.033-5.002-1.577-10.181-1.577-15.482v-12.432H383.77z"></path>
-                                    </g>
-                                </svg>
-                                Add to Wishlist
-                            </button>
-                        )}
+                                    <motion.svg 
+                                        fill="#ffffff"
+                                        height="15px"
+                                        width="15px"
+                                        version="1.1" 
+                                        viewBox="0 0 611.997 611.997" 
+                                        stroke="#ffffff"
+                                        initial={{ rotate: -180, opacity: 0 }}
+                                        animate={{ rotate: 0, opacity: 1 }}
+                                        transition={{ 
+                                            delay: index * 0.2 + 0.7,
+                                            duration: 0.5
+                                        }}
+                                    >
+                                        <g>
+                                            <path d="M549.255,384.017h-50.692v-50.694c0-21.132-17.134-38.264-38.262-38.264c-21.138,0-38.266,17.132-38.266,38.264v50.694 h-50.697c-21.13,0-38.262,17.132-38.262,38.264c0,21.134,17.134,38.264,38.262,38.264h50.697v50.697 c0,21.13,17.13,38.264,38.266,38.264c21.13,0,38.262-17.134,38.262-38.264v-50.697h50.692c21.138,0,38.262-17.13,38.262-38.264 C587.519,401.151,570.394,384.017,549.255,384.017z"></path>
+                                            <path d="M383.77,498.809h-12.432c-42.198,0-76.526-34.33-76.526-76.528s34.328-76.528,76.526-76.528h12.432v-12.43 c0-42.198,34.33-76.528,76.53-76.528c42.198,0,76.526,34.33,76.526,76.528v12.43h12.428c5.073,0,10.028,0.508,14.827,1.454 c66.899-77.109,63.762-194.319-9.515-267.606c-37.102-37.1-86.429-57.533-138.896-57.533c-39.544,0-77.476,11.685-109.659,33.39 c-32.185-21.705-70.117-33.39-109.659-33.39c-52.464,0-101.791,20.433-138.896,57.535 c-76.609,76.617-76.609,201.284,0.002,277.904l215.831,215.829c2.226,2.222,4.583,4.463,7.009,6.664 c7.293,6.619,16.501,9.93,25.716,9.93c9.198,0,18.396-3.301,25.684-9.903c2.448-2.216,4.826-4.477,7.069-6.72l46.584-46.582 c-1.033-5.002-1.577-10.181-1.577-15.482v-12.432H383.77z"></path>
+                                        </g>
+                                    </motion.svg>
+                                    Add to Wishlist
+                                </motion.button>
 
-                            </div>
+                                <motion.button 
+                                    className={styles.productArchive} 
+                                    onClick={() => addCart(product._id)}
+                                    whileHover={{ 
+                                        scale: 1.05, 
+                                        backgroundColor: "#333"
+                                    }}
+                                    whileTap={{ 
+                                        scale: 0.95,
+                                        transition: {
+                                            duration: 0.1
+                                        }
+                                    }}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ 
+                                        delay: index * 0.2 + 0.7,
+                                        duration: 0.4,
+                                        ease: [0.43, 0.13, 0.23, 0.96]
+                                    }}
+                                    style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '4px', 
+                                        padding: '6px 12px', 
+                                        fontSize: '0.9rem', 
+                                        minHeight: '32px',
+                                        backgroundColor: 'black',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        flex: 1
+                                    }}
+                                >
+                                    <motion.svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="20px"
+                                        width="20px"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ 
+                                            delay: index * 0.2 + 0.8,
+                                            duration: 0.5,
+                                            type: "spring",
+                                            stiffness: 200
+                                        }}
+                                    >
+                                        <path d="M7 4h-2c-.55 0-1 .45-1 1s.45 1 1 1h2l3.6 7.59-1.35 2.45c-.16.29-.25.63-.25.96 0 1.11.89 2 2 2h9c.55 0 1-.45 1-1s-.45-1-1-1h-8.68c-.09 0-.17-.07-.22-.16l.03-.03 1.1-1.96h5.83c.38 0 .72-.21.89-.55l3.58-6.42c.2-.36.08-.8-.24-1.05-.32-.25-.77-.24-1.09.01l-3.06 5.48h-5.73l-3.3-6.92c-.14-.3-.44-.51-.78-.51zm1.79 14.5c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79zm11.92 0c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79z"></path>
+                                    </motion.svg>
+                                    Add to Cart
+                                </motion.button>
+                            </motion.div>
                         )}
-
-{role === "Tourist" && (
-                            <button 
-                                className={styles.productArchive} 
-                                onClick={() => addCart(product._id)}
-                                style={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    gap: '4px', 
-                                    padding: '6px 12px', 
-                                    fontSize: '0.9rem', 
-                                    minHeight: '32px'
-                                }}
-                            >
-                                <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="30px"
-        width="30px"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-    >
-        <path d="M7 4h-2c-.55 0-1 .45-1 1s.45 1 1 1h2l3.6 7.59-1.35 2.45c-.16.29-.25.63-.25.96 0 1.11.89 2 2 2h9c.55 0 1-.45 1-1s-.45-1-1-1h-8.68c-.09 0-.17-.07-.22-.16l.03-.03 1.1-1.96h5.83c.38 0 .72-.21.89-.55l3.58-6.42c.2-.36.08-.8-.24-1.05-.32-.25-.77-.24-1.09.01l-3.06 5.48h-5.73l-3.3-6.92c-.14-.3-.44-.51-.78-.51zm1.79 14.5c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79zm11.92 0c-.96 0-1.79.82-1.79 1.79s.83 1.79 1.79 1.79c.96 0 1.79-.82 1.79-1.79s-.83-1.79-1.79-1.79z"></path>
-    </svg>
-                                Add to Cart
-                            </button>
-                        )}
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
               
             
         ))
@@ -531,8 +675,7 @@ return (
                     </div>
                 </div>
             </div>
-
-        </>
+        </div>
     );
 
 };
