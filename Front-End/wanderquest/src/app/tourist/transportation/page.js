@@ -209,7 +209,7 @@ function transportpage() {
 
       <input
         className={styles.input}
-        style={{ marginLeft: "3px", height: '41px' }}
+        style={{ width: '240px',marginLeft: "3px", height: '41px' }}
         placeholder="To"
         type="text"
         name="to"
@@ -220,6 +220,7 @@ function transportpage() {
       <input
         className={styles.input}
         type="date"
+        style={{ width: '290px' }}
         placeholder="Start Date"
         name="startDate"
         value={searchParams.startDate}
@@ -228,7 +229,8 @@ function transportpage() {
 
       <input
         className={styles.input}
-        style={{ height: '41px' }}
+        style={{ width: '290px', height: '41px' }}
+
         placeholder="End Date"
         type="date"
         name="endDate"
@@ -238,7 +240,7 @@ function transportpage() {
 
       <input
         className={styles.input}
-        style={{ width: "80px", height: '40px' }}
+        style={{ height: '40px' }}
         min='0'
         placeholder="Passengers"
         type="number"
