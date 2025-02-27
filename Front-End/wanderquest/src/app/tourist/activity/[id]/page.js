@@ -45,6 +45,7 @@ function Page({ params }) {
       }
       const data = await response.json();
       setActivity(data);
+      console.log('activity details ',data);
     } catch (error) {
       console.error('Error fetching activities:', error);
       setError('Error fetching activity details.');
@@ -102,7 +103,18 @@ function Page({ params }) {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading){return<>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+    <dotlottie-player style={{
+  width: '300px',
+  height: '300px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  margin: 'auto'
+}}
+  src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+    </>}
   if (error) return <p>{error}</p>;
 
   return (
@@ -142,20 +154,15 @@ function Page({ params }) {
               <span className={styles.label}>Category</span>
               <span className={styles.value}>{activity.category}</span>
             </div>
+            
             <div className={styles.infoItem}>
-              <span className={styles.label}>Tags</span>
-              <span className={styles.value}>
-                {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}
-              </span>
-            </div>
-            <div className={styles.infoItem}>
-              <span className={styles.label}>Special Discounts</span>
-              <span className={styles.value}>{activity.specialDiscounts || 'None'}</span>
+              <label className={styles.label}>Special Discounts </label>
+              <span className={styles.value}> {activity.specialDiscounts || 'None'}</span>
             </div>
             <div className={styles.infoItem}>
               <span className={styles.label}>Booking Status</span>
               <span className={styles.value}>
-                {activity.booking_open ? '✅ Open for Booking' : '❌ Currently Closed'}
+                {activity.bookingIsOpen ? '✅ Open for Booking' : '❌ Currently Closed'}
               </span>
             </div>
           </div>
