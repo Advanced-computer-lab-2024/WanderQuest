@@ -46,7 +46,7 @@ function Signin({ toggleForm }) {
             localStorage.setItem("preferredCurrency", data.currency);
           } else {
             const errorData = await response.json();
-            setError(errorData.error || "Failed to get user role. Please try again.");
+            // setError(errorData.error || "Failed to get user role. Please try again.");
             setSuccess("");
           }
         } catch (err) {
@@ -79,7 +79,7 @@ function Signin({ toggleForm }) {
         }
       } else {
         const errorData = await response.json();
-        setError(errorData.error || "Login failed. Please try again.");
+        // setError(errorData.error || "Login failed. Please try again.");
         setSuccess("");
       }
     } catch (err) {
