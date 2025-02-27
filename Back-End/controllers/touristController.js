@@ -711,15 +711,17 @@ const changeAmountInCart = async (req, res) => {
 const viewCart = async (req, res) => {
     const touristId = req.user._id;
     try {
-        const tourist = await Tourist.findById(touristId).populate('cart.productId', 'name');
+        // Populate the productId field with both 'name' and 'price'
+        const tourist = await Tourist.findById(touristId).populate('cart.productId', 'name price');
         if (!tourist) {
             return res.status(404).json({ error: 'Tourist not found' });
         }
 
-        // Transform the cart to include product names and quantities
+        // Transform the cart to include product names, prices, and quantities
         const transformedCart = tourist.cart.map(item => ({
             id: item.productId._id,
             name: item.productId.name,
+            price: item.productId.price, // Include the price here
             quantity: item.quantity
         }));
 
