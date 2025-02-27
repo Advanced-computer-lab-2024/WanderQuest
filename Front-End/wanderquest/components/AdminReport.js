@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto"; // Import necessary parts of Chart.js
 import styles from '../Styles/AdminReport.module.css'; // Create a new CSS file for styling
+import Salesrep from "./Salesrep";
 
 const AdminReport = () => {
   const [salesReport, setSalesReport] = useState(null);
@@ -97,7 +98,8 @@ const AdminReport = () => {
 
     return (
       <>
-        <h3>Total Revenue: ${salesReport.totalRevenue}</h3>
+      <Salesrep/>
+        {/* <h3>Total Revenue: ${salesReport.totalRevenue}</h3>
         <div className={styles.salesSummary}>
           <div className={styles.chart}>
             <h4>Product Revenue: ${salesReport.productRevenue}</h4>
@@ -130,7 +132,7 @@ const AdminReport = () => {
               }}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Filter Section - moved here, before tables */}
         <div className={styles.filter}>
@@ -246,29 +248,29 @@ const AdminReport = () => {
       value: monthData.count,
     }));
 
-    return (
-      <div className={styles.userstats}>
-        <h3>Total Users: {userStats.totalUsers}</h3>
-        <h4>New Users Per Month</h4>
-        <Bar
-          data={{
-            labels: monthlyNewUsers.map((data) => data.label),
-            datasets: [
-              {
-                label: "New Users",
-                data: monthlyNewUsers.map((data) => data.value),
-                backgroundColor: "#ff7043",
-              },
-            ],
-          }}
-        />
-      </div>
+    return (<></>
+      // <div className={styles.userstats}>
+      //   <h3>Total Users: {userStats.totalUsers}</h3>
+      //   <h4>New Users Per Month</h4>
+      //   <Bar
+      //     data={{
+      //       labels: monthlyNewUsers.map((data) => data.label),
+      //       datasets: [
+      //         {
+      //           label: "New Users",
+      //           data: monthlyNewUsers.map((data) => data.value),
+      //           backgroundColor: "#ff7043",
+      //         },
+      //       ],
+      //     }}
+      //   />
+      // </div>
     );
   };
 
   return (
     <div className={styles.dashboard}>
-      <h2 className={styles.dashboardTitle}>Admin Sales Dashboard</h2>
+      {/* <h2 className={styles.dashboardTitle}>Admin Sales Dashboard</h2> */}
       {renderSalesReport()}
       {renderUserStats()}
     </div>
