@@ -7,14 +7,36 @@
   padding: 0;
   line-height: 1.6;
 }
+.travelplan {
+  margin-top: 80px;
+  width: 100%;
+  height: 700px;
+/* Removes padding if any */
+  display: block; /* Ensures it behaves like a block element */
+}
+.pageLayout {
+  margin: 0; /* Removes top margin */
+  display: flex;
+  margin-top: -25px;
+  flex-direction: row; /* Ensures sidebar and itineraries are side-by-side */
+   /* Full viewport height for a consistent layout */
+}
 
-.container {
-  padding: 20px;
-  max-width: 1000px;
-  margin: 40px auto;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.buttonsection {
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+
+  margin: 25px 0;
+  padding: 0 20px;
+}
+.itinerary_pic {
+  background-color: #f9f9f9; /* Softer background for a modern look */
+  height: 300px;
+  width: 100%;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 /* General button styles */
@@ -42,25 +64,39 @@
   letter-spacing: 1px;
   color: #042335;
 }
+.viewbtn{
+  width: 550px;
+  height: 40px;
+  background-color: #042335; /* Darker blue for a more professional look */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: auto;
+  margin-right: auto;
+  
+}
 
 /* Grid Layout */
 .activities {
+  margin-top: 20px;
+  flex: 1; /* Take up remaining space */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 40px;
+  grid-template-columns: repeat(3, 1fr); /* 2-column grid */
+  gap: 20px; /* Space between grid items */
   padding: 20px;
+  overflow-y: auto;
 }
 
 .activity {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  background-color: #f9f9f9; /* Softer background for a modern look */
+  height: 660px;
+  width: 600px; 
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1)
 }
 
 .activity:hover {
@@ -68,40 +104,27 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Activity Content */
-.activity h3 {
-  margin: 0 0 12px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a6187;
-  position: relative;
+.itineraryTitle {
+  padding-left: 20px;
+  font-size: 1.8rem; /* Slightly larger font for better readability */
+  font-weight: bold; /* Emphasize the title */
+  color: black; /* Darker blue for a more professional look */
+  margin-bottom: 5px;
+  text-transform: capitalize; /* Make the title styling consistent */
 }
 
-.activity h3::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 50px;
-  height: 3px;
-  background-color: #1a6187;
-  border-radius: 2px;
-}
-
-.activity p {
-  margin-bottom: 12px;
-  font-size: 1rem;
-  color: #666;
-  line-height: 1.6;
+.itineraryDetails{
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  
 }
 
 /* Activity Footer */
 .activity .details {
+  padding: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
 }
 
 .activity .price {
@@ -117,63 +140,91 @@
   align-items: center;
   gap: 5px;
 }
-
-.activity a {
-  color: #0070f3;
-  font-weight: 600;
-  text-decoration: none;
+.itineraryDetails{
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  
+}
+.divider{
+  border-top: 1px solid #ccc;
+  width: 550px;
+}
+.priceSection{
+  padding:0 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 550px;
 }
 
-.activity a:hover {
-  color: #005bb5;
-  text-decoration: underline;
+.productsearch {
+  display: block;
+  width: 900px;
+  border:1px solid gray;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: 380px;
+  height: 40px;/* Adjust values as needed */
+  margin-bottom: 20px;
 }
-
 /* Sidebar */
 .sidebar {
   width: 250px;
-  background-color: #ffffff;
+  background-color: #fff;
   padding: 20px;
-  border-right: 2px solid #ddd;
-  height: 100%;
-  overflow-y: auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
 }
 
-.filterSection h3,
-.priceFilter h3 {
+.filterSection {
+  margin-bottom: 20px;
+}
+
+.filterSection h3 {
+  margin-bottom: 10px;
   font-size: 1.2rem;
-  margin-bottom: 15px;
   color: #333;
-  font-weight: 600;
 }
 
-.filterSection input,
-.priceFilter input {
+.filterSection label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.filterSection input[type="text"],
+.filterSection input[type="date"],
+.filterSection input[type="number"],
+.filterSection select {
   width: 100%;
   padding: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
 }
 
-.filterSection button,
-.priceFilter button {
+.filterSection input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.filterSection button {
   width: 100%;
   padding: 10px;
-  background-color: #1a6187;
-  color: #ffffff;
+  background-color: black;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.filterSection button:hover,
-.priceFilter button:hover {
-  background-color: black;
+.filterSection button:hover {
+  background-color: #031b2a;
 }
-
 /* Reviews */
 .reviews {
   margin-top: 20px;
@@ -233,4 +284,50 @@
   .activities {
     grid-template-columns: 1fr;
   }
+}
+
+.sortcontainer {
+  display: flex;
+  align-items: center;
+}
+
+.sort {
+  height: 60px;
+  min-width: 200px;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+
+
+.priceFilter h3 {
+  font-size: 1.5rem; /* Increase font size for the header */
+  margin-bottom: 15px; /* Space below the header */
+  color: #333; /* Darker color for better readability */
+}
+
+.priceFilter label {
+  display: block; /* Each label in a new line */
+  margin-bottom: 10px; /* Space between labels */
+  font-weight: 600; /* Bold font for emphasis */
+  color: #555; /* Slightly lighter color for labels */
+}
+
+.priceFilter input[type="number"],
+.priceFilter input[type="range"] {
+  width: 100%; /* Full width inputs */
+  padding: 8px; /* Padding inside inputs */
+  margin-top: 5px; /* Space above inputs */
+  border: 1px solid #ccc; /* Light border for inputs */
+  border-radius: 4px; /* Rounded corners for inputs */
+  font-size: 1rem; /* Font size */
+}
+
+.priceFilter .slider {
+  display: flex; /* Flexbox for range inputs */
+  justify-content: space-between; /* Space between sliders */
+  margin: 20px 0; /* Margin around the slider */
 }
