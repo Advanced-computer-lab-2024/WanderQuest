@@ -76,6 +76,22 @@ const Wishlist = (props) => {
             [productId]: !prev[productId]
         }));
     };
+    const imageMap = {
+        'Mountain Hiking Boots': '/hikingboots.avif',
+        'Yoga Mat': '/yogamat.jpg',
+        'Travel Backpack': '/travelpack.jpg',
+        'Passport Holder': '/passportholder.jpg',
+        'Sunscreen': '/sunscreen.jpg',
+        'Neck Pillow': '/neckpillow.jpg',
+        'Travel Adapter': '/traveladapter.jpg',
+        'Luggage Tag': '/traveltage.webp',
+        'Packing Cubes': '/Packing Cubes.webp',
+        'Hiking Gloves': '/hiking gloves.jpg',
+        'Portable Charger': '/portable charger.webp',
+        'Travel Guidebook': '/Travel Guidebook.webp',
+        'Sunglasses': '/sunglasses.jpg',
+        'Reusable Water Bottle': '/reusable water bottle.webp'
+    };
 
     if (loading) {
         return (
@@ -107,7 +123,7 @@ const Wishlist = (props) => {
                     <div key={product._id} className={styles.wishlistItem}>
                         <div className={styles.wishlistHeader}>
                             <div className={styles.headerInfo}>
-                                <img src={product.picture} alt={product.name} className={styles.itemThumbnail} />
+                                <img src={imageMap[product.name]} alt={product.name} className={styles.itemThumbnail} />
                                 <div className={styles.productInfo}>
                                     <h3>{product.name}</h3>
                                     <span className={styles.price}>
