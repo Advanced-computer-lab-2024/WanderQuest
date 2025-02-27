@@ -4,6 +4,15 @@ import styles from '/styles/Activities.module.css';
 import Navbar from '../../../../components/Navbar';
 import Link from 'next/link';
 import { motion } from "framer-motion";
+import { Rating, Box, Typography } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import LanguageIcon from '@mui/icons-material/Language';
+import CategoryIcon from '@mui/icons-material/Category';
+
+
 const Activitiespage = (Props) => {
   const cc = [
     "Historical",
@@ -262,30 +271,48 @@ const Activitiespage = (Props) => {
   // }, [minBudget, maxBudget]);
 
   if (loading) {
-    return <p className={styles.loading}>Loading activities...</p>;
+    return<>
+        <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script> 
+        <dotlottie-player style={{
+      width: '300px',
+      height: '300px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 'auto'
+    }}
+      src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
+        </>;
   }
 
   if (error) {
     return <p className={styles.error}>Error: {error}</p>;
   }
+  const images ={'Shadows of the Pharaohs':'/pyramids 2.jpg',
+    'Venice Gondola Ride':'/venice.jpg',
+    'Northern Lights Viewing':'/ll.jpg',
+    'Sunset Desert Safari':'/desert.jpg',
+    'Mount Everest Base Camp Trek':'/everest.jpg'
+    
+    };
 
   return (<>
     <Navbar></Navbar>
-    <img src="/act.png" className={styles.travelplan} alt="iti" />
+    <img src="/4.jpg" className={styles.travelplan} alt="iti" />
     <div className={styles.container}>
 
 
-      {Array.isArray(category) && category.map((cat, index3) => (
+      {/* {Array.isArray(category) && category.map((cat, index3) => (
         <div key={index3}>
           <input type="checkbox" onClick={() => handlefiltercat(cat.category)}></input>
-          <label htmlFor="">{cat.category}</label> {/* Use cat.category to render the category name */}
+          <label htmlFor="">{cat.category}</label> 
         </div>
-      ))}
+      ))} */}
 
       {role === "Tourist" ? (
         < motion.div
           className={styles.searchcom}
-          initial={{ y: 10 }}
+          initial={{ y: 10,x:-300 }}
           transition={{ duration: 1 }} >
           <input
             className={styles.productsearch}
@@ -293,8 +320,7 @@ const Activitiespage = (Props) => {
             type="text"
             placeholder="Search activities..."
           />
-          {/* <button className={styles.searchbtn} onClick={handleSearch}>Search</button> */}
-          {/* <button onClick={clearsearch}>Clear Search</button> */}
+         
         </motion.div>
       ) : (
         <div></div>
@@ -419,21 +445,55 @@ const Activitiespage = (Props) => {
         <div className={styles.activities}>
           {activities.map((activity) => (
             <div key={activity.id} className={styles.activity}>
-              <h3>{activity.title}</h3>
-              <p>
-                <strong>Date:</strong> {activity.date}<br />
-                <strong>Time:</strong> {activity.time}<br />
-                <strong>Location:</strong>{' '}
-                <a href={activity.location} target="_blank" rel="noopener noreferrer">
-                  {activity.location}
-                </a><br />
-                <strong>Price:</strong> {activity.price}<br />
-                <strong>Category:</strong> {activity.category}<br />
-                <strong>Tags:</strong> {Array.isArray(activity.tags) ? activity.tags.join(', ') : ''}<br />
-                <strong>Special Discounts:</strong> {activity.specialDiscounts}<br />
-              </p>
-              <Link href={`activity/${activity._id}`} className={styles.addticket}>
-                <button className={styles.searchbtn}>View</button>
+               <img
+                  src={images[activity.title]}
+                  alt={activity.title}
+                  className={styles.itinerary_pic}
+                />
+              <h2 className={styles.itineraryTitle}>{activity.title}</h2>
+
+              <div className={styles.itineraryDetails}>
+                   <div className={styles.section1}> 
+                <p> 
+                  
+              <CalendarTodayIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} />
+                   {new Date(activity.date).toISOString().split('T')[0].split('-').reverse().join('-')}
+                </p>
+                <p>
+                       <AccessTimeIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} />
+                       {activity.time}</p>
+                       </div>
+                       <div className={styles.section2}>
+                <p><LocationOnIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} />
+                {activity.location}</p>
+                <p>
+                       <CategoryIcon sx={{ marginRight: 1, verticalAlign: 'middle' }} />
+                       {activity.category}</p>
+                       </div>
+                </div>
+                <hr className={styles.divider}/>
+                <div style={{display:'flex',padding: ' 0px 20px', flexDirection:'row' , justifyContent:'space-between',height:'30px',marginTop:'0px'}}>
+                <p style={{fontWeight: 'bold', fontSize: '1.4rem' ,marginBottom: '0px' }}>{activity.price} {preferredCurrency}</p>
+               
+          <p className={styles.productRating} style={{padding: ' 0px 20px'}}>
+                    {activity.rating && activity.rating > 0 ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Rating
+                          name="text-feedback"
+                          value={activity.rating}
+                          readOnly
+                          precision={0.5}
+                          icon={<StarIcon style={{ color: 'black' }} fontSize="inherit" />}
+                          emptyIcon={<StarIcon style={{ opacity: 0.55, color: 'black' }} fontSize="inherit" />}
+                        />
+                      
+                      </Box>
+                    ) : "No rating yet"}
+                  </p>
+               </div>
+             
+              < Link href={`activity/${activity._id}`} className={styles.buttonsection}>
+                <button className={styles.viewbtn} style={{ fontSize: '1.4rem' }}>View</button>
               </Link>
             </div>
           ))}

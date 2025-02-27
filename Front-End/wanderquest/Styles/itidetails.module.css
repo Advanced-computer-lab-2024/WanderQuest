@@ -1,0 +1,297 @@
+
+  /* Individual itinerary styling */
+  .itinerary {
+ /* Softer background for a modern look */
+    height: 100%;
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+    margin-right: auto;
+    margin-left: auto;
+    
+   margin-top:100px ;
+   
+  }
+  
+.itinerary_info {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  height: 100%;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #fff;
+  margin-left: 20px;
+  object-fit: cover;
+
+}
+
+.itineraryright{
+    border-radius: 12px;
+    padding: 0px 20px;
+    width: 30%;
+    height: 30%;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+
+}
+
+.itinerary_subtitle{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+
+}
+
+
+  .itinerary_pic {
+    background-color: #f9f9f9; /* Softer background for a modern look */
+    height: 500px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+
+  }
+  
+  /* Itinerary title */
+  .itineraryTitle {
+    padding-left: 20px;
+    font-size: 1.8rem; /* Slightly larger font for better readability */
+    font-weight: bold; /* Emphasize the title */
+    color: black; /* Darker blue for a more professional look */
+    margin-bottom: 5px;
+    text-transform: capitalize; /* Make the title styling consistent */
+  }
+ 
+
+  .viewbtn{
+    width: 550px;
+    height: 40px;
+    background-color: #042335; /* Darker blue for a more professional look */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: auto;
+    margin-right: auto;
+    
+  }
+  
+  
+  
+  /* Activity item */
+  .activity {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd; /* Subtle border for differentiation */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Light shadow for depth */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .activity:hover {
+    transform: translateY(-3px); /* Small hover effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a bit of depth */
+  }
+  
+
+  
+  
+
+  
+ 
+  
+  /* Itineraries.module.css */
+  
+  
+  .reviews {
+    margin-top: 20px; /* Slightly increased for better spacing */
+    border-top: 1px solid #ccc; /* Softer color for the separator */
+    padding-top: 15px; /* More padding for breathing room */
+    font-family: Arial, sans-serif; /* Clean, modern font */
+  }
+  
+  .review {
+    font-size: 15px; /* Slightly larger text for readability */
+    color: #444; /* Darker color for better contrast */
+    background-color: #f9f9f9; /* Light background for distinction */
+    border: 1px solid #ccc; /* Subtle border color */
+    border-radius: 12px; /* Softer corners */
+    padding: 12px 15px; /* Comfortable inner spacing */
+    margin-bottom: 10px; /* More space between reviews */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds depth with a shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+  }
+  
+  .review:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+  }
+  .datesContainer {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+
+  .timesContainer {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .timesLabel {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .times {
+    display: flex;
+  }
+  
+  .timeSelect {
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+  
+  .timeSelect option {
+    padding: 10px;
+  }
+  .locationsContainer {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .locationsLabel {
+    font-size: 30px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .locations {
+    display: flex;
+  }
+  
+  .locationSelect {
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+  
+  .locationSelect option {
+    padding: 10px;
+  }
+  .timelineCard {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 100%;
+    margin: 10px 0;
+    text-align: left; /* Align all text to the left */
+  }
+  
+  .timelineTitle {
+    font-size: 1.8rem; /* Make the title text bigger */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: left; /* Align the title to the left */
+  }
+  
+  .timelineList {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin: 0;
+  }
+  
+  .timelineEntry {
+    font-size: 1.2rem; /* Make the timeline entry text a bit bigger */
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    padding-left: 20px; /* Indentation for the timeline entries */
+  }
+  
+  .timelineEntry strong {
+    color: #333;
+    font-size: 1.2rem; /* Make the Day text slightly bigger */
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 25px 0;
+    width: 100%;
+  }
+  
+  .leftButton {
+    width: 90%;
+
+}
+    .rightButton {
+    width: 20%;
+    height: 100;
+}
+
+.primaryButton {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #042335;
+    color: white;
+    box-shadow: 0 4px 15px rgba(4, 35, 53, 0.2);
+  }
+  
+
+  .primaryButton:hover {
+    background-color: #083d5b;
+  
+    box-shadow: 0 6px 20px rgba(4, 35, 53, 0.3);
+  }
+  
+  .secondaryButton {
+    background-color: white;
+    color: #042335;
+    border: 2px solid #042335;
+    border-radius: 0px 10px 10px 0px;
+    width: 100%;
+    cursor: pointer;
+    height: 100%;
+  }
+  
+  .secondaryButton:hover {
+    background-color: black;
+    color: white;
+
+  }
+  .buttonsection {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0;
+    padding: 0 20px;
+  }

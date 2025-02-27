@@ -20,8 +20,8 @@ function BookingsPage() {
   const [id1, setid] = useState('');
   const router = useRouter();
   const amadeus = new Amadeus({
-    clientId: "RvyPDMc2pf3vxqJ37qT61NpI9XzcQIUN",
-    clientSecret: "w8VsTLzgtUBUr9ye",
+    clientId: "q8jzQIO6FhiFk9xjbNbc5VWIuk4Rb69M",
+    clientSecret: "7XOAyedIyglZ4By5",
   });
 
   const handleChangeColor = (buttonId) => {
@@ -52,20 +52,32 @@ function BookingsPage() {
 
 
 
-    amadeus.shopping.flightOffersSearch
-      .get(requestParams)
-      .then(function (response) {
-        setFlightOffers(response.data);
-        setLoading(false); // Set loading to false when data is received
-        console.log(response.data);
-      })
-      .catch(function (responseError) {
-        setLoading(false); // Set loading to false if there is an error
-        console.log(responseError.code);
-      });
+  //   amadeus.shopping.flightOffersSearch
+  //     .get(requestParams)
+  //     .then(function (response) {
+  //       setFlightOffers(response.data);
+  //       setLoading(false);
+  //       console.log(requestParams) // Set loading to false when data is received
+  //       console.log(response.data);
+  //     })
+  //     .catch(function (responseError) {
+  //       setLoading(false); // Set loading to false if there is an error
+  //       console.log(responseError.code);
+  //     });
+  // };
+
+  amadeus.shopping.flightOffersSearch
+  .get(requestParams)
+  .then(function (response) {
+    console.log("Full API Response:", response);
+    setFlightOffers(response.data);
+    setLoading(false);
+  })
+  .catch(function (responseError) {
+    setLoading(false);
+    console.log("Error Response:", responseError);
+  });
   };
-
-
 
 
   // useEffect(() => {
@@ -193,7 +205,7 @@ function BookingsPage() {
       <motion.div className={styles.searchbar} initial={{ y: -230 }} transition={{ duration: 1 }}>
         <input
           className={styles.input}
-          style={{ marginLeft: "0", height: '41px' }}
+          style={{ marginLeft: "0", height: '41px' ,width: '260px'}}
           placeholder="From"
           type="text"
           value={originLocationCode}
@@ -221,7 +233,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ marginLeft: "3px", height: '41px' }}
+          style={{ marginLeft: "3px", height: '41px' ,width: '250px'}}
           placeholder="To"
           type="text"
           value={destinationLocationCode}
@@ -250,6 +262,7 @@ function BookingsPage() {
         <input
           className={styles.input}
           type="date"
+          style={{ width: '290px',height: '41px' }}
           placeholder="Departure Date"
           value={departureDate}
           onChange={(e) => setDepartureDate(e.target.value)}
@@ -257,7 +270,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ height: '41px' }}
+          style={{ width: '290px',height: '41px' }}
           placeholder="Return Date"
           type="date"
           value={returnDate}
@@ -266,7 +279,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ width: "80px", height: '40px' }}
+          style={{  height: '40px' }}
           min='0'
           placeholder="Adults"
           type="number"
@@ -309,21 +322,44 @@ function BookingsPage() {
           const formattedArrivalTime = `${arrivalHours}:${arrivalMinutes}`;
           const pricetotal = `${price.grandTotal}`
           return (
-            <div key={index} className={styles.card}>
-              <img src="/plane2.png" alt="" className={styles.hotelImage} />
-              <p>
-                <strong>From:</strong> {departureInfo.iataCode} at {formattedDepartureDate} at {formattedDepartureTime}
-              </p>
-              <p>
-                <strong>To:</strong> {arrivalInfo.iataCode} at {formattedArrivalDate} at {formattedArrivalTime}
-              </p>
-              <p>
-                <strong>Price:</strong> {price.grandTotal} {price.currency}
-              </p>
-              <p>
-                <strong>Airline:</strong> {Airline}
-              </p>
-              <button className={styles.button} onClick={() => { handlebooking(pricetotal, Airline) }}>book</button>
+            <div key={index} className={styles.flightCard}>
+              <div className={styles.flightCardHeader}>
+                <img src="/plane2.png" alt="airplane" className={styles.planeImage} />
+              </div>
+              <div className={styles.flightInfo}>
+                <div className={styles.flightRoute}>
+                  <div className={styles.locationBlock}>
+                    <span className={styles.iataCode}>{departureInfo.iataCode}</span>
+                    <div className={styles.dateTime}>
+                      <span className={styles.date}>{formattedDepartureDate}</span>
+                      <span className={styles.time}>{formattedDepartureTime}</span>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.flightDivider}>
+                    <span className={styles.airlineInfo}>{Airline}</span>
+                    <div className={styles.flightLine}>
+                      <span className={styles.planeIcon}>→</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.locationBlock}>
+                    <span className={styles.iataCode}>{arrivalInfo.iataCode}</span>
+                    <div className={styles.dateTime}>
+                      <span className={styles.date}>{formattedArrivalDate}</span>
+                      <span className={styles.time}>{formattedArrivalTime}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.priceSection}>
+                  <span className={styles.priceLabel}>Total Fare</span>
+                  <span className={styles.priceAmount}>{price.grandTotal} {price.currency}</span>
+                  <button className={styles.bookButton} onClick={() => { handlebooking(pricetotal, Airline) }}>
+                    Reserve Flight
+                  </button>
+                </div>
+              </div>
             </div>
           );
         })}
