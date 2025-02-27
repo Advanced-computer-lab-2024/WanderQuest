@@ -1,18 +1,7 @@
-/* Itineraries.module.css */
-
-/* .container {
-  padding: 30px;
-  background-color: #f4f4f4;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  margin: 20px auto;
-} */
-
 .travelplan {
   margin-top: 80px;
   width: 100%;
-  height: 550px;
+  height: 700px;
 /* Removes padding if any */
   display: block; /* Ensures it behaves like a block element */
 }
@@ -40,23 +29,29 @@
   margin-top: 20px;
   flex: 1; /* Take up remaining space */
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2-column grid */
+  grid-template-columns: repeat(3, 1fr); /* 2-column grid */
   gap: 20px; /* Space between grid items */
   padding: 20px;
-
   overflow-y: auto; /* Make the grid scrollable if it overflows */
 }
 
 /* Individual itinerary styling */
 .itinerary {
   background-color: #f9f9f9; /* Softer background for a modern look */
-  padding: 20px;
-  border-radius: 15px; /* Slightly larger radius for smoother edges */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Softer, more pronounced shadow */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column; /* Ensures content is stacked vertically */
-  justify-content: space-between; /* Space out items vertically */
+  height: 700px;
+  width: 600px;
+ 
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1)
+}
+
+.itinerary_pic {
+  background-color: #f9f9f9; /* Softer background for a modern look */
+  height: 300px;
+  width: 100%;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .itinerary:hover {
@@ -66,11 +61,44 @@
 
 /* Itinerary title */
 .itineraryTitle {
+  padding-left: 20px;
   font-size: 1.8rem; /* Slightly larger font for better readability */
   font-weight: bold; /* Emphasize the title */
-  color: #0056b3; /* Darker blue for a more professional look */
-  margin-bottom: 15px;
+  color: black; /* Darker blue for a more professional look */
+  margin-bottom: 5px;
   text-transform: capitalize; /* Make the title styling consistent */
+}
+.itineraryDetails{
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  
+}
+.divider{
+  border-top: 1px solid #ccc;
+  width: 550px;
+}
+.priceSection{
+  padding:0 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 550px;
+}
+.viewbtn{
+  width: 550px;
+  height: 40px;
+  background-color: #042335; /* Darker blue for a more professional look */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: auto;
+  margin-right: auto;
+  
 }
 
 /* Miscellaneous adjustments */
@@ -128,20 +156,6 @@
   height: 40px;/* Adjust values as needed */
 }
 
-.searchbtn{
-  background-color: #042335;
-  border: none;
-  color: white;
-  padding: 10px 30px;
-  border-radius: 25px;
-  margin-top : 20px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
-  /* Added that to remove the underline feature of the Link tag in Next */
-  text-decoration: none;
-}
 /* Itineraries.module.css */
 
 .sidebar {
@@ -188,7 +202,7 @@
 .filterSection button {
   width: 100%;
   padding: 10px;
-  background-color: #1a6187;
+  background-color: black;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -198,7 +212,7 @@
 }
 
 .filterSection button:hover {
-  background-color: black;
+  background-color: #031b2a;
 }
 .reviews {
   margin-top: 20px; /* Slightly increased for better spacing */
@@ -224,7 +238,7 @@
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 .productRating {
-  color: #ff9800;
+  color: black;
   font-size: 20px;
   margin-bottom: 10px;
 }.datesContainer {
@@ -232,28 +246,62 @@
   align-items: center;
   margin: 10px 0;
 }
-
-.datesLabel {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.dates {
-  display: flex;
-}
-
-.dateSelect {
-  padding: 8px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
+.sort {
+  height: 60px;
+  min-width: 200px;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
-
-.dateSelect option {
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px;
+  margin-left:300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width:800px;
+  border-radius:12px;
+}
+
+.searchInput {
+  width: 550px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  
+}
+
+.searchInput::placeholder {
+  color: #757575;
+}
+
+.sortSelect {
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: white;
+  min-width: 200px;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px top 50%;
+  background-size: 12px auto;
+  padding-right: 40px;
+}
+
+.sortSelect:hover {
+  border-color: #c0c0c0;
 }
 .timesContainer {
   display: flex;
@@ -390,4 +438,10 @@
   background-color: #042335;
   color: white;
   transform: translateY(-2px);
+}
+.buttonsection {
+  display: flex;
+  justify-content: space-between;
+  margin: 25px 0;
+  padding: 0 20px;
 }
