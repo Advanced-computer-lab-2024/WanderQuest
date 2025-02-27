@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '/styles/museum.css';
 import Navbar from '../../../../components/Navbar';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Museums = (Props) => {
     const [Tags,setTags]=useState([]);
@@ -13,6 +14,7 @@ const Museums = (Props) => {
     const [search, setSearch] = useState('');
     const role='Tourist';
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
     // http://localhost:4000/admin/tags
 
     const handlefilter = (tag) => {
@@ -28,6 +30,7 @@ const Museums = (Props) => {
             .then(res => res.json())
             .then(data => {
                 setTags(data);
+                console.log(data);
                   // Set both state values at the start
             })
             .catch(error => {
@@ -38,8 +41,9 @@ const Museums = (Props) => {
     const filtertags = () => {
         if (filteredtags.length > 0) {
             const tempmu = museums.filter(museum => 
-                museum.tags && museum.tags.some(tag => tag.type === tag)  // Fixed: Changed museum.tags.type(tag) to correct comparison
+                museum.tags && museum.tags.some(t => filteredtags.includes(t.type))
             );
+            
             setFilteredmuseums(tempmu);
         } else {
             setFilteredmuseums([...museums]);
@@ -48,7 +52,7 @@ const Museums = (Props) => {
 
     useEffect(() => {
         filtertags();
-    }, [filteredtags]);
+    }, [filteredtags, museums]);
 
     useEffect(() => {
         fetch('http://localhost:4000/tourist/upcomingPlaces')
@@ -75,6 +79,17 @@ const Museums = (Props) => {
         setFilteredmuseums(newprod);
     };
 
+    const view=(id)=>{
+        router.push(`http://localhost:3000/tourist/musuem/${id}`);
+    }
+    const images ={'Eiffel Tower':'/eiflle.jpg',
+        'Pyramids of Giza':'/pyramids.jpg',
+        'Taj Mahal ':'/m.jpg',
+        'Sydney Opera House ':'/sydney.jpg',
+        'The Great Egyptian Museum ':'/egy.jpg'
+        
+        };
+
 useEffect(() => {
    handlesearch();
   }, [search]);
@@ -97,11 +112,11 @@ useEffect(() => {
     }}
       src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1"  loop autoplay></dotlottie-player>
         </>}
-  return (<>
+  return (<div style={{marginTop: '80px'}} >
     <Navbar />
     <div className="welcome-container" style={{
       position: 'absolute',
-      top: '55%',
+      top: '45%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
       zIndex: 1,
@@ -120,7 +135,7 @@ useEffect(() => {
         fontSize: '1.8rem'
       }}>Explore magnificent historical landmarks and cultural treasures from around the globe, where every site tells a unique story of our past.</p>
     </div>
-    <img src="/musuem.jpg" className='musuem-image' />
+    <img src="/meusuem.jpg" className='musuem-image' />
     {role === "Tourist" && (
                     <div className='search-container'>
                         <input
@@ -143,26 +158,29 @@ useEffect(() => {
                             <input
                                 type="checkbox"
                                 id={`tag-${index}`}
-                                onClick={() => handlefilter(tag)}
+                                onClick={() => handlefilter(tag.type)}
                             />
                             <label htmlFor={`tag-${index}`}>{tag.type}</label>
                         </div>
                     ))}
                 </div>
             </div>
-        </div>
+        </div>  
  
         <div className='museums-grid'>
             {Array.isArray(filteredmuseums) && filteredmuseums.length > 0 ? (
                 filteredmuseums.map((museum) => (
                     <div className='museum-card' key={museum.id}>
+                        <img src={images[museum.title]}  alt={museum.title} className='musuem-image1' />
+                        <div style={{padding: '1rem'}}>
                         <h2 className='museum-name'>{museum.title}</h2>
                         <p className='museum-description'>{museum.description}</p>
                         <p className='museum-location'>{museum.location}</p>
-                        <div className='museum-footer'>
-                            <Link href={`/tourist/musuem/${museum._id}`} className='view-button'>
-                                View
-                            </Link>
+                        <div className='museum-footer' onClick={()=>view(museum._id)}>
+                            <button className='view-button'>
+                                view
+                            </button>
+                            </div>
                         </div>
                     </div>
                 ))
@@ -171,7 +189,7 @@ useEffect(() => {
             )}
         </div>
     </div>
-</>);
+</div>);
 
 }
 

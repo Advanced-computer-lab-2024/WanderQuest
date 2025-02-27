@@ -6,8 +6,7 @@ import { FaTrash } from 'react-icons/fa';
 const Cart = (props) => {
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(true);
-    const role = props.role;
-    if(role === 'Tourist'){
+
     const fetchCart = useCallback(() => {
         setLoading(true);
         fetch('http://localhost:4000/tourist/cart', { credentials: 'include' })
@@ -27,6 +26,15 @@ const Cart = (props) => {
 
     useEffect(() => {
         fetchCart();
+
+        // Listen for custom cart update events
+        const handleCartUpdate = () => fetchCart();
+
+        window.addEventListener('cartUpdated', handleCartUpdate);
+
+        return () => {
+            window.removeEventListener('cartUpdated', handleCartUpdate);
+        };
     }, [fetchCart]);
 
     const handleRemove = async (id) => {
@@ -44,58 +52,42 @@ const Cart = (props) => {
             }
 
             console.log('Product removed from cart successfully');
+            window.dispatchEvent(new Event('cartUpdated')); // Trigger cart refresh
             fetchCart();
         } catch (error) {
             console.error('Error removing product:', error.message);
         }
     };
 
-    const handleQuantityChange = async (id, quantity) => {
-        try {
-            const response = await fetch('http://localhost:4000/tourist/cart/change', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ productId: id, quantity }),
-            });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to update quantity');
-            }
-
-            console.log('Quantity updated successfully');
-            fetchCart();
-        } catch (error) {
-            console.error('Error updating quantity:', error.message);
-        }
-    };
-
     if (loading) {
         return <p>Loading cart...</p>;
     }
-}
-
+    const imageMap = {
+        'Mountain Hiking Boots': '/hikingboots.avif',
+        'Yoga Mat': '/yogamat.jpg',
+        'Travel Backpack': '/travelpack.jpg',
+        'Passport Holder': '/passportholder.jpg',
+        'Sunscreen': '/sunscreen.jpg',
+        'Neck Pillow': '/neckpillow.jpg',
+        'Travel Adapter': '/traveladapter.jpg',
+        'Luggage Tag': '/traveltage.webp',
+        'Packing Cubes': '/Packing Cubes.webp',
+        'Hiking Gloves': '/hiking gloves.jpg',
+        'Portable Charger': '/portable charger.webp',
+        'Travel Guidebook': '/Travel Guidebook.webp',
+        'Sunglasses': '/sunglasses.jpg',
+        'Reusable Water Bottle': '/reusable water bottle.webp'
+    };
+   
     return (
         <div className={styles.cartContainer}>
             {cart.length > 0 ? (
                 cart.map((item) => (
                     <div key={item.id} className={styles.cartItem}>
-                        <img src={item.picture} alt={item.name} className={styles.itemImage} />
+                        <img src={imageMap[item.name]} alt={item.name} className={styles.itemImage} />
                         <div className={styles.itemDetails}>
                             <h3 className={styles.productName}>{item.name}</h3>
-                            <div className={styles.quantityControls}>
-                                <label htmlFor={`quantity-${item.id}`}>Quantity:</label>
-                                <input
-                                    type="number"
-                                    id={`quantity-${item.id}`}
-                                    value={item.quantity}
-                                    min="1"
-                                    onChange={(e) =>
-                                        handleQuantityChange(item.id, parseInt(e.target.value))
-                                    }
-                                />
-                            </div>
+                            <p>Quantity: {item.quantity}</p>
                         </div>
                         <button
                             className={styles.removeButton}
