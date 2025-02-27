@@ -5,7 +5,7 @@ import styles from "/Styles/Bookings.module.css";
 import { motion } from "framer-motion";
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-
+import { Star, MapPin, Award } from 'lucide-react';
 function BookingsPage() {
   const [activeButton, setActiveButton] = useState(1);
   const [destinationLocationCode, setDestinationLocationCode] = useState('');
@@ -168,7 +168,14 @@ function BookingsPage() {
       });
   };
 
-
+  const renderStars = (count) => {
+    return [...Array(parseInt(count))].map((_, i) => (
+      <Star 
+        key={i} 
+        className="w-4 h-4 text-yellow-400 fill-yellow-400" 
+      />
+    ));
+  };
 
   return (
     <div className={styles.all}>
@@ -238,7 +245,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ width: "60px", height: '40px' }}
+          style={{  height: '40px' }}
           min='0'
           placeholder="Adults"
           type="number"
@@ -248,7 +255,7 @@ function BookingsPage() {
 
         <input
           className={styles.input}
-          style={{ width: "80px", height: '40px' }}
+          style={{ width: '210px', height: '40px' }}
           min='0'
           placeholder="rooms"
           type="number"
@@ -271,25 +278,32 @@ function BookingsPage() {
                   src={hotel.heroImage}
                   alt={hotel.name || 'Hotel'}
                   className={styles.hotelImage}
+                  style={{padding: '0px'}}
                 />
-              )}
+              )}<div style={{padding: '10px'}}>
               <h3>{hotel.name || 'Unnamed Hotel'}</h3>
-              {hotel.stars && <p><strong>Stars:</strong> {hotel.stars} Stars</p>}
-              {hotel.price && <p><strong>Price:</strong> {hotel.price * multiplier} {preferredCurrency} per night</p>}
-              {hotel.distance && <p><strong>Distance:</strong> {hotel.distance}</p>}
-              {hotel.relevantPoiDistance && (
-                <p><strong>Relevant Location:</strong> {hotel.relevantPoiDistance}</p>
-              )}
+              <div className={styles.description}>
+              {hotel.stars && (
+                    <div className="flex items-center gap-1">
+                      {renderStars(hotel.stars)}
+                    </div>
+                  )}
+              
+            
               {hotel.rating && (
-                <p><strong>Rating:</strong> {hotel.rating.value}</p>
+                <p style={{display: 'inline'}}><Award  />{hotel.rating.value}</p>
               )}
-              {hotel.exclusiveDealLabel && (
-                <p><strong>Exclusive Deal:</strong> {hotel.exclusiveDealLabel}</p>
-              )}
+              {/* {hotel.exclusiveDealLabel && (
+                <p style={{display: 'inline'}}><strong>Exclusive Deal:</strong> {hotel.exclusiveDealLabel}</p>
+              )} */}
+              </div>
+              <hr />
+             
               {hotel.priceDescription && (
-                <p><strong>Price Description:</strong> {hotel.priceDescription}</p>
+                <p>{hotel.priceDescription}</p>
               )}
-              <button className={styles.button} onClick={() => { handlebooking(hotel.name, hotel.stars, hotel.rating.value, hotel.rating.description, hotel.priceDescription) }}>book</button>
+              <button className={styles.button} onClick={() => { handlebooking(hotel.name, hotel.stars, hotel.rating.value, hotel.rating.description, hotel.priceDescription) }}>Book</button>
+            </div>
             </div>
           ))
         ) : (

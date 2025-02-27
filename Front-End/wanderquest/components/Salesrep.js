@@ -27,10 +27,12 @@ ChartJS.register(
 
 // Chart configuration constants
 const chartColors = {
-  primary: 'rgb(0, 123, 255)',
-  hover: 'rgb(52, 152, 219)',
-  distribution: ['rgb(0, 123, 255)', 'rgb(52, 152, 219)', 'rgb(33, 97, 140)']
+  primary: 'rgb(255, 87, 34)',  // Vivid orange-red
+  hover: 'rgb(255, 167, 38)',   // Warm golden hue
+  distribution: ['rgb(255, 87, 34)', 'rgb(255, 167, 38)', 'rgb(76, 175, 80)'] // Orange, gold, and deep green
 };
+
+
 
 const chartOptions = {
   responsive: true,
@@ -289,7 +291,7 @@ const Salesrep = () => {
             <div className={styles.statsCard}>
               <p className={styles.statsLabel}>New Users</p>
               <animated.span className={styles.statsValue}>
-                {newUsers}
+               25
               </animated.span>
             </div>
           </div>
@@ -381,7 +383,7 @@ const Salesrep = () => {
             </div>
 
             {/* Itineraries Chart */}
-            <div className={styles.chartCard}>
+            {/* <div className={styles.chartCard}>
               <h2 className={styles.chartTitle}>Itineraries Revenue</h2>
               <div className={styles.chartWrapper}>
                 <Bar
@@ -395,7 +397,7 @@ const Salesrep = () => {
                   }}
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Activities Chart */}
             <div className={styles.chartCard}>
