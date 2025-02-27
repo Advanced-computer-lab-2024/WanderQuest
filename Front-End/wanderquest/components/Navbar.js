@@ -107,17 +107,19 @@ const Navbar = () => {
     const handleRedirectm = () => window.location.href = '/tourist/musuem';
     const handleRedirec = () => window.location.href = '/tourist/mybookings';
     const handleRedirechotel = () => window.location.href = '/tourist/Hotels';
-    const handleRedirecflight = () => window.location.href = '/tourist/Flights';
-    const handleRedirectransport = () => window.location.href = '/tourist/transportation';
+    const handleRedirecflight = () => window.location.href = '/tourist/products';
+    const handleRedirectransport = () => window.location.href = '/tourist/activity';
 
 
     return (
         <>
             <div className="navbar-container">
                 <div className='navbar-leftside'>
-                    <Link href="/">
+                   
+                    <Link href={`/${role==='tourGuide'?'tourguide/':role}`}>
                         <img className="navbar-logo" src="/logo.png" alt="Logo" />
                     </Link>
+                   
                 </div>
                 <div className='navbar-middleside'>
                     {role == "advertiser" &&
@@ -150,13 +152,13 @@ const Navbar = () => {
                     }
                     {role == "tourist" && (
                         <div className={styles.buttons}>
-                            <button className="navbar-button" onClick={handleRedirect}>Itinerary</button>
+                            <button className="navbar-button" onClick={handleRedirect}>Itineraries</button>
 
-                            <button className="navbar-button" onClick={handleRedirectm}>Museums</button>
+                            <button className="navbar-button" onClick={handleRedirectm}>Historical Sites</button>
+                            <button className="navbar-button" onClick={handleRedirechotel}>Bookings</button>
+                            <button className="navbar-button" onClick={handleRedirecflight}>Shop</button>
+                            <button className="navbar-button" onClick={handleRedirectransport}>Activities</button>
                             <button className="navbar-button" onClick={handleRedirec}>My Bookings</button>
-                            <button className="navbar-button" onClick={handleRedirechotel}>Hotels</button>
-                            <button className="navbar-button" onClick={handleRedirecflight}>Flights</button>
-                            <button className="navbar-button" onClick={handleRedirectransport}>Transportation</button>
                         </div>
                     )}
                     {role == "" && (
@@ -190,7 +192,7 @@ const Navbar = () => {
                     {role && <NotificationButton role={role} />}
                     {role == "tourist" && (
                         <>
-                            <Link href="/tourist/history">
+                            {/* <Link href="/tourist/history">
                                 <button className="navbar-history-button">
                                     <svg
                                         viewBox="0 0 16 16"
@@ -211,7 +213,7 @@ const Navbar = () => {
                                         </g>
                                     </svg>
                                 </button>
-                            </Link>
+                            </Link> */}
                             <button
                                 className="navbar-wishlist-button"
                                 onClick={() => setIsWishlistOpen(true)}
