@@ -14,6 +14,8 @@ import {motion} from 'framer-motion';
 
 import { useEffect } from 'react';
 import Foot from "../../../components/foot";
+import Cart from '../../../components/Cart';
+import Checkout from '../../../components/Checkout';
 
 
 const testimonials = [
@@ -181,7 +183,7 @@ export default function Tourist() {
                                     ease: 'linear'
                                 }}
                             >
-                                🎉 SPECIAL OFFER: Use code "{promoCode.promoCodes.code}" for {promoCode.promoCodes.discount} {promoCode.promoCodes.type === "PERCENTAGE" ? '%' : 'USD'} OFF on all bookings! <span 
+                                SPECIAL OFFER: Use code "{promoCode.promoCodes.code}" for {promoCode.promoCodes.discount} {promoCode.promoCodes.type === "PERCENTAGE" ? '%' : 'USD'} OFF on all bookings! <span 
                                     style={{
                                         textDecoration: 'underline',
                                         cursor: 'pointer'
@@ -189,7 +191,7 @@ export default function Tourist() {
                                     onClick={() => navigator.clipboard.writeText(promoCode.promoCodes.code)}
                                 >
                                     Click here
-                                </span> to copy code! Limited time only! 🎉
+                                </span> to copy code! Limited time only! 
                             </motion.div>
                         )}
                     </div>
@@ -210,7 +212,7 @@ export default function Tourist() {
 
                         const images = [
                             {
-                                src: '/touristpage.jpg',
+                                src: '/6.jpg',
                                 alt: 'Mountain landscape with starry night sky'
                             },
                             {
@@ -218,8 +220,16 @@ export default function Tourist() {
                                 alt: 'Beautiful tropical beach'
                             },
                             {
-                                src: '/river.jpg',
+                                src: '/alps.jpg',
                                 alt: 'Ancient Indonesian temple'
+                            },
+                            {
+                                src: '/ice.jpg',
+                                alt: 'Traditional Indonesian cultural performance'
+                            },
+                            {
+                                src: '/volcano.jpg',
+                                alt: 'Traditional Indonesian cultural performance'
                             },
                             {
                                 src: '/ice.jpg',
@@ -246,14 +256,12 @@ export default function Tourist() {
                     })()}
                     
                  
-
-                <p className={`${styles.heroText} ${cookie.className}`}>
-                    <span className={styles.heroTitle}>Extraordinary natural and</span>
+                <motion.div intial={{opacity:0, y:-200 , x:200}} animate={{opacity:1, y:90, x:0}} transition={{duration:1.0, delay:0.2}} 
+                 style={{ fontFamily: 'Roboto', fontSize: '8.5rem' ,color:'white', marginLeft:'130px',marginRight:'0px'}}>
+                    <span className={styles.heroTitle} style={{ fontFamily: 'Roboto' }}>Welcome to WanderQuest!</span>
                     <br />
-                    <span className={styles.heroTitle}>cultural charm</span>
-                    <br />
-                    <span className={styles.heroSubtitle}>Exploring Indonesia is an unforgettable adventure.</span>
-                </p>
+                    <span className={styles.heroSubtitle} style={{ fontFamily: 'Roboto', fontSize: '3.5rem' }}>where you discover the world and its hidden treasures</span>
+                </motion.div>
 
 
                 </div>
@@ -272,7 +280,7 @@ export default function Tourist() {
                             <p className={styles.statLabel}>Destinations</p>
                         </div>
                         <div className={styles.stat}>
-                        <div className={styles.statNumber}>5.0+</div>
+                        <div className={styles.statNumber}>4.9</div>
                             <p className={styles.statLabel}>Average Rating</p>
                         </div>
 
@@ -284,23 +292,27 @@ export default function Tourist() {
 
                 <motion.div 
                     className={styles.explore}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
+                    viewport={{ once: true, margin: "-50px" }}
                     transition={{ 
-                        duration: 1.2,
-                        ease: "easeInOut"
+                        duration: 0.8,
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 20
                     }}
                 >
                     <motion.div 
                         className={styles.sectionHeader}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
+                        viewport={{ once: true, margin: "-50px" }}
                         transition={{ 
-                            delay: 0.3, 
-                            duration: 1.0,
-                            ease: "easeInOut"
+                            delay: 0.2, 
+                            duration: 0.8,
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 20
                         }}
                     >
                         <h2>Explore the World</h2>
@@ -309,22 +321,27 @@ export default function Tourist() {
                     
                     <motion.div 
                         className={styles.tourGrid}
-                        initial={{ opacity: 0, x: -30 }}
+                        initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
+                        viewport={{ once: true, margin: "-50px" }}
                         transition={{ 
-                            delay: 0.4,
-                            duration: 1.2,
-                            ease: "easeInOut"
+                            delay: 0.3,
+                            duration: 0.8,
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 20
                         }}
                     >
                         <motion.div 
                             className={styles.tourCard1}
                             whileHover={{ 
-                                scale: 1.02,
+                                scale: 1.03,
+                                y: -5,
                                 transition: {
-                                    duration: 0.5,
-                                    ease: "easeInOut"
+                                    duration: 0.3,
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 15
                                 }
                             }}
                         >
@@ -338,10 +355,13 @@ export default function Tourist() {
                         <motion.div 
                             className={styles.tourCard1}
                             whileHover={{ 
-                                scale: 1.02,
+                                scale: 1.03,
+                                y: -5,
                                 transition: {
-                                    duration: 0.5,
-                                    ease: "easeInOut"
+                                    duration: 0.3,
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 15
                                 }
                             }}
                         >
@@ -355,22 +375,27 @@ export default function Tourist() {
 
                     <motion.div 
                         className={styles.tourGrid2}
-                        initial={{ opacity: 0, x: 30 }}
+                        initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
+                        viewport={{ once: true, margin: "-50px" }}
                         transition={{ 
-                            delay: 0.5,
-                            duration: 1.2,
-                            ease: "easeInOut"
+                            delay: 0.4,
+                            duration: 0.8,
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 20
                         }}
                     >
                         <motion.div 
                             className={styles.tourCard2}
                             whileHover={{ 
-                                scale: 1.02,
+                                scale: 1.03,
+                                y: -5,
                                 transition: {
-                                    duration: 0.5,
-                                    ease: "easeInOut"
+                                    duration: 0.3,
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 15
                                 }
                             }}
                         >
@@ -384,10 +409,13 @@ export default function Tourist() {
                         <motion.div 
                             className={styles.tourCard2}
                             whileHover={{ 
-                                scale: 1.02,
+                                scale: 1.03,
+                                y: -5,
                                 transition: {
-                                    duration: 0.5,
-                                    ease: "easeInOut"
+                                    duration: 0.3,
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 15
                                 }
                             }}
                         >
@@ -525,8 +553,6 @@ export default function Tourist() {
         </motion.div>
     </motion.div>
 </motion.div>
-
-
 
 
 <motion.div 
@@ -845,6 +871,7 @@ export default function Tourist() {
                     <Complaints role='Tourist' />
                 </div>
             </div>
+            
             <Foot />
         </>
     );
