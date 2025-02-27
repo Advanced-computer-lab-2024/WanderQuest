@@ -1,8 +1,17 @@
 'use client';
 import Navbar from "../../../../../components/Navbar";
 import { useState, useEffect } from "react";
-import styles from '/Styles/Itineraries.module.css';
-
+import styles from '/Styles/itidetails.module.css';
+import ShareIcon from '@mui/icons-material/Share';
+import { TimerIcon } from "lucide-react";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import FlightLandIcon from '@mui/icons-material/FlightLand';
+import LanguageIcon from '@mui/icons-material/Language';
+import StarBorderSharpIcon from '@mui/icons-material/StarBorderSharp';
+import TimelapseSharpIcon from '@mui/icons-material/TimelapseSharp';
+import { MotionConfig } from "framer-motion";
+import { motion } from "framer-motion";
 const ItinerarydetailsPage = ({ params }) => {
     const id = params.id;
     const [id1, setid] = useState('');
@@ -97,7 +106,18 @@ const ItinerarydetailsPage = ({ params }) => {
         fetchItineraries();
     }, [id1]);
 
-    if (loading) return <p>Loading itinerary...</p>;
+if (loading) {return <>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <dotlottie-player style={{
+      width: '300px',
+      height: '300px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 'auto'
+    }}
+      src="https://lottie.host/8558e83b-4d60-43da-b678-870ab799685b/uAzMRqjTlu.json" background="transparent" speed="1" loop autoplay></dotlottie-player>
+  </>};
     if (error) return <p>Error: {error}</p>;
 
     const handleBooking = (date) => {
@@ -131,12 +151,36 @@ const ItinerarydetailsPage = ({ params }) => {
             });
     };
 
+    const images = {
+        'Adventure and Relaxation Tour': '/australia.jpg',
+        'Winter Wonderlands': '/winter.jpg',
+        'Nature and Wildlife Tours': '/africa.jpg',
+        'Japan Cultural Journey': '/japan1.jpg'
+     
+      };
+    
 
     return (
         <>
             <Navbar />
             <div className={styles.itinerary}>
+                
+                <div className={styles.itinerary_info}>
+                <img src={images[itinerary.title]} className={styles.itinerary_pic} />
                 <h2 className={styles.itineraryTitle}>{itinerary.title}</h2>
+                <div className={styles.itinerary_subtitle}> 
+                    <p>  <TimelapseSharpIcon />{itinerary.duration}</p>
+                    <p> <StarBorderSharpIcon  style={{color:"#FFD700"}}/>{itinerary.rating}</p>
+                    <p> <LanguageIcon />  {itinerary.language}</p>
+                    
+                    <p><FlightTakeoffIcon /> {itinerary.pickUpLocation}</p>
+                    <p><FlightLandIcon /> {itinerary.dropOffLocation}</p>
+
+
+
+                </div>
+
+
                 <div className={styles.activities}>
                     {itinerary.activities && itinerary.activities.map((activityId) => (
                         <div key={activityId} className={styles.activity}>
@@ -175,33 +219,17 @@ const ItinerarydetailsPage = ({ params }) => {
                     <div className={styles.timelineList}>
                         {itinerary.timeline && itinerary.timeline.split(',').map((entry, idx) => (
                             <div key={idx} className={styles.timelineEntry}>
-                                <strong>Day {idx + 1}:</strong> {entry.trim()}
+                                <AccessTimeIcon/>    {entry.trim()}
                             </div>
                         ))}
                     </div>
                 </div>
 
 
-
-                <p><strong>Duration:</strong> {itinerary.duration}</p>
-                <p><strong>Language:</strong> {itinerary.language}</p>
-                <p><strong>Price:</strong> {itinerary.price * multiplier} {preferredCurrency}</p>
-                <p><strong>Rating:</strong> {itinerary.rating}</p>
+              
+     
                 <div className={styles.datesContainer}>
-                    <strong className={styles.datesLabel}>Available dates:</strong>
-                    <div className={styles.dates}>
-                        {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
-                            <select className={styles.dateSelect}>
-                                {itinerary.availableDates.map((date, idx) => (
-                                    <option key={idx} value={date}>
-                                        {new Date(date).toLocaleDateString()}
-                                    </option>
-                                ))}
-                            </select>
-                        ) : (
-                            <p>No available dates</p>
-                        )}
-                    </div>
+                   
                 </div>
 
 
@@ -222,10 +250,8 @@ const ItinerarydetailsPage = ({ params }) => {
                     </div>
                 </div>
 
-                <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
-                <p><strong>Pick Up Location:</strong> {itinerary.pickUpLocation}</p>
-                <p><strong>Drop Off Location:</strong> {itinerary.dropOffLocation}</p>
-                <p><strong>Booking Already Made:</strong> {itinerary.BookingAlreadyMade ? 'Yes' : 'No'}</p>
+          
+                        
 
                 <div className={styles.reviews}>
                     <h3>Ratings & Reviews</h3>
@@ -246,7 +272,7 @@ const ItinerarydetailsPage = ({ params }) => {
                             return (
                                 <div className={styles.review} key={idx}>
                                     <p>
-                                        <strong>{touristId}:</strong>
+                                        <strong>Ahmed Elfar</strong>
                                     </p>
                                     {rating && (
                                         <p>
@@ -265,7 +291,31 @@ const ItinerarydetailsPage = ({ params }) => {
                 </div>
 
 
-                <div className={styles.buttonGroup}>
+                
+                </div>
+                <div className={styles.itineraryright}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                             <p style={{ fontWeight: 'bold',fontSize: 'larger' }}>{itinerary.price * multiplier} {preferredCurrency}</p>
+                             <button style={{ backgroundColor: 'green', color: 'white' ,borderRadius: '12px',border: 'none'}}>Available</button>
+                        </div>
+                <strong className={styles.datesLabel}>Available dates:</strong>
+                    <div className={styles.dates}>
+                        {itinerary.availableDates && itinerary.availableDates.length > 0 ? (
+                            <div className={styles.dates}>
+                                {itinerary.availableDates.map((date, idx) => (
+                                   <p key={idx}>{new Date(date).toLocaleDateString()}</p>
+                               
+                                ))}
+                           </div>
+                        ) : (
+                            <p>No available dates</p>
+                        )}
+
+                    </div>
+
+
+
+                    <div className={styles.buttonGroup}>
                     <div className={styles.leftButton}>
                         <button
                             className={styles.primaryButton}
@@ -280,11 +330,12 @@ const ItinerarydetailsPage = ({ params }) => {
                             className={styles.secondaryButton}
                             onClick={share}
                         >
-                            Share
+                            <ShareIcon  size={50} />
                         </button>
                     </div>
                 </div>
-
+                <p><strong>Accessibility:</strong> {itinerary.accessibility ? 'Yes' : 'No'}</p>
+                </div>
             </div>
         </>
     );
